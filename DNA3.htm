@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DNA 雙螺旋結構 (右旋)</title> <!-- 修改標題提示 -->
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+        }
+        #info {
+            position: absolute;
+            top: 10px;
+            width: 100%;
+            text-align: center;
+            color: white;
+            z-index: 100;
+            display: block;
+            pointer-events: none;
+            text-shadow: 1px 1px 2px black;
+        }
+        #container {
+            width: 100%;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+    <div id="info">
+        <h1>DNA 雙螺旋結構模型 (右旋)</h1> <!-- 修改標題提示 -->
+        <p>點擊並拖曳以旋轉模型 | 滾動滑鼠滾輪以縮放</p>
+    </div>
+    <div id="container"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/110/three.min.js"></script>
+
+    <script>
+        // 初始化場景、相機和渲染器
+        const container = document.getElementById('container');
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x121212);
+        
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 30;
+        
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        container.appendChild(renderer.domElement);
+        
+        // 添加環境光和定向光
+        const ambientLight = new THREE.AmbientLight(0x404040);
+        scene.add(ambientLight);
+        
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+        directionalLight.position.set(1, 1, 2);
+        scene.add(directionalLight);
+
+        const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.5);
+        directionalLight2.position.set(-1, -1, -2);
+        scene.add(directionalLight2);
+        
+        // 自定義旋轉控制
+        let isDragging = false;
+        let previousMousePosition = {
+            x: 0,
+            y: 0
+        };
+        
+        // 創建 DNA 雙螺旋的材質
+        const backbone1Material = new THREE.MeshPhongMaterial({ color: 0x3399ff, shininess: 80 });
+        const backbone2Material = new THREE.MeshPhongMaterial({ color: 0xff9933, shininess: 80 });
+        const baseMaterials = [
+            new THREE.MeshPhongMaterial({ color: 0xff5555, shininess: 100 }), // A - 紅色
+            new THREE.MeshPhongMaterial({ color: 0x55ff55, shininess: 100 }), // T - 綠色
+            new THREE.MeshPhongMaterial({ color: 0x5555ff, shininess: 100 }), // G - 藍色
+            new THREE.MeshPhongMaterial({ color: 0xffff55, shininess: 100 })  // C - 黃色
+        ];
+        
+        // DNA 參數 - 經過修正的參數
+        const dnaLength = 30;         // DNA 長度（鹼基對數量）
+        const helixRadius = 3.5;      // 螺旋半徑
+        const helixRise = 1.4;        // 每個鹼基對上升的高度
+        const backboneRadius = 0.4;   // 主鏈半徑
+        const baseRadius = 0.2;       // 鹼基連接線半徑
+        const baseSphereRadius = 0.5; // 鹼基球體半徑
+        const nucleotidesPerTurn = 10; // 每轉一圈的鹼基對數量（標準 B-DNA 為 10-10.5）
+        
+        // 創建 DNA 對象
+        const dnaObject = new THREE.Group();
+        
+        // 螺旋計算參數
+        const anglePerNucleotide = (Math.PI * 2) / nucleotidesPerTurn;
+        
+        // 創建兩條螺旋骨架和鹼基對
+        for (let i = 0; i < dnaLength; i++) {
+            const height = i * helixRise - (dnaLength * helixRise / 2);
+            // --- 修改點 1: 將角度取負值 ---
+            const angle = -i * anglePerNucleotide; // 乘以 -1 使其順時針旋轉上升
+            
+            // 第一條螺旋骨架點
+            const x1 = helixRadius * Math.cos(angle);
+            const y1 = height;
+            const z1 = helixRadius * Math.sin(angle);
+            
+            // 第二條螺旋骨架點 (對面，角度差180度)
+            const x2 = helixRadius * Math.cos(angle + Math.PI);
+            const y2 = height;
+            const z2 = helixRadius * Math.sin(angle + Math.PI);
+            
+            // 添加骨架球體
+            const backbone1 = new THREE.Mesh(
+                new THREE.SphereGeometry(backboneRadius, 12, 12),
+                backbone1Material
+            );
+            backbone1.position.set(x1, y1, z1);
+            dnaObject.add(backbone1);
+            
+            const backbone2 = new THREE.Mesh(
+                new THREE.SphereGeometry(backboneRadius, 12, 12),
+                backbone2Material
+            );
+            backbone2.position.set(x2, y2, z2);
+            dnaObject.add(backbone2);
+            
+            // 連接前後骨架點 (形成連續的磷酸骨架)
+            if (i > 0) {
+                const prevHeight = (i - 1) * helixRise - (dnaLength * helixRise / 2);
+                // --- 修改點 2: 前一個角度也要取負值 ---
+                const prevAngle = -(i - 1) * anglePerNucleotide; // 保持一致
+                
+                // 前一個第一條骨架點
+                const x1Prev = helixRadius * Math.cos(prevAngle);
+                const y1Prev = prevHeight;
+                const z1Prev = helixRadius * Math.sin(prevAngle);
+                
+                // 前一個第二條骨架點
+                const x2Prev = helixRadius * Math.cos(prevAngle + Math.PI);
+                const y2Prev = prevHeight;
+                const z2Prev = helixRadius * Math.sin(prevAngle + Math.PI);
+                
+                // 連接第一條骨架的相鄰點
+                connectCylinder(
+                    new THREE.Vector3(x1Prev, y1Prev, z1Prev),
+                    new THREE.Vector3(x1, y1, z1),
+                    backboneRadius * 0.6,
+                    backbone1Material
+                );
+                
+                // 連接第二條骨架的相鄰點
+                connectCylinder(
+                    new THREE.Vector3(x2Prev, y2Prev, z2Prev),
+                    new THREE.Vector3(x2, y2, z2),
+                    backboneRadius * 0.6,
+                    backbone2Material
+                );
+            }
+            
+            // 添加鹼基對 (A-T 或 G-C)
+            // 隨機選擇鹼基對類型 (0: A-T, 1: T-A, 2: G-C, 3: C-G)
+            const baseType = Math.floor(Math.random() * 4);
+            
+            // 創建鹼基球體 - 內移一點以顯示連接
+            const baseInnerRadius = helixRadius * 0.6;
+            
+            // 注意: 這裡的 x, z 座標也需要使用修改後的 angle
+            const x1Inner = baseInnerRadius * Math.cos(angle);
+            const z1Inner = baseInnerRadius * Math.sin(angle);
+            
+            const x2Inner = baseInnerRadius * Math.cos(angle + Math.PI);
+            const z2Inner = baseInnerRadius * Math.sin(angle + Math.PI);
+            
+            // 第一個鹼基
+            const base1 = new THREE.Mesh(
+                new THREE.SphereGeometry(baseSphereRadius, 12, 12),
+                baseMaterials[baseType % 2]
+            );
+            base1.position.set(x1Inner, y1, z1Inner);
+            dnaObject.add(base1);
+            
+            // 第二個鹼基
+            const base2 = new THREE.Mesh(
+                new THREE.SphereGeometry(baseSphereRadius, 12, 12),
+                baseMaterials[(baseType < 2) ? 1 - (baseType % 2) : 3 - (baseType % 2)]
+            );
+            base2.position.set(x2Inner, y2, z2Inner);
+            dnaObject.add(base2);
+            
+            // 連接鹼基對
+            connectCylinder(
+                new THREE.Vector3(x1Inner, y1, z1Inner),
+                new THREE.Vector3(x2Inner, y2, z2Inner),
+                baseRadius,
+                new THREE.MeshPhongMaterial({ 
+                    color: 0xcccccc, 
+                    transparent: true, 
+                    opacity: 0.7,
+                    shininess: 30
+                })
+            );
+            
+            // 連接骨架和鹼基
+            connectCylinder(
+                new THREE.Vector3(x1, y1, z1),
+                new THREE.Vector3(x1Inner, y1, z1Inner),
+                baseRadius * 0.8,
+                backbone1Material
+            );
+            
+            connectCylinder(
+                new THREE.Vector3(x2, y2, z2),
+                new THREE.Vector3(x2Inner, y2, z2Inner),
+                baseRadius * 0.8,
+                backbone2Material
+            );
+        }
+        
+        // 連接兩點的輔助函數 - 使用圓柱體
+        function connectCylinder(start, end, radius, material) {
+            const direction = new THREE.Vector3().subVectors(end, start);
+            const length = direction.length();
+            
+            const cylinder = new THREE.Mesh(
+                new THREE.CylinderGeometry(radius, radius, length, 8, 1),
+                material
+            );
+            
+            cylinder.position.copy(start);
+            cylinder.position.add(direction.clone().multiplyScalar(0.5));
+            
+            const yAxis = new THREE.Vector3(0, 1, 0);
+            direction.normalize();
+            const quaternion = new THREE.Quaternion();
+            quaternion.setFromUnitVectors(yAxis, direction);
+            cylinder.quaternion.copy(quaternion);
+            
+            dnaObject.add(cylinder);
+        }
+        
+        // 將 DNA 添加到場景
+        scene.add(dnaObject);
+        
+        // 處理窗口大小變化
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+        
+        // 自定義拖曳旋轉控制
+        const onMouseDown = (e) => {
+            isDragging = true;
+            previousMousePosition = {
+                x: e.clientX,
+                y: e.clientY
+            };
+        };
+
+        const onMouseMove = (e) => {
+            if (!isDragging) return;
+            
+            const deltaX = e.clientX - previousMousePosition.x;
+            const deltaY = e.clientY - previousMousePosition.y;
+            
+            dnaObject.rotation.y += deltaX * 0.01;
+            dnaObject.rotation.x += deltaY * 0.01;
+            
+            previousMousePosition = {
+                x: e.clientX,
+                y: e.clientY
+            };
+        };
+
+        const onMouseUp = () => {
+            isDragging = false;
+        };
+
+        // 縮放功能
+        const onWheel = (e) => {
+            e.preventDefault();
+            
+            camera.position.z += e.deltaY * 0.05;
+            
+            if (camera.position.z < 10) camera.position.z = 10;
+            if (camera.position.z > 100) camera.position.z = 100;
+        };
+
+        // 添加事件監聽器
+        renderer.domElement.addEventListener('mousedown', onMouseDown);
+        renderer.domElement.addEventListener('mousemove', onMouseMove);
+        renderer.domElement.addEventListener('mouseup', onMouseUp);
+        renderer.domElement.addEventListener('wheel', onWheel);
+        
+        // 動畫循環
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            if (!isDragging) {
+                dnaObject.rotation.y += 0.003;
+            }
+            
+            renderer.render(scene, camera);
+        }
+        
+        // 初始旋轉使模型直立
+        dnaObject.rotation.x = Math.PI / 2;
+        
+        animate();
+    </script>
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>乙醇 (C₂H₅OH) 分子模型 - Three.js (Module)</title>
+    <style>
+        body { margin: 0; font-family: 'Microsoft JhengHei', '微軟正黑體', sans-serif; background-color: #f0f0f0; }
+        #container { width: 100vw; height: 100vh; display: block; }
+        #info {
+            position: absolute;
+            top: 10px;
+            width: 100%;
+            text-align: center;
+            z-index: 100;
+            display:block;
+            color: #333;
+            font-size: 1.2em;
+            pointer-events: none;
+        }
+    </style>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+
+</head>
+<body>
+    <div id="info">
+        乙醇 (C₂H₅OH) 分子模型<br>
+        (黑色: 碳 C, 灰色: 氫 H, 紅色: 氧 O)<br>
+        使用滑鼠拖曳旋轉
+    </div>
+    <div id="container"></div>
+
+    <script type="module">
+        // 3. 使用 import 語句載入模組
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        // 不再需要 DOMContentLoaded 或 window.onload，
+        // type="module" 預設就是延遲執行的 (defer)
+
+        console.log("Module script executing..."); // Log: 模組腳本開始執行
+
+        let scene, camera, renderer, controls;
+        let moleculeGroup;
+        const container = document.getElementById('container');
+
+        // ... (原子/鍵結資料不變) ...
+        const atomData = [
+            { element: 'C', x: -0.7, y: 0.0, z: 0.0 }, { element: 'C', x:  0.7, y: 0.0, z: 0.0 },
+            { element: 'O', x:  1.4, y: 1.0, z: 0.0 }, { element: 'H', x: -1.2, y: -0.9, z: 0.0 },
+            { element: 'H', x: -1.0, y:  0.5, z: 0.8 }, { element: 'H', x: -1.0, y:  0.5, z: -0.8 },
+            { element: 'H', x:  1.0, y: -0.5, z: 0.8 }, { element: 'H', x:  1.0, y: -0.5, z: -0.8 },
+            { element: 'H', x:  2.1, y: 0.7, z: 0.0 }
+        ];
+        const atomColors = { 'C': 0x555555, 'H': 0xffffff, 'O': 0xff0000 };
+        const atomRadii = { 'C': 0.4, 'H': 0.25, 'O': 0.35 };
+        const bondData = [
+            [0, 1], [0, 3], [0, 4], [0, 5], [1, 2], [1, 6], [1, 7], [2, 8]
+        ];
+
+
+        // --- 初始化 Three.js 場景 (使用 HemisphereLight) ---
+        function init() {
+            console.log("Initializing scene (module)...");
+            scene = new THREE.Scene(); // 使用 import 進來的 THREE
+            scene.background = new THREE.Color(0xeeeeee); // 背景色
+
+            // --- 相機設定 ---
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 5; // 將相機向後移
+
+            // --- 渲染器設定 ---
+            renderer = new THREE.WebGLRenderer({ antialias: true }); // 開啟抗鋸齒
+            renderer.setSize(window.innerWidth, window.innerHeight);
+
+            // --- 將渲染器附加到容器 ---
+            if (container) {
+                container.appendChild(renderer.domElement);
+                console.log("Renderer DOM element appended (module).");
+            } else {
+                console.error("Container element not found (module)!");
+                return; // 如果找不到容器就停止
+            }
+
+            // --- 光源設定 (方案一：HemisphereLight + DirectionalLight) ---
+            // 1. 移除舊的 AmbientLight (如果有的話)
+            // const ambientLight = new THREE.AmbientLight(0xcccccc, 0.6);
+            // scene.add(ambientLight);
+
+            // 2. 添加 HemisphereLight
+            const skyColor = 0xffffff;      // 天空發出的光顏色 (純白)
+            const groundColor = 0x444444;   // 地面反射的光顏色 (暗灰) - 防止底部過亮
+            const hemisphereIntensity = 0.8; // 半球光強度 (可調整 0.0 - 1.0+)
+            const hemisphereLight = new THREE.HemisphereLight(skyColor, groundColor, hemisphereIntensity);
+            scene.add(hemisphereLight);
+            console.log("HemisphereLight added.");
+
+            // 3. 保留或調整 DirectionalLight (提供陰影和高光)
+            const directionalIntensity = 0.7; // 平行光強度 (可調整)
+            const directionalLight = new THREE.DirectionalLight(0xffffff, directionalIntensity); // 光源顏色 (通常是白色)
+            directionalLight.position.set(1, 1.5, 0.8).normalize(); // 設定光源方向 (可調整 x, y, z)
+            scene.add(directionalLight);
+            console.log("DirectionalLight added/adjusted.");
+            // --- 光源設定結束 ---
+
+
+            // --- 控制器設定 (OrbitControls) ---
+            console.log("Attempting to create OrbitControls instance (module)...");
+            if (renderer && renderer.domElement){
+                try {
+                    controls = new OrbitControls(camera, renderer.domElement); // 使用 import 的 OrbitControls
+                    controls.enableDamping = true;    // 開啟阻尼效果，讓旋轉更平滑
+                    controls.dampingFactor = 0.05;    // 阻尼係數
+                    controls.screenSpacePanning = false; // 通常設為 false 較符合直覺
+                    controls.minDistance = 2;         // 最小縮放距離
+                    controls.maxDistance = 15;        // 最大縮放距離
+                    console.log("OrbitControls instance created (module):", controls);
+                } catch (error) {
+                     console.error("Failed to create OrbitControls instance (module):", error);
+                }
+            } else {
+                 console.error("Renderer or renderer.domElement not available for OrbitControls (module).");
+            }
+
+            // --- 創建分子模型 ---
+            createMolecule();
+
+            // --- 添加視窗大小調整監聽器 ---
+            window.addEventListener('resize', onWindowResize, false);
+
+            // --- 啟動動畫循環 ---
+            console.log("Starting animation loop (module)...");
+            animate();
+        }
+        function createMolecule() {
+            // ... (createMolecule 內容不變, 使用 import 的 THREE) ...
+            moleculeGroup = new THREE.Group();
+            const atoms = [];
+            atomData.forEach(data => {
+                const geometry = new THREE.SphereGeometry(atomRadii[data.element], 32, 16);
+                const material = new THREE.MeshPhongMaterial({ color: atomColors[data.element] });
+                const atom = new THREE.Mesh(geometry, material);
+                atom.position.set(data.x, data.y, data.z);
+                moleculeGroup.add(atom);
+                atoms.push(atom.position);
+            });
+            const bondMaterial = new THREE.MeshPhongMaterial({ color: 0xaaaaaa });
+            const bondRadius = 0.08;
+            bondData.forEach(bondIndices => {
+                if (bondIndices[0] >= atoms.length || bondIndices[1] >= atoms.length) { console.error("Invalid bond index:", bondIndices); return; }
+                const startAtomPos = atoms[bondIndices[0]];
+                const endAtomPos = atoms[bondIndices[1]];
+                const bondVector = new THREE.Vector3().subVectors(endAtomPos, startAtomPos);
+                const bondLength = bondVector.length();
+                if (bondLength < 0.001) return;
+                const bondGeometry = new THREE.CylinderGeometry(bondRadius, bondRadius, bondLength, 16, 1);
+                const bondMesh = new THREE.Mesh(bondGeometry, bondMaterial);
+                bondMesh.position.copy(startAtomPos);
+                bondMesh.position.addScaledVector(bondVector, 0.5);
+                const axis = new THREE.Vector3(0, 1, 0);
+                bondMesh.quaternion.setFromUnitVectors(axis, bondVector.normalize());
+                moleculeGroup.add(bondMesh);
+            });
+            scene.add(moleculeGroup);
+        }
+
+        let frameCount = 0;
+        function animate() {
+            requestAnimationFrame(animate);
+            if (controls) {
+                controls.update();
+            }
+            frameCount++;
+            renderer.render(scene, camera);
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            console.log("Window resized (module).");
+        }
+
+        // --- 啟動 ---
+        init();
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>AI圖像生成說明圖</title>
+  <style>
+    body {
+      font-family: "微軟正黑體", Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 20px;
+    }
+    svg {
+      border: 1px solid #ccc;
+      background-color: #fff;
+    }
+    .title {
+      font-size: 18px;
+      font-weight: bold;
+      fill: #333;
+    }
+    .description {
+      font-size: 14px;
+      fill: #555;
+    }
+    /* 設定箭頭 Marker */
+    marker.arrow {
+      fill: #333;
+      stroke: #333;
+      stroke-width: 1;
+    }
+  </style>
+</head>
+<body>
+  <h2>AI原生圖像與AI工具調用生成圖像的差異說明</h2>
+  <svg width="800" height="400">
+    <!-- 左側：AI原生圖像 -->
+    <rect x="50" y="50" width="300" height="300" fill="#e3f2fd" stroke="#90caf9" stroke-width="2" rx="15"/>
+    <text x="200" y="90" text-anchor="middle" class="title">AI原生圖像</text>
+    
+    <!-- 流程圖內容：左側 -->
+    <!-- 使用者輸入描述 -->
+    <rect x="90" y="120" width="220" height="40" fill="#fff" stroke="#64b5f6" stroke-width="2" rx="5"/>
+    <text x="200" y="145" text-anchor="middle" class="description">使用者輸入描述</text>
+    
+    <!-- 箭頭：指向 AI 系統 -->
+    <line x1="200" y1="170" x2="200" y2="210" stroke="#333" stroke-width="2"
+          marker-end="url(#arrowMarker)"/>
+    
+    <!-- AI 整合模型直接生成圖像 -->
+    <rect x="90" y="210" width="220" height="40" fill="#fff" stroke="#64b5f6" stroke-width="2" rx="5"/>
+    <text x="200" y="235" text-anchor="middle" class="description">AI 直接生成圖像</text>
+    
+    <!-- 左側備註 -->
+    <text x="200" y="290" text-anchor="middle" class="description" fill="#d32f2f">（僅使用單一AI模型）</text>
+    
+    
+    <!-- 右側：AI工具調用生成圖像 -->
+    <rect x="450" y="50" width="300" height="300" fill="#e8f5e9" stroke="#a5d6a7" stroke-width="2" rx="15"/>
+    <text x="600" y="90" text-anchor="middle" class="title">AI工具調用生成圖像</text>
+    
+    <!-- 流程圖內容：右側 -->
+    <!-- 使用者輸入描述 -->
+    <rect x="490" y="120" width="220" height="40" fill="#fff" stroke="#81c784" stroke-width="2" rx="5"/>
+    <text x="600" y="145" text-anchor="middle" class="description">使用者輸入描述</text>
+    
+    <!-- 箭頭：指向 AI 生成文字 -->
+    <line x1="600" y1="170" x2="600" y2="210" stroke="#333" stroke-width="2"
+          marker-end="url(#arrowMarker)"/>
+    
+    <!-- AI 生成文字描述 -->
+    <rect x="490" y="210" width="220" height="40" fill="#fff" stroke="#81c784" stroke-width="2" rx="5"/>
+    <text x="600" y="235" text-anchor="middle" class="description">AI 生成文字描述</text>
+    
+    <!-- 箭頭：指向 Dall-E 生成圖像 -->
+    <line x1="600" y1="250" x2="600" y2="290" stroke="#333" stroke-width="2"
+          marker-end="url(#arrowMarker)"/>
+    
+    <!-- 利用生成工具(Dall-E)生成圖像 -->
+    <rect x="490" y="290" width="220" height="40" fill="#fff" stroke="#81c784" stroke-width="2" rx="5"/>
+    <text x="600" y="315" text-anchor="middle" class="description">生成圖像 (如 Dall-E)</text>
+    
+    <!-- 右側備註 -->
+    <text x="600" y="350" text-anchor="middle" class="description" fill="#d32f2f">（跨工具協作）</text>
+    
+    <!-- 定義箭頭 marker -->
+    <defs>
+      <marker id="arrowMarker" markerWidth="10" markerHeight="10" refX="0" refY="3" orient="auto" class="arrow">
+        <path d="M0,0 L0,6 L9,3 z" />
+      </marker>
+    </defs>
+  </svg>
+  <p>
+    說明：左側流程圖代表 <strong>AI原生圖像</strong>，使用者的輸入直接由AI系統進行圖像生成；右側流程圖代表 <strong>AI工具調用生成圖像</strong>，使用者的輸入先由AI產生文字描述，再由其他工具（如 Dall-E）依據描述生成圖像。
+  </p>
+</body>
+</html>

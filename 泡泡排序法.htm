@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>泡泡排序法互動教學 (左右對照)</title>
+    <style>
+        /* 基本樣式 */
+        body {
+            font-family: 'Microsoft JhengHei', '微軟正黑體', sans-serif;
+            padding: 15px;
+            background-color: #f9f9f9;
+            margin: 0;
+        }
+
+        /* 主容器 - Flex佈局 */
+        .main-container {
+            display: flex;
+            flex-wrap: wrap; /* 允許換行 */
+            gap: 20px; /* 欄間距 */
+            align-items: flex-start; /* 頂部對齊 */
+        }
+
+        /* 左欄和右欄 */
+        .left-column, .right-column {
+            flex: 1; /* 均分寬度 */
+            min-width: 320px; /* 最小寬度，防止過窄 */
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 1px 1px 4px rgba(0,0,0,0.05);
+        }
+
+        /* Canvas 樣式 */
+        canvas {
+            border: 1px solid #ccc;
+            background-color: #ffffff;
+            margin-bottom: 15px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+            display: block; /* 避免底部多餘空間 */
+            max-width: 100%; /* 響應式寬度 */
+            height: auto; /* 保持長寬比 */
+        }
+
+        /* 控制區、資訊區 */
+        .controls, .info {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        /* 程式碼區 */
+        .code-section {
+             /* 不再需要獨立背景和陰影，因為父元素 right-column 有 */
+        }
+
+        /* 標題樣式 */
+        h1 {
+             width: 100%; /* 讓 H1 跨越兩欄 */
+             text-align: center;
+             margin-bottom: 20px;
+             color: #333;
+             font-size: 1.8em;
+        }
+        h2 {
+            color: #333;
+            margin-top: 0; /* 移除右欄標題的上邊距 */
+            text-align: center;
+        }
+
+        /* 按鈕樣式 */
+        button {
+            padding: 8px 15px;
+            margin: 5px;
+            font-size: 15px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        /* 輸入框樣式 */
+        input[type="text"] {
+            padding: 8px;
+            margin-right: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            min-width: 150px;
+        }
+
+        /* 狀態文字樣式 */
+        #status {
+            margin-top: 10px;
+            font-weight: bold;
+            min-height: 20px;
+            color: #555;
+            font-size: 1.1em;
+        }
+
+        /* 解釋文字樣式 */
+        #explanation {
+            margin-top: 10px;
+            color: #444;
+            text-align: left;
+            line-height: 1.6;
+        }
+
+        /* 程式碼容器樣式 */
+        .code-container {
+            text-align: left;
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            white-space: pre; /* 保留空格和換行 */
+            font-family: 'Courier New', Courier, monospace;
+            overflow-x: auto; /* 水平滾動條 */
+            font-size: 0.95em;
+            line-height: 1.4;
+            max-height: 500px; /* 限制最大高度並滾動 */
+            overflow-y: auto;
+        }
+
+        /* 程式碼高亮樣式 */
+        .highlight-code {
+            background-color: #fff3cd;
+            font-weight: bold;
+            padding: 0.1em 0.2em;
+            border-radius: 3px;
+            outline: 1px solid #f0e68c; /* 加個細框更明顯 */
+        }
+
+        /* 響應式設計 - 小螢幕時堆疊 */
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column; /* 垂直堆疊 */
+            }
+            .left-column, .right-column {
+                width: 100%; /* 佔滿寬度 */
+                margin-bottom: 15px; /* 增加堆疊時的間距 */
+            }
+            h1 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>泡泡排序法 (Bubble Sort) 互動教學</h1>
+
+    <div class="main-container">
+        <div class="left-column">
+            <canvas id="sortCanvas" width="500" height="250"></canvas>
+
+            <div class="controls">
+                <label for="dataInput">輸入數字 (逗號分隔): </label>
+                <input type="text" id="dataInput" value="5,1,4,2,8" aria-label="輸入要排序的數字，用逗號分隔">
+                <button id="resetBtn">重設/載入</button>
+                <button id="prevStepBtn">上一步</button> <button id="nextStepBtn">下一步</button>
+                </div>
+
+            <div class="info">
+                <div id="status" aria-live="polite">請點擊 "重設/載入" 開始</div>
+                <div id="explanation"></div>
+            </div>
+        </div>
+
+        <div class="right-column">
+            <div class="code-section">
+                <h2>對應 C 語言程式碼</h2>
+                <div class="code-container" id="cCode" aria-label="C 語言泡泡排序法程式碼範例">#include &lt;stdio.h&gt;
+
+int main() {
+    <span id="code-array-declaration">int num[5];</span> // 陣列大小會動態更新
+    int i, j, temp;
+
+    <span id="code-input-comment">// 使用者輸入5個數字</span> // 註解會動態更新
+    <span id="code-input-loop">for (i = 0; i < 5; i++) {</span> // 輸入迴圈條件會動態更新
+        scanf("%d", &num[i]);
+    }
+
+    // 泡泡排序法
+    <span id="code-outer-loop">for (i = 0; i < 4; i++) {</span> // 外層迴圈條件會動態更新
+        <span id="code-inner-loop">for (j = 0; j < 4 - i; j++) {</span> // 內層迴圈條件會動態更新
+            <span id="code-compare">if (num[j] > num[j + 1]) {</span>
+                <span id="code-swap">temp = num[j];
+                num[j] = num[j + 1];
+                num[j + 1] = temp;</span>
+            }
+        }
+    }
+
+    // 輸出排序後的結果
+    <span id="code-output-loop">for (i = 0; i < 5; i++) {</span> // 輸出迴圈條件會動態更新
+        printf("%d ", num[i]);
+    }
+    printf("\n");
+
+    return 0;
+}</div>
+            </div>
+        </div>
+    </div> <script>
+        // --- DOM 元素獲取 ---
+        const canvas = document.getElementById('sortCanvas');
+        const ctx = canvas.getContext('2d');
+        const dataInput = document.getElementById('dataInput');
+        const resetBtn = document.getElementById('resetBtn');
+        const prevStepBtn = document.getElementById('prevStepBtn'); // 獲取上一步按鈕
+        const nextStepBtn = document.getElementById('nextStepBtn');
+        // const autoPlayBtn = document.getElementById('autoPlayBtn'); // 移除自動播放按鈕的獲取
+        const statusDiv = document.getElementById('status');
+        const explanationDiv = document.getElementById('explanation');
+        const cCodeDiv = document.getElementById('cCode');
+        // 獲取需要動態更新的 C 程式碼 span 元素
+        const codeArrayDeclarationSpan = document.getElementById('code-array-declaration');
+        const codeInputCommentSpan = document.getElementById('code-input-comment');
+        const codeInputLoopSpan = document.getElementById('code-input-loop');
+        const codeOuterLoopSpan = document.getElementById('code-outer-loop');
+        const codeInnerLoopSpan = document.getElementById('code-inner-loop');
+        const codeOutputLoopSpan = document.getElementById('code-output-loop');
+
+
+        // --- 狀態變數 ---
+        let array = [];
+        let arrayStates = [];
+        let currentStateIndex = -1;
+        // 移除自動播放相關變數
+        // let autoPlayInterval = null;
+        // let autoPlaySpeed = 800;
+
+        // --- Canvas 繪圖常數與函數 ---
+        const barPadding = 8; // 長條圖之間的間距
+        const topMargin = 30; // 圖表頂部邊距
+        const bottomMargin = 20; // 圖表底部邊距
+
+        // 繪製陣列狀態到 Canvas
+        function drawArray(arr, comparingIndices = [], swappedIndices = [], sortedIndices = []) {
+            const canvasWidth = canvas.width;
+            const canvasHeight = canvas.height;
+            ctx.clearRect(0, 0, canvasWidth, canvasHeight); // 清除畫布
+            if (!arr || arr.length === 0) return; // 空陣列不繪製
+
+            const n = arr.length;
+            const totalPadding = barPadding * (n + 1); // 總間距寬度
+            const availableWidth = canvasWidth - totalPadding; // 可用於長條的總寬度
+            const barWidth = Math.max(5, availableWidth / n); // 計算每個長條的寬度 (至少5px)
+            const maxVal = arr.length > 0 ? Math.max(...arr, 1) : 1; // 找出陣列最大值 (至少為1，避免除以0)
+            const availableHeight = canvasHeight - topMargin - bottomMargin; // 可用於長條的高度
+
+            // 遍歷陣列，繪製每個元素對應的長條
+            arr.forEach((value, index) => {
+                const barHeight = Math.max(1, (value / maxVal) * availableHeight); // 計算長條高度 (至少1px)
+                const x = barPadding + index * (barWidth + barPadding); // 計算長條的 x 座標
+                const y = canvasHeight - bottomMargin - barHeight; // 計算長條的 y 座標 (從底部往上)
+
+                // 根據狀態設定長條顏色
+                if (comparingIndices.includes(index)) {
+                    ctx.fillStyle = '#ffcc66'; // 黃色：比較中
+                } else if (swappedIndices.includes(index)) {
+                    ctx.fillStyle = '#ff6666'; // 紅色：交換中
+                } else if (sortedIndices.includes(index)) {
+                    ctx.fillStyle = '#99cc99'; // 綠色：已排序
+                } else {
+                    ctx.fillStyle = '#66b3ff'; // 藍色：預設
+                }
+                ctx.fillRect(x, y, barWidth, barHeight); // 繪製長條
+
+                // 在長條上方繪製數值
+                ctx.fillStyle = '#333'; // 文字顏色
+                ctx.textAlign = 'center'; // 文字置中
+                const fontSize = Math.max(8, Math.min(14, barWidth * 0.35)); // 動態調整字體大小
+                ctx.font = `${fontSize}px Arial`;
+                const textY = Math.max(12, y - 5); // 文字的 y 座標 (長條上方一點)
+                ctx.fillText(value, x + barWidth / 2, textY); // 繪製文字
+            });
+        }
+
+        // --- 泡泡排序狀態生成 ---
+        function generateBubbleSortStates(initialArray) {
+            arrayStates = []; // 清空之前的狀態
+            let arr = [...initialArray]; // 複製一份初始陣列進行操作
+            const n = arr.length;
+            if (n === 0) return; // 空陣列直接返回
+
+            let i, j, temp;
+            let message = "";
+            let highlightCodeIds = []; // 要高亮的程式碼行 ID 列表
+
+            // 初始狀態 (代表輸入完成)
+            arrayStates.push({
+                arraySnapshot: [...arr], // 當前陣列快照
+                i: -1, j: -1, // 迴圈變數狀態 (初始為-1)
+                comparingIndices: [], // 正在比較的索引
+                swappedIndices: [], // 正在交換的索引
+                sortedIndices: [], // 已排序好的索引
+                message: "資料載入完成，準備開始排序。", // 狀態說明
+                highlightCodeIds: ['code-input-loop'] // 高亮 C 程式碼的輸入迴圈
+            });
+
+            // 外層排序迴圈 (控制輪數)
+            for (i = 0; i < n - 1; i++) {
+                message = `第 ${i + 1} 輪開始 (i=${i})。`;
+                highlightCodeIds = ['code-outer-loop']; // 高亮外層迴圈
+                arrayStates.push({
+                    arraySnapshot: [...arr], i: i, j: -1, // j 重置為 -1
+                    comparingIndices: [], swappedIndices: [],
+                    sortedIndices: buildSortedIndices(n, i), // 計算此輪開始時已排序好的部分
+                    message: message, highlightCodeIds: highlightCodeIds
+                });
+
+                // 內層比較迴圈 (控制每輪的比較次數)
+                for (j = 0; j < n - 1 - i; j++) {
+                    message = `比較索引 ${j} (值 ${arr[j]}) 和索引 ${j + 1} (值 ${arr[j + 1]})。`;
+                    highlightCodeIds = ['code-inner-loop', 'code-compare']; // 高亮內層迴圈和比較判斷
+                    arrayStates.push({
+                        arraySnapshot: [...arr], i: i, j: j,
+                        comparingIndices: [j, j + 1], // 標示正在比較的兩個元素
+                        swappedIndices: [],
+                        sortedIndices: buildSortedIndices(n, i),
+                        message: message, highlightCodeIds: highlightCodeIds
+                    });
+
+                    // 比較並決定是否交換
+                    if (arr[j] > arr[j + 1]) {
+                        message = `因為 ${arr[j]} > ${arr[j + 1]}，執行交換。`;
+                        highlightCodeIds = ['code-swap']; // 高亮交換區塊
+                        // 記錄交換前的狀態 (標示紅色)
+                        arrayStates.push({
+                            arraySnapshot: [...arr], i: i, j: j,
+                            comparingIndices: [], swappedIndices: [j, j + 1], // 標示正在交換的兩個元素
+                            sortedIndices: buildSortedIndices(n, i),
+                            message: message, highlightCodeIds: highlightCodeIds
+                        });
+
+                        // 執行實際交換
+                        temp = arr[j];
+                        arr[j] = arr[j + 1];
+                        arr[j + 1] = temp;
+
+                        // 記錄交換後的狀態 (仍標示紅色，表示剛交換完)
+                        message = `交換完成：索引 ${j} 為 ${arr[j]}, 索引 ${j + 1} 為 ${arr[j + 1]}。`;
+                        arrayStates.push({
+                            arraySnapshot: [...arr], i: i, j: j,
+                            comparingIndices: [], swappedIndices: [j, j + 1],
+                            sortedIndices: buildSortedIndices(n, i),
+                            message: message, highlightCodeIds: [] // 交換完成後暫時不高亮特定行
+                        });
+                    } else {
+                        // 不需要交換
+                        message = `因為 ${arr[j]} <= ${arr[j + 1]}，不需交換。`;
+                        highlightCodeIds = ['code-compare']; // 停留在比較行
+                        arrayStates.push({
+                            arraySnapshot: [...arr], i: i, j: j,
+                            comparingIndices: [j, j + 1], // 保持比較狀態 (黃色)
+                            swappedIndices: [],
+                            sortedIndices: buildSortedIndices(n, i),
+                            message: message, highlightCodeIds: highlightCodeIds
+                        });
+                    }
+                } // 內迴圈結束
+
+                // 一輪結束，標記此輪找到的最大值已就位
+                message = `第 ${i + 1} 輪結束，元素 ${arr[n - 1 - i]} 已就位。`;
+                highlightCodeIds = ['code-outer-loop']; // 指回外迴圈
+                arrayStates.push({
+                    arraySnapshot: [...arr], i: i, j: j - 1, // j 為內迴圈最後值
+                    comparingIndices: [], swappedIndices: [],
+                    sortedIndices: buildSortedIndices(n, i + 1), // 更新已排序索引列表
+                    message: message, highlightCodeIds: highlightCodeIds
+                });
+            } // 外迴圈結束
+
+            // 最終排序完成狀態
+            message = "排序完成。";
+            highlightCodeIds = ['code-output-loop']; // 高亮輸出迴圈
+            arrayStates.push({
+                 arraySnapshot: [...arr], i: n - 1, j: -1, // i 設為最後索引，表示完成
+                 comparingIndices: [], swappedIndices: [],
+                 sortedIndices: buildSortedIndices(n, n), // 所有元素都已排序
+                 message: message, highlightCodeIds: highlightCodeIds
+            });
+        }
+
+        // 輔助函數：根據已完成的輪數，產生已排序元素的索引列表
+        function buildSortedIndices(totalLength, numberOfSorted) {
+            const indices = [];
+            // 從陣列末尾開始，添加指定數量的索引
+            for (let k = 0; k < numberOfSorted; k++) {
+                indices.push(totalLength - 1 - k);
+            }
+            return indices;
+        }
+
+        // --- 更新 UI 顯示 ---
+        function displayState(stateIndex) {
+            if (stateIndex < 0 || stateIndex >= arrayStates.length) return; // 檢查索引有效性
+
+            // 從狀態陣列中獲取當前狀態的資訊
+            const { arraySnapshot, i, j, comparingIndices, swappedIndices, sortedIndices, message, highlightCodeIds } = arrayStates[stateIndex];
+
+            // 繪製 Canvas
+            drawArray(arraySnapshot, comparingIndices, swappedIndices, sortedIndices);
+            // 更新狀態文字
+            statusDiv.textContent = message;
+            // 更新 C 程式碼高亮
+            updateCodeHighlight(highlightCodeIds);
+            // 更新詳細解釋文字
+            updateExplanation(stateIndex);
+
+            // 更新按鈕狀態
+            prevStepBtn.disabled = (stateIndex === 0); // 第一步時禁用上一步
+            nextStepBtn.disabled = (stateIndex === arrayStates.length - 1); // 最後一步時禁用下一步
+        }
+
+        // 更新 C 程式碼區塊的行高亮
+        function updateCodeHighlight(highlightCodeIds) {
+            // 先移除所有現有的高亮樣式
+            const spans = cCodeDiv.querySelectorAll('span[id^="code-"]');
+            spans.forEach(span => span.classList.remove('highlight-code'));
+            // 再為需要高亮的行添加樣式
+            highlightCodeIds.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.classList.add('highlight-code');
+                    // 可選：自動滾動到高亮行
+                    // element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+            });
+        }
+
+        // 更新左下角的解釋文字
+        function updateExplanation(stateIndex) {
+            if (stateIndex < 0 || stateIndex >= arrayStates.length) return;
+
+            const { arraySnapshot, i, j, comparingIndices, swappedIndices, message } = arrayStates[stateIndex];
+            const n = arraySnapshot.length;
+            let explanation = ""; // 初始化解釋文字
+
+            // 根據當前狀態的 message 內容，生成對應的解釋
+            if (message.includes("資料載入")) {
+                explanation = `初始化數列。對應 C 程式碼中的 <code class="highlight-code">for</code> 迴圈和 <code class="highlight-code">scanf</code> 輸入。`;
+            } else if (message.includes("輪開始")) {
+                const outerLoopLimit = n > 1 ? n - 1 : 0; // 外層迴圈上限
+                explanation = `進入外層迴圈，開始第 ${i + 1} 輪 (i=${i})。此輪將比較 ${n - 1 - i} 次，將未排序部分的最大值移到最右邊。對應 <code class="highlight-code">for (i = 0; i < ${outerLoopLimit}; i++)</code>。`;
+            } else if (comparingIndices.length > 0 && message.includes("比較索引")) {
+                const innerLoopLimit = n > 1 ? `${n - 1} - i` : '0'; // 內層迴圈上限表示
+                explanation = `進入內層迴圈 (j=${j})，比較相鄰元素：索引 ${j} (值 ${arraySnapshot[j]}) 和索引 ${j + 1} (值 ${arraySnapshot[j+1]})。對應 <code class="highlight-code">for (j = 0; j < ${innerLoopLimit}; j++)</code> 及 <code class="highlight-code">if (...)</code> 判斷。`;
+            } else if (swappedIndices.length > 0 && message.includes("執行交換")) {
+                 let val1 = "?", val2 = "?";
+                 // 嘗試從前一個狀態獲取交換前的值，更準確
+                 if(stateIndex > 0) {
+                      const prevState = arrayStates[stateIndex-1];
+                      // 確保前一個狀態是比較狀態且索引匹配
+                      if(prevState.comparingIndices.length > 0 && prevState.comparingIndices[0] === swappedIndices[0]){
+                           val1 = prevState.arraySnapshot[swappedIndices[0]];
+                           val2 = prevState.arraySnapshot[swappedIndices[1]];
+                      } else { // 備用方案：使用當前狀態的值（可能已經交換過）
+                           val1 = arraySnapshot[swappedIndices[0]];
+                           val2 = arraySnapshot[swappedIndices[1]];
+                      }
+                 }
+                 explanation = `因為 ${val1} > ${val2}，條件成立，執行交換。對應 <code class="highlight-code">if</code> 內的交換程式碼 (<code class="highlight-code">temp = ...</code>)。`;
+            } else if (swappedIndices.length > 0 && message.includes("交換完成")) {
+                explanation = `交換完畢。索引 ${j} 現在是 ${arraySnapshot[j]}，索引 ${j + 1} 是 ${arraySnapshot[j+1]}。繼續內層迴圈下一次比較。`;
+            } else if (comparingIndices.length > 0 && message.includes("不需交換")) {
+                explanation = `因為 ${arraySnapshot[j]} <= ${arraySnapshot[j+1]}，條件不成立，跳過交換步驟。繼續內層迴圈下一次比較。`;
+            } else if (message.includes("輪結束")) {
+                const outerLoopLimit = n > 1 ? n - 2 : -1; // 外層迴圈的 i 最大值
+                explanation = `第 ${i + 1} 輪內層迴圈執行完畢。元素 ${arraySnapshot[n - 1 - i]} 已確定在最終位置 (標為綠色)。準備進入下一輪 (如果 i < ${outerLoopLimit})。`;
+            } else if (message.includes("排序完成")) {
+                explanation = `所有 ${n > 1 ? n-1 : 0} 輪排序執行完畢。數列已排序完成！對應 C 程式碼最後的 <code class="highlight-code">printf</code> 輸出迴圈。`;
+            }
+
+            // 將生成的解釋文字顯示在頁面上 (使用 innerHTML 以便渲染 <code> 標籤)
+            explanationDiv.innerHTML = explanation;
+        }
+
+        // --- 事件處理函數 ---
+
+        // "重設/載入" 按鈕點擊處理
+        function handleReset() {
+            // stopAutoPlay(); // 移除停止自動播放的調用
+            const inputText = dataInput.value.trim(); // 獲取輸入框文字並去除首尾空格
+            // 解析輸入文字為數字陣列
+            const potentialArray = inputText.split(',') // 按逗號分割
+                                       .map(s => s.trim()) // 去除每個部分的空格
+                                       .filter(s => s !== '') // 過濾掉空字串
+                                       .map(Number) // 轉換為數字
+                                       .filter(n => !isNaN(n) && isFinite(n)); // 過濾掉非數字和無限值
+
+            const n = potentialArray.length; // 獲取數列長度
+
+            // 檢查解析結果是否有效
+            if (n === 0) {
+                alert("請輸入有效的數字序列，用逗號分隔！例如：5,1,4,2,8");
+                array = []; // 清空陣列
+                drawArray([]); // 清空畫布
+                statusDiv.textContent = "請輸入有效數字。";
+                explanationDiv.innerHTML = "";
+                updateCodeHighlight([]);
+                currentStateIndex = -1; // 重置狀態索引
+                prevStepBtn.disabled = true; // 禁用按鈕
+                nextStepBtn.disabled = true;
+                // 重置 C 程式碼顯示為預設或空狀態
+                codeArrayDeclarationSpan.textContent = 'int num[];';
+                codeInputCommentSpan.textContent = '// 請輸入數字';
+                codeInputLoopSpan.textContent = 'for (i = 0; i < n; i++) {';
+                codeOuterLoopSpan.textContent = 'for (i = 0; i < n - 1; i++) {';
+                codeInnerLoopSpan.textContent = 'for (j = 0; j < n - 1 - i; j++) {';
+                codeOutputLoopSpan.textContent = 'for (i = 0; i < n; i++) {';
+                return; // 結束處理
+            }
+
+            // 提示用戶過多數字可能影響視覺效果
+            if (n > 20) {
+                alert("提示：輸入數字過多可能影響視覺效果。");
+            }
+
+            // *** 更新 C 程式碼顯示 ***
+            const outerLoopLimit = n > 0 ? n - 1 : 0; // 外層迴圈上限
+            codeArrayDeclarationSpan.textContent = `int num[${n}];`;
+            codeInputCommentSpan.textContent = `// 使用者輸入${n}個數字`;
+            codeInputLoopSpan.textContent = `for (i = 0; i < ${n}; i++) {`;
+            codeOuterLoopSpan.textContent = `for (i = 0; i < ${outerLoopLimit}; i++) {`;
+            codeInnerLoopSpan.textContent = `for (j = 0; j < ${outerLoopLimit} - i; j++) {`; // 使用 outerLoopLimit 簡化
+            codeOutputLoopSpan.textContent = `for (i = 0; i < ${n}; i++) {`;
+            // *** 更新結束 ***
+
+            // 更新全局陣列
+            array = potentialArray;
+            // 生成排序狀態
+            generateBubbleSortStates(array);
+            // 重置當前狀態索引
+            currentStateIndex = 0;
+            // 顯示初始狀態
+            displayState(currentStateIndex);
+            // 重設自動播放按鈕文字 (已移除)
+            // autoPlayBtn.textContent = "自動播放";
+        }
+
+        // "上一步" 按鈕點擊處理
+        function handlePrevStep() {
+            if (currentStateIndex > 0) {
+                currentStateIndex--; // 索引減一
+                displayState(currentStateIndex); // 顯示新狀態
+            }
+        }
+
+        // "下一步" 按鈕點擊處理
+        function handleNextStep() {
+            // 如果還有下一步狀態
+            if (currentStateIndex < arrayStates.length - 1) {
+                currentStateIndex++; // 索引加一
+                displayState(currentStateIndex); // 顯示新狀態
+            }
+            // stopAutoPlay(); // 移除停止自動播放的調用
+        }
+
+        // 移除自動播放相關函數
+        // function autoPlayStep() { ... }
+        // function startAutoPlay() { ... }
+        // function stopAutoPlay() { ... }
+        // function handleAutoPlayToggle() { ... }
+
+        // --- 初始化 ---
+        function init() {
+            // 綁定按鈕事件監聽器
+            resetBtn.addEventListener('click', handleReset);
+            prevStepBtn.addEventListener('click', handlePrevStep); // 綁定上一步事件
+            nextStepBtn.addEventListener('click', handleNextStep);
+            // autoPlayBtn.addEventListener('click', handleAutoPlayToggle); // 移除自動播放事件綁定
+
+            // 設置初始的解釋文字
+            explanationDiv.innerHTML = "這是一個泡泡排序法的互動演示。<br>左側是數值的視覺化表示，右側是對應的 C 語言程式碼。<br>請使用上方的控制項逐步執行或自動播放排序過程，觀察數值變化與程式碼執行的對應關係。";
+            updateCodeHighlight([]); // 清除初始高亮
+            // 初始禁用上一步和下一步按鈕
+            prevStepBtn.disabled = true;
+            nextStepBtn.disabled = true;
+
+            // 頁面載入時自動使用預設值執行一次重設
+            handleReset();
+        }
+
+        // 當 DOM 載入完成後執行初始化函數
+        window.addEventListener('DOMContentLoaded', init);
+
+    </script>
+
+</body>
+</html>

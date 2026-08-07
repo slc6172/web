@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>咖哩飯烹飪流程</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 自訂樣式 (可選) */
+        body {
+            font-family: 'Inter', sans-serif; /* 使用 Inter 字體 */
+        }
+        svg text {
+            font-size: 14px; /* SVG 文字大小 */
+            fill: #333; /* SVG 文字顏色 */
+            font-family: 'Noto Sans TC', sans-serif; /* 針對中文內容使用 Noto Sans TC */
+        }
+        .step-container {
+            @apply flex flex-col items-center p-4 border border-gray-300 rounded-lg shadow-md bg-white m-2;
+            min-width: 150px; /* 設定最小寬度 */
+            text-align: center;
+        }
+        .arrow {
+            @apply text-3xl text-gray-500 mx-4 self-center;
+        }
+        /* 載入 Noto Sans TC 字體 */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap');
+    </style>
+</head>
+<body class="bg-gray-100 p-8 flex flex-col items-center">
+
+    <h1 class="text-3xl font-bold mb-8 text-gray-800">咖哩飯烹飪流程圖</h1>
+
+    <div class="flex flex-wrap justify-center items-start">
+
+        <div class="step-container">
+            <svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <rect x="10" y="60" width="80" height="30" rx="5" ry="5" fill="#DEB887"/>
+                <path d="M 20 50 L 70 50 L 80 40 L 75 35 Z" fill="#D3D3D3"/>
+                <rect x="75" y="35" width="5" height="10" fill="#A0522D"/>
+                <ellipse cx="30" cy="40" rx="10" ry="5" fill="#FFA500"/>
+                <ellipse cx="55" cy="45" rx="12" ry="8" fill="#F5DEB3"/>
+                <path d="M 75 45 Q 80 35 85 45 Q 80 55 75 45 Z" fill="#D8BFD8"/>
+            </svg>
+            <p class="mt-2 font-semibold">1. 準備食材</p>
+            <p class="text-sm text-gray-600">將蔬菜切塊</p>
+        </div>
+
+        <div class="arrow">&rarr;</div>
+
+        <div class="step-container">
+            <svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 10 70 Q 15 90 50 90 Q 85 90 90 70 H 10 Z" fill="#B0C4DE"/>
+                <rect x="5" y="70" width="5" height="15" rx="2" ry="2" fill="#808080"/>
+                 <ellipse cx="30" cy="75" rx="5" ry="3" fill="#FFA500"/>
+                <ellipse cx="50" cy="80" rx="6" ry="4" fill="#F5DEB3"/>
+                <path d="M 65 78 Q 68 73 71 78 Q 68 83 65 78 Z" fill="#D8BFD8"/>
+                <path d="M 40 95 Q 45 105 50 95 Q 55 105 60 95 Q 50 115 40 95 Z" fill="#FF4500" opacity="0.8"/>
+                <path d="M 45 92 Q 48 100 50 92 Q 52 100 55 92 Q 50 108 45 92 Z" fill="#FFA500" opacity="0.9"/>
+                 <line x1="70" y1="40" x2="85" y2="65" stroke="#A0522D" stroke-width="4"/>
+                 <ellipse cx="65" cy="35" rx="15" ry="8" fill="#D3D3D3"/>
+            </svg>
+            <p class="mt-2 font-semibold">2. 拌炒</p>
+            <p class="text-sm text-gray-600">炒香洋蔥、肉類與蔬菜</p>
+        </div>
+
+        <div class="arrow">&rarr;</div>
+
+        <div class="step-container">
+             <svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 10 70 Q 15 90 50 90 Q 85 90 90 70 H 10 Z" fill="#B0C4DE"/>
+                <rect x="5" y="70" width="5" height="15" rx="2" ry="2" fill="#808080"/>
+                 <path d="M 15 70 Q 50 60 85 70 V 85 H 15 Z" fill="#ADD8E6" opacity="0.7"/>
+                 <ellipse cx="30" cy="75" rx="5" ry="3" fill="#FFA500"/>
+                <ellipse cx="50" cy="80" rx="6" ry="4" fill="#F5DEB3"/>
+                <path d="M 65 78 Q 68 73 71 78 Q 68 83 65 78 Z" fill="#D8BFD8"/>
+                 <path d="M 10 68 Q 50 55 90 68 L 85 70 L 15 70 Z" fill="#A9A9A9"/>
+                <ellipse cx="50" cy="58" rx="8" ry="4" fill="#696969"/>
+                 <path d="M 45 95 Q 48 102 50 95 Q 52 102 55 95 Q 50 108 45 95 Z" fill="#FF4500" opacity="0.6"/>
+                <path d="M 48 93 Q 49 98 50 93 Q 51 98 52 93 Q 50 103 48 93 Z" fill="#FFA500" opacity="0.7"/>
+            </svg>
+            <p class="mt-2 font-semibold">3. 加水燉煮</p>
+            <p class="text-sm text-gray-600">加入適量的水，煮滾後轉小火</p>
+        </div>
+
+        <div class="arrow">&rarr;</div>
+
+        <div class="step-container">
+             <svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                 <path d="M 10 70 Q 15 90 50 90 Q 85 90 90 70 H 10 Z" fill="#B0C4DE"/>
+                <rect x="5" y="70" width="5" height="15" rx="2" ry="2" fill="#808080"/>
+                 <path d="M 15 70 Q 50 60 85 70 V 85 H 15 Z" fill="#B8860B" opacity="0.8"/>
+                 <rect x="60" y="40" width="20" height="15" rx="3" ry="3" fill="#8B4513"/>
+                <line x1="70" y1="40" x2="70" y2="55" stroke="#A0522D" stroke-width="1"/>
+                <line x1="60" y1="47.5" x2="80" y2="47.5" stroke="#A0522D" stroke-width="1"/>
+                 <line x1="40" y1="30" x2="55" y2="60" stroke="#A0522D" stroke-width="4"/>
+                 <ellipse cx="35" cy="25" rx="15" ry="10" fill="#D3D3D3" transform="rotate(-30 35 25)"/>
+                 <path d="M 48 95 Q 49 98 50 95 Q 51 98 52 95 Q 50 101 48 95 Z" fill="#FFA500" opacity="0.4"/>
+            </svg>
+            <p class="mt-2 font-semibold">4. 加入咖哩塊</p>
+            <p class="text-sm text-gray-600">熄火，放入咖哩塊攪拌溶解</p>
+        </div>
+
+         <div class="arrow">&rarr;</div>
+
+        <div class="step-container">
+            <svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="50" cy="75" rx="45" ry="20" fill="#F5F5F5"/>
+                <ellipse cx="50" cy="70" rx="40" ry="15" fill="#FFFFFF"/>
+                 <path d="M 25 70 Q 40 55 55 70 T 75 70" fill="#FFF8DC" stroke="#F5F5DC" stroke-width="1"/>
+                 <path d="M 50 70 Q 70 60 80 75 C 70 85 50 85 40 75 Q 45 70 50 70 Z" fill="#B8860B"/>
+                 <path d="M 40 50 Q 42 45 45 50 T 50 50" stroke="#A9A9A9" stroke-width="2" fill="none" stroke-dasharray="2 2">
+                    <animate attributeName="stroke-dashoffset" from="0" to="8" dur="0.5s" repeatCount="indefinite"/>
+                </path>
+                 <path d="M 55 45 Q 57 40 60 45 T 65 45" stroke="#A9A9A9" stroke-width="2" fill="none" stroke-dasharray="2 2">
+                    <animate attributeName="stroke-dashoffset" from="4" to="12" dur="0.5s" repeatCount="indefinite"/>
+                </path>
+            </svg>
+            <p class="mt-2 font-semibold">5. 完成盛盤</p>
+            <p class="text-sm text-gray-600">將煮好的咖哩淋在飯上</p>
+        </div>
+
+    </div>
+
+</body>
+</html>

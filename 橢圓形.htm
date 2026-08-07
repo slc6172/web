@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>橢圓形參數互動示範</title>
+  <style>
+    body {
+      font-family: "微軟正黑體", sans-serif;
+      text-align: center;
+    }
+    #controls {
+      margin-bottom: 20px;
+    }
+    input[type="number"] {
+      width: 60px;
+      text-align: center;
+    }
+    canvas {
+      border: 1px solid #ccc;
+    }
+    .eqn {
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+    .eqn span {
+      background-color: #f0f0f0;
+      padding: 2px 5px;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+  <h1>橢圓形標準式互動示範</h1>
+  <div class="eqn">
+    橢圓標準式：<br>
+    <span>((x - <input type="number" id="h" value="0" step="1">)²)/( <input type="number" id="a" value="150" step="1">² ) + ((y - <input type="number" id="k" value="0" step="1">)²)/( <input type="number" id="b" value="100" step="1">² ) = 1</span>
+    <br>
+    <small>請調整各數值參數，圖形會依據您的輸入更新</small>
+  </div>
+
+  <canvas id="myCanvas" width="600" height="600"></canvas>
+
+  <script>
+    // 取得 canvas 與 context
+    const canvas = document.getElementById("myCanvas");
+    const ctx = canvas.getContext("2d");
+    // 設定canvas中心點（方便將座標軸原點設置在中心）
+    const cx = canvas.width / 2;
+    const cy = canvas.height / 2;
+    
+    // 參數輸入元素
+    const inputH = document.getElementById("h");
+    const inputK = document.getElementById("k");
+    const inputA = document.getElementById("a");
+    const inputB = document.getElementById("b");
+
+    // 更新圖形
+    function updateCanvas() {
+      // 清除畫布
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // 重新畫座標軸
+      drawAxes();
+
+      // 取得使用者輸入參數
+      const h = parseFloat(inputH.value);
+      const k = parseFloat(inputK.value);
+      const a = parseFloat(inputA.value);
+      const b = parseFloat(inputB.value);
+
+      // 在 canvas 畫橢圓時，由於我們將原點移至中心
+      // 所以橢圓中心在 canvas 上的座標為 (cx + h, cy - k)
+      // 注意：canvas 的 y 軸方向與數學圖形相反，需用 cy - k 處理。
+      drawEllipse(cx + h, cy - k, a, b);
+    }
+
+    // 畫座標軸
+    function drawAxes() {
+      ctx.save();
+      ctx.strokeStyle = "#aaa";
+      ctx.lineWidth = 1;
+      
+      // 繪製 x 軸
+      ctx.beginPath();
+      ctx.moveTo(0, cy);
+      ctx.lineTo(canvas.width, cy);
+      ctx.stroke();
+      
+      // 繪製 y 軸
+      ctx.beginPath();
+      ctx.moveTo(cx, 0);
+      ctx.lineTo(cx, canvas.height);
+      ctx.stroke();
+      
+      // 畫箭頭與刻度
+      // x 軸箭頭
+      ctx.beginPath();
+      ctx.moveTo(canvas.width - 10, cy - 5);
+      ctx.lineTo(canvas.width, cy);
+      ctx.lineTo(canvas.width - 10, cy + 5);
+      ctx.stroke();
+
+      // y 軸箭頭
+      ctx.beginPath();
+      ctx.moveTo(cx - 5, 10);
+      ctx.lineTo(cx, 0);
+      ctx.lineTo(cx + 5, 10);
+      ctx.stroke();
+
+      // 簡單的刻度：每 50 像素一格
+      ctx.fillStyle = "#666";
+      ctx.font = "10px Arial";
+      for (let x = cx + 50; x < canvas.width; x += 50) {
+        ctx.beginPath();
+        ctx.moveTo(x, cy - 3);
+        ctx.lineTo(x, cy + 3);
+        ctx.stroke();
+        ctx.fillText((x - cx).toString(), x - 10, cy + 15);
+      }
+      for (let x = cx - 50; x > 0; x -= 50) {
+        ctx.beginPath();
+        ctx.moveTo(x, cy - 3);
+        ctx.lineTo(x, cy + 3);
+        ctx.stroke();
+        ctx.fillText((x - cx).toString(), x - 15, cy + 15);
+      }
+      for (let y = cy + 50; y < canvas.height; y += 50) {
+        ctx.beginPath();
+        ctx.moveTo(cx - 3, y);
+        ctx.lineTo(cx + 3, y);
+        ctx.stroke();
+        ctx.fillText((cy - y).toString(), cx + 8, y + 3);
+      }
+      for (let y = cy - 50; y > 0; y -= 50) {
+        ctx.beginPath();
+        ctx.moveTo(cx - 3, y);
+        ctx.lineTo(cx + 3, y);
+        ctx.stroke();
+        ctx.fillText((cy - y).toString(), cx + 8, y + 3);
+      }
+      
+      ctx.restore();
+    }
+
+    // 畫橢圓 (利用 canvas API 畫橢圓)
+    function drawEllipse(centerX, centerY, radiusX, radiusY) {
+      ctx.save();
+      ctx.strokeStyle = "#f00";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      // 如果瀏覽器支援 ellipse API (Chrome, Firefox, Edge 等皆支援)
+      if (typeof ctx.ellipse === 'function') {
+        ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, Math.PI * 2);
+      } else {
+        // 不支援 ellipse 時，使用 scale 方法變通
+        ctx.translate(centerX, centerY);
+        ctx.scale(radiusX, radiusY);
+        ctx.arc(0, 0, 1, 0, Math.PI * 2);
+      }
+      ctx.closePath();
+      ctx.stroke();
+
+      // 標註橢圓中心點
+      ctx.fillStyle = "#00f";
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, 3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // 當使用者變更任一參數時，更新圖形
+    inputH.addEventListener("input", updateCanvas);
+    inputK.addEventListener("input", updateCanvas);
+    inputA.addEventListener("input", updateCanvas);
+    inputB.addEventListener("input", updateCanvas);
+
+    // 初始繪製
+    updateCanvas();
+  </script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>六大生成式 AI 主題簡報</title>
+    <style>
+        /* 基本頁面樣式，置中 SVG */
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f4f4f9; /* 淡雅背景色 */
+        }
+        /* SVG 基礎樣式 */
+        svg {
+            border: 1px solid #d1d1d6; /* 淺灰色邊框 */
+            background-color: white; /* 白色背景 */
+            /* 指定常用繁體中文字型 */
+            font-family: 'Microsoft JhengHei', 'Heiti TC', 'PingFang TC', sans-serif;
+        }
+        /* 大標題文字樣式 */
+        .main-title {
+            font-size: 44px; /* 主標題字體大小 */
+            font-weight: bold; /* 粗體 */
+            text-anchor: middle; /* 文字置中對齊 */
+            fill: #333; /* 深灰色文字 */
+        }
+        /* 區塊標題樣式 */
+        .section-title {
+            font-size: 24px; /* 區塊標題字體大小 */
+            font-weight: bold;
+            text-anchor: middle;
+            fill: #1a237e; /* 深藍色標題 */
+        }
+        /* 核心概念文字樣式 */
+        .concept-text {
+            font-size: 18px; /* 核心概念文字大小 */
+            text-anchor: middle;
+            fill: #555; /* 稍淺灰色文字 */
+        }
+        /* 範例文字樣式 */
+        .example-text {
+            font-size: 16px; /* 範例文字大小 */
+            text-anchor: middle;
+            fill: #777; /* 更淺灰色文字 */
+        }
+        /* 區塊背景矩形樣式 */
+        .section-box {
+            rx: 10; /* 圓角 X 半徑 */
+            ry: 10; /* 圓角 Y 半徑 */
+            stroke-width: 1.5; /* 邊框寬度 */
+        }
+        /* 圖示區塊的通用樣式 */
+        .icon-area {
+            /* 可在此添加通用樣式，例如 fill, stroke */
+        }
+    </style>
+</head>
+<body>
+    <svg width="1280" height="768" viewBox="0 0 1280 768">
+
+        <text x="640" y="60" class="main-title">探索生成式 AI 的世界</text>
+
+        <defs>
+            <def name="gridStartX" value="40"/>
+            <def name="gridStartY" value="100"/>
+            <def name="cellWidth" value="380"/>
+            <def name="cellHeight" value="290"/>
+            <def name="hSpacing" value="30"/>
+            <def name="vSpacing" value="30"/>
+        </defs>
+
+        <rect class="section-box" x="40" y="100" width="380" height="290" fill="#e3f2fd" stroke="#90caf9"/>
+        <text x="230" y="145" class="section-title">1. AI 推理模型</text>
+        <g class="icon-area" transform="translate(180, 165) scale(0.8)">
+            <path d="M60 10 C 40 10, 20 30, 20 50 C 20 70, 30 80, 10 90 C 30 100, 40 110, 60 110 C 80 110, 90 100, 110 90 C 90 80, 100 70, 100 50 C 100 30, 80 10, 60 10 Z M 60 20 C 75 20, 90 35, 90 50 C 90 65, 75 80, 60 80 C 45 80, 30 65, 30 50 C 30 35, 45 20, 60 20 Z" fill="#bbdefb" stroke="#64b5f6" stroke-width="2"/>
+            <path d="M 60 80 V 105" stroke="#64b5f6" stroke-width="3"/>
+            <path d="M 45 85 H 75" stroke="#64b5f6" stroke-width="3"/>
+        </g>
+        <text x="230" y="295" class="concept-text">核心：思考、規劃、解決複雜問題</text>
+        <text x="230" y="330" class="example-text">例如：OpenAI o1 模型</text>
+        <text x="230" y="355" class="example-text">(能進行更深入的邏輯推理)</text>
+
+        <rect class="section-box" x="450" y="100" width="380" height="290" fill="#fff3e0" stroke="#ffcc80"/>
+        <text x="640" y="145" class="section-title">2. Deep Research</text>
+        <g class="icon-area" transform="translate(590, 170) scale(0.8)">
+            <circle cx="45" cy="45" r="30" fill="none" stroke="#ffb74d" stroke-width="5"/>
+            <line x1="65" y1="65" x2="90" y2="90" stroke="#ffb74d" stroke-width="5"/>
+            <rect x="20" y="20" width="50" height="50" fill="#ffe0b2" opacity="0.7"/>
+             <path d="M 100 10 H 150 V 100 H 100 Z M 105 20 H 145 M 105 30 H 145 M 105 40 H 130" stroke="#ffcc80" stroke-width="2" fill="none"/>
+        </g>
+        <text x="640" y="295" class="concept-text">核心：深入分析資訊、產生洞見</text>
+        <text x="640" y="330" class="example-text">例如：Google Gemini Deep Research</text>
+        <text x="640" y="355" class="example-text">(幫你做深度研究報告)</text>
+
+        <rect class="section-box" x="860" y="100" width="380" height="290" fill="#ede7f6" stroke="#b39ddb"/>
+        <text x="1050" y="145" class="section-title">3. Canva / Artifact</text>
+        <g class="icon-area" transform="translate(1000, 170) scale(0.8)">
+             <rect x="10" y="10" width="100" height="120" rx="5" ry="5" fill="#d1c4e9" stroke="#9575cd" stroke-width="2"/>
+             <line x1="20" y1="30" x2="90" y2="30" stroke="#fff" stroke-width="3"/>
+             <line x1="20" y1="45" x2="90" y2="45" stroke="#fff" stroke-width="3"/>
+             <rect x="25" y="60" width="30" height="20" fill="#b39ddb"/>
+             <rect x="65" y="60" width="30" height="40" fill="#b39ddb"/>
+             <rect x="25" y="90" width="60" height="20" fill="#b39ddb"/>
+         </g>
+        <text x="1050" y="295" class="concept-text">核心：在對話中建立、編輯內容</text>
+        <text x="1050" y="330" class="example-text">例如：Gemini Canva / Claude Artifact</text>
+        <text x="1050" y="355" class="example-text">(邊聊邊產生文件、程式碼)</text>
+
+        <rect class="section-box" x="40" y="420" width="380" height="290" fill="#fce4ec" stroke="#f8bbd0"/>
+        <text x="230" y="465" class="section-title">4. AI Stream 視覺</text>
+        <g class="icon-area" transform="translate(180, 490) scale(0.8)">
+            <path d="M 10 50 Q 60 10 110 50 Q 60 90 10 50 Z" fill="#f8bbd0" stroke="#f06292" stroke-width="2"/>
+            <circle cx="60" cy="50" r="20" fill="#fff"/>
+            <circle cx="60" cy="50" r="10" fill="#f06292"/>
+            <path d="M 120 30 L 140 50 L 120 70" stroke="#f06292" stroke-width="3" fill="none"/>
+             <path d="M 130 30 L 150 50 L 130 70" stroke="#f06292" stroke-width="3" fill="none" opacity="0.6"/>
+        </g>
+        <text x="230" y="635" class="concept-text">核心：即時理解和回應視覺資訊</text>
+        <text x="230" y="670" class="example-text">例如：Gemini 2.0 Flash Stream Realtime</text>
+        <text x="230" y="695" class="example-text">(即時看懂影片或鏡頭畫面)</text>
+
+        <rect class="section-box" x="450" y="420" width="380" height="290" fill="#fffde7" stroke="#fff59d"/>
+        <text x="640" y="465" class="section-title">5. 用文字修改圖片</text>
+        <g class="icon-area" transform="translate(590, 490) scale(0.8)">
+            <rect x="10" y="10" width="100" height="80" fill="#fff9c4" stroke="#ffee58" stroke-width="2"/>
+            <path d="M 20 70 Q 40 40 60 70 T 100 70" fill="#f0f4c3" stroke="#e6ee9c" stroke-width="1"/>
+            <circle cx="80" cy="30" r="10" fill="yellow"/>
+            <path d="M 80 70 L 110 100 L 120 90 Z" fill="#fff59d" stroke="#ffee58" stroke-width="1.5"/>
+            <ellipse cx="115" cy="95" rx="8" ry="4" transform="rotate(-45 115 95)" fill="#ffee58"/>
+        </g>
+        <text x="640" y="635" class="concept-text">核心：透過文字指令編輯圖像</text>
+        <text x="640" y="670" class="example-text">例如：Gemini 2.0 Flash (Image Gen)</text>
+        <text x="640" y="695" class="example-text">(「幫圖片裡的天空加上彩虹」)</text>
+
+        <rect class="section-box" x="860" y="420" width="380" height="290" fill="#e8eaf6" stroke="#c5cae9"/>
+        <text x="1050" y="465" class="section-title">6. AI 模型語音對話</text>
+        <g class="icon-area" transform="translate(1000, 490) scale(0.8)">
+             <rect x="40" y="10" width="40" height="60" rx="20" ry="20" fill="#c5cae9" stroke="#7986cb" stroke-width="2"/>
+             <rect x="50" y="70" width="20" height="20" fill="#c5cae9" stroke="#7986cb" stroke-width="2"/>
+             <line x1="60" y1="90" x2="60" y2="100" stroke="#7986cb" stroke-width="3"/>
+             <line x1="45" y1="100" x2="75" y2="100" stroke="#7986cb" stroke-width="3"/>
+             <path d="M 90 40 Q 100 50 90 60" stroke="#7986cb" stroke-width="2" fill="none"/>
+             <path d="M 100 35 Q 115 50 100 65" stroke="#7986cb" stroke-width="2" fill="none"/>
+        </g>
+        <text x="1050" y="635" class="concept-text">核心：更自然流暢的語音互動</text>
+        <text x="1050" y="670" class="example-text">例如：OpenAI 進階語音</text>
+        <text x="1050" y="695" class="example-text">(像和真人聊天一樣)</text>
+
+    </svg>
+</body>
+</html>

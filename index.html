@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>網頁清單</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 5px;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+    <script>
+        function getHTMLLinks() {
+            //使用伺服器端語言才可動態讀取檔案列表
+            //以下為模擬資料，在伺服器環境中需要動態生成
+            const htmlFiles = [
+                "AI研習六大主題.htm",
+                "DNA3.htm",
+                "html5.htm",
+                "乙醇2.htm",
+                "原生圖像.htm",
+                "咖哩飯2.htm",
+                "太陽系gemini25.htm",
+                "文藝復興claude.htm",
+                "文藝復興gemini25.htm",
+                "斜角圖建模.htm",
+                "斜角圖建模2.htm",
+                "月亮同面2.htm",
+                "橢圓形.htm",
+                "泡泡排序法.htm",
+                "鳥.htm"
+                //在此添加更多 .htm 檔案
+            ];
+
+            const fileList = document.getElementById("fileList");
+
+            htmlFiles.forEach(file => {
+                const listItem = document.createElement("li");
+                const link = document.createElement("a");
+                link.href = file;
+                link.textContent = file;
+                listItem.appendChild(link);
+                fileList.appendChild(listItem);
+            });
+        }
+    </script>
+</head>
+<body onload="getHTMLLinks()">
+    <ul id="fileList">
+        <!-- 連結會在此動態生成 -->
+    </ul>
+</body>
+</html>

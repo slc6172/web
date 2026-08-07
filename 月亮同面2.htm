@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>月球同步自轉演示</title>
+    <style>
+        body {
+            font-family: 'Microsoft JhengHei', '微軟正黑體', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        canvas {
+            border: 1px solid #333;
+            background-color: #000020; /* 深藍色太空背景 */
+            cursor: grab; /* 預設游標 */
+        }
+        canvas:active {
+            cursor: grabbing; /* 拖曳時游標 */
+        }
+        p {
+            max-width: 600px;
+            text-align: center;
+            margin-top: 15px;
+            line-height: 1.6;
+        }
+        button {
+            margin-top: 15px;
+            padding: 8px 15px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>月球為何永遠同一面朝向地球？ (同步自轉)</h1>
+    
+    <canvas id="moonCanvas" width="600" height="400"></canvas>
+
+    <p>
+        這張圖顯示了地球（藍色）和月球（黃色）的互動。月球圍繞地球公轉，同時也在自轉。
+        <strong>觀察：</strong>在預設狀態下，月球上亮黃色的一面（為了演示，我們假設這是面向地球的一面）始終朝向地球。這是因為月球的自轉週期（轉一圈的時間）恰好等於它的公轉週期（繞地球一圈的時間），這種現象稱為「同步自轉」或「潮汐鎖定」。
+    </p>
+    <p>
+        <strong>試試看：</strong>用滑鼠按住月球並拖曳，你可以「手動」改變月球的自轉角度。放開滑鼠後，看看如果月球自轉速度不同步，我們會看到月球的不同面貌。
+    </p>
+    
+    <button id="resetButton">重設月球旋轉</button>
+    <button id="toggleAnimationButton">暫停/繼續 動畫</button>
+
+    <script>
+        const canvas = document.getElementById('moonCanvas');
+        const ctx = canvas.getContext('2d');
+        const resetButton = document.getElementById('resetButton');
+        const toggleAnimationButton = document.getElementById('toggleAnimationButton');
+
+        // 基本設定
+        const canvasWidth = canvas.width;
+        const canvasHeight = canvas.height;
+        const earthX = canvasWidth / 2;
+        const earthY = canvasHeight / 2;
+        const earthRadius = 30;
+        const moonRadius = 15;
+        const orbitRadius = 150; // 月球公轉軌道半徑
+
+        // 顏色
+        const earthColor = '#4a90e2'; // 地球藍色
+        const moonDarkColor = '#ffd700'; // 月球亮黃色 (現在是背面)
+        const moonBrightColor = '#b8860b';   // 月球暗黃色 (現在是正面)
+        const orbitColor = '#cccccc'; // 軌道顏色
+        const textColor = '#ffffff'; // 文字顏色
+
+        // 動畫與互動變數
+        let orbitalAngle = 0; // 月球公轉角度 (弧度)
+        let rotationAngleOffset = 0; // 手動拖曳造成的自轉角度偏移量
+        let isDragging = false;
+        let dragStartAngle = 0; // 相對於月球中心的滑鼠起始角度
+        let initialRotationOffset = 0; // 開始拖曳時的偏移量
+        let isAnimating = true; // 動畫是否進行中
+
+        // --- 繪圖函數 ---
+
+        function drawEarth() {
+            ctx.fillStyle = earthColor;
+            ctx.beginPath();
+            ctx.arc(earthX, earthY, earthRadius, 0, Math.PI * 2);
+            ctx.fill();
+            // 添加文字標籤
+            ctx.fillStyle = textColor;
+            ctx.font = '14px Microsoft JhengHei';
+            ctx.textAlign = 'center';
+            ctx.fillText('地球', earthX, earthY + earthRadius + 15);
+        }
+
+        function drawOrbit() {
+            ctx.strokeStyle = orbitColor;
+            ctx.lineWidth = 0.5;
+            ctx.beginPath();
+            ctx.arc(earthX, earthY, orbitRadius, 0, Math.PI * 2);
+            ctx.stroke();
+        }
+
+        function drawMoon(currentOrbitalAngle, currentRotationOffset) {
+            // 1. 計算月球中心位置
+            const moonX = earthX + orbitRadius * Math.cos(currentOrbitalAngle);
+            const moonY = earthY + orbitRadius * Math.sin(currentOrbitalAngle);
+
+            // 2. 計算月球的實際自轉角度
+            // 同步自轉：自轉角度 = 公轉角度
+            // 加上手動偏移量
+            const actualRotationAngle = currentOrbitalAngle + currentRotationOffset;
+
+            // 3. 繪製月球 (先暗色底，再亮色半圓)
+            ctx.save(); // 保存當前繪圖狀態
+            ctx.translate(moonX, moonY); // 將坐標原點移到月球中心
+            ctx.rotate(actualRotationAngle); // 旋轉畫布以模擬月球自轉
+
+            // 繪製暗黃色底 (現在是背面)
+            ctx.fillStyle = moonDarkColor;
+            ctx.beginPath();
+            ctx.arc(0, 0, moonRadius, 0, Math.PI * 2);
+            ctx.fill();
+
+            // 繪製亮黃色半圓 (現在是面向地球的一面)
+            ctx.fillStyle = moonBrightColor;
+            ctx.beginPath();
+            ctx.arc(0, 0, moonRadius, -Math.PI / 2, Math.PI / 2);
+            ctx.closePath(); // 連接到圓心形成半圓
+            ctx.fill();
+
+             // 添加一個小標記在亮面，更清楚顯示旋轉
+            ctx.fillStyle = 'red';
+            ctx.beginPath();
+            ctx.arc(moonRadius * 0.6, 0, 2, 0, Math.PI * 2); // 在半徑的0.6處畫個小紅點
+            ctx.fill();
+
+            ctx.restore(); // 恢復之前的繪圖狀態 (坐標系和旋轉)
+
+            // 添加文字標籤
+            ctx.fillStyle = textColor;
+            ctx.font = '12px Microsoft JhengHei';
+            ctx.textAlign = 'center';
+             // 稍微調整標籤位置，避免擋住月球本身
+            const labelOffsetX = 25 * Math.cos(currentOrbitalAngle + Math.PI / 8); // 稍微偏離一點
+            const labelOffsetY = 25 * Math.sin(currentOrbitalAngle + Math.PI / 8) + 5; // 稍微偏離並向下
+            ctx.fillText('月球', moonX + labelOffsetX, moonY + labelOffsetY);
+
+             // 返回月球位置，供事件監聽器使用
+             return { x: moonX, y: moonY };
+        }
+
+        // --- 動畫循環 ---
+        function animate() {
+            if (isAnimating) {
+                // 更新公轉角度
+                orbitalAngle += 0.005; // 控制公轉速度
+                if (orbitalAngle > Math.PI * 2) {
+                    orbitalAngle -= Math.PI * 2;
+                }
+            }
+
+            // 清除畫布
+            ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+            // 繪製各元素
+            drawOrbit();
+            drawEarth();
+            const moonPos = drawMoon(orbitalAngle, rotationAngleOffset); // 傳遞當前的公轉角度和旋轉偏移
+
+            // 儲存當前月球位置，用於拖曳檢測
+            canvas.moonPosition = moonPos; 
+
+            requestAnimationFrame(animate); // 請求下一幀
+        }
+
+        // --- 事件監聽 ---
+
+        // 計算滑鼠相對於畫布的位置
+        function getMousePos(canvas, evt) {
+            const rect = canvas.getBoundingClientRect();
+            return {
+                x: evt.clientX - rect.left,
+                y: evt.clientY - rect.top
+            };
+        }
+
+        // 滑鼠按下
+        canvas.addEventListener('mousedown', (e) => {
+            const mousePos = getMousePos(canvas, e);
+            const moonPos = canvas.moonPosition;
+
+            if (!moonPos) return; // 如果月球還沒繪製出來
+
+            // 計算滑鼠點擊位置到月球中心的距離
+            const dx = mousePos.x - moonPos.x;
+            const dy = mousePos.y - moonPos.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            // 如果點擊在月球範圍內 (+一點緩衝)
+            if (distance < moonRadius * 1.5) {
+                isDragging = true;
+                canvas.style.cursor = 'grabbing'; // 改變游標樣式
+                // isAnimating = false; // 按下時暫停動畫，讓拖曳更可控 (可選)
+
+                // 計算滑鼠按下時，相對於月球中心點的角度
+                dragStartAngle = Math.atan2(dy, dx);
+                // 記錄開始拖曳時的旋轉偏移量
+                initialRotationOffset = rotationAngleOffset;
+            }
+        });
+
+        // 滑鼠移動
+        canvas.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+
+            const mousePos = getMousePos(canvas, e);
+            const moonPos = canvas.moonPosition;
+
+            if (!moonPos) return;
+
+             // 計算當前滑鼠位置相對於月球中心點的角度
+            const currentDragAngle = Math.atan2(mousePos.y - moonPos.y, mousePos.x - moonPos.x);
+
+            // 計算角度變化量
+            let deltaAngle = currentDragAngle - dragStartAngle;
+
+            // 處理角度跳躍 (從 PI 到 -PI 或反過來)
+            if (deltaAngle > Math.PI) {
+                deltaAngle -= Math.PI * 2;
+            } else if (deltaAngle < -Math.PI) {
+                deltaAngle += Math.PI * 2;
+            }
+
+            // 更新旋轉偏移量 = 初始偏移量 + 拖曳造成的角度變化
+            rotationAngleOffset = initialRotationOffset + deltaAngle;
+        });
+
+        // 滑鼠放開
+        canvas.addEventListener('mouseup', () => {
+            if (isDragging) {
+                isDragging = false;
+                canvas.style.cursor = 'grab'; // 恢復游標樣式
+                // isAnimating = true; // 放開滑鼠後恢復動畫 (可選)
+            }
+        });
+
+        // 滑鼠移出畫布
+        canvas.addEventListener('mouseleave', () => {
+            if (isDragging) {
+                isDragging = false;
+                canvas.style.cursor = 'grab';
+                // isAnimating = true; // 移出也恢復動畫 (可選)
+            }
+        });
+
+        // 重設按鈕
+        resetButton.addEventListener('click', () => {
+            rotationAngleOffset = 0; // 將手動偏移量歸零
+            // orbitalAngle = 0; // 可選：是否也重設公轉位置
+            if (!isAnimating) { // 如果是暫停狀態，手動重繪一次
+                 // 清除畫布
+                ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+                // 繪製各元素
+                drawOrbit();
+                drawEarth();
+               canvas.moonPosition = drawMoon(orbitalAngle, rotationAngleOffset);
+            }
+        });
+
+       // 暫停/繼續按鈕
+        toggleAnimationButton.addEventListener('click', () => {
+            isAnimating = !isAnimating;
+            toggleAnimationButton.textContent = isAnimating ? '暫停 動畫' : '繼續 動畫';
+        });
+
+
+        // --- 啟動動畫 ---
+        animate();
+
+    </script>
+
+</body>
+</html>

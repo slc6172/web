@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>梁實秋《鳥》段落結構心智圖</title>
+<style>
+  /* 基本 SVG 樣式 */
+  svg {
+    font-family: 'Microsoft JhengHei', '微軟正黑體', sans-serif; /* 確保繁體中文顯示 */
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    display: block; /* 讓 SVG 區塊顯示 */
+    margin: 20px auto; /* 上下留白並置中 */
+    max-width: 100%; /* RWD: 最大寬度為 100% */
+    height: auto; /* RWD: 高度自動調整 */
+  }
+  /* 中心主題樣式 */
+  .center-node rect {
+    fill: #4a90e2; /* 藍色 */
+    stroke: #3367a0;
+    stroke-width: 2;
+  }
+  .center-node text {
+    fill: white;
+    font-size: 18px;
+    font-weight: bold;
+    text-anchor: middle;
+    dominant-baseline: central;
+  }
+  /* 主要分支樣式 */
+  .main-node rect {
+    fill: #f5a623; /* 橘色 */
+    stroke: #c5851c;
+    stroke-width: 1.5;
+  }
+  .main-node text {
+    fill: #333;
+    font-size: 16px;
+    font-weight: bold;
+    text-anchor: middle;
+    dominant-baseline: central;
+  }
+   /* 對比分支樣式 */
+  .contrast-node rect {
+    fill: #d0021b; /* 紅色 */
+    stroke: #a00115;
+    stroke-width: 1.5;
+  }
+  .contrast-node text {
+    fill: white;
+    font-size: 16px;
+    font-weight: bold;
+    text-anchor: middle;
+    dominant-baseline: central;
+  }
+  /* 子節點樣式 */
+  .sub-node rect {
+    fill: #7ed321; /* 綠色 */
+    stroke: #5a9a16;
+    stroke-width: 1;
+  }
+  .sub-node text {
+    fill: #333;
+    font-size: 14px;
+    text-anchor: middle;
+    dominant-baseline: central;
+  }
+   /* 對比子節點樣式 */
+  .contrast-sub-node rect {
+    fill: #bd10e0; /* 紫色 */
+    stroke: #8e0ca8;
+    stroke-width: 1;
+  }
+  .contrast-sub-node text {
+    fill: white;
+    font-size: 14px;
+    text-anchor: middle;
+    dominant-baseline: central;
+  }
+  /* 連接線樣式 */
+  .connector {
+    stroke: #555;
+    stroke-width: 2;
+    fill: none;
+  }
+  .sub-connector {
+    stroke: #777;
+    stroke-width: 1.5;
+    fill: none;
+  }
+  /* 頁面標題和說明文字樣式 */
+  h1, h2, p, ol, ul {
+    font-family: 'Microsoft JhengHei', '微軟正黑體', sans-serif;
+    color: #333;
+    margin-left: 20px; /* 左邊留白 */
+    margin-right: 20px; /* 右邊留白 */
+  }
+  h1 {
+    text-align: center; /* 標題置中 */
+    color: #4a90e2; /* 標題顏色同中心節點 */
+    margin-top: 20px;
+  }
+  h2 {
+    color: #3367a0; /* 副標題顏色 */
+    border-bottom: 1px solid #ccc; /* 底線 */
+    padding-bottom: 5px;
+    margin-top: 30px;
+  }
+  li {
+    margin-bottom: 10px; /* 列表項間距 */
+  }
+  b {
+      color: #d0021b; /* 強調文字用對比色 */
+  }
+</style>
+</head>
+<body>
+
+<h1>梁實秋《鳥》段落結構心智圖</h1>
+
+<svg width="1000" height="650" viewBox="0 0 1000 650" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+
+  <g class="center-node">
+    <rect x="400" y="50" width="200" height="60" rx="10" ry="10"/>
+    <text x="500" y="80">梁實秋《鳥》</text>
+  </g>
+
+  <line class="connector" x1="500" y1="110" x2="275" y2="200"/> <line class="connector" x1="500" y1="110" x2="775" y2="200"/> <line class="connector" x1="500" y1="110" x2="500" y2="500"/> <g class="main-node">
+    <rect x="150" y="200" width="250" height="50" rx="8" ry="8"/>
+    <text x="275" y="225">自然的鳥：聲音與形態之美</text>
+  </g>
+
+  <line class="sub-connector" x1="275" y1="250" x2="100" y2="320"/>
+  <g class="sub-node">
+    <rect x="30" y="320" width="140" height="40" rx="5" ry="5"/>
+    <text x="100" y="340">聲音：清脆、嘹亮</text>
+  </g>
+
+  <line class="sub-connector" x1="275" y1="250" x2="275" y2="320"/>
+   <g class="sub-node">
+    <rect x="205" y="320" width="140" height="40" rx="5" ry="5"/>
+    <text x="275" y="340">聲音：婉轉、悅耳</text>
+  </g>
+
+  <line class="sub-connector" x1="275" y1="250" x2="450" y2="320"/>
+  <g class="sub-node">
+    <rect x="380" y="320" width="140" height="40" rx="5" ry="5"/>
+    <text x="450" y="340">形態：俊俏、豐滿</text> </g>
+
+  <g class="contrast-node">
+    <rect x="650" y="200" width="250" height="50" rx="8" ry="8"/>
+    <text x="775" y="225">籠中鳥：失去自由的悲哀</text>
+  </g>
+
+  <line class="sub-connector" x1="775" y1="250" x2="625" y2="320"/>
+  <g class="contrast-sub-node">
+    <rect x="555" y="320" width="140" height="40" rx="5" ry="5"/> <text x="625" y="340">環境：樊籠、侷促</text>
+  </g>
+
+  <line class="sub-connector" x1="775" y1="250" x2="775" y2="320"/>
+  <g class="contrast-sub-node">
+    <rect x="705" y="320" width="140" height="40" rx="5" ry="5"/>
+    <text x="775" y="340">形態：憔悴、呆滯</text>
+  </g>
+
+  <line class="sub-connector" x1="775" y1="250" x2="925" y2="320"/>
+  <g class="contrast-sub-node">
+    <rect x="855" y="320" width="140" height="40" rx="5" ry="5"/>
+    <text x="925" y="340">聲音：受迫、哀音</text>
+  </g>
+
+  <g class="main-node">
+    <rect x="375" y="500" width="250" height="50" rx="8" ry="8"/>
+    <text x="500" y="525">作者觀點：愛鳥應順其自然</text>
+  </g>
+
+  <line class="sub-connector" x1="500" y1="550" x2="400" y2="600"/>
+  <g class="sub-node">
+    <rect x="330" y="600" width="140" height="40" rx="5" ry="5"/>
+    <text x="400" y="620">欣賞自由的生命</text>
+  </g>
+
+  <line class="sub-connector" x1="500" y1="550" x2="600" y2="600"/>
+  <g class="sub-node">
+    <rect x="530" y="600" width="140" height="40" rx="5" ry="5"/>
+    <text x="600" y="620">反對囚禁與束縛</text>
+  </g>
+
+</svg>
+
+<h2>心智圖說明：</h2>
+<ul>
+  <li><b>中心主題：</b>梁實秋《鳥》一文。</li>
+  <li><b>主要分支一（橘色）：</b>描述作者觀察到的自然界中鳥的樣貌，重點在於牠們聲音的美妙（清脆、婉轉）與形態的健美（俊俏）。這部分通常是文章的開頭，營造美好的意象。</li>
+  <li><b>主要分支二（紅色）：</b>與分支一形成強烈<b>對比</b>，描述被關在籠中的鳥。牠們失去了自由的環境（樊籠），外觀變得憔悴，連鳴叫聲都像是被迫發出的哀音。這突顯了囚禁對生命的戕害。</li>
+  <li><b>主要分支三（橘色）：</b>總結作者的核心觀點。真正的愛鳥，是欣賞牠們在自然中自由飛翔、歌唱的狀態，而不是將牠們關起來滿足人的私慾。強調對自由與自然的尊重。</li>
+  <li><b>子節點（綠色/紫色）：</b>進一步說明各主要分支的具體內容和例證，例如聲音的特質、形態的表現、環境的差異等。紫色節點用於標示與「籠中鳥」相關的負面描述。</li>
+</ul>
+<p>
+老師您可以將這段 HTML 程式碼儲存為一個 <code>.html</code> 檔案，然後用瀏覽器打開，就可以看到這個 SVG 心智圖了。您可以搭配這張圖，引導學生思考：
+</p>
+<ol>
+  <li>作者如何描寫自然中的鳥和籠中的鳥？用了哪些形容詞？</li>
+  <li>這兩種鳥的描寫形成了什麼樣的對比效果？</li>
+  <li>作者透過這種對比，想表達什麼樣的情感或看法？</li>
+  <li>文章的段落是如何安排這些內容的？（例如：先寫自然美，再寫籠中悲，最後點明主旨）</li>
+</ol>
+<p>
+希望這個 SVG 心智圖能幫助您的學生更清晰地理解梁實秋《鳥》的段落結構和文章主旨！
+</p>
+
+</body>
+</html>
