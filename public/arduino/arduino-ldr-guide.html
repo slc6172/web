@@ -1,0 +1,1090 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>光敏電阻小夜燈:分壓、門檻與遲滯</title>
+<style>
+  :root {
+    --ivory:#FAF9F5; --white:#FFFFFF; --slate:#141413;
+    --clay:#D97757; --clay-d:#B85C3E; --oat:#E3DACC; --olive:#788C5D; --rust:#B04A3F;
+    --gray-100:#F0EEE6; --gray-300:#D1CFC5; --gray-500:#87867F; --gray-700:#3D3D3A;
+    --serif: ui-serif, Georgia, "Times New Roman", "Noto Serif TC", "Songti TC", "PMingLiU", serif;
+    --sans:  system-ui, -apple-system, "Segoe UI", Roboto, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", Helvetica, Arial, sans-serif;
+    --mono:  ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
+    --border: 1.5px solid var(--gray-300);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  [hidden] { display:none !important; }
+  body { margin:0; padding:56px 24px 120px; background:var(--ivory); color:var(--slate);
+         font-family:var(--sans); font-size:15px; line-height:1.65; -webkit-font-smoothing:antialiased; }
+  .page { max-width:1100px; margin:0 auto; }
+  .page > header { margin-bottom:36px; }
+  .layout { display:grid; grid-template-columns:190px minmax(0,1fr); gap:48px; }
+  .layout > * { min-width:0; }
+  main > section { margin-bottom:56px; scroll-margin-top:24px; }
+
+  .eyebrow { font:12px var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--gray-500);
+             display:flex; align-items:center; gap:12px; margin-bottom:18px; }
+  .eyebrow::before { content:""; width:24px; height:1.5px; background:var(--clay); }
+  h1 { font:500 clamp(30px,4.6vw,42px)/1.18 var(--serif); letter-spacing:-.012em; margin:0 0 12px; }
+  h2 { font:500 25px/1.28 var(--serif); letter-spacing:-.01em; margin:0 0 6px; }
+  h3 { font:500 18px/1.35 var(--serif); margin:0 0 6px; }
+  .sub { color:var(--gray-700); max-width:680px; margin:0 0 4px; }
+  hr.rule { border:0; border-top:1px solid var(--gray-300); margin:10px 0 22px; }
+  p { margin:0 0 12px; }
+  code { font:12.5px var(--mono); background:var(--gray-100); padding:1px 5px; border-radius:4px; }
+  .slot { background:rgba(217,119,87,.14); color:var(--clay-d); border-radius:4px; padding:0 3px; }
+  pre .slot { background:rgba(217,119,87,.22); color:#F2B49E; }
+
+  .panel { background:var(--white); border:var(--border); border-radius:12px; padding:20px 22px; }
+  .tldr { border:var(--border); border-left:3px solid var(--clay); border-radius:10px; background:#fff; padding:16px 18px; margin-top:22px; max-width:820px; }
+  .tldr b { font:600 11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--clay-d); margin-right:6px; }
+
+  /* toc */
+  nav.toc { position:sticky; top:32px; align-self:start; font-size:13px; }
+  nav.toc .label { font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--gray-500); margin-bottom:8px; }
+  nav.toc a { display:block; padding:5px 0; color:var(--gray-700); text-decoration:none; }
+  nav.toc a:hover { color:var(--clay); }
+
+  /* buttons */
+  button { font:12px var(--mono); cursor:pointer; border-radius:999px; padding:9px 16px; transition:background .14s ease, transform .08s ease; }
+  button.primary { background:var(--slate); color:var(--ivory); border:1.5px solid var(--slate); }
+  button.primary:hover:not(:disabled) { background:var(--gray-700); }
+  button.primary:disabled { background:var(--gray-300); border-color:var(--gray-300); cursor:not-allowed; }
+  button.primary.copied { background:var(--olive); border-color:var(--olive); }
+  button.ghost { background:transparent; color:var(--gray-700); border:var(--border); }
+  button.ghost:hover { border-color:var(--gray-500); }
+  button:focus-visible, a:focus-visible, summary:focus-visible, input:focus-visible { outline:2px solid var(--clay); outline-offset:2px; }
+
+  /* tables (grid style) */
+  .table-wrap { overflow-x:auto; border:var(--border); border-radius:12px; background:#fff; }
+  .gt { min-width:560px; }
+  .gt .row { display:grid; gap:0; }
+  .gt .cell { padding:11px 14px; border-top:1px solid var(--gray-300); font-size:13.5px; }
+  .gt .row:first-child .cell { border-top:0; }
+  .gt .cell.head { font:11px var(--sans); text-transform:uppercase; letter-spacing:.06em; color:var(--gray-500); background:var(--gray-100); }
+  .gt .cell.term { font:600 12.5px var(--mono); }
+  .gt.g3 .row { grid-template-columns:150px minmax(0,1fr) minmax(0,1fr); }
+  .gt.g2 .row { grid-template-columns:140px minmax(0,1fr); }
+  .gt.g3b .row { grid-template-columns:170px minmax(0,1.2fr) minmax(0,1fr); }
+
+  /* code blocks */
+  .cmd { position:relative; background:var(--slate); border-radius:12px; margin:10px 0 12px; }
+  .cmd pre { margin:0; padding:16px 78px 16px 18px; font:12.5px/1.7 var(--mono); color:var(--ivory); overflow-x:auto; white-space:pre; }
+  .cmd .cm { color:var(--gray-500); }
+  .cmd button { position:absolute; top:9px; right:9px; padding:5px 11px; font-size:11px; color:var(--ivory);
+                background:rgba(250,249,245,.08); border:1px solid rgba(250,249,245,.28); }
+  .cmd button:hover { background:rgba(250,249,245,.18); }
+  .cmd button.copied { background:var(--olive); border-color:var(--olive); color:#fff; }
+  .cmd .cap { font:11px var(--mono); letter-spacing:.06em; color:var(--gray-500); padding:10px 18px 0; text-transform:uppercase; }
+  .cmd .cap + pre { padding-top:6px; }
+
+  /* diagram */
+  .canvas { background:#fff; border:var(--border); border-radius:12px; padding:14px; overflow-x:auto; }
+  .canvas svg { display:block; width:100%; height:auto; min-width:640px; }
+  .legend { list-style:none; margin:16px 0 0; padding:0; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 24px; }
+  .legend li { display:grid; grid-template-columns:26px minmax(0,1fr); gap:8px; font-size:13.5px; color:var(--gray-700); }
+  .legend .n { width:22px; height:22px; border-radius:50%; background:var(--clay); color:#fff; font:600 12px/22px var(--mono); text-align:center; }
+  .legend .n.k { background:var(--slate); }
+  .role { font:600 10.5px var(--mono); padding:1px 7px; border-radius:999px; margin-left:6px; white-space:nowrap; }
+  .role.c { background:rgba(217,119,87,.14); color:var(--clay-d); border:1px solid rgba(217,119,87,.45); }
+  .role.o { background:var(--oat); color:var(--slate); border:1px solid #CFC3AE; }
+
+  /* fill form */
+  .fill { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:12px; align-items:end; }
+  .fill label { display:block; font:11px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--gray-500); margin-bottom:5px; }
+  .fill input { width:100%; font:13px var(--mono); padding:9px 11px; border:var(--border); border-radius:8px; background:var(--gray-100); color:var(--slate); }
+  .fill-foot { display:flex; gap:12px; align-items:center; margin-top:14px; flex-wrap:wrap; }
+  .fill-foot span { font-size:13px; color:var(--gray-500); }
+
+  /* role tabs */
+  .role-tabs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin:18px 0 26px; }
+  .role-tabs button { text-align:left; font-family:var(--sans); font-size:14px; border-radius:12px; padding:16px 18px; background:#fff;
+                      border:var(--border); color:var(--gray-700); display:flex; flex-direction:column; gap:2px; }
+  .role-tabs button .rt { font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--gray-500); }
+  .role-tabs button b { font:500 20px/1.3 var(--serif); color:var(--slate); }
+  .role-tabs button:hover { border-color:var(--gray-500); }
+  .role-tabs button.on { border-color:var(--clay); background:#FBF1EC; }
+  .role-tabs button.on .rt { color:var(--clay-d); }
+
+  .orient { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-bottom:8px; }
+  .orient .panel { padding:14px 18px; font-size:13.5px; }
+  .orient .k { font:600 11px var(--mono); letter-spacing:.08em; text-transform:uppercase; display:block; margin-bottom:4px; }
+  .orient .known .k { color:#4B5C39; } .orient .new .k { color:var(--clay-d); }
+
+  /* steps */
+  .step { display:grid; grid-template-columns:40px minmax(0,1fr); gap:0 16px; padding:26px 0; border-top:1px solid var(--gray-300); }
+  .steps > .step:first-child { border-top:0; }
+  .step > * { min-width:0; }
+  .num { width:34px; height:34px; border-radius:50%; background:var(--oat); display:flex; align-items:center; justify-content:center; font:600 14px var(--mono); margin-top:2px; }
+  .step h3 { font-size:20px; margin:2px 0 6px; }
+  .why { color:var(--gray-700); margin:0 0 12px; }
+  .ops { margin:0 0 12px; padding-left:22px; color:var(--gray-700); }
+  .ops li { margin-bottom:5px; }
+  .see, .warn, .tip { border:var(--border); border-radius:8px; background:#fff; padding:10px 14px; font-size:13.5px; margin:12px 0; color:var(--gray-700); }
+  .see { border-left:3px solid var(--olive); } .warn { border-left:3px solid var(--rust); } .tip { border-left:3px solid var(--clay); }
+  .see b.l, .warn b.l, .tip b.l { font:600 11px var(--mono); letter-spacing:.08em; text-transform:uppercase; margin-right:6px; }
+  .see b.l { color:#4B5C39; } .warn b.l { color:var(--rust); } .tip b.l { color:var(--clay-d); }
+
+  /* PR compare mock */
+  .pr-mock { display:grid; grid-template-columns:minmax(0,1fr) 44px minmax(0,1fr); gap:0; align-items:stretch; margin:12px 0; }
+  .pr-mock .half { background:#fff; border:var(--border); border-radius:10px; padding:12px 14px; }
+  .pr-mock .half .t { font:600 11px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--gray-500); margin-bottom:6px; }
+  .pr-mock .half .r { font:12.5px var(--mono); margin:2px 0; word-break:break-all; }
+  .pr-mock .half .r i { font-style:normal; color:var(--gray-500); margin-right:6px; }
+  .pr-mock .arr { display:flex; align-items:center; justify-content:center; font:22px var(--mono); color:var(--clay); }
+  .pr-mock .half.base { border-color:var(--clay); background:#FBF1EC; }
+  .mock-cap { font-size:13px; color:var(--gray-500); margin:0 0 12px; }
+
+  .gh-tabs { display:flex; gap:0; border-bottom:1.5px solid var(--gray-300); margin:12px 0; overflow-x:auto; }
+  .gh-tabs span { padding:8px 16px; font-size:13.5px; color:var(--gray-500); white-space:nowrap; }
+  .gh-tabs span.on { color:var(--slate); box-shadow:inset 0 -2px 0 var(--clay); font-weight:600; }
+  .gh-tabs span small { font:11px var(--mono); margin-left:6px; color:var(--gray-500); }
+
+  /* diff */
+  .diff { font:12.5px/1.7 var(--mono); background:#fff; border:var(--border); border-radius:8px; overflow-x:auto; margin:12px 0 0; }
+  .diff-row { display:grid; grid-template-columns:44px 18px minmax(max-content,1fr); white-space:pre; padding-right:14px; }
+  .diff-row .ln { color:var(--gray-500); text-align:right; padding-right:10px; user-select:none; }
+  .diff-row.add { background:rgba(120,140,93,.12); } .diff-row.add .mark { color:var(--olive); font-weight:600; }
+  .diff-row.del { background:rgba(176,74,63,.10); } .diff-row.del .mark { color:var(--rust); font-weight:600; }
+  .bubble { background:#fff; border:var(--border); border-left:4px solid var(--olive); border-radius:8px; padding:10px 14px; margin:8px 0 0 44px; font-size:13px; max-width:560px; }
+  .bubble .who { font:600 11px var(--mono); color:var(--gray-500); display:block; margin-bottom:2px; }
+
+  /* lifecycle */
+  .stages { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; margin:18px 0 16px; }
+  .stages button { text-align:left; font-family:var(--sans); border-radius:10px; padding:11px 12px; background:#fff; border:var(--border); color:var(--gray-700); font-size:13px; display:flex; flex-direction:column; gap:6px; }
+  .stages button:hover { border-color:var(--gray-500); }
+  .stages button.on { border-color:var(--clay); background:#FBF1EC; }
+  .stages button .si { font:11px var(--mono); color:var(--gray-500); }
+  .badge { font:600 11px var(--mono); padding:2px 9px; border-radius:999px; align-self:flex-start; }
+  .badge.ok { background:rgba(120,140,93,.18); color:#4B5C39; }
+  .badge.warn { background:rgba(217,119,87,.18); color:var(--clay-d); }
+  .badge.done { background:var(--slate); color:var(--ivory); }
+  .two { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+  .two .panel h3 { display:flex; align-items:center; gap:8px; }
+  .two ul { margin:8px 0 0; padding-left:20px; color:var(--gray-700); }
+  .two li { margin-bottom:6px; }
+  .stage-nav { display:flex; gap:10px; margin-top:16px; }
+
+  /* details */
+  details { border:var(--border); border-radius:10px; background:#fff; margin:12px 0; overflow:hidden; }
+  summary { list-style:none; cursor:pointer; padding:14px 16px; font:17px/1.4 var(--serif); display:flex; align-items:baseline; gap:10px; }
+  summary::-webkit-details-marker { display:none; }
+  summary::before { content:"▸"; color:var(--gray-500); transition:transform .12s; flex:none; }
+  details[open] > summary::before { transform:rotate(90deg); }
+  details > .body { padding:0 18px 16px; border-top:1px solid var(--gray-300); padding-top:14px; }
+  details > .body > :last-child { margin-bottom:0; }
+
+  .habits { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+  .habits ul { margin:8px 0 0; padding-left:20px; color:var(--gray-700); }
+  .habits li { margin-bottom:6px; }
+  .export { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:8px; padding-top:20px; border-top:1px solid var(--gray-300); }
+  .export span { font-size:13px; color:var(--gray-500); }
+
+  /* progress + toc active */
+  .progress { position:fixed; top:0; left:0; right:0; height:3px; z-index:60; }
+  .progress span { display:block; height:100%; width:0; background:var(--clay); }
+  nav.toc a.active { color:var(--clay-d); font-weight:600; }
+
+  /* route switch */
+  .route-switch { display:flex; gap:6px; flex-wrap:wrap; background:var(--gray-100); padding:5px; border-radius:12px; width:max-content; max-width:100%; margin:16px 0; }
+  .route-switch button { border:0; background:transparent; border-radius:9px; color:var(--gray-500); font:13px var(--sans); padding:9px 14px; }
+  .route-switch button[aria-pressed="true"] { background:#fff; color:var(--slate); box-shadow:inset 0 -2px 0 var(--clay); }
+  .route-steps { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; margin:14px 0; }
+  .route-step { border:var(--border); border-radius:10px; background:#fff; padding:10px 12px; }
+  .route-step.new { border-color:var(--clay); background:#FBF1EC; }
+  .route-step i { font:600 11px var(--mono); color:var(--gray-500); font-style:normal; }
+  .route-step b { display:block; font-size:14px; margin:2px 0; }
+  .route-step small { display:block; font-size:12.5px; color:var(--gray-700); line-height:1.5; }
+  .route-note { font-size:13px; color:var(--gray-500); margin:0 0 4px; }
+
+  /* practice */
+  .sim { margin-bottom:16px; }
+  .sim h3 { margin-bottom:4px; }
+  .sim-buttons { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0; }
+  .sim-buttons button, .answer { font:14px var(--sans); border-radius:10px; border:var(--border); background:#fff; color:var(--gray-700); padding:10px 14px; text-align:left; }
+  .sim-buttons button:hover, .answer:hover:not(:disabled) { border-color:var(--gray-500); }
+  .sim-buttons button.selected { border-color:var(--clay); background:#FBF1EC; color:var(--slate); }
+  .sim-result { background:var(--gray-100); border-radius:10px; padding:12px 14px; font-size:14px; min-height:52px; color:var(--gray-700); }
+  .quiz-top { display:flex; justify-content:space-between; gap:10px; align-items:baseline; flex-wrap:wrap; }
+  .quiz-top .count { font:12px var(--mono); color:var(--gray-500); }
+  .question { font:500 18px/1.45 var(--serif); margin:14px 0 12px; }
+  .answers { display:grid; gap:8px; }
+  .answer { display:flex; gap:10px; align-items:flex-start; }
+  .answer .letter { width:22px; height:22px; flex:none; border-radius:6px; background:var(--gray-100); font:600 11px/22px var(--mono); text-align:center; }
+  .answer:disabled { cursor:default; }
+  .answer.correct { border-color:var(--olive); background:rgba(120,140,93,.12); }
+  .answer.wrong { border-color:var(--rust); background:rgba(176,74,63,.10); }
+  .feedback { display:none; margin-top:12px; padding:12px 14px; border-radius:10px; font-size:14px; border:var(--border); border-left-width:4px; background:#fff; }
+  .feedback.show { display:block; } .feedback.good { border-left-color:var(--olive); } .feedback.bad { border-left-color:var(--clay); }
+  .quiz-foot { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:14px; }
+  .quiz-foot span { font-size:13px; color:var(--gray-500); }
+  .checks { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  .check-item { display:flex; gap:10px; align-items:flex-start; padding:11px 13px; border:var(--border); border-radius:10px; background:#fff; font-size:14px; color:var(--gray-700); cursor:pointer; }
+  .check-item input { accent-color:var(--clay); margin-top:5px; flex:none; }
+  .check-item.done { background:rgba(120,140,93,.10); border-color:rgba(120,140,93,.45); }
+  .bar { height:6px; border-radius:999px; background:var(--gray-100); overflow:hidden; margin-top:8px; }
+  .bar span { display:block; height:100%; width:0; background:var(--olive); transition:width .2s; }
+  .check-progress { font-size:13px; color:var(--gray-500); margin-top:12px; }
+  .resources { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  .resource { display:block; padding:12px 14px; border:var(--border); border-radius:10px; background:#fff; color:var(--slate); text-decoration:none; }
+  .resource:hover { border-color:var(--clay); }
+  .resource b { display:block; font-size:14px; } .resource small { font:12px var(--mono); color:var(--gray-500); }
+  .warn ul { margin:6px 0 0; padding-left:20px; }
+  .foot { font-size:13px; color:var(--gray-500); border-top:1px solid var(--gray-300); padding-top:18px; }
+
+  @media (max-width: 920px) {
+    .layout { grid-template-columns:minmax(0,1fr); gap:24px; }
+    nav.toc { position:static; display:flex; flex-wrap:wrap; gap:4px 16px; }
+    nav.toc .label { width:100%; margin-bottom:2px; }
+    .fill { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .stages { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .two, .habits, .orient, .role-tabs, .legend, .checks, .resources { grid-template-columns:minmax(0,1fr); }
+    .route-steps { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  }
+  @media (max-width: 720px) {
+    body { padding:32px 16px 80px; }
+    .step { grid-template-columns:minmax(0,1fr); }
+    .num { margin-bottom:8px; }
+    .pr-mock { grid-template-columns:minmax(0,1fr); }
+    .pr-mock .arr { transform:rotate(90deg); height:32px; }
+  }
+  /* site nav */
+  .crumb { margin:0 0 18px; font:12px var(--mono); }
+  .crumb a { color:var(--gray-500); text-decoration:none; }
+  .crumb a:hover { color:var(--clay); }
+  .pager { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-top:40px; }
+  .pager a { display:block; padding:14px 18px; border:var(--border); border-radius:12px; background:#fff; color:var(--slate); text-decoration:none; }
+  .pager a:hover { border-color:var(--clay); }
+  .pager small { display:block; font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--gray-500); }
+  .pager b { font:500 17px/1.4 var(--serif); }
+  .pager .next { text-align:right; grid-column:2; }
+  .pager .prev { grid-column:1; }
+  @media (max-width:720px){ .pager{grid-template-columns:minmax(0,1fr);} .pager .next,.pager .prev{grid-column:1;text-align:left;} }
+  @media (prefers-reduced-motion: reduce) { * { transition:none !important; scroll-behavior:auto !important; } }
+
+  .fill.f4 { grid-template-columns:repeat(4,minmax(0,1fr)); }
+  .fill.f3 { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .fill.f2 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  @media (max-width: 920px) { .fill.f4, .fill.f3 { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  @media (max-width: 520px) { .fill.f4, .fill.f3, .fill.f2 { grid-template-columns:minmax(0,1fr); } }
+  .badge.bad { background:rgba(176,74,63,.15); color:var(--rust); }
+  .dec-out { background:var(--gray-100); border-radius:10px; padding:12px 14px; font-size:14px; color:var(--gray-700); margin-top:12px; }
+
+  /* ===== Arduino 主題專用(只有 dir=arduino 的頁面會內嵌) ===== */
+  .el { cursor:pointer; }
+  .el .halo { display:none; }
+  .el.cur .halo, .el.hl .halo { display:block; }
+  .el.future { opacity:.12; }
+  .el.future.hl { opacity:1; }
+  .el:focus { outline:none; }
+  .el:focus-visible .halo { display:block; }
+  .wiring .wnav { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:14px; }
+  .wdots { display:inline-flex; gap:6px; margin:0 4px; flex-wrap:wrap; }
+  .wdot { width:30px; height:30px; padding:0; border-radius:999px; font:12px var(--mono); background:#fff; border:var(--border); color:var(--gray-700); cursor:pointer; }
+  .wdot:hover { border-color:var(--clay); }
+  .wdot.on { border-color:var(--clay); background:#FBF1EC; color:var(--slate); }
+  .wdot.done { border-color:var(--olive); color:var(--olive); }
+  .wcap { margin-top:12px; background:var(--gray-100); border-radius:10px; padding:12px 14px; font-size:14px; line-height:1.65; color:var(--gray-700); }
+  .wcap b.t { display:block; font:500 17px/1.4 var(--serif); color:var(--slate); margin-bottom:4px; }
+  .bbx-info, .linkbox { margin-top:12px; background:var(--gray-100); border-radius:10px; padding:12px 14px; font-size:14px; color:var(--gray-700); min-height:48px; }
+  .newsym { display:inline-block; font:11px var(--mono); letter-spacing:.04em; background:#FBF1EC; color:var(--clay-d); border-radius:999px; padding:1px 9px; margin-right:6px; vertical-align:1px; }
+  .pager .off { display:block; padding:14px 18px; border:1.5px dashed var(--gray-300); border-radius:12px; background:var(--gray-100); color:var(--gray-500); }
+  .pager .off small { display:block; font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; }
+  .pager .off b { font:500 17px/1.4 var(--serif); }
+  .pager .next.off { text-align:right; grid-column:2; }
+  .pager .prev.off { grid-column:1; }
+  .sk { font:12px var(--mono); color:var(--gray-500); margin:6px 0 0; }
+  .spec { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin:14px 0 0; }
+  .spec > div { background:#fff; border:var(--border); border-radius:10px; padding:10px 12px; }
+  .spec .k { font:11px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--gray-500); }
+  .spec .v { font:500 20px/1.3 var(--serif); color:var(--slate); }
+  @media (max-width: 720px) { .spec { grid-template-columns:minmax(0,1fr); } .pager .next.off, .pager .prev.off { grid-column:1; text-align:left; } }
+
+  .gt.g3w .row { grid-template-columns:56px 200px minmax(0,1fr); }
+  @media (max-width: 720px) {
+    .gt { min-width:0; }
+    .gt.g2 .row, .gt.g3 .row, .gt.g3b .row, .gt.g3w .row { grid-template-columns:minmax(0,1fr); border-top:1px solid var(--gray-300); padding:4px 0; }
+    .gt .row:first-child { display:none; }
+    .gt .cell { border-top:0; padding:5px 14px; }
+    .gt .cell[data-h]::before { content:attr(data-h); display:block; font:11px var(--mono); letter-spacing:.04em; color:var(--gray-500); margin-bottom:1px; }
+  }
+
+  .bh { fill:transparent; cursor:pointer; }
+  .bh:hover { fill:rgba(217,119,87,.15); }
+  .bh.on { fill:rgba(217,119,87,.38); }
+  .bh.sel { fill:rgba(217,119,87,.8); }
+  .bbx-bar { display:flex; flex-wrap:wrap; align-items:center; gap:14px; margin-top:12px; font-size:14px; color:var(--gray-700); }
+  .bbx-bar label { display:inline-flex; gap:8px; align-items:center; cursor:pointer; }
+  .rc-svg { display:block; width:100%; max-width:380px; margin:0 auto 14px; }
+  .rc-out, .lc-out { margin-top:12px; background:var(--gray-100); border-radius:10px; padding:12px 14px; font-size:14px; line-height:1.7; color:var(--gray-700); }
+  .calc-bad { color:var(--rust); font-weight:600; }
+  select { font:inherit; font-size:14px; padding:8px 10px; border:var(--border); border-radius:8px; background:#fff; color:var(--slate); width:100%; }
+
+  .pwm-svg { display:block; width:100%; max-width:560px; margin:6px auto 0; }
+  .pwm-led { display:inline-block; width:30px; height:30px; border-radius:50%; border:2px solid var(--gray-300); vertical-align:middle; margin-left:8px; background:rgba(176,74,63,.5); }
+  input[type=range] { width:100%; accent-color:var(--clay); }
+
+  .bd-screen { background:#141413; color:#F0EEE6; font:13px/1.6 var(--mono); border-radius:10px; padding:14px 16px; min-height:96px; white-space:pre-wrap; margin-top:12px; }
+
+  .pot-bar { height:10px; background:var(--gray-100); border-radius:999px; overflow:hidden; margin:12px 0 4px; border:var(--border); }
+  .pot-bar span { display:block; height:100%; width:50%; background:var(--clay); }
+
+  /* 小工具(計算機、示意圖)用的欄位排版:不使用 .fill,避免被頁面上「填入資料」的 Reset 影響 */
+  .wgrid { display:grid; gap:12px; align-items:end; }
+  .wgrid.f2 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .wgrid.f4 { grid-template-columns:repeat(4,minmax(0,1fr)); }
+  .wgrid label { display:block; font:11px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--gray-500); margin-bottom:5px; }
+  .wgrid input:not([type=range]) { width:100%; font:13px var(--mono); padding:9px 11px; border:var(--border); border-radius:8px; background:var(--gray-100); color:var(--slate); }
+  @media (max-width: 720px) { .wgrid.f2, .wgrid.f4 { grid-template-columns:minmax(0,1fr); } }
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><span id="readBar"></span></div>
+<div class="page">
+
+<header>
+  <nav class="crumb" aria-label="站內導覽"><a href="../index.html#arduino">← 回教學首頁</a></nav>
+  <div class="eyebrow">Arduino 入門 · 第 10 篇 · 光敏電阻</div>
+  <h1>天黑自動開燈:用光敏電阻做小夜燈</h1>
+  <p class="sub">用光敏電阻與 10 kΩ 電阻組成分壓電路,讓 Arduino 量光線;再用門檻判斷天黑,並用遲滯解決邊界閃爍。</p>
+  <div class="tldr"><b>TL;DR</b> 光敏電阻<strong>越亮電阻越小</strong>。它與 <strong>10 kΩ 串聯分壓</strong>,A0 接在<strong>兩者相接處</strong>。先用 Serial 量亮與暗的讀值,取中間當<strong>門檻</strong>;為避免在門檻附近閃爍,用<strong>兩個門檻(遲滯)</strong>。</div>
+</header>
+
+<div class="layout">
+<nav class="toc" aria-label="本頁目錄">
+  <div class="label">On this page</div>
+  <a href="#what">1. 光敏電阻與分壓</a>
+  <a href="#wire">2. 接線</a>
+  <a href="#fill">3. 填入數值</a>
+  <a href="#code1">4. 程式一:校準</a>
+  <a href="#code2">5. 程式二:小夜燈</a>
+  <a href="#code3">6. 程式三:遲滯</a>
+  <a href="#try">7. 改改看</a>
+  <a href="#gotchas">8. 常見卡關</a>
+  <a href="#practice">9. 演練與延伸閱讀</a>
+</nav>
+
+<main>
+<section id="what">
+  <h2>光敏電阻:光越亮,電阻越小</h2>
+  <hr class="rule">
+<div class="panel"><h3>光敏電阻(LDR)是什麼</h3><p>它是一顆<b>電阻值會隨光線改變</b>的電阻:<b>越亮,電阻越小</b>;完全黑暗時,電阻可高達 1 MΩ 以上(常見的 GL5528:光線充足時約數百歐姆到幾 kΩ,10 lux 約 8–20 kΩ)。這些數字是範例值,<b>每顆都有差異,用 Serial 實際量一次最準</b>。</p><p style="margin-bottom:0">但 Arduino 只會量<b>電壓</b>,不會量電阻。要把「電阻的變化」變成「電壓的變化」,用上一篇學的<b>分壓</b>。</p></div>
+<h3 style="margin-top:26px">分壓:把電阻變化換成電壓變化</h3>
+<p>光敏電阻與一顆固定的 10 kΩ 電阻<b>串聯</b>,5V 加在串聯的兩端,中間那一點接 A0。光敏電阻的比例變了,A0 的電壓就跟著變:</p>
+<div class="panel"><p style="margin:0">A0 電壓 = 5 V × <b>10 kΩ</b> ÷ (<b>光敏電阻</b> + 10 kΩ)</p></div>
+<div class="table-wrap"><div class="gt g3"><div class="row"><div class="cell head">環境</div><div class="cell head">光敏電阻(範例)</div><div class="cell head">A0 電壓 / analogRead</div></div><div class="row"><div class="cell term">很亮</div><div class="cell">約 1 kΩ</div><div class="cell">約 4.5 V / 約 930</div></div><div class="row"><div class="cell term">室內一般亮度</div><div class="cell">約 10 kΩ</div><div class="cell">約 2.5 V / 約 511</div></div><div class="row"><div class="cell term">很暗</div><div class="cell">約 100 kΩ 以上</div><div class="cell">約 0.45 V / 約 93 以下</div></div></div></div>
+<p class="sk">上表是用公式算出的範例;你的光敏電阻數值不同,實際讀值也不同,所以要先量再決定門檻。</p>
+<h3 style="margin-top:26px">拖曳看看</h3>
+<div class="panel" data-ldrsim><div class="wgrid f2"><div><label>環境亮度(0% = 全黑,100% = 很亮)</label><input type="range" min="0" max="100" value="50" data-ldr="v"></div><div><label>門檻(analogRead 低於它就開燈)</label><input data-ldr="thr" value="400" inputmode="numeric" autocomplete="off"></div></div><div class="pot-bar" aria-hidden="true"><span></span></div><div class="rc-out ldr-out" aria-live="polite"></div><p style="margin:10px 0 0;font-size:14px;color:var(--gray-700)">LED:<span class="pwm-led" style="margin-left:6px"></span></p></div>
+<div class="tip"><b class="l">小技巧</b>為什麼固定電阻選 10 kΩ?分壓電路的固定電阻選<b>和光敏電阻「常用範圍」差不多大</b>,A0 電壓的變化範圍才夠大、好分辨。這是常見的經驗做法,不是唯一答案。</div>
+</section>
+
+<section id="wire">
+  <h2>接線:光敏電阻分壓(A0)加 LED(8 號腳)</h2>
+  <hr class="rule">
+<div class="panel wiring" data-wiring="ldr-night">
+<div class="canvas"><svg viewBox="0 0 522 536" role="img" aria-label="ldr-night 的接線圖:Uno 與麵包板,共 5 步" style="min-width:560px">
+<defs><style>.m{font:9px ui-monospace,Menlo,Consolas,monospace}.mb{font:600 10px ui-monospace,Menlo,Consolas,monospace}.s{font:11px system-ui,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif}.sb{font:600 11px system-ui,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif}</style></defs>
+<rect width="522" height="536" fill="#FFFFFF"/>
+<rect x="472" y="56" width="34" height="46" rx="4" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><text x="489.0" y="83.0" class="m" fill="#3D3D3A" text-anchor="middle">USB</text><rect x="40" y="34" width="436" height="112" rx="10" fill="#3D3D3A" stroke="#141413" stroke-width="1.5"/><rect x="190" y="75" width="86" height="30" rx="3" fill="#141413"/><text x="233.0" y="94.0" class="m" fill="#D1CFC5" text-anchor="middle">ATmega328P</text><text x="340.0" y="95.0" class="mb" fill="#F0EEE6" text-anchor="middle">ARDUINO UNO</text><rect x="60.0" y="128.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="64.0" y="123.0" class="m" fill="#F0EEE6" text-anchor="middle">0</text><rect x="78.0" y="128.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="82.0" y="123.0" class="m" fill="#F0EEE6" text-anchor="middle">1</text><rect x="96.0" y="128.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="100.0" y="123.0" class="m" fill="#F0EEE6" text-anchor="middle">2</text><rect x="114.0" y="128.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="118.0" y="123.0" class="m" fill="#F0EEE6" text-anchor="middle">~3</text><rect x="132.0" y="128.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="136.0" y="123.0" class="m" fill="#F0EEE6" text-anchor="middle">4</text><rect x="150.0" y="128.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="154.0" y="123.0" class="m" fill="#F0EEE6" text-anchor="middle">~5</text><rect x="168.0" y="128.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="172.0" y="123.0" class="m" fill="#F0EEE6" text-anchor="middle">~6</text><rect x="186.0" y="128.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="190.0" y="123.0" class="m" fill="#F0EEE6" text-anchor="middle">7</text><rect x="222.0" y="128.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="226.0" y="123.0" class="m" fill="#F0EEE6" text-anchor="middle">8</text><rect x="240.0" y="128.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="244.0" y="123.0" class="m" fill="#F0EEE6" text-anchor="middle">~9</text><rect x="258.0" y="128.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="262.0" y="123.0" class="m" fill="#F0EEE6" text-anchor="middle">~10</text><rect x="276.0" y="128.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="280.0" y="123.0" class="m" fill="#F0EEE6" text-anchor="middle">~11</text><rect x="294.0" y="128.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="298.0" y="123.0" class="m" fill="#F0EEE6" text-anchor="middle">12</text><rect x="312.0" y="128.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="316.0" y="123.0" class="m" fill="#F0EEE6" text-anchor="middle">13</text><rect x="330.0" y="128.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="334.0" y="123.0" class="m" fill="#F0EEE6" text-anchor="middle">GND</text><rect x="348.0" y="128.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text transform="translate(355.0 124.0) rotate(-90)" font-size="8" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#F0EEE6" text-anchor="start">AREF</text><rect x="366.0" y="128.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="370.0" y="123.0" class="m" fill="#F0EEE6" text-anchor="middle">SDA</text><rect x="384.0" y="128.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="388.0" y="123.0" class="m" fill="#F0EEE6" text-anchor="middle">SCL</text><rect x="90.0" y="44.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="94.0" y="65.0" class="m" fill="#F0EEE6" text-anchor="middle">A5</text><rect x="108.0" y="44.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="112.0" y="65.0" class="m" fill="#F0EEE6" text-anchor="middle">A4</text><rect x="126.0" y="44.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="130.0" y="65.0" class="m" fill="#F0EEE6" text-anchor="middle">A3</text><rect x="144.0" y="44.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="148.0" y="65.0" class="m" fill="#F0EEE6" text-anchor="middle">A2</text><rect x="162.0" y="44.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="166.0" y="65.0" class="m" fill="#F0EEE6" text-anchor="middle">A1</text><rect x="180.0" y="44.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="184.0" y="65.0" class="m" fill="#F0EEE6" text-anchor="middle">A0</text><rect x="216.0" y="44.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="220.0" y="65.0" class="m" fill="#F0EEE6" text-anchor="middle">VIN</text><rect x="234.0" y="44.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="238.0" y="65.0" class="m" fill="#F0EEE6" text-anchor="middle">GND</text><rect x="252.0" y="44.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="256.0" y="65.0" class="m" fill="#F0EEE6" text-anchor="middle">GND</text><rect x="270.0" y="44.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="274.0" y="65.0" class="m" fill="#F0EEE6" text-anchor="middle">5V</text><rect x="288.0" y="44.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="292.0" y="65.0" class="m" fill="#F0EEE6" text-anchor="middle">3V3</text><rect x="306.0" y="44.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text transform="translate(313.0 57.0) rotate(-90)" font-size="8" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#F0EEE6" text-anchor="end">RESET</text><rect x="324.0" y="44.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text transform="translate(331.0 57.0) rotate(-90)" font-size="8" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#F0EEE6" text-anchor="end">IOREF</text><rect x="342.0" y="44.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="346.0" y="65.0" class="m" fill="#F0EEE6" text-anchor="middle">NC</text><text x="64.0" y="106.0" class="m" fill="#D1CFC5" text-anchor="start">DIGITAL 數位腳位(~ = 可輸出 PWM)</text><rect x="40" y="206" width="448" height="312" rx="10" fill="#F0EEE6" stroke="#D1CFC5" stroke-width="1.5"/><rect x="62" y="362" width="404" height="8" rx="3" fill="#D1CFC5"/><line x1="62.0" y1="219.0" x2="464.0" y2="219.0" stroke="#B04A3F" stroke-width="1.5"/><text x="54.0" y="231.5" class="mb" fill="#B04A3F" text-anchor="middle">+</text><line x1="62.0" y1="255.0" x2="464.0" y2="255.0" stroke="#3D3D3A" stroke-width="1.5"/><text x="54.0" y="249.5" class="mb" fill="#3D3D3A" text-anchor="middle">−</text><line x1="62.0" y1="471.0" x2="464.0" y2="471.0" stroke="#B04A3F" stroke-width="1.5"/><text x="54.0" y="483.5" class="mb" fill="#B04A3F" text-anchor="middle">+</text><line x1="62.0" y1="507.0" x2="464.0" y2="507.0" stroke="#3D3D3A" stroke-width="1.5"/><text x="54.0" y="501.5" class="mb" fill="#3D3D3A" text-anchor="middle">−</text><g fill="#FFFFFF" stroke="#D1CFC5" stroke-width=".8"><rect x="70.5" y="274.5" width="7" height="7" rx="1.2"/><rect x="88.5" y="274.5" width="7" height="7" rx="1.2"/><rect x="106.5" y="274.5" width="7" height="7" rx="1.2"/><rect x="124.5" y="274.5" width="7" height="7" rx="1.2"/><rect x="142.5" y="274.5" width="7" height="7" rx="1.2"/><rect x="160.5" y="274.5" width="7" height="7" rx="1.2"/><rect x="178.5" y="274.5" width="7" height="7" rx="1.2"/><rect x="196.5" y="274.5" width="7" height="7" rx="1.2"/><rect x="214.5" y="274.5" width="7" height="7" rx="1.2"/><rect x="232.5" y="274.5" width="7" height="7" rx="1.2"/><rect x="250.5" y="274.5" width="7" height="7" rx="1.2"/><rect x="268.5" y="274.5" width="7" height="7" rx="1.2"/><rect x="286.5" y="274.5" width="7" height="7" rx="1.2"/><rect x="304.5" y="274.5" width="7" height="7" rx="1.2"/><rect x="322.5" y="274.5" width="7" height="7" rx="1.2"/><rect x="340.5" y="274.5" width="7" height="7" rx="1.2"/><rect x="358.5" y="274.5" width="7" height="7" rx="1.2"/><rect x="376.5" y="274.5" width="7" height="7" rx="1.2"/><rect x="394.5" y="274.5" width="7" height="7" rx="1.2"/><rect x="412.5" y="274.5" width="7" height="7" rx="1.2"/><rect x="430.5" y="274.5" width="7" height="7" rx="1.2"/><rect x="448.5" y="274.5" width="7" height="7" rx="1.2"/><rect x="70.5" y="292.5" width="7" height="7" rx="1.2"/><rect x="88.5" y="292.5" width="7" height="7" rx="1.2"/><rect x="106.5" y="292.5" width="7" height="7" rx="1.2"/><rect x="124.5" y="292.5" width="7" height="7" rx="1.2"/><rect x="142.5" y="292.5" width="7" height="7" rx="1.2"/><rect x="160.5" y="292.5" width="7" height="7" rx="1.2"/><rect x="178.5" y="292.5" width="7" height="7" rx="1.2"/><rect x="196.5" y="292.5" width="7" height="7" rx="1.2"/><rect x="214.5" y="292.5" width="7" height="7" rx="1.2"/><rect x="232.5" y="292.5" width="7" height="7" rx="1.2"/><rect x="250.5" y="292.5" width="7" height="7" rx="1.2"/><rect x="268.5" y="292.5" width="7" height="7" rx="1.2"/><rect x="286.5" y="292.5" width="7" height="7" rx="1.2"/><rect x="304.5" y="292.5" width="7" height="7" rx="1.2"/><rect x="322.5" y="292.5" width="7" height="7" rx="1.2"/><rect x="340.5" y="292.5" width="7" height="7" rx="1.2"/><rect x="358.5" y="292.5" width="7" height="7" rx="1.2"/><rect x="376.5" y="292.5" width="7" height="7" rx="1.2"/><rect x="394.5" y="292.5" width="7" height="7" rx="1.2"/><rect x="412.5" y="292.5" width="7" height="7" rx="1.2"/><rect x="430.5" y="292.5" width="7" height="7" rx="1.2"/><rect x="448.5" y="292.5" width="7" height="7" rx="1.2"/><rect x="70.5" y="310.5" width="7" height="7" rx="1.2"/><rect x="88.5" y="310.5" width="7" height="7" rx="1.2"/><rect x="106.5" y="310.5" width="7" height="7" rx="1.2"/><rect x="124.5" y="310.5" width="7" height="7" rx="1.2"/><rect x="142.5" y="310.5" width="7" height="7" rx="1.2"/><rect x="160.5" y="310.5" width="7" height="7" rx="1.2"/><rect x="178.5" y="310.5" width="7" height="7" rx="1.2"/><rect x="196.5" y="310.5" width="7" height="7" rx="1.2"/><rect x="214.5" y="310.5" width="7" height="7" rx="1.2"/><rect x="232.5" y="310.5" width="7" height="7" rx="1.2"/><rect x="250.5" y="310.5" width="7" height="7" rx="1.2"/><rect x="268.5" y="310.5" width="7" height="7" rx="1.2"/><rect x="286.5" y="310.5" width="7" height="7" rx="1.2"/><rect x="304.5" y="310.5" width="7" height="7" rx="1.2"/><rect x="322.5" y="310.5" width="7" height="7" rx="1.2"/><rect x="340.5" y="310.5" width="7" height="7" rx="1.2"/><rect x="358.5" y="310.5" width="7" height="7" rx="1.2"/><rect x="376.5" y="310.5" width="7" height="7" rx="1.2"/><rect x="394.5" y="310.5" width="7" height="7" rx="1.2"/><rect x="412.5" y="310.5" width="7" height="7" rx="1.2"/><rect x="430.5" y="310.5" width="7" height="7" rx="1.2"/><rect x="448.5" y="310.5" width="7" height="7" rx="1.2"/><rect x="70.5" y="328.5" width="7" height="7" rx="1.2"/><rect x="88.5" y="328.5" width="7" height="7" rx="1.2"/><rect x="106.5" y="328.5" width="7" height="7" rx="1.2"/><rect x="124.5" y="328.5" width="7" height="7" rx="1.2"/><rect x="142.5" y="328.5" width="7" height="7" rx="1.2"/><rect x="160.5" y="328.5" width="7" height="7" rx="1.2"/><rect x="178.5" y="328.5" width="7" height="7" rx="1.2"/><rect x="196.5" y="328.5" width="7" height="7" rx="1.2"/><rect x="214.5" y="328.5" width="7" height="7" rx="1.2"/><rect x="232.5" y="328.5" width="7" height="7" rx="1.2"/><rect x="250.5" y="328.5" width="7" height="7" rx="1.2"/><rect x="268.5" y="328.5" width="7" height="7" rx="1.2"/><rect x="286.5" y="328.5" width="7" height="7" rx="1.2"/><rect x="304.5" y="328.5" width="7" height="7" rx="1.2"/><rect x="322.5" y="328.5" width="7" height="7" rx="1.2"/><rect x="340.5" y="328.5" width="7" height="7" rx="1.2"/><rect x="358.5" y="328.5" width="7" height="7" rx="1.2"/><rect x="376.5" y="328.5" width="7" height="7" rx="1.2"/><rect x="394.5" y="328.5" width="7" height="7" rx="1.2"/><rect x="412.5" y="328.5" width="7" height="7" rx="1.2"/><rect x="430.5" y="328.5" width="7" height="7" rx="1.2"/><rect x="448.5" y="328.5" width="7" height="7" rx="1.2"/><rect x="70.5" y="346.5" width="7" height="7" rx="1.2"/><rect x="88.5" y="346.5" width="7" height="7" rx="1.2"/><rect x="106.5" y="346.5" width="7" height="7" rx="1.2"/><rect x="124.5" y="346.5" width="7" height="7" rx="1.2"/><rect x="142.5" y="346.5" width="7" height="7" rx="1.2"/><rect x="160.5" y="346.5" width="7" height="7" rx="1.2"/><rect x="178.5" y="346.5" width="7" height="7" rx="1.2"/><rect x="196.5" y="346.5" width="7" height="7" rx="1.2"/><rect x="214.5" y="346.5" width="7" height="7" rx="1.2"/><rect x="232.5" y="346.5" width="7" height="7" rx="1.2"/><rect x="250.5" y="346.5" width="7" height="7" rx="1.2"/><rect x="268.5" y="346.5" width="7" height="7" rx="1.2"/><rect x="286.5" y="346.5" width="7" height="7" rx="1.2"/><rect x="304.5" y="346.5" width="7" height="7" rx="1.2"/><rect x="322.5" y="346.5" width="7" height="7" rx="1.2"/><rect x="340.5" y="346.5" width="7" height="7" rx="1.2"/><rect x="358.5" y="346.5" width="7" height="7" rx="1.2"/><rect x="376.5" y="346.5" width="7" height="7" rx="1.2"/><rect x="394.5" y="346.5" width="7" height="7" rx="1.2"/><rect x="412.5" y="346.5" width="7" height="7" rx="1.2"/><rect x="430.5" y="346.5" width="7" height="7" rx="1.2"/><rect x="448.5" y="346.5" width="7" height="7" rx="1.2"/><rect x="70.5" y="378.5" width="7" height="7" rx="1.2"/><rect x="88.5" y="378.5" width="7" height="7" rx="1.2"/><rect x="106.5" y="378.5" width="7" height="7" rx="1.2"/><rect x="124.5" y="378.5" width="7" height="7" rx="1.2"/><rect x="142.5" y="378.5" width="7" height="7" rx="1.2"/><rect x="160.5" y="378.5" width="7" height="7" rx="1.2"/><rect x="178.5" y="378.5" width="7" height="7" rx="1.2"/><rect x="196.5" y="378.5" width="7" height="7" rx="1.2"/><rect x="214.5" y="378.5" width="7" height="7" rx="1.2"/><rect x="232.5" y="378.5" width="7" height="7" rx="1.2"/><rect x="250.5" y="378.5" width="7" height="7" rx="1.2"/><rect x="268.5" y="378.5" width="7" height="7" rx="1.2"/><rect x="286.5" y="378.5" width="7" height="7" rx="1.2"/><rect x="304.5" y="378.5" width="7" height="7" rx="1.2"/><rect x="322.5" y="378.5" width="7" height="7" rx="1.2"/><rect x="340.5" y="378.5" width="7" height="7" rx="1.2"/><rect x="358.5" y="378.5" width="7" height="7" rx="1.2"/><rect x="376.5" y="378.5" width="7" height="7" rx="1.2"/><rect x="394.5" y="378.5" width="7" height="7" rx="1.2"/><rect x="412.5" y="378.5" width="7" height="7" rx="1.2"/><rect x="430.5" y="378.5" width="7" height="7" rx="1.2"/><rect x="448.5" y="378.5" width="7" height="7" rx="1.2"/><rect x="70.5" y="396.5" width="7" height="7" rx="1.2"/><rect x="88.5" y="396.5" width="7" height="7" rx="1.2"/><rect x="106.5" y="396.5" width="7" height="7" rx="1.2"/><rect x="124.5" y="396.5" width="7" height="7" rx="1.2"/><rect x="142.5" y="396.5" width="7" height="7" rx="1.2"/><rect x="160.5" y="396.5" width="7" height="7" rx="1.2"/><rect x="178.5" y="396.5" width="7" height="7" rx="1.2"/><rect x="196.5" y="396.5" width="7" height="7" rx="1.2"/><rect x="214.5" y="396.5" width="7" height="7" rx="1.2"/><rect x="232.5" y="396.5" width="7" height="7" rx="1.2"/><rect x="250.5" y="396.5" width="7" height="7" rx="1.2"/><rect x="268.5" y="396.5" width="7" height="7" rx="1.2"/><rect x="286.5" y="396.5" width="7" height="7" rx="1.2"/><rect x="304.5" y="396.5" width="7" height="7" rx="1.2"/><rect x="322.5" y="396.5" width="7" height="7" rx="1.2"/><rect x="340.5" y="396.5" width="7" height="7" rx="1.2"/><rect x="358.5" y="396.5" width="7" height="7" rx="1.2"/><rect x="376.5" y="396.5" width="7" height="7" rx="1.2"/><rect x="394.5" y="396.5" width="7" height="7" rx="1.2"/><rect x="412.5" y="396.5" width="7" height="7" rx="1.2"/><rect x="430.5" y="396.5" width="7" height="7" rx="1.2"/><rect x="448.5" y="396.5" width="7" height="7" rx="1.2"/><rect x="70.5" y="414.5" width="7" height="7" rx="1.2"/><rect x="88.5" y="414.5" width="7" height="7" rx="1.2"/><rect x="106.5" y="414.5" width="7" height="7" rx="1.2"/><rect x="124.5" y="414.5" width="7" height="7" rx="1.2"/><rect x="142.5" y="414.5" width="7" height="7" rx="1.2"/><rect x="160.5" y="414.5" width="7" height="7" rx="1.2"/><rect x="178.5" y="414.5" width="7" height="7" rx="1.2"/><rect x="196.5" y="414.5" width="7" height="7" rx="1.2"/><rect x="214.5" y="414.5" width="7" height="7" rx="1.2"/><rect x="232.5" y="414.5" width="7" height="7" rx="1.2"/><rect x="250.5" y="414.5" width="7" height="7" rx="1.2"/><rect x="268.5" y="414.5" width="7" height="7" rx="1.2"/><rect x="286.5" y="414.5" width="7" height="7" rx="1.2"/><rect x="304.5" y="414.5" width="7" height="7" rx="1.2"/><rect x="322.5" y="414.5" width="7" height="7" rx="1.2"/><rect x="340.5" y="414.5" width="7" height="7" rx="1.2"/><rect x="358.5" y="414.5" width="7" height="7" rx="1.2"/><rect x="376.5" y="414.5" width="7" height="7" rx="1.2"/><rect x="394.5" y="414.5" width="7" height="7" rx="1.2"/><rect x="412.5" y="414.5" width="7" height="7" rx="1.2"/><rect x="430.5" y="414.5" width="7" height="7" rx="1.2"/><rect x="448.5" y="414.5" width="7" height="7" rx="1.2"/><rect x="70.5" y="432.5" width="7" height="7" rx="1.2"/><rect x="88.5" y="432.5" width="7" height="7" rx="1.2"/><rect x="106.5" y="432.5" width="7" height="7" rx="1.2"/><rect x="124.5" y="432.5" width="7" height="7" rx="1.2"/><rect x="142.5" y="432.5" width="7" height="7" rx="1.2"/><rect x="160.5" y="432.5" width="7" height="7" rx="1.2"/><rect x="178.5" y="432.5" width="7" height="7" rx="1.2"/><rect x="196.5" y="432.5" width="7" height="7" rx="1.2"/><rect x="214.5" y="432.5" width="7" height="7" rx="1.2"/><rect x="232.5" y="432.5" width="7" height="7" rx="1.2"/><rect x="250.5" y="432.5" width="7" height="7" rx="1.2"/><rect x="268.5" y="432.5" width="7" height="7" rx="1.2"/><rect x="286.5" y="432.5" width="7" height="7" rx="1.2"/><rect x="304.5" y="432.5" width="7" height="7" rx="1.2"/><rect x="322.5" y="432.5" width="7" height="7" rx="1.2"/><rect x="340.5" y="432.5" width="7" height="7" rx="1.2"/><rect x="358.5" y="432.5" width="7" height="7" rx="1.2"/><rect x="376.5" y="432.5" width="7" height="7" rx="1.2"/><rect x="394.5" y="432.5" width="7" height="7" rx="1.2"/><rect x="412.5" y="432.5" width="7" height="7" rx="1.2"/><rect x="430.5" y="432.5" width="7" height="7" rx="1.2"/><rect x="448.5" y="432.5" width="7" height="7" rx="1.2"/><rect x="70.5" y="450.5" width="7" height="7" rx="1.2"/><rect x="88.5" y="450.5" width="7" height="7" rx="1.2"/><rect x="106.5" y="450.5" width="7" height="7" rx="1.2"/><rect x="124.5" y="450.5" width="7" height="7" rx="1.2"/><rect x="142.5" y="450.5" width="7" height="7" rx="1.2"/><rect x="160.5" y="450.5" width="7" height="7" rx="1.2"/><rect x="178.5" y="450.5" width="7" height="7" rx="1.2"/><rect x="196.5" y="450.5" width="7" height="7" rx="1.2"/><rect x="214.5" y="450.5" width="7" height="7" rx="1.2"/><rect x="232.5" y="450.5" width="7" height="7" rx="1.2"/><rect x="250.5" y="450.5" width="7" height="7" rx="1.2"/><rect x="268.5" y="450.5" width="7" height="7" rx="1.2"/><rect x="286.5" y="450.5" width="7" height="7" rx="1.2"/><rect x="304.5" y="450.5" width="7" height="7" rx="1.2"/><rect x="322.5" y="450.5" width="7" height="7" rx="1.2"/><rect x="340.5" y="450.5" width="7" height="7" rx="1.2"/><rect x="358.5" y="450.5" width="7" height="7" rx="1.2"/><rect x="376.5" y="450.5" width="7" height="7" rx="1.2"/><rect x="394.5" y="450.5" width="7" height="7" rx="1.2"/><rect x="412.5" y="450.5" width="7" height="7" rx="1.2"/><rect x="430.5" y="450.5" width="7" height="7" rx="1.2"/><rect x="448.5" y="450.5" width="7" height="7" rx="1.2"/><rect x="70.5" y="224.5" width="7" height="7" rx="1.2"/><rect x="88.5" y="224.5" width="7" height="7" rx="1.2"/><rect x="106.5" y="224.5" width="7" height="7" rx="1.2"/><rect x="124.5" y="224.5" width="7" height="7" rx="1.2"/><rect x="142.5" y="224.5" width="7" height="7" rx="1.2"/><rect x="160.5" y="224.5" width="7" height="7" rx="1.2"/><rect x="178.5" y="224.5" width="7" height="7" rx="1.2"/><rect x="196.5" y="224.5" width="7" height="7" rx="1.2"/><rect x="214.5" y="224.5" width="7" height="7" rx="1.2"/><rect x="232.5" y="224.5" width="7" height="7" rx="1.2"/><rect x="250.5" y="224.5" width="7" height="7" rx="1.2"/><rect x="268.5" y="224.5" width="7" height="7" rx="1.2"/><rect x="286.5" y="224.5" width="7" height="7" rx="1.2"/><rect x="304.5" y="224.5" width="7" height="7" rx="1.2"/><rect x="322.5" y="224.5" width="7" height="7" rx="1.2"/><rect x="340.5" y="224.5" width="7" height="7" rx="1.2"/><rect x="358.5" y="224.5" width="7" height="7" rx="1.2"/><rect x="376.5" y="224.5" width="7" height="7" rx="1.2"/><rect x="394.5" y="224.5" width="7" height="7" rx="1.2"/><rect x="412.5" y="224.5" width="7" height="7" rx="1.2"/><rect x="430.5" y="224.5" width="7" height="7" rx="1.2"/><rect x="448.5" y="224.5" width="7" height="7" rx="1.2"/><rect x="70.5" y="242.5" width="7" height="7" rx="1.2"/><rect x="88.5" y="242.5" width="7" height="7" rx="1.2"/><rect x="106.5" y="242.5" width="7" height="7" rx="1.2"/><rect x="124.5" y="242.5" width="7" height="7" rx="1.2"/><rect x="142.5" y="242.5" width="7" height="7" rx="1.2"/><rect x="160.5" y="242.5" width="7" height="7" rx="1.2"/><rect x="178.5" y="242.5" width="7" height="7" rx="1.2"/><rect x="196.5" y="242.5" width="7" height="7" rx="1.2"/><rect x="214.5" y="242.5" width="7" height="7" rx="1.2"/><rect x="232.5" y="242.5" width="7" height="7" rx="1.2"/><rect x="250.5" y="242.5" width="7" height="7" rx="1.2"/><rect x="268.5" y="242.5" width="7" height="7" rx="1.2"/><rect x="286.5" y="242.5" width="7" height="7" rx="1.2"/><rect x="304.5" y="242.5" width="7" height="7" rx="1.2"/><rect x="322.5" y="242.5" width="7" height="7" rx="1.2"/><rect x="340.5" y="242.5" width="7" height="7" rx="1.2"/><rect x="358.5" y="242.5" width="7" height="7" rx="1.2"/><rect x="376.5" y="242.5" width="7" height="7" rx="1.2"/><rect x="394.5" y="242.5" width="7" height="7" rx="1.2"/><rect x="412.5" y="242.5" width="7" height="7" rx="1.2"/><rect x="430.5" y="242.5" width="7" height="7" rx="1.2"/><rect x="448.5" y="242.5" width="7" height="7" rx="1.2"/><rect x="70.5" y="476.5" width="7" height="7" rx="1.2"/><rect x="88.5" y="476.5" width="7" height="7" rx="1.2"/><rect x="106.5" y="476.5" width="7" height="7" rx="1.2"/><rect x="124.5" y="476.5" width="7" height="7" rx="1.2"/><rect x="142.5" y="476.5" width="7" height="7" rx="1.2"/><rect x="160.5" y="476.5" width="7" height="7" rx="1.2"/><rect x="178.5" y="476.5" width="7" height="7" rx="1.2"/><rect x="196.5" y="476.5" width="7" height="7" rx="1.2"/><rect x="214.5" y="476.5" width="7" height="7" rx="1.2"/><rect x="232.5" y="476.5" width="7" height="7" rx="1.2"/><rect x="250.5" y="476.5" width="7" height="7" rx="1.2"/><rect x="268.5" y="476.5" width="7" height="7" rx="1.2"/><rect x="286.5" y="476.5" width="7" height="7" rx="1.2"/><rect x="304.5" y="476.5" width="7" height="7" rx="1.2"/><rect x="322.5" y="476.5" width="7" height="7" rx="1.2"/><rect x="340.5" y="476.5" width="7" height="7" rx="1.2"/><rect x="358.5" y="476.5" width="7" height="7" rx="1.2"/><rect x="376.5" y="476.5" width="7" height="7" rx="1.2"/><rect x="394.5" y="476.5" width="7" height="7" rx="1.2"/><rect x="412.5" y="476.5" width="7" height="7" rx="1.2"/><rect x="430.5" y="476.5" width="7" height="7" rx="1.2"/><rect x="448.5" y="476.5" width="7" height="7" rx="1.2"/><rect x="70.5" y="494.5" width="7" height="7" rx="1.2"/><rect x="88.5" y="494.5" width="7" height="7" rx="1.2"/><rect x="106.5" y="494.5" width="7" height="7" rx="1.2"/><rect x="124.5" y="494.5" width="7" height="7" rx="1.2"/><rect x="142.5" y="494.5" width="7" height="7" rx="1.2"/><rect x="160.5" y="494.5" width="7" height="7" rx="1.2"/><rect x="178.5" y="494.5" width="7" height="7" rx="1.2"/><rect x="196.5" y="494.5" width="7" height="7" rx="1.2"/><rect x="214.5" y="494.5" width="7" height="7" rx="1.2"/><rect x="232.5" y="494.5" width="7" height="7" rx="1.2"/><rect x="250.5" y="494.5" width="7" height="7" rx="1.2"/><rect x="268.5" y="494.5" width="7" height="7" rx="1.2"/><rect x="286.5" y="494.5" width="7" height="7" rx="1.2"/><rect x="304.5" y="494.5" width="7" height="7" rx="1.2"/><rect x="322.5" y="494.5" width="7" height="7" rx="1.2"/><rect x="340.5" y="494.5" width="7" height="7" rx="1.2"/><rect x="358.5" y="494.5" width="7" height="7" rx="1.2"/><rect x="376.5" y="494.5" width="7" height="7" rx="1.2"/><rect x="394.5" y="494.5" width="7" height="7" rx="1.2"/><rect x="412.5" y="494.5" width="7" height="7" rx="1.2"/><rect x="430.5" y="494.5" width="7" height="7" rx="1.2"/><rect x="448.5" y="494.5" width="7" height="7" rx="1.2"/></g><text x="64.0" y="281.0" class="m" fill="#87867F" text-anchor="middle">a</text><text x="64.0" y="299.0" class="m" fill="#87867F" text-anchor="middle">b</text><text x="64.0" y="317.0" class="m" fill="#87867F" text-anchor="middle">c</text><text x="64.0" y="335.0" class="m" fill="#87867F" text-anchor="middle">d</text><text x="64.0" y="353.0" class="m" fill="#87867F" text-anchor="middle">e</text><text x="64.0" y="385.0" class="m" fill="#87867F" text-anchor="middle">f</text><text x="64.0" y="403.0" class="m" fill="#87867F" text-anchor="middle">g</text><text x="64.0" y="421.0" class="m" fill="#87867F" text-anchor="middle">h</text><text x="64.0" y="439.0" class="m" fill="#87867F" text-anchor="middle">i</text><text x="64.0" y="457.0" class="m" fill="#87867F" text-anchor="middle">j</text><text x="74.0" y="369.0" font-size="8.5" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#3D3D3A" text-anchor="middle">1</text><text x="92.0" y="369.0" font-size="8.5" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#3D3D3A" text-anchor="middle">2</text><text x="110.0" y="369.0" font-size="8.5" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#3D3D3A" text-anchor="middle">3</text><text x="128.0" y="369.0" font-size="8.5" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#3D3D3A" text-anchor="middle">4</text><text x="146.0" y="369.0" font-size="8.5" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#3D3D3A" text-anchor="middle">5</text><text x="164.0" y="369.0" font-size="8.5" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#3D3D3A" text-anchor="middle">6</text><text x="182.0" y="369.0" font-size="8.5" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#3D3D3A" text-anchor="middle">7</text><text x="200.0" y="369.0" font-size="8.5" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#3D3D3A" text-anchor="middle">8</text><text x="218.0" y="369.0" font-size="8.5" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#3D3D3A" text-anchor="middle">9</text><text x="236.0" y="369.0" font-size="8.5" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#3D3D3A" text-anchor="middle">10</text><text x="254.0" y="369.0" font-size="8.5" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#3D3D3A" text-anchor="middle">11</text><text x="272.0" y="369.0" font-size="8.5" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#3D3D3A" text-anchor="middle">12</text><text x="290.0" y="369.0" font-size="8.5" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#3D3D3A" text-anchor="middle">13</text><text x="308.0" y="369.0" font-size="8.5" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#3D3D3A" text-anchor="middle">14</text><text x="326.0" y="369.0" font-size="8.5" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#3D3D3A" text-anchor="middle">15</text><text x="344.0" y="369.0" font-size="8.5" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#3D3D3A" text-anchor="middle">16</text><text x="362.0" y="369.0" font-size="8.5" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#3D3D3A" text-anchor="middle">17</text><text x="380.0" y="369.0" font-size="8.5" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#3D3D3A" text-anchor="middle">18</text><text x="398.0" y="369.0" font-size="8.5" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#3D3D3A" text-anchor="middle">19</text><text x="416.0" y="369.0" font-size="8.5" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#3D3D3A" text-anchor="middle">20</text><text x="434.0" y="369.0" font-size="8.5" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#3D3D3A" text-anchor="middle">21</text><text x="452.0" y="369.0" font-size="8.5" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#3D3D3A" text-anchor="middle">22</text><g class="el" data-step="1" data-part="LDR1"><title>光敏電阻 LDR1:兩腳插在 d5 與 d7(沒有方向)</title><g class="halo"><circle cx="164.0" cy="332.0" r="21" fill="none" stroke="#D97757" stroke-width="2.5"/><circle cx="146.0" cy="332.0" r="8.5" fill="none" stroke="#D97757" stroke-width="2.5"/><circle cx="182.0" cy="332.0" r="8.5" fill="none" stroke="#D97757" stroke-width="2.5"/></g><g transform="translate(164.0 332.0) rotate(0.0)"><line x1="-18.0" y1="0" x2="18.0" y2="0" stroke="#87867F" stroke-width="2.2" stroke-linecap="round"/><circle cx="0" cy="0" r="14" fill="#D9C7A0" stroke="#3D3D3A" stroke-width="1.5"/><polyline points="-9,-5 -4,-1 -9,3 -4,7 1,3 -4,-1 1,-5 6,-1 1,3 6,7 9,4" fill="none" stroke="#3D3D3A" stroke-width="1.3" stroke-linejoin="round"/><circle cx="-18.0" cy="0" r="2.4" fill="#3D3D3A"/><circle cx="18.0" cy="0" r="2.4" fill="#3D3D3A"/></g><text x="164.0" y="359.0" class="m" fill="#3D3D3A" text-anchor="middle">光敏電阻</text></g><g class="el" data-step="2" data-part="R2"><title>電阻 R2(10kΩ):插在 b7 與 b11</title><g class="halo"><g transform="translate(218.0 296.0) rotate(0.0)"><rect x="-35.0" y="-12" width="70.0" height="24" rx="8" fill="none" stroke="#D97757" stroke-width="2.5"/></g><circle cx="182.0" cy="296.0" r="8.5" fill="none" stroke="#D97757" stroke-width="2.5"/><circle cx="254.0" cy="296.0" r="8.5" fill="none" stroke="#D97757" stroke-width="2.5"/></g><g transform="translate(218.0 296.0) rotate(0.0)"><line x1="-36.0" y1="0" x2="36.0" y2="0" stroke="#87867F" stroke-width="2.2" stroke-linecap="round"/><rect x="-29.0" y="-6" width="58.0" height="12" rx="5" fill="#E3DACC" stroke="#87867F" stroke-width="1.2"/><rect x="-22.0" y="-6" width="3" height="12" fill="#8B5A3C"/><rect x="-16.0" y="-6" width="3" height="12" fill="#141413"/><rect x="-10.0" y="-6" width="3" height="12" fill="#D97757"/><rect x="20.0" y="-6" width="3" height="12" fill="#C9A227"/><circle cx="-36.0" cy="0" r="2.4" fill="#3D3D3A"/><circle cx="36.0" cy="0" r="2.4" fill="#3D3D3A"/></g><text x="218.0" y="316.0" class="m" fill="#3D3D3A" text-anchor="middle">10kΩ</text></g><g class="el" data-step="2" data-part="R1"><title>電阻 R1(220Ω):插在 b15 與 b19</title><g class="halo"><g transform="translate(362.0 296.0) rotate(0.0)"><rect x="-35.0" y="-12" width="70.0" height="24" rx="8" fill="none" stroke="#D97757" stroke-width="2.5"/></g><circle cx="326.0" cy="296.0" r="8.5" fill="none" stroke="#D97757" stroke-width="2.5"/><circle cx="398.0" cy="296.0" r="8.5" fill="none" stroke="#D97757" stroke-width="2.5"/></g><g transform="translate(362.0 296.0) rotate(0.0)"><line x1="-36.0" y1="0" x2="36.0" y2="0" stroke="#87867F" stroke-width="2.2" stroke-linecap="round"/><rect x="-29.0" y="-6" width="58.0" height="12" rx="5" fill="#E3DACC" stroke="#87867F" stroke-width="1.2"/><rect x="-22.0" y="-6" width="3" height="12" fill="#B04A3F"/><rect x="-16.0" y="-6" width="3" height="12" fill="#B04A3F"/><rect x="-10.0" y="-6" width="3" height="12" fill="#8B5A3C"/><rect x="20.0" y="-6" width="3" height="12" fill="#C9A227"/><circle cx="-36.0" cy="0" r="2.4" fill="#3D3D3A"/><circle cx="36.0" cy="0" r="2.4" fill="#3D3D3A"/></g><text x="362.0" y="316.0" class="m" fill="#3D3D3A" text-anchor="middle">220Ω</text></g><g class="el" data-step="2" data-part="LED1"><title>紅色 LED LED1:長腳(+)插在 d19,短腳(−)插在 d20</title><g class="halo"><circle cx="407.0" cy="332.0" r="19" fill="none" stroke="#D97757" stroke-width="2.5"/><circle cx="398.0" cy="332.0" r="8.5" fill="none" stroke="#D97757" stroke-width="2.5"/><circle cx="416.0" cy="332.0" r="8.5" fill="none" stroke="#D97757" stroke-width="2.5"/></g><g transform="translate(407.0 332.0) rotate(0.0)"><circle cx="0" cy="0" r="11" fill="#F2C9C3" stroke="#B04A3F" stroke-width="1.8"/><line x1="8" y1="-7.5" x2="8" y2="7.5" stroke="#B04A3F" stroke-width="2.4" stroke-linecap="round"/><circle cx="-9.0" cy="0" r="2.4" fill="#3D3D3A"/><circle cx="9.0" cy="0" r="2.4" fill="#3D3D3A"/><text x="-9.0" y="-15" class="mb" fill="#B04A3F" text-anchor="middle">+</text><text x="9.0" y="-15" class="mb" fill="#3D3D3A" text-anchor="middle">−</text></g></g><g class="el" data-step="3" data-part="P"><title>紅色杜邦線 P:a5 ↔ t+5</title><g class="halo"><path d="M146.0,278.0 L146.0,228.0" fill="none" stroke="#D97757" stroke-width="13" stroke-linecap="round" stroke-linejoin="round" opacity=".35"/><circle cx="146.0" cy="278.0" r="8.5" fill="none" stroke="#D97757" stroke-width="2.5"/><circle cx="146.0" cy="228.0" r="8.5" fill="none" stroke="#D97757" stroke-width="2.5"/></g><path d="M146.0,278.0 L146.0,228.0" fill="none" stroke="#141413" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/><path d="M146.0,278.0 L146.0,228.0" fill="none" stroke="#B04A3F" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="146.0" cy="278.0" r="4" fill="#B04A3F" stroke="#141413" stroke-width="1.5"/><circle cx="146.0" cy="228.0" r="4" fill="#B04A3F" stroke="#141413" stroke-width="1.5"/></g><g class="el" data-step="3" data-part="G10"><title>黑色杜邦線 G10:a11 ↔ t-11</title><g class="halo"><path d="M254.0,278.0 L254.0,246.0" fill="none" stroke="#D97757" stroke-width="13" stroke-linecap="round" stroke-linejoin="round" opacity=".35"/><circle cx="254.0" cy="278.0" r="8.5" fill="none" stroke="#D97757" stroke-width="2.5"/><circle cx="254.0" cy="246.0" r="8.5" fill="none" stroke="#D97757" stroke-width="2.5"/></g><path d="M254.0,278.0 L254.0,246.0" fill="none" stroke="#141413" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/><path d="M254.0,278.0 L254.0,246.0" fill="none" stroke="#141413" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="254.0" cy="278.0" r="4" fill="#141413" stroke="#141413" stroke-width="1.5"/><circle cx="254.0" cy="246.0" r="4" fill="#141413" stroke="#141413" stroke-width="1.5"/></g><g class="el" data-step="3" data-part="K1"><title>黑色杜邦線 K1:a20 ↔ t-20</title><g class="halo"><path d="M416.0,278.0 L416.0,246.0" fill="none" stroke="#D97757" stroke-width="13" stroke-linecap="round" stroke-linejoin="round" opacity=".35"/><circle cx="416.0" cy="278.0" r="8.5" fill="none" stroke="#D97757" stroke-width="2.5"/><circle cx="416.0" cy="246.0" r="8.5" fill="none" stroke="#D97757" stroke-width="2.5"/></g><path d="M416.0,278.0 L416.0,246.0" fill="none" stroke="#141413" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/><path d="M416.0,278.0 L416.0,246.0" fill="none" stroke="#141413" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="416.0" cy="278.0" r="4" fill="#141413" stroke="#141413" stroke-width="1.5"/><circle cx="416.0" cy="246.0" r="4" fill="#141413" stroke="#141413" stroke-width="1.5"/></g><g class="el" data-step="4" data-part="SA"><title>綠色杜邦線 SA:UNO.A0 ↔ a7</title><g class="halo"><path d="M184.0,48.0 L184.0,16.0 L18.0,16.0 L18.0,192.0 L182.0,192.0 L182.0,278.0" fill="none" stroke="#D97757" stroke-width="13" stroke-linecap="round" stroke-linejoin="round" opacity=".35"/><circle cx="182.0" cy="278.0" r="8.5" fill="none" stroke="#D97757" stroke-width="2.5"/><circle cx="184.0" cy="48.0" r="9" fill="none" stroke="#D97757" stroke-width="2.5"/></g><path d="M184.0,48.0 L184.0,16.0 L18.0,16.0 L18.0,192.0 L182.0,192.0 L182.0,278.0" fill="none" stroke="#141413" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/><path d="M184.0,48.0 L184.0,16.0 L18.0,16.0 L18.0,192.0 L182.0,192.0 L182.0,278.0" fill="none" stroke="#788C5D" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="184.0" cy="48.0" r="4" fill="#788C5D" stroke="#141413" stroke-width="1.5"/><circle cx="182.0" cy="278.0" r="4" fill="#788C5D" stroke="#141413" stroke-width="1.5"/></g><g class="el" data-step="4" data-part="S1"><title>橘色杜邦線 S1:UNO.D8 ↔ a15</title><g class="halo"><path d="M226.0,132.0 C226.0,205.0 326.0,205.0 326.0,278.0" fill="none" stroke="#D97757" stroke-width="13" stroke-linecap="round" stroke-linejoin="round" opacity=".35"/><circle cx="326.0" cy="278.0" r="8.5" fill="none" stroke="#D97757" stroke-width="2.5"/><circle cx="226.0" cy="132.0" r="9" fill="none" stroke="#D97757" stroke-width="2.5"/></g><path d="M226.0,132.0 C226.0,205.0 326.0,205.0 326.0,278.0" fill="none" stroke="#141413" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/><path d="M226.0,132.0 C226.0,205.0 326.0,205.0 326.0,278.0" fill="none" stroke="#D97757" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="226.0" cy="132.0" r="4" fill="#D97757" stroke="#141413" stroke-width="1.5"/><circle cx="326.0" cy="278.0" r="4" fill="#D97757" stroke="#141413" stroke-width="1.5"/></g><g class="el" data-step="5" data-part="V5"><title>紅色杜邦線 V5:UNO.5V ↔ t+1</title><g class="halo"><path d="M274.0,48.0 L274.0,8.0 L8.0,8.0 L8.0,200.0 L74.0,200.0 L74.0,228.0" fill="none" stroke="#D97757" stroke-width="13" stroke-linecap="round" stroke-linejoin="round" opacity=".35"/><circle cx="74.0" cy="228.0" r="8.5" fill="none" stroke="#D97757" stroke-width="2.5"/><circle cx="274.0" cy="48.0" r="9" fill="none" stroke="#D97757" stroke-width="2.5"/></g><path d="M274.0,48.0 L274.0,8.0 L8.0,8.0 L8.0,200.0 L74.0,200.0 L74.0,228.0" fill="none" stroke="#141413" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/><path d="M274.0,48.0 L274.0,8.0 L8.0,8.0 L8.0,200.0 L74.0,200.0 L74.0,228.0" fill="none" stroke="#B04A3F" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="274.0" cy="48.0" r="4" fill="#B04A3F" stroke="#141413" stroke-width="1.5"/><circle cx="74.0" cy="228.0" r="4" fill="#B04A3F" stroke="#141413" stroke-width="1.5"/></g><g class="el" data-step="5" data-part="G"><title>黑色杜邦線 G:UNO.GND ↔ t-22</title><g class="halo"><path d="M334.0,132.0 C334.0,189.0 452.0,189.0 452.0,246.0" fill="none" stroke="#D97757" stroke-width="13" stroke-linecap="round" stroke-linejoin="round" opacity=".35"/><circle cx="452.0" cy="246.0" r="8.5" fill="none" stroke="#D97757" stroke-width="2.5"/><circle cx="334.0" cy="132.0" r="9" fill="none" stroke="#D97757" stroke-width="2.5"/></g><path d="M334.0,132.0 C334.0,189.0 452.0,189.0 452.0,246.0" fill="none" stroke="#141413" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/><path d="M334.0,132.0 C334.0,189.0 452.0,189.0 452.0,246.0" fill="none" stroke="#141413" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="334.0" cy="132.0" r="4" fill="#141413" stroke="#141413" stroke-width="1.5"/><circle cx="452.0" cy="246.0" r="4" fill="#141413" stroke="#141413" stroke-width="1.5"/></g>
+</svg></div>
+<div class="wnav"><button type="button" class="ghost" data-w="prev">← 上一步</button><span class="wdots" role="group" aria-label="跳到步驟"><button type="button" class="wdot" data-w="1" aria-label="第 1 步">1</button><button type="button" class="wdot" data-w="2" aria-label="第 2 步">2</button><button type="button" class="wdot" data-w="3" aria-label="第 3 步">3</button><button type="button" class="wdot" data-w="4" aria-label="第 4 步">4</button><button type="button" class="wdot" data-w="5" aria-label="第 5 步">5</button></span><button type="button" class="primary" data-w="next">下一步 →</button><button type="button" class="ghost" data-w="all">看完整接線</button><button type="button" class="ghost" data-w="reset">Reset</button></div>
+<div class="wcap" aria-live="polite"></div>
+</div>
+<p class="sk">Uno 轉了 180 度擺放:A0、5V 在上緣,<b>兩條線要繞過 Uno 左邊</b>;數位腳位(8、GND)在下緣。圖只畫左邊 22 欄,以欄號與 a–j 為準(手機上可以左右滑動圖)。</p>
+<h3 style="margin-top:26px">接線表</h3>
+<div class="table-wrap"><div class="gt g3w"><div class="row"><div class="cell head">步驟</div><div class="cell head">零件</div><div class="cell head">插在哪裡</div></div><div class="row"><div class="cell term">1</div><div class="cell">光敏電阻(LDR1)</div><div class="cell">兩腳分別插 <code>d5</code> 與 <code>d7</code>(光敏電阻沒有方向,兩腳可對調)</div></div><div class="row"><div class="cell term">2</div><div class="cell">電阻 R2(10kΩ)</div><div class="cell">兩腳分別插在 <code>b7</code> 與 <code>b11</code>(電阻沒有方向,兩腳可對調)</div></div><div class="row"><div class="cell term">2</div><div class="cell">電阻 R1(220Ω)</div><div class="cell">兩腳分別插在 <code>b15</code> 與 <code>b19</code>(電阻沒有方向,兩腳可對調)</div></div><div class="row"><div class="cell term">2</div><div class="cell">紅色 LED(LED1)</div><div class="cell"><strong>長腳(+)</strong>插 <code>d19</code>,<strong>短腳(−)</strong>插 <code>d20</code></div></div><div class="row"><div class="cell term">3</div><div class="cell">紅色杜邦線 P</div><div class="cell">一端插 麵包板 <code>a5</code>,另一端插 麵包板 <code>t+5</code></div></div><div class="row"><div class="cell term">3</div><div class="cell">黑色杜邦線 G10</div><div class="cell">一端插 麵包板 <code>a11</code>,另一端插 麵包板 <code>t-11</code></div></div><div class="row"><div class="cell term">3</div><div class="cell">黑色杜邦線 K1</div><div class="cell">一端插 麵包板 <code>a20</code>,另一端插 麵包板 <code>t-20</code></div></div><div class="row"><div class="cell term">4</div><div class="cell">綠色杜邦線 SA</div><div class="cell">一端插 Uno 的 A0 腳,另一端插 麵包板 <code>a7</code></div></div><div class="row"><div class="cell term">4</div><div class="cell">橘色杜邦線 S1</div><div class="cell">一端插 Uno 數位腳位 8(板上標示 8),另一端插 麵包板 <code>a15</code></div></div><div class="row"><div class="cell term">5</div><div class="cell">紅色杜邦線 V5</div><div class="cell">一端插 Uno 的 5V 腳,另一端插 麵包板 <code>t+1</code></div></div><div class="row"><div class="cell term">5</div><div class="cell">黑色杜邦線 G</div><div class="cell">一端插 Uno 的 GND 腳,另一端插 麵包板 <code>t-22</code></div></div></div></div>
+<div class="warn"><b class="l">最容易接錯的地方</b><b>A0 的線要接在「光敏電阻與 10 kΩ 電阻相接」的那一欄(第 7 欄)</b>。接在 5V 軌或 GND 軌,讀值會永遠是 1023 或 0。接線前先拔 USB。</div>
+<h3 style="margin-top:26px">原理圖</h3>
+<p class="sub">三條路:<b>5V → 光敏電阻 → A0</b>、<b>A0 → 10 kΩ → GND</b>(兩個 A0 是同一點),以及 LED 那一組。</p>
+<div class="canvas"><svg viewBox="0 0 448 400" role="img" aria-label="原理圖:UNO.5V → LDR1 → UNO.A0 / UNO.A0 → R2 → UNO.GND / UNO.D8 → R1 → LED1 → UNO.GND" style="min-width:520px">
+<defs><style>.m{font:9px ui-monospace,Menlo,Consolas,monospace}.mb{font:600 10px ui-monospace,Menlo,Consolas,monospace}.s{font:11px system-ui,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif}.sb{font:600 11px system-ui,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif}</style></defs>
+<rect width="448" height="400" fill="#FFFFFF"/>
+<rect x="22" y="59" width="74" height="30" rx="8" fill="#F0EEE6" stroke="#3D3D3A" stroke-width="1.5"/><text x="59.0" y="78.0" class="mb" fill="#141413" text-anchor="middle">Uno 5V</text><text x="59.0" y="104.0" class="s" fill="#87867F" text-anchor="middle">(5 V 電源從這裡出來)</text><line x1="96" y1="74" x2="136" y2="74" stroke="#3D3D3A" stroke-width="2"/><g class="el" data-part="LDR1" tabindex="0" role="button" aria-label="光敏電阻 LDR1,點一下看它在麵包板上的位置"><rect class="halo" x="135" y="34" width="92" height="68" rx="10" fill="none" stroke="#D97757" stroke-width="2.5"/><rect x="135" y="34" width="92" height="68" rx="10" fill="#FFFFFF" opacity="0.001"/><polyline points="140.0,74.0 145.9,74.0 151.7,61.0 163.4,87.0 175.1,61.0 186.9,87.0 198.6,61.0 210.3,87.0 216.1,74.0 222.0,74.0" fill="none" stroke="#3D3D3A" stroke-width="2" stroke-linejoin="round"/><path d="M164,36 l9,9 m-5,0 l5,0 l0,-5" fill="none" stroke="#B04A3F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" transform="rotate(0)"/><path d="M178,36 l9,9 m-5,0 l5,0 l0,-5" fill="none" stroke="#B04A3F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" transform="rotate(0)"/><text x="181.0" y="108.0" class="mb" fill="#141413" text-anchor="middle">LDR1  光敏電阻</text></g><circle cx="181.0" cy="22.0" r="10" fill="#D97757"/><text x="181.0" y="25.5" class="mb" fill="#FFFFFF" text-anchor="middle">1</text><line x1="136" y1="74" x2="140" y2="74" stroke="#3D3D3A" stroke-width="2"/><line x1="222" y1="74" x2="262" y2="74" stroke="#3D3D3A" stroke-width="2"/><line x1="262" y1="74" x2="302" y2="74" stroke="#3D3D3A" stroke-width="2"/><rect x="302" y="59" width="74" height="30" rx="8" fill="#F0EEE6" stroke="#3D3D3A" stroke-width="1.5"/><text x="339.0" y="78.0" class="mb" fill="#141413" text-anchor="middle">Uno A0</text><rect x="22" y="177" width="74" height="30" rx="8" fill="#F0EEE6" stroke="#3D3D3A" stroke-width="1.5"/><text x="59.0" y="196.0" class="mb" fill="#141413" text-anchor="middle">Uno A0</text><line x1="96" y1="192" x2="136" y2="192" stroke="#3D3D3A" stroke-width="2"/><g class="el" data-part="R2" tabindex="0" role="button" aria-label="電阻 R2,點一下看它在麵包板上的位置"><rect x="136" y="169" width="90" height="46" rx="8" fill="#FFFFFF" opacity="0.001"/><rect class="halo" x="135" y="168" width="92" height="48" rx="10" fill="none" stroke="#D97757" stroke-width="2.5"/><polyline points="140.0,192.0 145.9,192.0 151.7,179.0 163.4,205.0 175.1,179.0 186.9,205.0 198.6,179.0 210.3,205.0 216.1,192.0 222.0,192.0" fill="none" stroke="#3D3D3A" stroke-width="2" stroke-linejoin="round"/><text x="181.0" y="226.0" class="mb" fill="#141413" text-anchor="middle">R2  10kΩ</text></g><circle cx="181.0" cy="158.0" r="10" fill="#D97757"/><text x="181.0" y="161.5" class="mb" fill="#FFFFFF" text-anchor="middle">2</text><line x1="136" y1="192" x2="140" y2="192" stroke="#3D3D3A" stroke-width="2"/><line x1="222" y1="192" x2="262" y2="192" stroke="#3D3D3A" stroke-width="2"/><line x1="262" y1="192" x2="302" y2="192" stroke="#3D3D3A" stroke-width="2"/><line x1="302" y1="192" x2="302" y2="226" stroke="#3D3D3A" stroke-width="2"/><line x1="289" y1="226" x2="315" y2="226" stroke="#3D3D3A" stroke-width="2.2" stroke-linecap="round"/><line x1="293" y1="233" x2="310" y2="233" stroke="#3D3D3A" stroke-width="2.2" stroke-linecap="round"/><line x1="298" y1="240" x2="306" y2="240" stroke="#3D3D3A" stroke-width="2.2" stroke-linecap="round"/><text x="302.0" y="258.0" class="s" fill="#87867F" text-anchor="middle">GND(接地,0 V)</text><circle cx="332.0" cy="232.0" r="10" fill="#D97757"/><text x="332.0" y="235.5" class="mb" fill="#FFFFFF" text-anchor="middle">3</text><rect x="22" y="295" width="74" height="30" rx="8" fill="#F0EEE6" stroke="#3D3D3A" stroke-width="1.5"/><text x="59.0" y="314.0" class="mb" fill="#141413" text-anchor="middle">Uno D8</text><line x1="96" y1="310" x2="136" y2="310" stroke="#3D3D3A" stroke-width="2"/><g class="el" data-part="R1" tabindex="0" role="button" aria-label="電阻 R1,點一下看它在麵包板上的位置"><rect x="136" y="287" width="90" height="46" rx="8" fill="#FFFFFF" opacity="0.001"/><rect class="halo" x="135" y="286" width="92" height="48" rx="10" fill="none" stroke="#D97757" stroke-width="2.5"/><polyline points="140.0,310.0 145.9,310.0 151.7,297.0 163.4,323.0 175.1,297.0 186.9,323.0 198.6,297.0 210.3,323.0 216.1,310.0 222.0,310.0" fill="none" stroke="#3D3D3A" stroke-width="2" stroke-linejoin="round"/><text x="181.0" y="344.0" class="mb" fill="#141413" text-anchor="middle">R1  220Ω</text></g><line x1="136" y1="310" x2="140" y2="310" stroke="#3D3D3A" stroke-width="2"/><line x1="222" y1="310" x2="262" y2="310" stroke="#3D3D3A" stroke-width="2"/><g class="el" data-part="LED1" tabindex="0" role="button" aria-label="LED LED1,點一下看它在麵包板上的位置"><rect class="halo" x="254" y="282" width="76" height="56" rx="10" fill="none" stroke="#D97757" stroke-width="2.5"/><rect x="254" y="282" width="76" height="56" rx="10" fill="#FFFFFF" opacity="0.001"/><polygon points="262,292 262,328 296,310" fill="#F2C9C3" stroke="#3D3D3A" stroke-width="2" stroke-linejoin="round"/><line x1="298" y1="292" x2="298" y2="328" stroke="#3D3D3A" stroke-width="2.6" stroke-linecap="round"/><path d="M288,288 l9,-9 m-5,0 l5,0 l0,5" fill="none" stroke="#B04A3F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M299,288 l9,-9 m-5,0 l5,0 l0,5" fill="none" stroke="#B04A3F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><text x="266.0" y="346.0" class="m" fill="#B04A3F" text-anchor="middle">A(+)</text><text x="298.0" y="346.0" class="m" fill="#3D3D3A" text-anchor="middle">K(−)</text><text x="280.0" y="362.0" class="mb" fill="#141413" text-anchor="middle">LED1  紅色</text></g><circle cx="280.0" cy="272.0" r="10" fill="#D97757"/><text x="280.0" y="275.5" class="mb" fill="#FFFFFF" text-anchor="middle">4</text><line x1="298" y1="310" x2="338" y2="310" stroke="#3D3D3A" stroke-width="2"/><line x1="338" y1="310" x2="378" y2="310" stroke="#3D3D3A" stroke-width="2"/><line x1="378" y1="310" x2="378" y2="344" stroke="#3D3D3A" stroke-width="2"/><line x1="365" y1="344" x2="391" y2="344" stroke="#3D3D3A" stroke-width="2.2" stroke-linecap="round"/><line x1="369" y1="351" x2="386" y2="351" stroke="#3D3D3A" stroke-width="2.2" stroke-linecap="round"/><line x1="374" y1="358" x2="382" y2="358" stroke="#3D3D3A" stroke-width="2.2" stroke-linecap="round"/><text x="378.0" y="376.0" class="s" fill="#87867F" text-anchor="middle">GND(接地,0 V)</text>
+</svg></div>
+<ol class="legend" style="list-style:none"><li><span class="n">1</span><span><span class="newsym">新符號</span><b>光敏電阻(LDR)</b>:電阻加兩個<b>指向它的箭頭</b>(光)。光越亮,電阻越小。</span></li></ol>
+<div class="linkbox" id="linkInfo" style="margin-top:12px">點原理圖裡的光敏電阻、電阻或 LED,看它在麵包板上是哪一個。</div>
+</section>
+
+<section id="fill">
+  <h2>先填入你的數值</h2>
+  <hr class="rule">
+<div class="panel"><div class="fill f4"><div><label for="in-gap">校準時,印出數字的間隔(毫秒)</label><input id="in-gap" data-k="gap" data-ns="1" autocomplete="off" spellcheck="false"></div><div><label for="in-thr">小夜燈的門檻(程式二)</label><input id="in-thr" data-k="thr" data-ns="1" autocomplete="off" spellcheck="false"></div><div><label for="in-dark">遲滯:低於這個才開燈(程式三)</label><input id="in-dark" data-k="dark" data-ns="1" autocomplete="off" spellcheck="false"></div><div><label for="in-bright">遲滯:高於這個才關燈(程式三)</label><input id="in-bright" data-k="bright" data-ns="1" autocomplete="off" spellcheck="false"></div></div><div class="fill-foot"><button type="button" class="ghost" id="resetBtn">Reset</button><span>空白時顯示範例值;<span class="slot">橘底</span>文字就是會被替換的部分。</span></div></div>
+<p class="sk">空白時用範例值:500、400、300、500。<b>先做完程式一的校準,再回來改這裡。</b></p>
+</section>
+
+<section id="code1">
+  <h2>程式一:先量一量,知道你的光是多少</h2>
+  <hr class="rule">
+<div class="cmd"><div class="cap">校準用:印出光線讀值</div><pre data-tpl data-cpp>// 第 10 篇:先量量看——印出光線的讀值
+const int LDR_PIN = A0;
+
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  int light = analogRead(LDR_PIN);   // 越亮,數字越大(這個接法)
+  Serial.println(light);
+  delay({gap});
+}
+</pre><button type="button" class="copy">Copy</button></div>
+<div class="steps">
+<div class="step"><div class="num">1</div><div>
+<h3>上傳,打開 Serial Monitor(baud 9600)</h3>
+<p class="why">第 8 篇學過。</p>
+
+</div></div>
+<div class="step"><div class="num">2</div><div>
+<h3>記下兩個數字</h3>
+<p class="why">這兩個數字決定程式二的門檻。</p>
+<ol class="ops"><li>在你平常的<b>室內光線</b>下,記下讀值(例如 650)。</li><li>用手<b>完全蓋住光敏電阻</b>(或關燈),記下讀值(例如 120)。</li></ol>
+<div class="see"><b class="l">你會看到</b>光亮時數字大、蓋住時數字小。你的兩個數字一定和範例不一樣,沒關係。</div>
+</div></div>
+</div>
+<div class="tip"><b class="l">小技巧</b><b>門檻怎麼選?</b>取兩個數字的中間值。亮 650、暗 120 → 門檻 ≈ 385,就填 400 左右。</div>
+</section>
+
+<section id="code2">
+  <h2>程式二:小夜燈(天黑就亮)</h2>
+  <hr class="rule">
+<div class="cmd"><div class="cap">讀值低於門檻,就開燈</div><pre data-tpl data-cpp>// 第 10 篇:小夜燈(天黑就亮)
+const int LDR_PIN = A0;
+const int LED_PIN = 8;
+const int THRESHOLD = {thr};      // 門檻:讀值低於它就算「天黑了」
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(LED_PIN, OUTPUT);
+}
+
+void loop() {
+  int light = analogRead(LDR_PIN);
+  Serial.println(light);
+  if (light &lt; THRESHOLD) {          // 比門檻小:暗
+    digitalWrite(LED_PIN, HIGH);    // 開燈
+  } else {                          // 否則:亮
+    digitalWrite(LED_PIN, LOW);     // 關燈
+  }
+  delay(100);
+}
+</pre><button type="button" class="copy">Copy</button></div>
+<div class="table-wrap"><div class="gt g2"><div class="row"><div class="cell head">這一行</div><div class="cell head">它在做什麼</div></div><div class="row"><div class="cell term"><code>const int THRESHOLD = 400;</code></div><div class="cell"><b>門檻</b>:用名字取代數字,之後只要改這一處。</div></div><div class="row"><div class="cell term"><code>if (light &lt; THRESHOLD) { … } else { … }</code></div><div class="cell">讀值<b>小於</b>門檻(暗)就開燈,否則關燈。<code>&lt;</code> 是「小於」。</div></div><div class="row"><div class="cell term"><code>delay(100);</code></div><div class="cell">每 0.1 秒量一次就夠了,不必一直量。</div></div></div></div>
+<div class="see"><b class="l">你會看到</b><b>手蓋住光敏電阻,LED 亮;手移開,LED 滅</b>。若效果相反或沒反應,先看常見卡關。</div>
+<div class="warn"><b class="l">會有個問題</b><b>如果讀值剛好停在門檻附近</b>(例如黃昏,光線慢慢變暗),LED 可能<b>不停閃爍</b>:讀值一下 399、一下 401,一下低於、一下高於。下一個程式解決它。</div>
+</section>
+
+<section id="code3">
+  <h2>程式三:遲滯 —— 兩個門檻,不再閃爍</h2>
+  <hr class="rule">
+<p class="sub" style="margin-bottom:14px">做法:<b>開燈</b>與<b>關燈</b>用<b>不同</b>的門檻。低於 <code>DARK</code> 才開燈,要高於 <code>BRIGHT</code> 才關燈,兩者之間<b>維持原狀</b>。這叫<b>遲滯</b>(hysteresis),冷氣、恆溫器也是這樣做。</p>
+<div class="cmd"><div class="cap">遲滯:DARK 開燈、BRIGHT 關燈</div><pre data-tpl data-cpp>// 第 10 篇:加上「遲滯」——兩個門檻,避免在邊界閃爍
+const int LDR_PIN = A0;
+const int LED_PIN = 8;
+const int DARK = {dark};          // 低於這個值,才開燈
+const int BRIGHT = {bright};      // 高於這個值,才關燈
+bool ledOn = false;               // 記住燈現在是亮或滅
+
+void setup() {
+  pinMode(LED_PIN, OUTPUT);
+}
+
+void loop() {
+  int light = analogRead(LDR_PIN);
+  if (ledOn == false &amp;&amp; light &lt; DARK) {          // 燈是滅的,而且夠暗了 → 開燈
+    ledOn = true;
+    digitalWrite(LED_PIN, HIGH);
+  } else if (ledOn == true &amp;&amp; light &gt; BRIGHT) {  // 燈是亮的,而且夠亮了 → 關燈
+    ledOn = false;
+    digitalWrite(LED_PIN, LOW);
+  }
+  delay(100);
+}
+</pre><button type="button" class="copy">Copy</button></div>
+<div class="table-wrap"><div class="gt g2"><div class="row"><div class="cell head">這一行</div><div class="cell head">它在做什麼</div></div><div class="row"><div class="cell term"><code>bool ledOn = false;</code></div><div class="cell">記住燈現在的狀態(第 7 篇學過布林變數)。判斷時要「看狀態」。</div></div><div class="row"><div class="cell term"><code>if (ledOn == false &amp;&amp; light &lt; DARK)</code></div><div class="cell"><code>&amp;&amp;</code> 是「而且」:<b>兩個條件都成立</b>才做。燈是滅的、<b>而且</b>夠暗,才開燈。</div></div><div class="row"><div class="cell term"><code>else if (ledOn == true &amp;&amp; light &gt; BRIGHT)</code></div><div class="cell">否則,燈是亮的、而且夠亮,才關燈。介於兩個門檻之間,兩個條件都不成立,什麼都不做。</div></div></div></div>
+<div class="table-wrap"><div class="gt g3"><div class="row"><div class="cell head">讀值</div><div class="cell head">只有一個門檻(400)</div><div class="cell head">遲滯(開燈 300、關燈 500)</div></div><div class="row"><div class="cell term">800(亮)</div><div class="cell">滅</div><div class="cell">滅</div></div><div class="row"><div class="cell term">350(黃昏)</div><div class="cell">亮</div><div class="cell"><b>維持原狀(滅)</b></div></div><div class="row"><div class="cell term">250(暗)</div><div class="cell">亮</div><div class="cell">亮</div></div><div class="row"><div class="cell term">450(微亮)</div><div class="cell">滅</div><div class="cell"><b>維持原狀(亮)</b></div></div><div class="row"><div class="cell term">800(亮)</div><div class="cell">滅</div><div class="cell">滅</div></div></div></div>
+<div class="tip"><b class="l">小技巧</b>邏輯運算:<code>&amp;&amp;</code> 而且、<code>||</code> 或者、<code>!</code> 不是。例如 <code>if (a &gt; 3 || b == 0)</code> 表示 a 大於 3 <b>或者</b> b 等於 0。</div>
+</section>
+
+<section id="try">
+  <h2>改改看</h2>
+  <hr class="rule">
+<div class="table-wrap"><div class="gt g3"><div class="row"><div class="cell head">挑戰</div><div class="cell head">怎麼改</div><div class="cell head">你會看到</div></div><div class="row"><div class="cell term">反過來:亮才亮</div><div class="cell">程式二把 <code>&lt;</code> 改成 <code>&gt;</code></div><div class="cell">光越強 LED 越亮,蓋住就熄。</div></div><div class="row"><div class="cell term">調靈敏度</div><div class="cell">把門檻往亮的方向調(例如 600)</div><div class="cell">不用很暗就會開燈。</div></div><div class="row"><div class="cell term">漸亮的夜燈</div><div class="cell">第 9 篇的 <code>map</code> 搭配 <code>analogWrite</code>,讓 LED 亮度和環境亮度相反</div><div class="cell">天越暗,燈越亮。LED 要改接 9 號腳。</div></div></div></div>
+</section>
+
+<section id="gotchas">
+  <h2>常見卡關</h2>
+  <hr class="rule">
+<details open><summary>讀值固定在 1023,或固定在 0</summary><div class="body"><ol class="ops"><li><b>A0 沒接在兩顆電阻相接的那一欄</b>:接到 5V 軌 → 永遠 1023;接到 GND 軌 → 永遠 0。</li><li>10 kΩ 電阻沒有接到 GND,或光敏電阻沒有接到 5V:分壓電路斷了,A0 浮接。</li><li>光敏電阻或 10 kΩ 電阻的腳沒插到底。</li></ol></div></details><details><summary>蓋住和不蓋,讀值差別很小</summary><div class="body"><p>光敏電阻朝向的光線太均勻,或固定電阻不適合。用手電筒對著它照,再完全蓋住,看範圍有多大。必要時把 10 kΩ 換成 4.7 kΩ 或 22 kΩ 試試(要重新校準門檻)。</p></div></details><details><summary>效果相反(亮的時候 LED 反而亮)</summary><div class="body"><p>檢查光敏電阻和 10 kΩ 的位置有沒有接反(光敏電阻要接 5V 那一側)。或直接在程式裡把 <code>&lt;</code> 換成 <code>&gt;</code>。</p></div></details><details><summary>LED 在黃昏時閃爍</summary><div class="body"><p>用程式三(遲滯)。把 <code>DARK</code> 與 <code>BRIGHT</code> 的距離拉大一點,雜訊就不會讓它來回切換。</p></div></details><details><summary>LED 不亮</summary><div class="body"><p>先檢查 LED 的組(和第 3 篇一樣):長腳方向、同欄、8 號腳、GND。再用程式一確認光線讀值有變化。</p></div></details>
+</section>
+
+<section id="practice">
+  <h2>動手演練與延伸閱讀</h2>
+  <hr class="rule">
+<div class="panel sim" data-simgroup>
+<h3>情境:不論亮或暗,Serial Monitor 的讀值都是 1023</h3>
+<p style="margin:6px 0 0;color:var(--gray-700)">你應該先?</p>
+<div class="sim-buttons" role="group" aria-label="選擇做法"><button type="button" data-sim="a1">改程式的門檻</button><button type="button" data-sim="a2">檢查 A0 是否接在光敏電阻與 10 kΩ 電阻相接的那一欄</button><button type="button" data-sim="a3">換更大的 LED 電阻</button></div>
+<div class="sim-result" aria-live="polite">選一個做法,看看對不對。</div>
+</div>
+<div class="panel" id="quiz">
+    <div class="quiz-top"><h3 style="margin:0">快速測驗</h3><span class="count" id="quizCount">1 / 1</span></div>
+    <div class="question" id="quizQ"></div>
+    <div class="answers" id="quizAns"></div>
+    <div class="feedback" id="quizFb" aria-live="polite"></div>
+    <div class="quiz-foot"><span id="quizScore">答對 0 題</span><button type="button" class="primary" id="quizNext" disabled>下一題 →</button></div>
+  </div>
+<h3 style="margin-top:30px">做完之後,對照這張清單</h3>
+<div class="panel">
+<div class="checks" id="checks"><label class="check-item"><input type="checkbox"><span>我知道光敏電阻光越亮,電阻越小。</span></label><label class="check-item"><input type="checkbox"><span>我能解釋分壓電路怎麼把電阻變化換成電壓變化。</span></label><label class="check-item"><input type="checkbox"><span>我用 Serial 量出自己亮與暗的讀值,並選出門檻。</span></label><label class="check-item"><input type="checkbox"><span>我的小夜燈:蓋住就亮、移開就滅。</span></label><label class="check-item"><input type="checkbox"><span>我知道門檻附近會閃爍,並懂得用兩個門檻(遲滯)解決。</span></label><label class="check-item"><input type="checkbox"><span>我會用 <code>&amp;&amp;</code> 組合兩個條件。</span></label></div>
+<div class="check-progress" id="checkProgress">已完成 0 / 6 項</div>
+<div class="bar"><span id="checkBar"></span></div>
+</div>
+<h3 style="margin-top:30px">Arduino 官方文件</h3>
+<div class="resources"><a class="resource" href="https://docs.arduino.cc/language-reference/en/functions/analog-io/analogread/" target="_blank" rel="noopener"><b>analogRead()</b><small>Arduino language reference</small></a><a class="resource" href="https://docs.arduino.cc/language-reference/en/structure/boolean-operators/logicalAnd/" target="_blank" rel="noopener"><b>&amp;&amp;(邏輯 AND)</b><small>Arduino language reference</small></a></div>
+</section>
+</main>
+</div>
+
+<p class="foot" style="margin-top:28px">本主題以 Arduino IDE 2.x(Windows)與 Arduino Uno R3 為準。零件規格與電路數值是常見範例,請以你手上零件的規格為準;每次改接線前,先拔掉 USB。查證日期:2026-11-07。</p>
+
+<nav class="pager" aria-label="上一篇與下一篇">
+  <a class="prev" href="arduino-analog-guide.html"><small>上一篇</small><b>類比輸入:電位器</b></a>
+  <span class="next off" aria-disabled="true"><small>下一篇 · 製作中</small><b>超音波測距 HC-SR04</b></span>
+</nav>
+</div>
+
+<script>window.PAGE = {"fill": {"gap": "500", "thr": "400", "dark": "300", "bright": "500"}, "sim": {"a1": "<b>不用。</b>固定在 1023 表示 A0 一直接近 5 V,這是接線問題。", "a2": "<b>對。</b>A0 必須接在光敏電阻和 10 kΩ 電阻<b>相接的那一欄</b>。接在 5V 軌會固定 1023、接在 GND 軌會固定 0。", "a3": "<b>沒有用。</b>換更大的 LED 電阻,不影響光線感測的分壓電路。"}, "quiz": [{"q": "光敏電阻在光線越亮時,電阻?", "a": ["變大", "變小", "不變"], "c": 1, "why": "光越亮,光敏電阻越小。"}, {"q": "為什麼要和固定電阻一起接成分壓?", "a": ["Arduino 只能量電壓,要把電阻變化換成電壓變化", "為了省電", "為了讓 LED 更亮"], "c": 0, "why": "ADC 量的是電壓,分壓電路負責轉換。"}, {"q": "<code>if (a &gt; 3 &amp;&amp; b == 0)</code> 什麼時候成立?", "a": ["a 大於 3 或 b 等於 0", "a 大於 3 而且 b 等於 0", "只要 b 等於 0"], "c": 1, "why": "&amp;&amp; 要兩邊都成立。"}, {"q": "「遲滯」的目的是?", "a": ["避免讀值在門檻附近來回觸發", "讓程式變快", "節省記憶體"], "c": 0, "why": "用兩個不同的門檻,中間維持原狀,就不會閃爍。"}, {"q": "決定門檻最好的方法是?", "a": ["隨便猜 512", "用 Serial 量亮與暗的讀值,取中間", "越小越好"], "c": 1, "why": "每顆零件與環境不同,先量再決定。"}], "wiring": [{"id": "ldr-night", "intro": "先<strong>拔掉 USB 線</strong>。光敏電阻要和一顆 10 kΩ 電阻<b>串聯成分壓電路</b>,A0 量它們中間那一點的電壓。LED 接 8 號腳,天黑時由程式點亮。", "done": "5V → 光敏電阻 → (A0 接在這裡)→ 10 kΩ 電阻 → GND,是分壓電路。檢查:A0 接的是兩顆電阻相接的那一欄,而不是 5V 或 GND 那一欄。", "steps": [{"t": "放光敏電阻", "x": "光敏電阻<b>沒有方向</b>,兩隻腳插在 <code>d5</code> 與 <code>d7</code>(隔一欄)。表面有彎曲紋路的那一面朝上,這樣才受得到光。"}, {"t": "放兩顆電阻與 LED", "x": "<b>10 kΩ 電阻</b>(棕、黑、橙)橫放在 <code>b7–b11</code>;<b>220Ω 電阻</b>放 <code>b15–b19</code>;<b>紅色 LED</b> 長腳(+)插 <code>d19</code>、短腳(−)插 <code>d20</code>。<br>10 kΩ 電阻與光敏電阻在第 7 欄接在一起,這一點就是要量電壓的地方。"}, {"t": "三條短線", "x": "① 紅色 <code>a5</code> → <code>t+5</code>:光敏電阻一腳接 + 軌(5V)。<br>② 黑色 <code>a11</code> → <code>t-11</code>:10 kΩ 電阻的另一端接 − 軌(GND)。<br>③ 黑色 <code>a20</code> → <code>t-20</code>:LED 負極接 − 軌。"}, {"t": "兩條訊號線:A0 與 8 號腳", "x": "綠線:Uno <b>A0</b> → <code>a7</code>(光敏電阻與 10 kΩ 電阻相接的那一欄)。<br>橘線:Uno <b>8 號腳</b> → <code>a15</code>(220Ω 電阻左端)。"}, {"t": "電源線:5V 與 GND", "x": "紅線:Uno <b>5V</b> → <code>t+1</code>。黑線:Uno 數位腳位排的 <b>GND</b> → <code>t-22</code>。"}]}], "parts": {"LDR1": "<b>光敏電阻(LDR1)</b>:原理圖上是電阻加兩個指向它的箭頭(光);麵包板上是表面有彎曲紋路的小圓片,插在 <code>d5</code> 與 <code>d7</code>。", "R2": "<b>電阻 R2(10kΩ)</b>:原理圖上是鋸齒線;麵包板上是 <code>b7</code>–<code>b11</code> 之間那顆有色環的小圓柱(色環 棕、黑、橙、金(±5%))。", "R1": "<b>電阻 R1(220Ω)</b>:原理圖上是鋸齒線;麵包板上是 <code>b15</code>–<code>b19</code> 之間那顆有色環的小圓柱(色環 紅、紅、棕、金(±5%))。", "LED1": "<b>紅色 LED(LED1)</b>:原理圖上是三角形加一條槓;麵包板上是插在 <code>d19</code>(長腳 +)與 <code>d20</code>(短腳 −)的小圓頭燈。", "P": "<b>紅色杜邦線 P</b>:原理圖上就是一條線,代表「這兩點接在一起」;麵包板上是這條 紅色杜邦線。", "G10": "<b>黑色杜邦線 G10</b>:原理圖上就是一條線,代表「這兩點接在一起」;麵包板上是這條 黑色杜邦線。", "K1": "<b>黑色杜邦線 K1</b>:原理圖上就是一條線,代表「這兩點接在一起」;麵包板上是這條 黑色杜邦線。", "SA": "<b>綠色杜邦線 SA</b>:原理圖上就是一條線,代表「這兩點接在一起」;麵包板上是這條 綠色杜邦線。", "S1": "<b>橘色杜邦線 S1</b>:原理圖上就是一條線,代表「這兩點接在一起」;麵包板上是這條 橘色杜邦線。", "V5": "<b>紅色杜邦線 V5</b>:原理圖上就是一條線,代表「這兩點接在一起」;麵包板上是這條 紅色杜邦線。", "G": "<b>黑色杜邦線 G</b>:原理圖上就是一條線,代表「這兩點接在一起」;麵包板上是這條 黑色杜邦線。"}};</script>
+<script>
+(function () {
+  "use strict";
+  var CFG = window.PAGE || {};
+  function $(id){ return document.getElementById(id); }
+  function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+  function copyText(text, btn){
+    var orig = btn.textContent;
+    function flash(){
+      btn.textContent = "Copied ✓"; btn.classList.add("copied");
+      setTimeout(function(){ btn.textContent = orig; btn.classList.remove("copied"); }, 1200);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(flash, flash);
+    } else {
+      var ta = document.createElement("textarea"); ta.value = text;
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); } catch(e){}
+      document.body.removeChild(ta); flash();
+    }
+  }
+
+  /* ---------- fill-in template values ---------- */
+  var DEF = CFG.fill || {};
+  var vals = {};
+  var RE = /\{([A-Za-z0-9_]+)\}/g;
+  function val(k){ return vals[k] || DEF[k]; }
+  function resolvePlain(t){ return t.replace(RE, function(m, k){ return (k in DEF) ? val(k) : m; }); }
+  function resolveHtml(t){
+    var out = "", last = 0, m;
+    RE.lastIndex = 0;
+    while ((m = RE.exec(t))){
+      if (!(m[1] in DEF)) continue;
+      out += esc(t.slice(last, m.index)) + '<span class="slot">' + esc(val(m[1])) + "</span>";
+      last = RE.lastIndex;
+    }
+    return out + esc(t.slice(last));
+  }
+  function lineHtml(line, cpp){
+    if (cpp){
+      var j = line.indexOf("//");
+      if (j > -1) return resolveHtml(line.slice(0, j)) + '<span class="cm">' + resolveHtml(line.slice(j)) + "</span>";
+      return resolveHtml(line);
+    }
+    if (line.trim().indexOf("# ") === 0) return '<span class="cm">' + resolveHtml(line) + "</span>";
+    var i = line.indexOf("  # ");
+    if (i > -1) return resolveHtml(line.slice(0, i)) + '<span class="cm">' + resolveHtml(line.slice(i)) + "</span>";
+    return resolveHtml(line);
+  }
+  var tplEls = Array.prototype.slice.call(document.querySelectorAll("[data-tpl]"));
+  tplEls.forEach(function(el){ el._tpl = el.textContent; });
+  function renderTpl(){
+    tplEls.forEach(function(el){
+      if (el.tagName === "PRE") el.innerHTML = el._tpl.split("\n").map(function(l){ return lineHtml(l, el.hasAttribute("data-cpp")); }).join("\n");
+      else el.innerHTML = resolveHtml(el._tpl);
+    });
+  }
+  var inputs = Array.prototype.slice.call(document.querySelectorAll(".fill input"));
+  inputs.forEach(function(inp){
+    inp.placeholder = DEF[inp.dataset.k] || "";
+    inp.addEventListener("input", function(){
+      var v = inp.value;
+      if (!inp.dataset.ns){ v = v.replace(/\s+/g, "-"); if (v !== inp.value) inp.value = v; }
+      vals[inp.dataset.k] = v;
+      renderTpl();
+    });
+  });
+  var rb = $("resetBtn");
+  if (rb) rb.addEventListener("click", function(){
+    inputs.forEach(function(inp){ inp.value = ""; vals[inp.dataset.k] = ""; });
+    renderTpl();
+  });
+  document.querySelectorAll(".cmd .copy").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var pre = btn.parentNode.querySelector("pre");
+      copyText(pre._tpl !== undefined ? resolvePlain(pre._tpl) : pre.textContent, btn);
+    });
+  });
+
+  /* ---------- reading progress + toc spy ---------- */
+  var readBar = $("readBar");
+  function updateBar(){
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    readBar.style.width = (max > 0 ? Math.min(100, window.scrollY / max * 100) : 0) + "%";
+  }
+  window.addEventListener("scroll", updateBar, { passive: true });
+  window.addEventListener("resize", updateBar);
+  updateBar();
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll("nav.toc a"));
+  if ("IntersectionObserver" in window){
+    var spy = new IntersectionObserver(function(es){
+      es.forEach(function(en){
+        if (en.isIntersecting) tocLinks.forEach(function(a){ a.classList.toggle("active", a.getAttribute("href") === "#" + en.target.id); });
+      });
+    }, { rootMargin: "-15% 0px -70% 0px" });
+    tocLinks.forEach(function(a){ var sec = document.querySelector(a.getAttribute("href")); if (sec) spy.observe(sec); });
+  }
+
+  /* ---------- scenario simulators ---------- */
+  var SIM = CFG.sim || {};
+  document.querySelectorAll("[data-simgroup]").forEach(function(group){
+    var btns = Array.prototype.slice.call(group.querySelectorAll("[data-sim]"));
+    var out = group.querySelector(".sim-result");
+    btns.forEach(function(btn){
+      btn.addEventListener("click", function(){
+        btns.forEach(function(b){ b.classList.toggle("selected", b === btn); });
+        out.innerHTML = SIM[btn.dataset.sim] || "";
+      });
+    });
+  });
+
+  /* ---------- quiz ---------- */
+  var QUIZ = CFG.quiz || [];
+  if (QUIZ.length && $("quiz")){
+    var qi = 0, qScore = 0, qDone = false;
+    var qCount = $("quizCount"), qQ = $("quizQ"), qAns = $("quizAns"), qFb = $("quizFb"), qNext = $("quizNext"), qScoreEl = $("quizScore");
+    var renderQuiz = function(){
+      var item = QUIZ[qi]; qDone = false;
+      qCount.textContent = (qi + 1) + " / " + QUIZ.length;
+      qQ.innerHTML = item.q;
+      qAns.innerHTML = "";
+      qFb.className = "feedback"; qFb.textContent = "";
+      qNext.disabled = true;
+      qNext.textContent = qi === QUIZ.length - 1 ? "重新測驗 ↻" : "下一題 →";
+      item.a.forEach(function(text, i){
+        var b = document.createElement("button");
+        b.type = "button"; b.className = "answer";
+        b.innerHTML = '<span class="letter">' + String.fromCharCode(65 + i) + "</span><span>" + esc(text) + "</span>";
+        b.addEventListener("click", function(){ pick(i); });
+        qAns.appendChild(b);
+      });
+    };
+    var pick = function(i){
+      if (qDone) return; qDone = true;
+      var item = QUIZ[qi], good = i === item.c;
+      Array.prototype.forEach.call(qAns.querySelectorAll("button"), function(b, n){
+        b.disabled = true;
+        if (n === item.c) b.classList.add("correct");
+        if (n === i && !good) b.classList.add("wrong");
+      });
+      if (good) qScore++;
+      qFb.className = "feedback show " + (good ? "good" : "bad");
+      qFb.innerHTML = "<b>" + (good ? "答對了!" : "再記一下這個觀念。") + "</b> " + esc(item.why);
+      qScoreEl.textContent = "答對 " + qScore + " / " + (qi + 1) + " 題";
+      qNext.disabled = false;
+    };
+    qNext.addEventListener("click", function(){
+      if (qi === QUIZ.length - 1){ qi = 0; qScore = 0; } else { qi++; }
+      renderQuiz();
+      qScoreEl.textContent = "答對 " + qScore + " 題";
+    });
+    renderQuiz();
+  }
+
+  /* ---------- checklist ---------- */
+  var checks = Array.prototype.slice.call(document.querySelectorAll("#checks input"));
+  function updateChecks(){
+    var n = checks.filter(function(c){ return c.checked; }).length;
+    $("checkProgress").textContent = "已完成 " + n + " / " + checks.length + " 項";
+    $("checkBar").style.width = (n / checks.length * 100) + "%";
+    checks.forEach(function(c){ c.closest(".check-item").classList.toggle("done", c.checked); });
+  }
+  checks.forEach(function(c){ c.addEventListener("change", updateChecks); });
+
+  /* ---------- role tabs (dual-view pages) ---------- */
+  var roleBtns = Array.prototype.slice.call(document.querySelectorAll("[data-role]"));
+  var rolePanels = Array.prototype.slice.call(document.querySelectorAll("[data-panel]"));
+  function setRole(r, focus){
+    roleBtns.forEach(function(b){
+      var on = b.dataset.role === r;
+      b.classList.toggle("on", on);
+      b.setAttribute("aria-selected", on ? "true" : "false");
+      b.tabIndex = on ? 0 : -1;
+      if (on && focus) b.focus();
+    });
+    rolePanels.forEach(function(p){ p.hidden = p.dataset.panel !== r; });
+  }
+  roleBtns.forEach(function(b){
+    b.addEventListener("click", function(){ setRole(b.dataset.role); });
+    b.addEventListener("keydown", function(e){
+      if (e.key === "ArrowLeft" || e.key === "ArrowRight"){
+        e.preventDefault(); setRole(b.dataset.role === "c" ? "o" : "c", true);
+      }
+    });
+  });
+  if (roleBtns.length) setRole("c");
+
+  /* ---------- stage stepper (two columns) ---------- */
+  var STAGES = CFG.stages || [];
+  if (STAGES.length && $("stages")){
+    var stage = 0;
+    var stagesEl = $("stages");
+    var renderStages = function(){
+      stagesEl.innerHTML = STAGES.map(function(s, i){
+        return '<button type="button" data-i="' + i + '" class="' + (i === stage ? "on" : "") + '" aria-pressed="' + (i === stage) + '">' +
+          '<span class="si">階段 ' + (i + 1) + "</span><span>" + s.label + '</span><span class="badge ' + s.tone + '">' + s.badge + "</span></button>";
+      }).join("");
+      var s = STAGES[stage];
+      $("c-h").textContent = s.c.h; $("o-h").textContent = s.o.h;
+      $("c-list").innerHTML = s.c.items.map(function(t){ return "<li>" + t + "</li>"; }).join("");
+      $("o-list").innerHTML = s.o.items.map(function(t){ return "<li>" + t + "</li>"; }).join("");
+      $("prevStage").disabled = stage === 0;
+      $("nextStage").disabled = stage === STAGES.length - 1;
+    };
+    stagesEl.addEventListener("click", function(e){
+      var b = e.target.closest("button[data-i]"); if (!b) return;
+      stage = +b.dataset.i; renderStages();
+    });
+    $("prevStage").addEventListener("click", function(){ if (stage > 0){ stage--; renderStages(); } });
+    $("nextStage").addEventListener("click", function(){ if (stage < STAGES.length - 1){ stage++; renderStages(); } });
+    renderStages();
+  }
+
+  /* ---------- decision picker ---------- */
+  var DECIDE = CFG.decide || [];
+  if (DECIDE.length && $("decideBtns")){
+    var decBtns = $("decideBtns"), decOut = $("decideOut");
+    decBtns.innerHTML = DECIDE.map(function(d, i){
+      return '<button type="button" data-d="' + i + '">' + d.label + "</button>";
+    }).join("");
+    decBtns.addEventListener("click", function(e){
+      var b = e.target.closest("button[data-d]"); if (!b) return;
+      var d = DECIDE[+b.dataset.d];
+      Array.prototype.forEach.call(decBtns.querySelectorAll("button"), function(x){ x.classList.toggle("selected", x === b); });
+      var tone = d.risk === "高" ? "bad" : (d.risk === "中" ? "warn" : "ok");
+      decOut.innerHTML = '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px"><b>建議做法</b><span class="badge ' + tone + '">風險:' + d.risk + "</span></div>" +
+        '<div class="cmd" style="margin:8px 0"><pre></pre><button type="button" class="copy">Copy</button></div><div>' + d.why + "</div>";
+      decOut.querySelector("pre").textContent = d.cmd;
+      decOut.querySelector(".copy").addEventListener("click", function(ev){ copyText(d.cmd, ev.currentTarget); });
+    });
+  }
+
+  renderTpl();
+  if (checks.length) updateChecks();
+})();
+
+/* Arduino 主題專用互動:接線步驟播放、原理圖與麵包板連動。只有 dir=arduino 的頁面會內嵌。 */
+(function () {
+  "use strict";
+  var CFG = window.PAGE || {};
+
+  /* ---------- 表格:手機版直式堆疊時,每格補上欄名 ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll(".gt"), function (t) {
+    var rows = t.querySelectorAll(".row");
+    if (rows.length < 2) return;
+    var heads = Array.prototype.map.call(rows[0].children, function (c) { return c.textContent; });
+    for (var i = 1; i < rows.length; i++)
+      Array.prototype.forEach.call(rows[i].children, function (c, k) { if (k > 0 && heads[k]) c.setAttribute("data-h", heads[k]); });
+  });
+
+  /* ---------- 接線步驟播放 ---------- */
+  var WIRES = CFG.wiring || [];
+  Array.prototype.forEach.call(document.querySelectorAll("[data-wiring]"), function (box) {
+    var id = box.getAttribute("data-wiring"), conf = null;
+    WIRES.forEach(function (w) { if (w.id === id) conf = w; });
+    if (!conf) return;
+    var n = conf.steps.length, cur = 0;                 // cur: 0=還沒開始, 1..n=第幾步, n+1=全部完成
+    var els = Array.prototype.slice.call(box.querySelectorAll(".el"));
+    var cap = box.querySelector(".wcap");
+    var dots = Array.prototype.slice.call(box.querySelectorAll(".wdot"));
+    var bPrev = box.querySelector('[data-w="prev"]'), bNext = box.querySelector('[data-w="next"]');
+    function render() {
+      els.forEach(function (el) {
+        var s = +el.getAttribute("data-step");
+        el.classList.toggle("future", cur <= n && s > cur);
+        el.classList.toggle("cur", s === cur);
+      });
+      dots.forEach(function (d) {
+        var i = +d.getAttribute("data-w");
+        d.classList.toggle("on", i === cur);
+        d.classList.toggle("done", i < cur);
+        d.setAttribute("aria-pressed", i === cur ? "true" : "false");
+      });
+      if (cur === 0) cap.innerHTML = '<b class="t">開始前</b>' + (conf.intro || "");
+      else if (cur <= n) cap.innerHTML = '<b class="t">第 ' + cur + " 步:" + conf.steps[cur - 1].t + "</b>" + conf.steps[cur - 1].x;
+      else cap.innerHTML = '<b class="t">完整接線</b>' + (conf.done || "");
+      bPrev.disabled = cur === 0;
+      bNext.disabled = cur > n;
+    }
+    box.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-w]");
+      if (!b) return;
+      var k = b.getAttribute("data-w");
+      if (k === "prev") { if (cur > 0) cur = cur > n ? n : cur - 1; }
+      else if (k === "next") { if (cur <= n) cur++; }
+      else if (k === "all") cur = n + 1;
+      else if (k === "reset") cur = 0;
+      else cur = +k;
+      render();
+    });
+    box.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowRight" && cur <= n) { cur++; render(); e.preventDefault(); }
+      else if (e.key === "ArrowLeft" && cur > 0) { cur = cur > n ? n : cur - 1; render(); e.preventDefault(); }
+    });
+    render();
+  });
+
+
+  /* ---------- 麵包板內部連線探索圖 ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll("[data-bbx]"), function (box) {
+    var cells = Array.prototype.slice.call(box.querySelectorAll(".bh"));
+    var info = box.querySelector(".bbx-info"), split = box.querySelector(".bbx-split");
+    var sel = null, DEF = info.innerHTML;
+    function net(c) { return c.getAttribute(split && split.checked ? "data-net2" : "data-net"); }
+    function paint() {
+      if (!sel) { cells.forEach(function (c) { c.classList.remove("on", "sel"); }); info.innerHTML = DEF; return; }
+      var k = net(sel), mates = [];
+      cells.forEach(function (c) {
+        var on = net(c) === k;
+        c.classList.toggle("on", on); c.classList.toggle("sel", c === sel);
+        if (on && c !== sel) mates.push(c.getAttribute("data-h"));
+      });
+      var h = sel.getAttribute("data-h"), txt;
+      if (/^[tb]/.test(h)) {
+        txt = "你點的是 <code>" + h + "</code>,它屬於電源軌。<b>同一條軌上共 " + (mates.length + 1) + " 個孔彼此相通</b>" +
+              (split && split.checked ? "(這片麵包板的電源軌在中間斷開,左半與右半不相通)。" : "。") + "把 5V 接到 + 軌、GND 接到 − 軌,之後整排孔都能取用。";
+      } else {
+        txt = "你點的是 <code>" + h + "</code>,它和 <code>" + mates.join("、") + "</code> 在內部相通(同一欄的 " + (/[a-e]/.test(h[0]) ? "a–e" : "f–j") + ")。" +
+              "把兩個零件的腳插在這 " + (mates.length + 1) + " 個孔裡,它們就接在一起了。";
+      }
+      info.innerHTML = txt;
+    }
+    box.addEventListener("click", function (e) {
+      var c = e.target.closest(".bh");
+      if (!c) return;
+      sel = sel === c ? null : c; paint();
+    });
+    if (split) split.addEventListener("change", paint);
+  });
+
+  /* ---------- 電阻色環計算機 ---------- */
+  var COL = [["黑", "#141413"], ["棕", "#8B5A3C"], ["紅", "#B04A3F"], ["橙", "#D97757"], ["黃", "#E1B93B"], ["綠", "#788C5D"], ["藍", "#5B7FA6"], ["紫", "#7A5C8F"], ["灰", "#87867F"], ["白", "#FFFFFF"]];
+  var MUL = [[0, "黑 ×1", "#141413"], [1, "棕 ×10", "#8B5A3C"], [2, "紅 ×100", "#B04A3F"], [3, "橙 ×1k", "#D97757"], [4, "黃 ×10k", "#E1B93B"], [5, "綠 ×100k", "#788C5D"], [6, "藍 ×1M", "#5B7FA6"], [-1, "金 ×0.1", "#C9A227"], [-2, "銀 ×0.01", "#BFBFBF"]];
+  function fmtOhm(v) {
+    if (v >= 1e6) return +(v / 1e6).toFixed(2) + " MΩ";
+    if (v >= 1e3) return +(v / 1e3).toFixed(2) + " kΩ";
+    return +v.toFixed(2) + " Ω";
+  }
+  function parseOhm(s) {
+    var m = /^\s*(\d+(?:\.\d+)?)\s*([kKmM]?)\s*[ΩΩohmOHM]*\s*$/.exec(s || "");
+    if (!m) return NaN;
+    var v = parseFloat(m[1]), u = m[2];
+    return u === "k" || u === "K" ? v * 1e3 : (u === "M" || u === "m" ? v * 1e6 : v);
+  }
+  Array.prototype.forEach.call(document.querySelectorAll("[data-rcalc]"), function (box) {
+    var s1 = box.querySelector('[data-rc="b1"]'), s2 = box.querySelector('[data-rc="b2"]'), s3 = box.querySelector('[data-rc="b3"]');
+    var inp = box.querySelector('[data-rc="val"]'), out = box.querySelector(".rc-out");
+    var r1 = box.querySelector(".rc1"), r2 = box.querySelector(".rc2"), r3 = box.querySelector(".rc3");
+    COL.forEach(function (c, i) { if (i > 0) s1.add(new Option(c[0] + " " + i, i)); });
+    COL.forEach(function (c, i) { s2.add(new Option(c[0] + " " + i, i)); });
+    MUL.forEach(function (m) { s3.add(new Option(m[1], m[0])); });
+    function mulColor(e) { for (var i = 0; i < MUL.length; i++) if (MUL[i][0] === e) return MUL[i][2]; return "#141413"; }
+    function showBands() {
+      r1.setAttribute("fill", COL[+s1.value][1]); r2.setAttribute("fill", COL[+s2.value][1]); r3.setAttribute("fill", mulColor(+s3.value));
+    }
+    function fromSelects() {
+      var v = (+s1.value * 10 + +s2.value) * Math.pow(10, +s3.value);
+      inp.value = fmtOhm(v).replace(" ", "").replace("Ω", "");
+      var mc = MUL.filter(function (m) { return m[0] === +s3.value; })[0][1].split(" ")[0];
+      out.innerHTML = "<b>" + COL[+s1.value][0] + "、" + COL[+s2.value][0] + "、" + mc + "、金</b> = " + (+s1.value * 10 + +s2.value) + " × " + (+s3.value >= 0 ? Math.pow(10, +s3.value) : Math.pow(10, +s3.value)) + " = <b>" + fmtOhm(v) + "</b>(誤差 ±5%)";
+      showBands();
+    }
+    function fromInput() {
+      var v = parseOhm(inp.value);
+      if (!(v >= 1)) { out.innerHTML = "請輸入數字,例如 <code>220</code>、<code>4.7k</code>、<code>10k</code>。"; return; }
+      var e = Math.floor(Math.log10(v)) - 1, m = Math.round(v / Math.pow(10, e));
+      if (m === 100) { m = 10; e += 1; }
+      if (e < -2 || e > 6 || m < 10) { out.innerHTML = "這個值超出 4 環電阻的範圍。"; return; }
+      if (e < 0) { e = e; }
+      s1.value = Math.floor(m / 10); s2.value = m % 10; s3.value = e;
+      var exact = Math.abs(m * Math.pow(10, e) - v) < 1e-9;
+      fromSelects();
+      if (!exact) out.innerHTML += "<br>(你輸入的值不能用 4 環精確表示,已顯示最接近的 " + fmtOhm(m * Math.pow(10, e)) + ")";
+    }
+    [s1, s2, s3].forEach(function (s) { s.addEventListener("change", fromSelects); });
+    inp.addEventListener("input", fromInput);
+    s1.value = 2; s2.value = 2; s3.value = 1; fromSelects();
+  });
+
+  /* ---------- LED 限流電阻計算機 ---------- */
+  var E12 = [10, 12, 15, 18, 22, 27, 33, 39, 47, 56, 68, 82];
+  function nextE12(r) {
+    var d = Math.pow(10, Math.floor(Math.log10(r)) - 1);
+    for (var k = 0; k < 4; k++) for (var i = 0; i < E12.length; i++) { var v = E12[i] * d * Math.pow(10, k); if (v >= r - 1e-9) return v; }
+    return r;
+  }
+  Array.prototype.forEach.call(document.querySelectorAll("[data-ledcalc]"), function (box) {
+    var vf = box.querySelector('[data-lc="vf"]'), ma = box.querySelector('[data-lc="ma"]'), out = box.querySelector(".lc-out");
+    function calc() {
+      var v = parseFloat(vf.value), i = parseFloat(ma.value);
+      if (!(i > 0)) { out.innerHTML = "請輸入大於 0 的電流(毫安)。"; return; }
+      var r = (5 - v) / (i / 1000), std = nextE12(r), real = (5 - v) / std * 1000;
+      var msg = "電阻上要承擔的電壓 = 5 − " + v + " = <b>" + (5 - v).toFixed(1) + " V</b><br>" +
+                "理論電阻 R = " + (5 - v).toFixed(1) + " ÷ " + (i / 1000) + " A = <b>" + Math.round(r) + " Ω</b><br>" +
+                "取不小於它的標準值 → <b>" + fmtOhm(std) + "</b>,實際電流約 <b>" + real.toFixed(1) + " mA</b>";
+      if (real > 20) msg += "<br><span class=\"calc-bad\">超過 Uno 每腳建議上限 20 mA,請選更大的電阻或降低目標電流。</span>";
+      else if (real < 1) msg += "<br>電流太小,LED 可能幾乎看不出來在亮。";
+      out.innerHTML = msg;
+    }
+    vf.addEventListener("change", calc); ma.addEventListener("input", calc); calc();
+  });
+
+
+  /* ---------- PWM 示意 ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll("[data-pwmbox]"), function (box) {
+    var rng = box.querySelector('[data-pwm="v"]'), num = box.querySelector('[data-pwm="num"]');
+    var wave = box.querySelector(".pwm-wave"), out = box.querySelector(".pwm-out"), led = box.querySelector(".pwm-led");
+    var pin = box.getAttribute("data-pin") || "9";
+    function draw(v) {
+      var d = v / 255, P = 110, x0 = 50, pts = [], i;
+      for (i = 0; i < 4; i++) {
+        var x = x0 + i * P, hi = d * P;
+        if (d <= 0) { pts.push(x + "," + 120, (x + P) + "," + 120); }
+        else if (d >= 1) { pts.push(x + "," + 30, (x + P) + "," + 30); }
+        else { pts.push(x + "," + 120, x + "," + 30, (x + hi) + "," + 30, (x + hi) + "," + 120, (x + P) + "," + 120); }
+      }
+      wave.setAttribute("points", pts.join(" "));
+      led.style.background = "rgba(176,74,63," + (0.08 + 0.92 * d).toFixed(2) + ")";
+      out.innerHTML = "<code>analogWrite(" + pin + ", " + v + ");</code> → 一個週期裡有 <b>" + Math.round(d * 100) + "%</b> 的時間是 5 V,其餘是 0 V → 平均電壓約 <b>" + (5 * d).toFixed(2) + " V</b>。" +
+        (v === 0 ? "(0 等於一直輸出 LOW,LED 全滅。)" : (v === 255 ? "(255 等於一直輸出 HIGH,LED 全亮。)" : "LED 因為閃得太快,看起來是「半亮」。"));
+    }
+    function set(v) { v = Math.max(0, Math.min(255, Math.round(+v || 0))); rng.value = v; num.value = v; draw(v); }
+    rng.addEventListener("input", function () { set(rng.value); });
+    num.addEventListener("input", function () { if (num.value !== "") set(num.value); });
+    set(rng.value);
+  });
+
+
+  /* ---------- 按鈕與上拉電阻示意 ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll("[data-btnsim]"), function (box) {
+    var mode = box.querySelector('[data-bs="mode"]'), btn = box.querySelector('[data-bs="btn"]');
+    var open = box.querySelector(".sw-open"), closed = box.querySelector(".sw-closed"), pu = box.querySelector(".pu");
+    var lvl = box.querySelector(".bs-level"), out = box.querySelector(".bs-out"), node = box.querySelector(".bs-node");
+    var pressed = false;
+    function render() {
+      var pull = mode.value === "pullup", read, txt, col;
+      open.style.display = pressed ? "none" : "block";
+      closed.style.display = pressed ? "block" : "none";
+      pu.style.opacity = pull ? "1" : "0.18";
+      btn.textContent = pressed ? "目前:按住中(點一下放開)" : "目前:放開(點一下按住)";
+      btn.setAttribute("aria-pressed", pressed ? "true" : "false");
+      if (pull && !pressed) { read = "HIGH(1)"; col = "#788C5D"; txt = "<b>沒按</b>:5 V 經過內建上拉電阻到達 2 號腳。D2 沒有別的去處,幾乎沒有電流,電壓留在約 5 V → <code>digitalRead(2)</code> = <b>HIGH(1)</b>。"; }
+      else if (pull && pressed) { read = "LOW(0)"; col = "#B04A3F"; txt = "<b>按下</b>:按鈕把 2 號腳接到 GND。上拉電阻只讓一點點電流通過(5 V ÷ 約 20–50 kΩ,約 0.1–0.25 mA),2 號腳電壓被拉到約 0 V → <code>digitalRead(2)</code> = <b>LOW(0)</b>。"; }
+      else if (!pull && !pressed) { read = "不確定"; col = "#87867F"; txt = "<b>沒按</b>:2 號腳什麼都沒接,像一根天線,會收到周圍的雜訊,讀到的值<b>在 HIGH 與 LOW 之間亂跳</b>。這叫<b>浮接</b>,是新手最常踩的坑。"; }
+      else { read = "LOW(0)"; col = "#B04A3F"; txt = "<b>按下</b>:2 號腳接到 GND → LOW。但<b>放開的瞬間又回到浮接</b>,讀值不穩,所以這樣的接法不能用。"; }
+      lvl.textContent = "digitalRead(2) → " + read;
+      lvl.setAttribute("fill", col);
+      node.setAttribute("fill", col);
+      out.innerHTML = txt;
+    }
+    btn.addEventListener("click", function () { pressed = !pressed; render(); });
+    mode.addEventListener("change", render);
+    render();
+  });
+
+
+  /* ---------- 鮑率不一致 → 亂碼 示意 ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll("[data-baudsim]"), function (box) {
+    var sel = box.querySelector('[data-bd="monitor"]'), scr = box.querySelector(".bd-screen"), note = box.querySelector(".bd-note");
+    var prog = box.getAttribute("data-prog") || "9600";
+    var GARBLE = { lower: "\u00ff\u00ff\u00e0\u00e0 \u00fe\u00fe\ufffd\ufffd\ufffd\ufffd\n\u00ff\u00fc\ufffd\ufffd\u00ff\u00ff \u00e0\ufffd\ufffd", higher: "\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\n\ufffd\ufffd\ufffd \ufffd\ufffd\ufffd\ufffd\ufffd\ufffd" };
+    function render() {
+      var m = +sel.value, p = +prog;
+      if (m === p) { scr.textContent = "Hello, Arduino!\ncount = 0\ncount = 1\ncount = 2"; scr.style.color = "#3D3D3A"; note.innerHTML = "<b>兩邊都是 " + p + "。</b>文字正常顯示。"; }
+      else { scr.textContent = m < p ? GARBLE.lower : GARBLE.higher; scr.style.color = "#B04A3F"; note.innerHTML = "程式用 <code>Serial.begin(" + p + ")</code>,Serial Monitor 卻選 <b>" + m + "</b>:雙方講話速度不同,對方聽到的是亂碼。<b>把 Serial Monitor 右上角的 baud 選成和程式一樣。</b>"; }
+    }
+    sel.addEventListener("change", render); render();
+  });
+
+
+  /* ---------- 電位器分壓示意 ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll("[data-potsim]"), function (box) {
+    var rng = box.querySelector('[data-pot="v"]'), out = box.querySelector(".pot-out"), bar = box.querySelector(".pot-bar span"), led = box.querySelector(".pwm-led");
+    function render() {
+      var pos = +rng.value, x = pos / 100;
+      var rt = 10 * (1 - x), rb = 10 * x, v = 5 * x, adc = Math.round(x * 1023), mapped = Math.floor(adc * 255 / 1023);
+      bar.style.width = pos + "%";
+      led.style.background = "rgba(176,74,63," + (0.08 + 0.92 * mapped / 255).toFixed(2) + ")";
+      out.innerHTML = "旋鈕轉到 <b>" + pos + "%</b>:<br>" +
+        "上段電阻(5V 到中間腳)= <b>" + rt.toFixed(1) + " kΩ</b>,下段電阻(中間腳到 GND)= <b>" + rb.toFixed(1) + " kΩ</b>(加起來永遠是 10 kΩ)<br>" +
+        "中間腳(接 A0)電壓 = 5 V × " + rb.toFixed(1) + " ÷ 10 = <b>" + v.toFixed(2) + " V</b><br>" +
+        "<code>analogRead(A0)</code> ≈ <b>" + adc + "</b>(0–1023)<br>" +
+        "<code>map(值, 0, 1023, 0, 255)</code> ≈ <b>" + mapped + "</b> → LED 亮度";
+    }
+    rng.addEventListener("input", render); render();
+  });
+
+
+  /* ---------- 光敏電阻分壓示意 ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll("[data-ldrsim]"), function (box) {
+    var rng = box.querySelector('[data-ldr="v"]'), thr = box.querySelector('[data-ldr="thr"]'), out = box.querySelector(".ldr-out"), bar = box.querySelector(".pot-bar span"), led = box.querySelector(".pwm-led");
+    function fmt(v) { return v >= 1e6 ? (v / 1e6).toFixed(2) + " MΩ" : (v >= 1e3 ? (v / 1e3).toFixed(1) + " kΩ" : Math.round(v) + " Ω"); }
+    function render() {
+      var x = +rng.value / 100, r = 1e6 * Math.pow(1e-3, x), v = 5 * 10000 / (r + 10000), adc = Math.round(v / 5 * 1023), t = parseInt(thr.value, 10);
+      bar.style.width = (adc / 1023 * 100) + "%";
+      var on = !isNaN(t) && adc < t;
+      led.style.background = on ? "rgba(176,74,63,1)" : "rgba(176,74,63,.08)";
+      out.innerHTML = "環境亮度 <b>" + Math.round(x * 100) + "%</b>:光敏電阻約 <b>" + fmt(r) + "</b>(範例值)<br>" +
+        "A0 電壓 = 5 V × 10 kΩ ÷ (光敏電阻 + 10 kΩ) = <b>" + v.toFixed(2) + " V</b> → <code>analogRead(A0)</code> ≈ <b>" + adc + "</b><br>" +
+        "門檻 " + (isNaN(t) ? "?" : t) + ":<b>" + (on ? "讀值低於門檻 → 天黑,LED 亮" : "讀值不低於門檻 → 夠亮,LED 滅") + "</b>";
+    }
+    rng.addEventListener("input", render); thr.addEventListener("input", render); render();
+  });
+
+  /* ---------- 原理圖 ↔ 麵包板 連動 ---------- */
+  var PARTS = CFG.parts || {};
+  var infos = Array.prototype.slice.call(document.querySelectorAll(".linkbox"));
+  infos.forEach(function (b) { b._def = b.innerHTML; });
+  var sel = "";
+  function hl(ref) {
+    sel = sel === ref ? "" : ref;
+    Array.prototype.forEach.call(document.querySelectorAll("[data-part]"), function (el) {
+      el.classList.toggle("hl", sel !== "" && el.getAttribute("data-part") === sel);
+    });
+    infos.forEach(function (b) { b.innerHTML = sel ? (PARTS[sel] || "") : b._def; });
+  }
+  document.addEventListener("click", function (e) {
+    var el = e.target.closest("[data-part]");
+    if (el) hl(el.getAttribute("data-part"));
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    var el = e.target.closest && e.target.closest("[data-part]");
+    if (el) { e.preventDefault(); hl(el.getAttribute("data-part")); }
+  });
+})();
+
+</script>
+</body>
+</html>

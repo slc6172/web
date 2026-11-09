@@ -1,0 +1,705 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GitHub Actions 與 Pages:自動跑測試、發佈網站</title>
+<style>
+  :root {
+    --ivory:#FAF9F5; --white:#FFFFFF; --slate:#141413;
+    --clay:#D97757; --clay-d:#B85C3E; --oat:#E3DACC; --olive:#788C5D; --rust:#B04A3F;
+    --gray-100:#F0EEE6; --gray-300:#D1CFC5; --gray-500:#87867F; --gray-700:#3D3D3A;
+    --serif: ui-serif, Georgia, "Times New Roman", "Noto Serif TC", "Songti TC", "PMingLiU", serif;
+    --sans:  system-ui, -apple-system, "Segoe UI", Roboto, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", Helvetica, Arial, sans-serif;
+    --mono:  ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
+    --border: 1.5px solid var(--gray-300);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  [hidden] { display:none !important; }
+  body { margin:0; padding:56px 24px 120px; background:var(--ivory); color:var(--slate);
+         font-family:var(--sans); font-size:15px; line-height:1.65; -webkit-font-smoothing:antialiased; }
+  .page { max-width:1100px; margin:0 auto; }
+  .page > header { margin-bottom:36px; }
+  .layout { display:grid; grid-template-columns:190px minmax(0,1fr); gap:48px; }
+  .layout > * { min-width:0; }
+  main > section { margin-bottom:56px; scroll-margin-top:24px; }
+
+  .eyebrow { font:12px var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--gray-500);
+             display:flex; align-items:center; gap:12px; margin-bottom:18px; }
+  .eyebrow::before { content:""; width:24px; height:1.5px; background:var(--clay); }
+  h1 { font:500 clamp(30px,4.6vw,42px)/1.18 var(--serif); letter-spacing:-.012em; margin:0 0 12px; }
+  h2 { font:500 25px/1.28 var(--serif); letter-spacing:-.01em; margin:0 0 6px; }
+  h3 { font:500 18px/1.35 var(--serif); margin:0 0 6px; }
+  .sub { color:var(--gray-700); max-width:680px; margin:0 0 4px; }
+  hr.rule { border:0; border-top:1px solid var(--gray-300); margin:10px 0 22px; }
+  p { margin:0 0 12px; }
+  code { font:12.5px var(--mono); background:var(--gray-100); padding:1px 5px; border-radius:4px; }
+  .slot { background:rgba(217,119,87,.14); color:var(--clay-d); border-radius:4px; padding:0 3px; }
+  pre .slot { background:rgba(217,119,87,.22); color:#F2B49E; }
+
+  .panel { background:var(--white); border:var(--border); border-radius:12px; padding:20px 22px; }
+  .tldr { border:var(--border); border-left:3px solid var(--clay); border-radius:10px; background:#fff; padding:16px 18px; margin-top:22px; max-width:820px; }
+  .tldr b { font:600 11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--clay-d); margin-right:6px; }
+
+  /* toc */
+  nav.toc { position:sticky; top:32px; align-self:start; font-size:13px; }
+  nav.toc .label { font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--gray-500); margin-bottom:8px; }
+  nav.toc a { display:block; padding:5px 0; color:var(--gray-700); text-decoration:none; }
+  nav.toc a:hover { color:var(--clay); }
+
+  /* buttons */
+  button { font:12px var(--mono); cursor:pointer; border-radius:999px; padding:9px 16px; transition:background .14s ease, transform .08s ease; }
+  button.primary { background:var(--slate); color:var(--ivory); border:1.5px solid var(--slate); }
+  button.primary:hover:not(:disabled) { background:var(--gray-700); }
+  button.primary:disabled { background:var(--gray-300); border-color:var(--gray-300); cursor:not-allowed; }
+  button.primary.copied { background:var(--olive); border-color:var(--olive); }
+  button.ghost { background:transparent; color:var(--gray-700); border:var(--border); }
+  button.ghost:hover { border-color:var(--gray-500); }
+  button:focus-visible, a:focus-visible, summary:focus-visible, input:focus-visible { outline:2px solid var(--clay); outline-offset:2px; }
+
+  /* tables (grid style) */
+  .table-wrap { overflow-x:auto; border:var(--border); border-radius:12px; background:#fff; }
+  .gt { min-width:560px; }
+  .gt .row { display:grid; gap:0; }
+  .gt .cell { padding:11px 14px; border-top:1px solid var(--gray-300); font-size:13.5px; }
+  .gt .row:first-child .cell { border-top:0; }
+  .gt .cell.head { font:11px var(--sans); text-transform:uppercase; letter-spacing:.06em; color:var(--gray-500); background:var(--gray-100); }
+  .gt .cell.term { font:600 12.5px var(--mono); }
+  .gt.g3 .row { grid-template-columns:150px minmax(0,1fr) minmax(0,1fr); }
+  .gt.g2 .row { grid-template-columns:140px minmax(0,1fr); }
+  .gt.g3b .row { grid-template-columns:170px minmax(0,1.2fr) minmax(0,1fr); }
+
+  /* code blocks */
+  .cmd { position:relative; background:var(--slate); border-radius:12px; margin:10px 0 12px; }
+  .cmd pre { margin:0; padding:16px 78px 16px 18px; font:12.5px/1.7 var(--mono); color:var(--ivory); overflow-x:auto; white-space:pre; }
+  .cmd .cm { color:var(--gray-500); }
+  .cmd button { position:absolute; top:9px; right:9px; padding:5px 11px; font-size:11px; color:var(--ivory);
+                background:rgba(250,249,245,.08); border:1px solid rgba(250,249,245,.28); }
+  .cmd button:hover { background:rgba(250,249,245,.18); }
+  .cmd button.copied { background:var(--olive); border-color:var(--olive); color:#fff; }
+  .cmd .cap { font:11px var(--mono); letter-spacing:.06em; color:var(--gray-500); padding:10px 18px 0; text-transform:uppercase; }
+  .cmd .cap + pre { padding-top:6px; }
+
+  /* diagram */
+  .canvas { background:#fff; border:var(--border); border-radius:12px; padding:14px; overflow-x:auto; }
+  .canvas svg { display:block; width:100%; height:auto; min-width:640px; }
+  .legend { list-style:none; margin:16px 0 0; padding:0; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 24px; }
+  .legend li { display:grid; grid-template-columns:26px minmax(0,1fr); gap:8px; font-size:13.5px; color:var(--gray-700); }
+  .legend .n { width:22px; height:22px; border-radius:50%; background:var(--clay); color:#fff; font:600 12px/22px var(--mono); text-align:center; }
+  .legend .n.k { background:var(--slate); }
+  .role { font:600 10.5px var(--mono); padding:1px 7px; border-radius:999px; margin-left:6px; white-space:nowrap; }
+  .role.c { background:rgba(217,119,87,.14); color:var(--clay-d); border:1px solid rgba(217,119,87,.45); }
+  .role.o { background:var(--oat); color:var(--slate); border:1px solid #CFC3AE; }
+
+  /* fill form */
+  .fill { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:12px; align-items:end; }
+  .fill label { display:block; font:11px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--gray-500); margin-bottom:5px; }
+  .fill input { width:100%; font:13px var(--mono); padding:9px 11px; border:var(--border); border-radius:8px; background:var(--gray-100); color:var(--slate); }
+  .fill-foot { display:flex; gap:12px; align-items:center; margin-top:14px; flex-wrap:wrap; }
+  .fill-foot span { font-size:13px; color:var(--gray-500); }
+
+  /* role tabs */
+  .role-tabs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin:18px 0 26px; }
+  .role-tabs button { text-align:left; font-family:var(--sans); font-size:14px; border-radius:12px; padding:16px 18px; background:#fff;
+                      border:var(--border); color:var(--gray-700); display:flex; flex-direction:column; gap:2px; }
+  .role-tabs button .rt { font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--gray-500); }
+  .role-tabs button b { font:500 20px/1.3 var(--serif); color:var(--slate); }
+  .role-tabs button:hover { border-color:var(--gray-500); }
+  .role-tabs button.on { border-color:var(--clay); background:#FBF1EC; }
+  .role-tabs button.on .rt { color:var(--clay-d); }
+
+  .orient { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-bottom:8px; }
+  .orient .panel { padding:14px 18px; font-size:13.5px; }
+  .orient .k { font:600 11px var(--mono); letter-spacing:.08em; text-transform:uppercase; display:block; margin-bottom:4px; }
+  .orient .known .k { color:#4B5C39; } .orient .new .k { color:var(--clay-d); }
+
+  /* steps */
+  .step { display:grid; grid-template-columns:40px minmax(0,1fr); gap:0 16px; padding:26px 0; border-top:1px solid var(--gray-300); }
+  .steps > .step:first-child { border-top:0; }
+  .step > * { min-width:0; }
+  .num { width:34px; height:34px; border-radius:50%; background:var(--oat); display:flex; align-items:center; justify-content:center; font:600 14px var(--mono); margin-top:2px; }
+  .step h3 { font-size:20px; margin:2px 0 6px; }
+  .why { color:var(--gray-700); margin:0 0 12px; }
+  .ops { margin:0 0 12px; padding-left:22px; color:var(--gray-700); }
+  .ops li { margin-bottom:5px; }
+  .see, .warn, .tip { border:var(--border); border-radius:8px; background:#fff; padding:10px 14px; font-size:13.5px; margin:12px 0; color:var(--gray-700); }
+  .see { border-left:3px solid var(--olive); } .warn { border-left:3px solid var(--rust); } .tip { border-left:3px solid var(--clay); }
+  .see b.l, .warn b.l, .tip b.l { font:600 11px var(--mono); letter-spacing:.08em; text-transform:uppercase; margin-right:6px; }
+  .see b.l { color:#4B5C39; } .warn b.l { color:var(--rust); } .tip b.l { color:var(--clay-d); }
+
+  /* PR compare mock */
+  .pr-mock { display:grid; grid-template-columns:minmax(0,1fr) 44px minmax(0,1fr); gap:0; align-items:stretch; margin:12px 0; }
+  .pr-mock .half { background:#fff; border:var(--border); border-radius:10px; padding:12px 14px; }
+  .pr-mock .half .t { font:600 11px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--gray-500); margin-bottom:6px; }
+  .pr-mock .half .r { font:12.5px var(--mono); margin:2px 0; word-break:break-all; }
+  .pr-mock .half .r i { font-style:normal; color:var(--gray-500); margin-right:6px; }
+  .pr-mock .arr { display:flex; align-items:center; justify-content:center; font:22px var(--mono); color:var(--clay); }
+  .pr-mock .half.base { border-color:var(--clay); background:#FBF1EC; }
+  .mock-cap { font-size:13px; color:var(--gray-500); margin:0 0 12px; }
+
+  .gh-tabs { display:flex; gap:0; border-bottom:1.5px solid var(--gray-300); margin:12px 0; overflow-x:auto; }
+  .gh-tabs span { padding:8px 16px; font-size:13.5px; color:var(--gray-500); white-space:nowrap; }
+  .gh-tabs span.on { color:var(--slate); box-shadow:inset 0 -2px 0 var(--clay); font-weight:600; }
+  .gh-tabs span small { font:11px var(--mono); margin-left:6px; color:var(--gray-500); }
+
+  /* diff */
+  .diff { font:12.5px/1.7 var(--mono); background:#fff; border:var(--border); border-radius:8px; overflow-x:auto; margin:12px 0 0; }
+  .diff-row { display:grid; grid-template-columns:44px 18px minmax(max-content,1fr); white-space:pre; padding-right:14px; }
+  .diff-row .ln { color:var(--gray-500); text-align:right; padding-right:10px; user-select:none; }
+  .diff-row.add { background:rgba(120,140,93,.12); } .diff-row.add .mark { color:var(--olive); font-weight:600; }
+  .diff-row.del { background:rgba(176,74,63,.10); } .diff-row.del .mark { color:var(--rust); font-weight:600; }
+  .bubble { background:#fff; border:var(--border); border-left:4px solid var(--olive); border-radius:8px; padding:10px 14px; margin:8px 0 0 44px; font-size:13px; max-width:560px; }
+  .bubble .who { font:600 11px var(--mono); color:var(--gray-500); display:block; margin-bottom:2px; }
+
+  /* lifecycle */
+  .stages { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; margin:18px 0 16px; }
+  .stages button { text-align:left; font-family:var(--sans); border-radius:10px; padding:11px 12px; background:#fff; border:var(--border); color:var(--gray-700); font-size:13px; display:flex; flex-direction:column; gap:6px; }
+  .stages button:hover { border-color:var(--gray-500); }
+  .stages button.on { border-color:var(--clay); background:#FBF1EC; }
+  .stages button .si { font:11px var(--mono); color:var(--gray-500); }
+  .badge { font:600 11px var(--mono); padding:2px 9px; border-radius:999px; align-self:flex-start; }
+  .badge.ok { background:rgba(120,140,93,.18); color:#4B5C39; }
+  .badge.warn { background:rgba(217,119,87,.18); color:var(--clay-d); }
+  .badge.done { background:var(--slate); color:var(--ivory); }
+  .two { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+  .two .panel h3 { display:flex; align-items:center; gap:8px; }
+  .two ul { margin:8px 0 0; padding-left:20px; color:var(--gray-700); }
+  .two li { margin-bottom:6px; }
+  .stage-nav { display:flex; gap:10px; margin-top:16px; }
+
+  /* details */
+  details { border:var(--border); border-radius:10px; background:#fff; margin:12px 0; overflow:hidden; }
+  summary { list-style:none; cursor:pointer; padding:14px 16px; font:17px/1.4 var(--serif); display:flex; align-items:baseline; gap:10px; }
+  summary::-webkit-details-marker { display:none; }
+  summary::before { content:"▸"; color:var(--gray-500); transition:transform .12s; flex:none; }
+  details[open] > summary::before { transform:rotate(90deg); }
+  details > .body { padding:0 18px 16px; border-top:1px solid var(--gray-300); padding-top:14px; }
+  details > .body > :last-child { margin-bottom:0; }
+
+  .habits { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+  .habits ul { margin:8px 0 0; padding-left:20px; color:var(--gray-700); }
+  .habits li { margin-bottom:6px; }
+  .export { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:8px; padding-top:20px; border-top:1px solid var(--gray-300); }
+  .export span { font-size:13px; color:var(--gray-500); }
+
+  /* progress + toc active */
+  .progress { position:fixed; top:0; left:0; right:0; height:3px; z-index:60; }
+  .progress span { display:block; height:100%; width:0; background:var(--clay); }
+  nav.toc a.active { color:var(--clay-d); font-weight:600; }
+
+  /* route switch */
+  .route-switch { display:flex; gap:6px; flex-wrap:wrap; background:var(--gray-100); padding:5px; border-radius:12px; width:max-content; max-width:100%; margin:16px 0; }
+  .route-switch button { border:0; background:transparent; border-radius:9px; color:var(--gray-500); font:13px var(--sans); padding:9px 14px; }
+  .route-switch button[aria-pressed="true"] { background:#fff; color:var(--slate); box-shadow:inset 0 -2px 0 var(--clay); }
+  .route-steps { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; margin:14px 0; }
+  .route-step { border:var(--border); border-radius:10px; background:#fff; padding:10px 12px; }
+  .route-step.new { border-color:var(--clay); background:#FBF1EC; }
+  .route-step i { font:600 11px var(--mono); color:var(--gray-500); font-style:normal; }
+  .route-step b { display:block; font-size:14px; margin:2px 0; }
+  .route-step small { display:block; font-size:12.5px; color:var(--gray-700); line-height:1.5; }
+  .route-note { font-size:13px; color:var(--gray-500); margin:0 0 4px; }
+
+  /* practice */
+  .sim { margin-bottom:16px; }
+  .sim h3 { margin-bottom:4px; }
+  .sim-buttons { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0; }
+  .sim-buttons button, .answer { font:14px var(--sans); border-radius:10px; border:var(--border); background:#fff; color:var(--gray-700); padding:10px 14px; text-align:left; }
+  .sim-buttons button:hover, .answer:hover:not(:disabled) { border-color:var(--gray-500); }
+  .sim-buttons button.selected { border-color:var(--clay); background:#FBF1EC; color:var(--slate); }
+  .sim-result { background:var(--gray-100); border-radius:10px; padding:12px 14px; font-size:14px; min-height:52px; color:var(--gray-700); }
+  .quiz-top { display:flex; justify-content:space-between; gap:10px; align-items:baseline; flex-wrap:wrap; }
+  .quiz-top .count { font:12px var(--mono); color:var(--gray-500); }
+  .question { font:500 18px/1.45 var(--serif); margin:14px 0 12px; }
+  .answers { display:grid; gap:8px; }
+  .answer { display:flex; gap:10px; align-items:flex-start; }
+  .answer .letter { width:22px; height:22px; flex:none; border-radius:6px; background:var(--gray-100); font:600 11px/22px var(--mono); text-align:center; }
+  .answer:disabled { cursor:default; }
+  .answer.correct { border-color:var(--olive); background:rgba(120,140,93,.12); }
+  .answer.wrong { border-color:var(--rust); background:rgba(176,74,63,.10); }
+  .feedback { display:none; margin-top:12px; padding:12px 14px; border-radius:10px; font-size:14px; border:var(--border); border-left-width:4px; background:#fff; }
+  .feedback.show { display:block; } .feedback.good { border-left-color:var(--olive); } .feedback.bad { border-left-color:var(--clay); }
+  .quiz-foot { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:14px; }
+  .quiz-foot span { font-size:13px; color:var(--gray-500); }
+  .checks { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  .check-item { display:flex; gap:10px; align-items:flex-start; padding:11px 13px; border:var(--border); border-radius:10px; background:#fff; font-size:14px; color:var(--gray-700); cursor:pointer; }
+  .check-item input { accent-color:var(--clay); margin-top:5px; flex:none; }
+  .check-item.done { background:rgba(120,140,93,.10); border-color:rgba(120,140,93,.45); }
+  .bar { height:6px; border-radius:999px; background:var(--gray-100); overflow:hidden; margin-top:8px; }
+  .bar span { display:block; height:100%; width:0; background:var(--olive); transition:width .2s; }
+  .check-progress { font-size:13px; color:var(--gray-500); margin-top:12px; }
+  .resources { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  .resource { display:block; padding:12px 14px; border:var(--border); border-radius:10px; background:#fff; color:var(--slate); text-decoration:none; }
+  .resource:hover { border-color:var(--clay); }
+  .resource b { display:block; font-size:14px; } .resource small { font:12px var(--mono); color:var(--gray-500); }
+  .warn ul { margin:6px 0 0; padding-left:20px; }
+  .foot { font-size:13px; color:var(--gray-500); border-top:1px solid var(--gray-300); padding-top:18px; }
+
+  @media (max-width: 920px) {
+    .layout { grid-template-columns:minmax(0,1fr); gap:24px; }
+    nav.toc { position:static; display:flex; flex-wrap:wrap; gap:4px 16px; }
+    nav.toc .label { width:100%; margin-bottom:2px; }
+    .fill { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .stages { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .two, .habits, .orient, .role-tabs, .legend, .checks, .resources { grid-template-columns:minmax(0,1fr); }
+    .route-steps { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  }
+  @media (max-width: 720px) {
+    body { padding:32px 16px 80px; }
+    .step { grid-template-columns:minmax(0,1fr); }
+    .num { margin-bottom:8px; }
+    .pr-mock { grid-template-columns:minmax(0,1fr); }
+    .pr-mock .arr { transform:rotate(90deg); height:32px; }
+  }
+  /* site nav */
+  .crumb { margin:0 0 18px; font:12px var(--mono); }
+  .crumb a { color:var(--gray-500); text-decoration:none; }
+  .crumb a:hover { color:var(--clay); }
+  .pager { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-top:40px; }
+  .pager a { display:block; padding:14px 18px; border:var(--border); border-radius:12px; background:#fff; color:var(--slate); text-decoration:none; }
+  .pager a:hover { border-color:var(--clay); }
+  .pager small { display:block; font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--gray-500); }
+  .pager b { font:500 17px/1.4 var(--serif); }
+  .pager .next { text-align:right; grid-column:2; }
+  .pager .prev { grid-column:1; }
+  @media (max-width:720px){ .pager{grid-template-columns:minmax(0,1fr);} .pager .next,.pager .prev{grid-column:1;text-align:left;} }
+  @media (prefers-reduced-motion: reduce) { * { transition:none !important; scroll-behavior:auto !important; } }
+
+  .fill.f4 { grid-template-columns:repeat(4,minmax(0,1fr)); }
+  .fill.f3 { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .fill.f2 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  @media (max-width: 920px) { .fill.f4, .fill.f3 { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  @media (max-width: 520px) { .fill.f4, .fill.f3, .fill.f2 { grid-template-columns:minmax(0,1fr); } }
+  .badge.bad { background:rgba(176,74,63,.15); color:var(--rust); }
+  .dec-out { background:var(--gray-100); border-radius:10px; padding:12px 14px; font-size:14px; color:var(--gray-700); margin-top:12px; }
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><span id="readBar"></span></div>
+<div class="page">
+
+<header>
+  <nav class="crumb" aria-label="站內導覽"><a href="../index.html">← 回教學首頁</a></nav>
+  <div class="eyebrow">GitHub 入門 · 第 11 篇 · Actions 與 Pages(進階選讀)</div>
+  <h1>寫一個 YAML,讓 GitHub 自動幫你測試與發佈網站</h1>
+  <p class="sub">從最小的 workflow 開始:push 之後自動 checkout 與跑指令,在 Actions 分頁看日誌,再用 GitHub Pages 把靜態網頁變成公開網站。</p>
+  <div class="tldr"><b>TL;DR</b> workflow 是 <code>.github/workflows/</code> 裡的 YAML:<strong>事件(on)→ job → step</strong>,第一步通常是 <code>actions/checkout</code>。結果看 Actions 分頁;金鑰放 secrets;網站用 <b>Settings → Pages</b> 從分支或 Actions 發佈。</div>
+</header>
+
+<div class="layout">
+<nav class="toc" aria-label="本頁目錄">
+  <div class="label">On this page</div>
+  <a href="#what">1. Actions 與 Pages</a>
+  <a href="#map">2. 全貌圖</a>
+  <a href="#fill">3. 填入你的資料</a>
+  <a href="#steps">4. 七個步驟</a>
+  <a href="#gotchas">5. 常見卡關</a>
+  <a href="#practice">6. 演練與延伸閱讀</a>
+</nav>
+
+<main>
+<section id="what">
+  <h2>把重複的事交給機器</h2>
+  <hr class="rule">
+<div class="panel"><h3>用「自動化工廠的流水線」來想</h3><p>每次 push 之後,你都想跑一次測試、檢查格式、打包、發佈。這些事每次都一樣,<b>GitHub Actions</b> 就是讓 GitHub 在特定事件(push、開 PR、打 tag)發生時,依你寫的腳本自動幫你做,結果會顯示在 PR 的 Checks 上(第 7 篇看到的綠勾、紅叉就是它)。</p><p style="margin-bottom:0"><b>GitHub Pages</b> 則是把 repo 裡的靜態網頁(HTML、CSS、JS)變成一個公開網站,可以直接從分支發佈,也可以用 Actions 建置後發佈。</p></div>
+<h3 style="margin-top:26px">七個名詞</h3>
+<div class="table-wrap"><div class="gt g2"><div class="row"><div class="cell head">名詞</div><div class="cell head">白話說明</div></div><div class="row"><div class="cell term">workflow</div><div class="cell">一份自動化流程,寫在 <code>.github/workflows/</code> 底下的 <code>.yml</code> 檔。</div></div><div class="row"><div class="cell term">event(<code>on</code>)</div><div class="cell">觸發條件,例如 <code>push</code>、<code>pull_request</code>。</div></div><div class="row"><div class="cell term">job</div><div class="cell">一組在同一台機器上依序執行的步驟。多個 job 預設同時進行。</div></div><div class="row"><div class="cell term">runner</div><div class="cell">跑 job 的機器。<code>ubuntu-latest</code> 是 GitHub 提供的 Linux 虛擬機。</div></div><div class="row"><div class="cell term">step</div><div class="cell">job 裡的一個動作:跑一個指令(<code>run</code>)或使用別人寫好的 action(<code>uses</code>)。</div></div><div class="row"><div class="cell term">action</div><div class="cell">可重複使用的步驟,例如 <code>actions/checkout</code> 把 repo 下載到 runner。</div></div><div class="row"><div class="cell term">GitHub Pages</div><div class="cell">把 repo 的靜態檔案發佈成網站的服務。</div></div></div></div>
+</section>
+
+<section id="map">
+  <h2>全貌:事件觸發,runner 依序做事</h2>
+  <hr class="rule">
+<p class="sub" style="margin-bottom:16px">一個 workflow 的生命週期:事件 → 一台乾淨的機器依序跑步驟 → 結果顯示在 GitHub 上。</p>
+<div class="canvas"><svg viewBox="0 0 900 250" role="img" aria-label="GitHub Actions:push 事件觸發 workflow,在 runner 上依序執行 checkout、安裝、測試,成功後可部署到 GitHub Pages">
+      <defs>
+        <marker id="ag" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#87867F"/></marker>
+        <marker id="ao" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#788C5D"/></marker>
+        <style>.m{font:12px ui-monospace,Menlo,monospace}.s{font:12px system-ui,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif}.nn{font:600 12px ui-monospace,Menlo,monospace}</style>
+      </defs>
+      <rect width="900" height="250" fill="#FFFFFF"/>
+      <rect x="20" y="40" width="150" height="84" rx="10" fill="#F0EEE6" stroke="#3D3D3A" stroke-width="1.5"/>
+      <text x="95" y="74" text-anchor="middle" class="m" fill="#141413">on: push</text><text x="95" y="96" text-anchor="middle" class="s" fill="#3D3D3A">事件發生</text>
+      <rect x="215" y="40" width="440" height="84" rx="10" fill="#F0EEE6" stroke="#3D3D3A" stroke-width="1.5"/>
+      <text x="435" y="62" text-anchor="middle" class="s" fill="#87867F">job:在 GitHub 提供的虛擬機(runner)上跑</text>
+      <rect x="230" y="72" width="120" height="40" rx="8" fill="#fff" stroke="#87867F" stroke-width="1"/><text x="290" y="97" text-anchor="middle" class="m" fill="#141413">checkout</text>
+      <rect x="365" y="72" width="120" height="40" rx="8" fill="#fff" stroke="#87867F" stroke-width="1"/><text x="425" y="97" text-anchor="middle" class="m" fill="#141413">安裝套件</text>
+      <rect x="500" y="72" width="140" height="40" rx="8" fill="#fff" stroke="#87867F" stroke-width="1"/><text x="570" y="97" text-anchor="middle" class="m" fill="#141413">跑測試</text>
+      <rect x="700" y="40" width="180" height="84" rx="10" fill="#E3DACC" stroke="#3D3D3A" stroke-width="2"/>
+      <text x="790" y="74" text-anchor="middle" class="s" fill="#141413">結果 / 部署</text><text x="790" y="96" text-anchor="middle" class="s" fill="#3D3D3A">綠勾、或 GitHub Pages</text>
+      <line x1="173" y1="82" x2="211" y2="82" stroke="#87867F" stroke-width="1.5" marker-end="url(#ag)"/>
+      <circle cx="192" cy="62" r="11" fill="#D97757"/><text x="192" y="66.5" text-anchor="middle" class="nn" fill="#fff">1</text>
+      <circle cx="435" cy="26" r="0" fill="none"/>
+      <circle cx="357" cy="30" r="11" fill="#D97757"/><text x="357" y="34.5" text-anchor="middle" class="nn" fill="#fff">2</text>
+      <line x1="658" y1="82" x2="696" y2="82" stroke="#788C5D" stroke-width="2" marker-end="url(#ao)"/>
+      <circle cx="677" cy="62" r="11" fill="#788C5D"/><text x="677" y="66.5" text-anchor="middle" class="nn" fill="#fff">3</text>
+      <text x="40" y="172" class="s" fill="#3D3D3A">workflow 是放在 repo 裡的一個 YAML 檔:.github/workflows/xxx.yml</text>
+    </svg></div>
+<ol class="legend" style="list-style:none"><li><span class="n">1</span><span><b>事件</b>:你 push、開 PR,或其他設定的時機。</span></li><li><span class="n">2</span><span><b>步驟</b>:機器是全新的,所以第一步一定是 checkout,把你的程式碼拿下來。</span></li><li><span class="n">3</span><span><b>結果</b>:成功是綠勾、失敗是紅叉;也可以接著部署到 Pages。</span></li></ol>
+</section>
+
+<section id="fill">
+  <h2>先填入你的資料,下面的指令會自動換成你的版本</h2>
+  <hr class="rule">
+<div class="panel"><div class="fill f3"><div><label for="in-me">你的 GitHub 帳號</label><input id="in-me" data-k="me" autocomplete="off" spellcheck="false"></div><div><label for="in-repo">專案名稱</label><input id="in-repo" data-k="repo" autocomplete="off" spellcheck="false"></div><div><label for="in-branch">主要分支</label><input id="in-branch" data-k="branch" autocomplete="off" spellcheck="false"></div></div><div class="fill-foot"><button type="button" class="ghost" id="resetBtn">Reset</button><span>空白時顯示範例值;<span class="slot">橘底</span>文字就是會被替換的部分。</span></div></div>
+</section>
+
+<section id="steps">
+  <h2>照著做:七個步驟</h2>
+  <hr class="rule">
+<div class="steps">
+<div class="step"><div class="num">1</div><div>
+<h3>建立第一個 workflow 檔</h3>
+<p class="why">workflow 就是 repo 裡的一個檔案,放在固定位置 GitHub 才找得到。</p>
+<div class="cmd"><pre data-tpl>mkdir -p .github/workflows</pre><button type="button" class="copy">Copy</button></div>
+<ol class="ops"><li>用編輯器新增檔案 <code>.github/workflows/ci.yml</code>。</li><li>貼上下面的內容。YAML 對縮排很敏感:<b>用空白,不要用 Tab</b>,每層縮排 2 個空白。</li></ol>
+<div class="cmd"><div class="cap">.github/workflows/ci.yml</div><pre data-tpl>name: CI
+on:
+  push:
+    branches: [ {branch} ]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 取得程式碼
+        uses: actions/checkout@v4
+      - name: 顯示檔案
+        run: ls -la
+      - name: 跑測試
+        run: echo "在這裡放你的測試指令,例如 npm test"
+</pre><button type="button" class="copy">Copy</button></div>
+<ol class="ops"><li><code>name</code>:這個 workflow 在 Actions 頁顯示的名字。</li><li><code>on</code>:什麼時候跑。這裡是 push 到 <code data-tpl>{branch}</code>,以及任何 PR。</li><li><code>jobs → test → runs-on</code>:有一個叫 test 的 job,跑在 Ubuntu 上。</li><li><code>steps</code>:依序做的事。<code>uses</code> 是用別人寫好的 action;<code>run</code> 是執行指令。</li></ol>
+<div class="tip"><b class="l">小技巧</b><code>actions/checkout@v4</code> 的 <code>@v4</code> 是 action 的版本。官方文件的範例可能使用更新的主版本,新增時以當時文件為準。</div>
+</div></div>
+<div class="step"><div class="num">2</div><div>
+<h3>commit 並 push,觸發第一次執行</h3>
+<p class="why">workflow 一進到預設分支(或對應的分支),下一次符合事件就會跑。</p>
+<div class="cmd"><pre data-tpl>git add .github/workflows/ci.yml
+git commit -m "新增 CI workflow"
+git push</pre><button type="button" class="copy">Copy</button></div>
+<div class="see"><b class="l">你會看到</b>push 成功後,不需要任何手動動作。GitHub 會自動開始執行。</div>
+</div></div>
+<div class="step"><div class="num">3</div><div>
+<h3>在 Actions 分頁看結果</h3>
+<p class="why">每次執行都有完整的日誌。失敗了,就是從這裡找原因。</p>
+<ol class="ops"><li>到 repo 頁面,點上方的 <b>Actions</b> 分頁。</li><li>左側列出 workflow 名稱(<b>CI</b>),點進去,再點最新的一次執行。</li><li>左側 <b>Jobs</b> 底下點 <b>test</b>,可以展開每一步的日誌。</li></ol>
+<div class="see"><b class="l">你會看到</b>執行中是黃色圓點,成功是綠色勾勾,失敗是紅色叉叉。每個 step 可以展開看輸出。</div>
+<div class="warn"><b class="l">注意</b>紅叉時,點進失敗的那一步看紅色錯誤訊息。九成是縮排錯誤、指令打錯,或測試真的沒過。</div>
+</div></div>
+<div class="step"><div class="num">4</div><div>
+<h3>讓 PR 也會自動檢查</h3>
+<p class="why">上面的 <code>on</code> 已經包含 <code>pull_request</code>,所以每個 PR 都會自動跑。</p>
+<ol class="ops"><li>開一個 PR(見第 6 篇)。</li><li>PR 頁面下方的合併區塊會出現 <b>Checks</b>:顯示 CI 是通過或失敗。</li><li>搭配第 7 篇的規則集,可以設定「CI 通過才能合併」。</li></ol>
+<div class="see"><b class="l">你會看到</b>合併區塊列出 <b>CI / test</b>,通過時是綠勾。</div>
+</div></div>
+<div class="step"><div class="num">5</div><div>
+<h3>用 secrets 保存金鑰</h3>
+<p class="why">測試或部署需要金鑰時,放在 Actions secrets,不要寫進 workflow 檔(見第 10 篇)。</p>
+<ol class="ops"><li>repo 的 <b>Settings</b> → 側邊欄 <b>Secrets and variables</b> → <b>Actions</b>。</li><li><b>Secrets</b> 分頁按 <b>New repository secret</b>,填名稱與值,按 <b>Add secret</b>。</li><li>在 workflow 的 step 裡用環境變數傳入。</li></ol>
+<div class="cmd"><pre data-tpl>      - name: 使用 secret
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
+        run: ./deploy.sh</pre><button type="button" class="copy">Copy</button></div>
+<div class="see"><b class="l">你會看到</b>日誌裡 secret 的值會被遮成 <code>***</code>。</div>
+<div class="warn"><b class="l">注意</b>來自 fork 的 PR 預設拿不到 secrets,這是為了安全,不是壞掉。</div>
+</div></div>
+<div class="step"><div class="num">6</div><div>
+<h3>啟用 GitHub Pages(從分支發佈)</h3>
+<p class="why">最簡單的發佈方式:把網頁檔案放在某個分支,讓 Pages 直接發佈。</p>
+<ol class="ops"><li>確認 repo 根目錄(或 <code>/docs</code> 資料夾)有 <code>index.html</code>,並已 push。</li><li>repo 的 <b>Settings</b> → 側邊欄 <b>Code, planning, and automation</b> 區塊的 <b>Pages</b>。</li><li><b>Build and deployment</b> → <b>Source</b> 選 <b>Deploy from a branch</b>。</li><li><b>Branch</b> 選 <code data-tpl>{branch}</code>,資料夾選 <b>/ (root)</b> 或 <b>/docs</b>,按 <b>Save</b>。</li></ol>
+<div class="see"><b class="l">你會看到</b>稍等一兩分鐘,Pages 設定頁上方會出現 <b>Your site is live at …</b> 與網址。專案網站網址通常是 <code data-tpl>https://{me}.github.io/{repo}/</code>。</div>
+<div class="warn"><b class="l">注意</b>Pages 能不能用在私人 repo,依你的方案而定;公開 repo 一般可以直接使用。找不到選項時,以官方文件與你帳號實際的畫面為準。</div>
+</div></div>
+<div class="step"><div class="num">7</div><div>
+<h3>(進階)用 Actions 建置後發佈 Pages</h3>
+<p class="why">網站需要先建置(例如用工具把 Markdown 轉成 HTML)時,改成讓 Actions 建置並部署。</p>
+<ol class="ops"><li>Pages 設定頁 <b>Source</b> 選 <b>GitHub Actions</b>。</li><li>GitHub 會建議幾種現成的 workflow 範本,選一個符合你工具的,或用現有的 workflow。</li><li>之後每次 push,Actions 會建置並更新網站。</li></ol>
+<div class="see"><b class="l">你會看到</b>Actions 分頁出現部署的執行紀錄;完成後網站內容更新。</div>
+<div class="tip"><b class="l">小技巧</b>純 HTML 的靜態網站,不需要建置,步驟 6 就夠了。</div>
+</div></div>
+</div>
+</section>
+
+<section id="gotchas">
+  <h2>常見卡關</h2>
+  <hr class="rule">
+<details><summary>workflow 沒有跑</summary><div class="body"><p>依序檢查:</p><ol class='ops'><li>檔案位置是不是 <code>.github/workflows/xxx.yml</code>(資料夾名稱與副檔名都要對)。</li><li><code>on</code> 的事件和分支是否符合你的操作(例如設定 push 到 <code>main</code>,你卻 push 到別的分支)。</li><li>YAML 縮排有沒有錯。到 Actions 分頁,常常會直接顯示語法錯誤。</li></ol></div></details>
+<details><summary>Actions 日誌說 <code>Permission denied</code> 或需要權限</summary><div class="body"><p>預設的 token 權限有限。需要寫入(例如推送、開 Release)時,在 workflow 加上 <code>permissions:</code> 區塊,只給需要的最小權限。</p><div class="cmd"><pre data-tpl>permissions:
+  contents: read</pre><button type="button" class="copy">Copy</button></div></div></details>
+<details><summary>Pages 顯示 404</summary><div class="body"><p>檢查三件事:<code>index.html</code> 是否在你選的分支與資料夾的最外層;檔名是否完全是小寫的 <code>index.html</code>;是否等了一兩分鐘讓部署完成。也可以在 Actions 分頁看有沒有 Pages 的部署紀錄。</p></div></details>
+<details><summary>網站樣式或圖片壞掉,但 HTML 有出來</summary><div class="body"><p>專案網站的網址帶有 repo 名稱(<code data-tpl>/{repo}/</code>),所以資源路徑要用<b>相對路徑</b>(<code>style.css</code>),而不是以 <code>/</code> 開頭的絕對路徑(<code>/style.css</code>)。</p></div></details>
+<details><summary>要付費嗎?</summary><div class="body"><p>公開 repo 使用 GitHub 提供的標準 runner 一般是免費的;私人 repo 的免費額度依方案而定(個人免費方案每月有一定額度的使用量,Linux 計費最便宜,Windows 與 macOS 較貴)。額度與價格會調整,請以 GitHub 帳號的 Billing 頁與官方文件為準。</p></div></details>
+</section>
+
+<section id="practice">
+  <h2>動手演練:確認你真的懂了</h2>
+  <hr class="rule">
+<p class="sub" style="margin-bottom:18px">先選答案再看原因。重點是遇到問題時知道先看哪裡。</p>
+<div class="panel sim" data-simgroup>
+<h3>情境:選一個你遇到的狀況</h3>
+<p style="margin:6px 0 0;color:var(--gray-700)">你想知道要先檢查什麼?</p>
+<div class="sim-buttons" role="group" aria-label="選擇做法"><button type="button" data-sim="w1">workflow 完全沒有執行</button><button type="button" data-sim="w2">Actions 顯示紅叉</button><button type="button" data-sim="w3">Pages 顯示 404</button><button type="button" data-sim="w4">網站出來了但樣式全跑掉</button></div>
+<div class="sim-result" aria-live="polite">選一個做法,看看對不對。</div>
+</div>
+<div class="panel" id="quiz">
+    <div class="quiz-top"><h3 style="margin:0">快速測驗</h3><span class="count" id="quizCount">1 / 1</span></div>
+    <div class="question" id="quizQ"></div>
+    <div class="answers" id="quizAns"></div>
+    <div class="feedback" id="quizFb" aria-live="polite"></div>
+    <div class="quiz-foot"><span id="quizScore">答對 0 題</span><button type="button" class="primary" id="quizNext" disabled>下一題 →</button></div>
+  </div>
+<h3 style="margin-top:30px">開做之前,對照這張清單</h3>
+<div class="panel">
+<div class="checks" id="checks"><label class="check-item"><input type="checkbox"><span>我知道 workflow 要放在 <code>.github/workflows/</code>。</span></label><label class="check-item"><input type="checkbox"><span>我的 YAML 用空白縮排,沒有用 Tab。</span></label><label class="check-item"><input type="checkbox"><span>我知道每個 job 的第一步通常是 checkout。</span></label><label class="check-item"><input type="checkbox"><span>我能到 Actions 分頁看日誌找失敗的原因。</span></label><label class="check-item"><input type="checkbox"><span>我的金鑰存在 Actions secrets,不在 workflow 檔裡。</span></label><label class="check-item"><input type="checkbox"><span>我知道專案網站的資源要用相對路徑。</span></label><label class="check-item"><input type="checkbox"><span>我了解免費額度會調整,會到帳號的 Billing 頁確認。</span></label></div>
+<div class="check-progress" id="checkProgress">已完成 0 / 7 項</div>
+<div class="bar"><span id="checkBar"></span></div>
+</div>
+<h3 style="margin-top:30px">GitHub 官方文件</h3>
+<div class="resources"><a class="resource" href="https://docs.github.com/en/actions/get-started/quickstart" target="_blank" rel="noopener"><b>Actions 快速入門</b><small>Quickstart for GitHub Actions</small></a><a class="resource" href="https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions" target="_blank" rel="noopener"><b>在 Actions 使用 secrets</b><small>Using secrets in GitHub Actions</small></a><a class="resource" href="https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site" target="_blank" rel="noopener"><b>設定 Pages 的發佈來源</b><small>Configuring a publishing source for your GitHub Pages site</small></a><a class="resource" href="https://docs.github.com/en/billing/concepts/product-billing/github-actions" target="_blank" rel="noopener"><b>Actions 計費</b><small>GitHub Actions billing</small></a></div>
+</section>
+</main>
+</div>
+
+<p class="foot" style="margin-top:28px">本頁按鈕名稱以 GitHub 英文介面為準;GitHub 偶爾會微調介面文字與位置,找不到時請用關鍵字對照畫面上相近的按鈕。查證日期:2026-11-06。</p>
+
+<nav class="pager" aria-label="上一篇與下一篇">
+  <a class="prev" href="github-security-guide.html"><small>上一篇</small><b>安全性:Secrets 與 Dependabot</b></a>
+</nav>
+</div>
+
+<script>window.PAGE = {"fill": {"me": "your-name", "repo": "hello-world", "branch": "main"}, "sim": {"w1": "<b>檢查檔案位置與觸發條件。</b>檔案必須在 <code>.github/workflows/</code>,<code>on</code> 的事件與分支要符合你的操作。Actions 分頁可能會顯示語法錯誤。", "w2": "<b>看日誌找出失敗的那一步。</b>點進失敗的 step 看紅色錯誤訊息;多數是縮排、指令打錯,或測試真的沒過。", "w3": "<b>檢查來源與資料夾。</b>確認 Source 選對、分支與資料夾對、<code>index.html</code> 在最外層,並等一兩分鐘。", "w4": "<b>把資源路徑改成相對路徑。</b>專案網站的網址帶 repo 名稱,以 <code>/</code> 開頭的路徑會指到網域根目錄而找不到檔案。"}, "quiz": [{"q": "workflow 檔案放在哪裡才會被 GitHub 執行?", "a": ["任意位置", ".github/workflows/ 資料夾底下的 .yml 檔", "README.md 裡"], "c": 1, "why": "位置固定,GitHub 才找得到。"}, {"q": "為什麼大多數 workflow 的第一步是 <code>actions/checkout</code>?", "a": ["讓機器顯示日誌", "runner 是全新的機器,要先把你的程式碼下載下來", "為了登入 GitHub"], "c": 1, "why": "每次 job 都在乾淨的機器上跑,什麼都沒有。"}, {"q": "<code>on: [push]</code> 代表?", "a": ["每天自動執行", "有人 push 時觸發", "只有手動執行"], "c": 1, "why": "on 定義觸發的事件。"}, {"q": "CI 需要部署金鑰,應該?", "a": ["寫在 workflow 裡", "存成 Actions secret,用 secrets 內容取用", "放在 README"], "c": 1, "why": "secrets 不會出現在 repo 內容與日誌中。"}, {"q": "Pages 網站樣式跑掉,最可能的原因?", "a": ["瀏覽器壞了", "資源用了 / 開頭的絕對路徑,專案網站網址帶 repo 名稱", "Pages 不支援 CSS"], "c": 1, "why": "專案網站的根是 /repo/,絕對路徑會指到網域根目錄。"}]};</script>
+<script>
+(function () {
+  "use strict";
+  var CFG = window.PAGE || {};
+  function $(id){ return document.getElementById(id); }
+  function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+  function copyText(text, btn){
+    var orig = btn.textContent;
+    function flash(){
+      btn.textContent = "Copied ✓"; btn.classList.add("copied");
+      setTimeout(function(){ btn.textContent = orig; btn.classList.remove("copied"); }, 1200);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(flash, flash);
+    } else {
+      var ta = document.createElement("textarea"); ta.value = text;
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); } catch(e){}
+      document.body.removeChild(ta); flash();
+    }
+  }
+
+  /* ---------- fill-in template values ---------- */
+  var DEF = CFG.fill || {};
+  var vals = {};
+  var RE = /\{([A-Za-z0-9_]+)\}/g;
+  function val(k){ return vals[k] || DEF[k]; }
+  function resolvePlain(t){ return t.replace(RE, function(m, k){ return (k in DEF) ? val(k) : m; }); }
+  function resolveHtml(t){
+    var out = "", last = 0, m;
+    RE.lastIndex = 0;
+    while ((m = RE.exec(t))){
+      if (!(m[1] in DEF)) continue;
+      out += esc(t.slice(last, m.index)) + '<span class="slot">' + esc(val(m[1])) + "</span>";
+      last = RE.lastIndex;
+    }
+    return out + esc(t.slice(last));
+  }
+  function lineHtml(line){
+    if (line.trim().indexOf("# ") === 0) return '<span class="cm">' + resolveHtml(line) + "</span>";
+    var i = line.indexOf("  # ");
+    if (i > -1) return resolveHtml(line.slice(0, i)) + '<span class="cm">' + resolveHtml(line.slice(i)) + "</span>";
+    return resolveHtml(line);
+  }
+  var tplEls = Array.prototype.slice.call(document.querySelectorAll("[data-tpl]"));
+  tplEls.forEach(function(el){ el._tpl = el.textContent; });
+  function renderTpl(){
+    tplEls.forEach(function(el){
+      if (el.tagName === "PRE") el.innerHTML = el._tpl.split("\n").map(lineHtml).join("\n");
+      else el.innerHTML = resolveHtml(el._tpl);
+    });
+  }
+  var inputs = Array.prototype.slice.call(document.querySelectorAll(".fill input"));
+  inputs.forEach(function(inp){
+    inp.placeholder = DEF[inp.dataset.k] || "";
+    inp.addEventListener("input", function(){
+      var v = inp.value;
+      if (!inp.dataset.ns){ v = v.replace(/\s+/g, "-"); if (v !== inp.value) inp.value = v; }
+      vals[inp.dataset.k] = v;
+      renderTpl();
+    });
+  });
+  var rb = $("resetBtn");
+  if (rb) rb.addEventListener("click", function(){
+    inputs.forEach(function(inp){ inp.value = ""; vals[inp.dataset.k] = ""; });
+    renderTpl();
+  });
+  document.querySelectorAll(".cmd .copy").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var pre = btn.parentNode.querySelector("pre");
+      copyText(pre._tpl !== undefined ? resolvePlain(pre._tpl) : pre.textContent, btn);
+    });
+  });
+
+  /* ---------- reading progress + toc spy ---------- */
+  var readBar = $("readBar");
+  function updateBar(){
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    readBar.style.width = (max > 0 ? Math.min(100, window.scrollY / max * 100) : 0) + "%";
+  }
+  window.addEventListener("scroll", updateBar, { passive: true });
+  window.addEventListener("resize", updateBar);
+  updateBar();
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll("nav.toc a"));
+  if ("IntersectionObserver" in window){
+    var spy = new IntersectionObserver(function(es){
+      es.forEach(function(en){
+        if (en.isIntersecting) tocLinks.forEach(function(a){ a.classList.toggle("active", a.getAttribute("href") === "#" + en.target.id); });
+      });
+    }, { rootMargin: "-15% 0px -70% 0px" });
+    tocLinks.forEach(function(a){ var sec = document.querySelector(a.getAttribute("href")); if (sec) spy.observe(sec); });
+  }
+
+  /* ---------- scenario simulators ---------- */
+  var SIM = CFG.sim || {};
+  document.querySelectorAll("[data-simgroup]").forEach(function(group){
+    var btns = Array.prototype.slice.call(group.querySelectorAll("[data-sim]"));
+    var out = group.querySelector(".sim-result");
+    btns.forEach(function(btn){
+      btn.addEventListener("click", function(){
+        btns.forEach(function(b){ b.classList.toggle("selected", b === btn); });
+        out.innerHTML = SIM[btn.dataset.sim] || "";
+      });
+    });
+  });
+
+  /* ---------- quiz ---------- */
+  var QUIZ = CFG.quiz || [];
+  if (QUIZ.length && $("quiz")){
+    var qi = 0, qScore = 0, qDone = false;
+    var qCount = $("quizCount"), qQ = $("quizQ"), qAns = $("quizAns"), qFb = $("quizFb"), qNext = $("quizNext"), qScoreEl = $("quizScore");
+    var renderQuiz = function(){
+      var item = QUIZ[qi]; qDone = false;
+      qCount.textContent = (qi + 1) + " / " + QUIZ.length;
+      qQ.innerHTML = item.q;
+      qAns.innerHTML = "";
+      qFb.className = "feedback"; qFb.textContent = "";
+      qNext.disabled = true;
+      qNext.textContent = qi === QUIZ.length - 1 ? "重新測驗 ↻" : "下一題 →";
+      item.a.forEach(function(text, i){
+        var b = document.createElement("button");
+        b.type = "button"; b.className = "answer";
+        b.innerHTML = '<span class="letter">' + String.fromCharCode(65 + i) + "</span><span>" + esc(text) + "</span>";
+        b.addEventListener("click", function(){ pick(i); });
+        qAns.appendChild(b);
+      });
+    };
+    var pick = function(i){
+      if (qDone) return; qDone = true;
+      var item = QUIZ[qi], good = i === item.c;
+      Array.prototype.forEach.call(qAns.querySelectorAll("button"), function(b, n){
+        b.disabled = true;
+        if (n === item.c) b.classList.add("correct");
+        if (n === i && !good) b.classList.add("wrong");
+      });
+      if (good) qScore++;
+      qFb.className = "feedback show " + (good ? "good" : "bad");
+      qFb.innerHTML = "<b>" + (good ? "答對了!" : "再記一下這個觀念。") + "</b> " + esc(item.why);
+      qScoreEl.textContent = "答對 " + qScore + " / " + (qi + 1) + " 題";
+      qNext.disabled = false;
+    };
+    qNext.addEventListener("click", function(){
+      if (qi === QUIZ.length - 1){ qi = 0; qScore = 0; } else { qi++; }
+      renderQuiz();
+      qScoreEl.textContent = "答對 " + qScore + " 題";
+    });
+    renderQuiz();
+  }
+
+  /* ---------- checklist ---------- */
+  var checks = Array.prototype.slice.call(document.querySelectorAll("#checks input"));
+  function updateChecks(){
+    var n = checks.filter(function(c){ return c.checked; }).length;
+    $("checkProgress").textContent = "已完成 " + n + " / " + checks.length + " 項";
+    $("checkBar").style.width = (n / checks.length * 100) + "%";
+    checks.forEach(function(c){ c.closest(".check-item").classList.toggle("done", c.checked); });
+  }
+  checks.forEach(function(c){ c.addEventListener("change", updateChecks); });
+
+  /* ---------- role tabs (dual-view pages) ---------- */
+  var roleBtns = Array.prototype.slice.call(document.querySelectorAll("[data-role]"));
+  var rolePanels = Array.prototype.slice.call(document.querySelectorAll("[data-panel]"));
+  function setRole(r, focus){
+    roleBtns.forEach(function(b){
+      var on = b.dataset.role === r;
+      b.classList.toggle("on", on);
+      b.setAttribute("aria-selected", on ? "true" : "false");
+      b.tabIndex = on ? 0 : -1;
+      if (on && focus) b.focus();
+    });
+    rolePanels.forEach(function(p){ p.hidden = p.dataset.panel !== r; });
+  }
+  roleBtns.forEach(function(b){
+    b.addEventListener("click", function(){ setRole(b.dataset.role); });
+    b.addEventListener("keydown", function(e){
+      if (e.key === "ArrowLeft" || e.key === "ArrowRight"){
+        e.preventDefault(); setRole(b.dataset.role === "c" ? "o" : "c", true);
+      }
+    });
+  });
+  if (roleBtns.length) setRole("c");
+
+  /* ---------- stage stepper (two columns) ---------- */
+  var STAGES = CFG.stages || [];
+  if (STAGES.length && $("stages")){
+    var stage = 0;
+    var stagesEl = $("stages");
+    var renderStages = function(){
+      stagesEl.innerHTML = STAGES.map(function(s, i){
+        return '<button type="button" data-i="' + i + '" class="' + (i === stage ? "on" : "") + '" aria-pressed="' + (i === stage) + '">' +
+          '<span class="si">階段 ' + (i + 1) + "</span><span>" + s.label + '</span><span class="badge ' + s.tone + '">' + s.badge + "</span></button>";
+      }).join("");
+      var s = STAGES[stage];
+      $("c-h").textContent = s.c.h; $("o-h").textContent = s.o.h;
+      $("c-list").innerHTML = s.c.items.map(function(t){ return "<li>" + t + "</li>"; }).join("");
+      $("o-list").innerHTML = s.o.items.map(function(t){ return "<li>" + t + "</li>"; }).join("");
+      $("prevStage").disabled = stage === 0;
+      $("nextStage").disabled = stage === STAGES.length - 1;
+    };
+    stagesEl.addEventListener("click", function(e){
+      var b = e.target.closest("button[data-i]"); if (!b) return;
+      stage = +b.dataset.i; renderStages();
+    });
+    $("prevStage").addEventListener("click", function(){ if (stage > 0){ stage--; renderStages(); } });
+    $("nextStage").addEventListener("click", function(){ if (stage < STAGES.length - 1){ stage++; renderStages(); } });
+    renderStages();
+  }
+
+  /* ---------- decision picker ---------- */
+  var DECIDE = CFG.decide || [];
+  if (DECIDE.length && $("decideBtns")){
+    var decBtns = $("decideBtns"), decOut = $("decideOut");
+    decBtns.innerHTML = DECIDE.map(function(d, i){
+      return '<button type="button" data-d="' + i + '">' + d.label + "</button>";
+    }).join("");
+    decBtns.addEventListener("click", function(e){
+      var b = e.target.closest("button[data-d]"); if (!b) return;
+      var d = DECIDE[+b.dataset.d];
+      Array.prototype.forEach.call(decBtns.querySelectorAll("button"), function(x){ x.classList.toggle("selected", x === b); });
+      var tone = d.risk === "高" ? "bad" : (d.risk === "中" ? "warn" : "ok");
+      decOut.innerHTML = '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px"><b>建議做法</b><span class="badge ' + tone + '">風險:' + d.risk + "</span></div>" +
+        '<div class="cmd" style="margin:8px 0"><pre></pre><button type="button" class="copy">Copy</button></div><div>' + d.why + "</div>";
+      decOut.querySelector("pre").textContent = d.cmd;
+      decOut.querySelector(".copy").addEventListener("click", function(ev){ copyText(d.cmd, ev.currentTarget); });
+    });
+  }
+
+  renderTpl();
+  if (checks.length) updateChecks();
+})();
+
+</script>
+</body>
+</html>

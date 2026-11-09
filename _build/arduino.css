@@ -1,0 +1,67 @@
+
+  /* ===== Arduino 主題專用(只有 dir=arduino 的頁面會內嵌) ===== */
+  .el { cursor:pointer; }
+  .el .halo { display:none; }
+  .el.cur .halo, .el.hl .halo { display:block; }
+  .el.future { opacity:.12; }
+  .el.future.hl { opacity:1; }
+  .el:focus { outline:none; }
+  .el:focus-visible .halo { display:block; }
+  .wiring .wnav { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:14px; }
+  .wdots { display:inline-flex; gap:6px; margin:0 4px; flex-wrap:wrap; }
+  .wdot { width:30px; height:30px; padding:0; border-radius:999px; font:12px var(--mono); background:#fff; border:var(--border); color:var(--gray-700); cursor:pointer; }
+  .wdot:hover { border-color:var(--clay); }
+  .wdot.on { border-color:var(--clay); background:#FBF1EC; color:var(--slate); }
+  .wdot.done { border-color:var(--olive); color:var(--olive); }
+  .wcap { margin-top:12px; background:var(--gray-100); border-radius:10px; padding:12px 14px; font-size:14px; line-height:1.65; color:var(--gray-700); }
+  .wcap b.t { display:block; font:500 17px/1.4 var(--serif); color:var(--slate); margin-bottom:4px; }
+  .bbx-info, .linkbox { margin-top:12px; background:var(--gray-100); border-radius:10px; padding:12px 14px; font-size:14px; color:var(--gray-700); min-height:48px; }
+  .newsym { display:inline-block; font:11px var(--mono); letter-spacing:.04em; background:#FBF1EC; color:var(--clay-d); border-radius:999px; padding:1px 9px; margin-right:6px; vertical-align:1px; }
+  .pager .off { display:block; padding:14px 18px; border:1.5px dashed var(--gray-300); border-radius:12px; background:var(--gray-100); color:var(--gray-500); }
+  .pager .off small { display:block; font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; }
+  .pager .off b { font:500 17px/1.4 var(--serif); }
+  .pager .next.off { text-align:right; grid-column:2; }
+  .pager .prev.off { grid-column:1; }
+  .sk { font:12px var(--mono); color:var(--gray-500); margin:6px 0 0; }
+  .spec { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin:14px 0 0; }
+  .spec > div { background:#fff; border:var(--border); border-radius:10px; padding:10px 12px; }
+  .spec .k { font:11px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--gray-500); }
+  .spec .v { font:500 20px/1.3 var(--serif); color:var(--slate); }
+  @media (max-width: 720px) { .spec { grid-template-columns:minmax(0,1fr); } .pager .next.off, .pager .prev.off { grid-column:1; text-align:left; } }
+
+  .gt.g3w .row { grid-template-columns:56px 200px minmax(0,1fr); }
+  @media (max-width: 720px) {
+    .gt { min-width:0; }
+    .gt.g2 .row, .gt.g3 .row, .gt.g3b .row, .gt.g3w .row { grid-template-columns:minmax(0,1fr); border-top:1px solid var(--gray-300); padding:4px 0; }
+    .gt .row:first-child { display:none; }
+    .gt .cell { border-top:0; padding:5px 14px; }
+    .gt .cell[data-h]::before { content:attr(data-h); display:block; font:11px var(--mono); letter-spacing:.04em; color:var(--gray-500); margin-bottom:1px; }
+  }
+
+  .bh { fill:transparent; cursor:pointer; }
+  .bh:hover { fill:rgba(217,119,87,.15); }
+  .bh.on { fill:rgba(217,119,87,.38); }
+  .bh.sel { fill:rgba(217,119,87,.8); }
+  .bbx-bar { display:flex; flex-wrap:wrap; align-items:center; gap:14px; margin-top:12px; font-size:14px; color:var(--gray-700); }
+  .bbx-bar label { display:inline-flex; gap:8px; align-items:center; cursor:pointer; }
+  .rc-svg { display:block; width:100%; max-width:380px; margin:0 auto 14px; }
+  .rc-out, .lc-out { margin-top:12px; background:var(--gray-100); border-radius:10px; padding:12px 14px; font-size:14px; line-height:1.7; color:var(--gray-700); }
+  .calc-bad { color:var(--rust); font-weight:600; }
+  select { font:inherit; font-size:14px; padding:8px 10px; border:var(--border); border-radius:8px; background:#fff; color:var(--slate); width:100%; }
+
+  .pwm-svg { display:block; width:100%; max-width:560px; margin:6px auto 0; }
+  .pwm-led { display:inline-block; width:30px; height:30px; border-radius:50%; border:2px solid var(--gray-300); vertical-align:middle; margin-left:8px; background:rgba(176,74,63,.5); }
+  input[type=range] { width:100%; accent-color:var(--clay); }
+
+  .bd-screen { background:#141413; color:#F0EEE6; font:13px/1.6 var(--mono); border-radius:10px; padding:14px 16px; min-height:96px; white-space:pre-wrap; margin-top:12px; }
+
+  .pot-bar { height:10px; background:var(--gray-100); border-radius:999px; overflow:hidden; margin:12px 0 4px; border:var(--border); }
+  .pot-bar span { display:block; height:100%; width:50%; background:var(--clay); }
+
+  /* 小工具(計算機、示意圖)用的欄位排版:不使用 .fill,避免被頁面上「填入資料」的 Reset 影響 */
+  .wgrid { display:grid; gap:12px; align-items:end; }
+  .wgrid.f2 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .wgrid.f4 { grid-template-columns:repeat(4,minmax(0,1fr)); }
+  .wgrid label { display:block; font:11px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--gray-500); margin-bottom:5px; }
+  .wgrid input:not([type=range]) { width:100%; font:13px var(--mono); padding:9px 11px; border:var(--border); border-radius:8px; background:var(--gray-100); color:var(--slate); }
+  @media (max-width: 720px) { .wgrid.f2, .wgrid.f4 { grid-template-columns:minmax(0,1fr); } }

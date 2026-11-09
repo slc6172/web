@@ -1,0 +1,698 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>還原與救援:先判斷狀況,再選指令</title>
+<style>
+  :root {
+    --ivory:#FAF9F5; --white:#FFFFFF; --slate:#141413;
+    --clay:#D97757; --clay-d:#B85C3E; --oat:#E3DACC; --olive:#788C5D; --rust:#B04A3F;
+    --gray-100:#F0EEE6; --gray-300:#D1CFC5; --gray-500:#87867F; --gray-700:#3D3D3A;
+    --serif: ui-serif, Georgia, "Times New Roman", "Noto Serif TC", "Songti TC", "PMingLiU", serif;
+    --sans:  system-ui, -apple-system, "Segoe UI", Roboto, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", Helvetica, Arial, sans-serif;
+    --mono:  ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
+    --border: 1.5px solid var(--gray-300);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  [hidden] { display:none !important; }
+  body { margin:0; padding:56px 24px 120px; background:var(--ivory); color:var(--slate);
+         font-family:var(--sans); font-size:15px; line-height:1.65; -webkit-font-smoothing:antialiased; }
+  .page { max-width:1100px; margin:0 auto; }
+  .page > header { margin-bottom:36px; }
+  .layout { display:grid; grid-template-columns:190px minmax(0,1fr); gap:48px; }
+  .layout > * { min-width:0; }
+  main > section { margin-bottom:56px; scroll-margin-top:24px; }
+
+  .eyebrow { font:12px var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--gray-500);
+             display:flex; align-items:center; gap:12px; margin-bottom:18px; }
+  .eyebrow::before { content:""; width:24px; height:1.5px; background:var(--clay); }
+  h1 { font:500 clamp(30px,4.6vw,42px)/1.18 var(--serif); letter-spacing:-.012em; margin:0 0 12px; }
+  h2 { font:500 25px/1.28 var(--serif); letter-spacing:-.01em; margin:0 0 6px; }
+  h3 { font:500 18px/1.35 var(--serif); margin:0 0 6px; }
+  .sub { color:var(--gray-700); max-width:680px; margin:0 0 4px; }
+  hr.rule { border:0; border-top:1px solid var(--gray-300); margin:10px 0 22px; }
+  p { margin:0 0 12px; }
+  code { font:12.5px var(--mono); background:var(--gray-100); padding:1px 5px; border-radius:4px; }
+  .slot { background:rgba(217,119,87,.14); color:var(--clay-d); border-radius:4px; padding:0 3px; }
+  pre .slot { background:rgba(217,119,87,.22); color:#F2B49E; }
+
+  .panel { background:var(--white); border:var(--border); border-radius:12px; padding:20px 22px; }
+  .tldr { border:var(--border); border-left:3px solid var(--clay); border-radius:10px; background:#fff; padding:16px 18px; margin-top:22px; max-width:820px; }
+  .tldr b { font:600 11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--clay-d); margin-right:6px; }
+
+  /* toc */
+  nav.toc { position:sticky; top:32px; align-self:start; font-size:13px; }
+  nav.toc .label { font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--gray-500); margin-bottom:8px; }
+  nav.toc a { display:block; padding:5px 0; color:var(--gray-700); text-decoration:none; }
+  nav.toc a:hover { color:var(--clay); }
+
+  /* buttons */
+  button { font:12px var(--mono); cursor:pointer; border-radius:999px; padding:9px 16px; transition:background .14s ease, transform .08s ease; }
+  button.primary { background:var(--slate); color:var(--ivory); border:1.5px solid var(--slate); }
+  button.primary:hover:not(:disabled) { background:var(--gray-700); }
+  button.primary:disabled { background:var(--gray-300); border-color:var(--gray-300); cursor:not-allowed; }
+  button.primary.copied { background:var(--olive); border-color:var(--olive); }
+  button.ghost { background:transparent; color:var(--gray-700); border:var(--border); }
+  button.ghost:hover { border-color:var(--gray-500); }
+  button:focus-visible, a:focus-visible, summary:focus-visible, input:focus-visible { outline:2px solid var(--clay); outline-offset:2px; }
+
+  /* tables (grid style) */
+  .table-wrap { overflow-x:auto; border:var(--border); border-radius:12px; background:#fff; }
+  .gt { min-width:560px; }
+  .gt .row { display:grid; gap:0; }
+  .gt .cell { padding:11px 14px; border-top:1px solid var(--gray-300); font-size:13.5px; }
+  .gt .row:first-child .cell { border-top:0; }
+  .gt .cell.head { font:11px var(--sans); text-transform:uppercase; letter-spacing:.06em; color:var(--gray-500); background:var(--gray-100); }
+  .gt .cell.term { font:600 12.5px var(--mono); }
+  .gt.g3 .row { grid-template-columns:150px minmax(0,1fr) minmax(0,1fr); }
+  .gt.g2 .row { grid-template-columns:140px minmax(0,1fr); }
+  .gt.g3b .row { grid-template-columns:170px minmax(0,1.2fr) minmax(0,1fr); }
+
+  /* code blocks */
+  .cmd { position:relative; background:var(--slate); border-radius:12px; margin:10px 0 12px; }
+  .cmd pre { margin:0; padding:16px 78px 16px 18px; font:12.5px/1.7 var(--mono); color:var(--ivory); overflow-x:auto; white-space:pre; }
+  .cmd .cm { color:var(--gray-500); }
+  .cmd button { position:absolute; top:9px; right:9px; padding:5px 11px; font-size:11px; color:var(--ivory);
+                background:rgba(250,249,245,.08); border:1px solid rgba(250,249,245,.28); }
+  .cmd button:hover { background:rgba(250,249,245,.18); }
+  .cmd button.copied { background:var(--olive); border-color:var(--olive); color:#fff; }
+  .cmd .cap { font:11px var(--mono); letter-spacing:.06em; color:var(--gray-500); padding:10px 18px 0; text-transform:uppercase; }
+  .cmd .cap + pre { padding-top:6px; }
+
+  /* diagram */
+  .canvas { background:#fff; border:var(--border); border-radius:12px; padding:14px; overflow-x:auto; }
+  .canvas svg { display:block; width:100%; height:auto; min-width:640px; }
+  .legend { list-style:none; margin:16px 0 0; padding:0; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 24px; }
+  .legend li { display:grid; grid-template-columns:26px minmax(0,1fr); gap:8px; font-size:13.5px; color:var(--gray-700); }
+  .legend .n { width:22px; height:22px; border-radius:50%; background:var(--clay); color:#fff; font:600 12px/22px var(--mono); text-align:center; }
+  .legend .n.k { background:var(--slate); }
+  .role { font:600 10.5px var(--mono); padding:1px 7px; border-radius:999px; margin-left:6px; white-space:nowrap; }
+  .role.c { background:rgba(217,119,87,.14); color:var(--clay-d); border:1px solid rgba(217,119,87,.45); }
+  .role.o { background:var(--oat); color:var(--slate); border:1px solid #CFC3AE; }
+
+  /* fill form */
+  .fill { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:12px; align-items:end; }
+  .fill label { display:block; font:11px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--gray-500); margin-bottom:5px; }
+  .fill input { width:100%; font:13px var(--mono); padding:9px 11px; border:var(--border); border-radius:8px; background:var(--gray-100); color:var(--slate); }
+  .fill-foot { display:flex; gap:12px; align-items:center; margin-top:14px; flex-wrap:wrap; }
+  .fill-foot span { font-size:13px; color:var(--gray-500); }
+
+  /* role tabs */
+  .role-tabs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin:18px 0 26px; }
+  .role-tabs button { text-align:left; font-family:var(--sans); font-size:14px; border-radius:12px; padding:16px 18px; background:#fff;
+                      border:var(--border); color:var(--gray-700); display:flex; flex-direction:column; gap:2px; }
+  .role-tabs button .rt { font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--gray-500); }
+  .role-tabs button b { font:500 20px/1.3 var(--serif); color:var(--slate); }
+  .role-tabs button:hover { border-color:var(--gray-500); }
+  .role-tabs button.on { border-color:var(--clay); background:#FBF1EC; }
+  .role-tabs button.on .rt { color:var(--clay-d); }
+
+  .orient { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-bottom:8px; }
+  .orient .panel { padding:14px 18px; font-size:13.5px; }
+  .orient .k { font:600 11px var(--mono); letter-spacing:.08em; text-transform:uppercase; display:block; margin-bottom:4px; }
+  .orient .known .k { color:#4B5C39; } .orient .new .k { color:var(--clay-d); }
+
+  /* steps */
+  .step { display:grid; grid-template-columns:40px minmax(0,1fr); gap:0 16px; padding:26px 0; border-top:1px solid var(--gray-300); }
+  .steps > .step:first-child { border-top:0; }
+  .step > * { min-width:0; }
+  .num { width:34px; height:34px; border-radius:50%; background:var(--oat); display:flex; align-items:center; justify-content:center; font:600 14px var(--mono); margin-top:2px; }
+  .step h3 { font-size:20px; margin:2px 0 6px; }
+  .why { color:var(--gray-700); margin:0 0 12px; }
+  .ops { margin:0 0 12px; padding-left:22px; color:var(--gray-700); }
+  .ops li { margin-bottom:5px; }
+  .see, .warn, .tip { border:var(--border); border-radius:8px; background:#fff; padding:10px 14px; font-size:13.5px; margin:12px 0; color:var(--gray-700); }
+  .see { border-left:3px solid var(--olive); } .warn { border-left:3px solid var(--rust); } .tip { border-left:3px solid var(--clay); }
+  .see b.l, .warn b.l, .tip b.l { font:600 11px var(--mono); letter-spacing:.08em; text-transform:uppercase; margin-right:6px; }
+  .see b.l { color:#4B5C39; } .warn b.l { color:var(--rust); } .tip b.l { color:var(--clay-d); }
+
+  /* PR compare mock */
+  .pr-mock { display:grid; grid-template-columns:minmax(0,1fr) 44px minmax(0,1fr); gap:0; align-items:stretch; margin:12px 0; }
+  .pr-mock .half { background:#fff; border:var(--border); border-radius:10px; padding:12px 14px; }
+  .pr-mock .half .t { font:600 11px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--gray-500); margin-bottom:6px; }
+  .pr-mock .half .r { font:12.5px var(--mono); margin:2px 0; word-break:break-all; }
+  .pr-mock .half .r i { font-style:normal; color:var(--gray-500); margin-right:6px; }
+  .pr-mock .arr { display:flex; align-items:center; justify-content:center; font:22px var(--mono); color:var(--clay); }
+  .pr-mock .half.base { border-color:var(--clay); background:#FBF1EC; }
+  .mock-cap { font-size:13px; color:var(--gray-500); margin:0 0 12px; }
+
+  .gh-tabs { display:flex; gap:0; border-bottom:1.5px solid var(--gray-300); margin:12px 0; overflow-x:auto; }
+  .gh-tabs span { padding:8px 16px; font-size:13.5px; color:var(--gray-500); white-space:nowrap; }
+  .gh-tabs span.on { color:var(--slate); box-shadow:inset 0 -2px 0 var(--clay); font-weight:600; }
+  .gh-tabs span small { font:11px var(--mono); margin-left:6px; color:var(--gray-500); }
+
+  /* diff */
+  .diff { font:12.5px/1.7 var(--mono); background:#fff; border:var(--border); border-radius:8px; overflow-x:auto; margin:12px 0 0; }
+  .diff-row { display:grid; grid-template-columns:44px 18px minmax(max-content,1fr); white-space:pre; padding-right:14px; }
+  .diff-row .ln { color:var(--gray-500); text-align:right; padding-right:10px; user-select:none; }
+  .diff-row.add { background:rgba(120,140,93,.12); } .diff-row.add .mark { color:var(--olive); font-weight:600; }
+  .diff-row.del { background:rgba(176,74,63,.10); } .diff-row.del .mark { color:var(--rust); font-weight:600; }
+  .bubble { background:#fff; border:var(--border); border-left:4px solid var(--olive); border-radius:8px; padding:10px 14px; margin:8px 0 0 44px; font-size:13px; max-width:560px; }
+  .bubble .who { font:600 11px var(--mono); color:var(--gray-500); display:block; margin-bottom:2px; }
+
+  /* lifecycle */
+  .stages { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; margin:18px 0 16px; }
+  .stages button { text-align:left; font-family:var(--sans); border-radius:10px; padding:11px 12px; background:#fff; border:var(--border); color:var(--gray-700); font-size:13px; display:flex; flex-direction:column; gap:6px; }
+  .stages button:hover { border-color:var(--gray-500); }
+  .stages button.on { border-color:var(--clay); background:#FBF1EC; }
+  .stages button .si { font:11px var(--mono); color:var(--gray-500); }
+  .badge { font:600 11px var(--mono); padding:2px 9px; border-radius:999px; align-self:flex-start; }
+  .badge.ok { background:rgba(120,140,93,.18); color:#4B5C39; }
+  .badge.warn { background:rgba(217,119,87,.18); color:var(--clay-d); }
+  .badge.done { background:var(--slate); color:var(--ivory); }
+  .two { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+  .two .panel h3 { display:flex; align-items:center; gap:8px; }
+  .two ul { margin:8px 0 0; padding-left:20px; color:var(--gray-700); }
+  .two li { margin-bottom:6px; }
+  .stage-nav { display:flex; gap:10px; margin-top:16px; }
+
+  /* details */
+  details { border:var(--border); border-radius:10px; background:#fff; margin:12px 0; overflow:hidden; }
+  summary { list-style:none; cursor:pointer; padding:14px 16px; font:17px/1.4 var(--serif); display:flex; align-items:baseline; gap:10px; }
+  summary::-webkit-details-marker { display:none; }
+  summary::before { content:"▸"; color:var(--gray-500); transition:transform .12s; flex:none; }
+  details[open] > summary::before { transform:rotate(90deg); }
+  details > .body { padding:0 18px 16px; border-top:1px solid var(--gray-300); padding-top:14px; }
+  details > .body > :last-child { margin-bottom:0; }
+
+  .habits { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+  .habits ul { margin:8px 0 0; padding-left:20px; color:var(--gray-700); }
+  .habits li { margin-bottom:6px; }
+  .export { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:8px; padding-top:20px; border-top:1px solid var(--gray-300); }
+  .export span { font-size:13px; color:var(--gray-500); }
+
+  /* progress + toc active */
+  .progress { position:fixed; top:0; left:0; right:0; height:3px; z-index:60; }
+  .progress span { display:block; height:100%; width:0; background:var(--clay); }
+  nav.toc a.active { color:var(--clay-d); font-weight:600; }
+
+  /* route switch */
+  .route-switch { display:flex; gap:6px; flex-wrap:wrap; background:var(--gray-100); padding:5px; border-radius:12px; width:max-content; max-width:100%; margin:16px 0; }
+  .route-switch button { border:0; background:transparent; border-radius:9px; color:var(--gray-500); font:13px var(--sans); padding:9px 14px; }
+  .route-switch button[aria-pressed="true"] { background:#fff; color:var(--slate); box-shadow:inset 0 -2px 0 var(--clay); }
+  .route-steps { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; margin:14px 0; }
+  .route-step { border:var(--border); border-radius:10px; background:#fff; padding:10px 12px; }
+  .route-step.new { border-color:var(--clay); background:#FBF1EC; }
+  .route-step i { font:600 11px var(--mono); color:var(--gray-500); font-style:normal; }
+  .route-step b { display:block; font-size:14px; margin:2px 0; }
+  .route-step small { display:block; font-size:12.5px; color:var(--gray-700); line-height:1.5; }
+  .route-note { font-size:13px; color:var(--gray-500); margin:0 0 4px; }
+
+  /* practice */
+  .sim { margin-bottom:16px; }
+  .sim h3 { margin-bottom:4px; }
+  .sim-buttons { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0; }
+  .sim-buttons button, .answer { font:14px var(--sans); border-radius:10px; border:var(--border); background:#fff; color:var(--gray-700); padding:10px 14px; text-align:left; }
+  .sim-buttons button:hover, .answer:hover:not(:disabled) { border-color:var(--gray-500); }
+  .sim-buttons button.selected { border-color:var(--clay); background:#FBF1EC; color:var(--slate); }
+  .sim-result { background:var(--gray-100); border-radius:10px; padding:12px 14px; font-size:14px; min-height:52px; color:var(--gray-700); }
+  .quiz-top { display:flex; justify-content:space-between; gap:10px; align-items:baseline; flex-wrap:wrap; }
+  .quiz-top .count { font:12px var(--mono); color:var(--gray-500); }
+  .question { font:500 18px/1.45 var(--serif); margin:14px 0 12px; }
+  .answers { display:grid; gap:8px; }
+  .answer { display:flex; gap:10px; align-items:flex-start; }
+  .answer .letter { width:22px; height:22px; flex:none; border-radius:6px; background:var(--gray-100); font:600 11px/22px var(--mono); text-align:center; }
+  .answer:disabled { cursor:default; }
+  .answer.correct { border-color:var(--olive); background:rgba(120,140,93,.12); }
+  .answer.wrong { border-color:var(--rust); background:rgba(176,74,63,.10); }
+  .feedback { display:none; margin-top:12px; padding:12px 14px; border-radius:10px; font-size:14px; border:var(--border); border-left-width:4px; background:#fff; }
+  .feedback.show { display:block; } .feedback.good { border-left-color:var(--olive); } .feedback.bad { border-left-color:var(--clay); }
+  .quiz-foot { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:14px; }
+  .quiz-foot span { font-size:13px; color:var(--gray-500); }
+  .checks { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  .check-item { display:flex; gap:10px; align-items:flex-start; padding:11px 13px; border:var(--border); border-radius:10px; background:#fff; font-size:14px; color:var(--gray-700); cursor:pointer; }
+  .check-item input { accent-color:var(--clay); margin-top:5px; flex:none; }
+  .check-item.done { background:rgba(120,140,93,.10); border-color:rgba(120,140,93,.45); }
+  .bar { height:6px; border-radius:999px; background:var(--gray-100); overflow:hidden; margin-top:8px; }
+  .bar span { display:block; height:100%; width:0; background:var(--olive); transition:width .2s; }
+  .check-progress { font-size:13px; color:var(--gray-500); margin-top:12px; }
+  .resources { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  .resource { display:block; padding:12px 14px; border:var(--border); border-radius:10px; background:#fff; color:var(--slate); text-decoration:none; }
+  .resource:hover { border-color:var(--clay); }
+  .resource b { display:block; font-size:14px; } .resource small { font:12px var(--mono); color:var(--gray-500); }
+  .warn ul { margin:6px 0 0; padding-left:20px; }
+  .foot { font-size:13px; color:var(--gray-500); border-top:1px solid var(--gray-300); padding-top:18px; }
+
+  @media (max-width: 920px) {
+    .layout { grid-template-columns:minmax(0,1fr); gap:24px; }
+    nav.toc { position:static; display:flex; flex-wrap:wrap; gap:4px 16px; }
+    nav.toc .label { width:100%; margin-bottom:2px; }
+    .fill { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .stages { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .two, .habits, .orient, .role-tabs, .legend, .checks, .resources { grid-template-columns:minmax(0,1fr); }
+    .route-steps { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  }
+  @media (max-width: 720px) {
+    body { padding:32px 16px 80px; }
+    .step { grid-template-columns:minmax(0,1fr); }
+    .num { margin-bottom:8px; }
+    .pr-mock { grid-template-columns:minmax(0,1fr); }
+    .pr-mock .arr { transform:rotate(90deg); height:32px; }
+  }
+  /* site nav */
+  .crumb { margin:0 0 18px; font:12px var(--mono); }
+  .crumb a { color:var(--gray-500); text-decoration:none; }
+  .crumb a:hover { color:var(--clay); }
+  .pager { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-top:40px; }
+  .pager a { display:block; padding:14px 18px; border:var(--border); border-radius:12px; background:#fff; color:var(--slate); text-decoration:none; }
+  .pager a:hover { border-color:var(--clay); }
+  .pager small { display:block; font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--gray-500); }
+  .pager b { font:500 17px/1.4 var(--serif); }
+  .pager .next { text-align:right; grid-column:2; }
+  .pager .prev { grid-column:1; }
+  @media (max-width:720px){ .pager{grid-template-columns:minmax(0,1fr);} .pager .next,.pager .prev{grid-column:1;text-align:left;} }
+  @media (prefers-reduced-motion: reduce) { * { transition:none !important; scroll-behavior:auto !important; } }
+
+  .fill.f4 { grid-template-columns:repeat(4,minmax(0,1fr)); }
+  .fill.f3 { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .fill.f2 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  @media (max-width: 920px) { .fill.f4, .fill.f3 { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  @media (max-width: 520px) { .fill.f4, .fill.f3, .fill.f2 { grid-template-columns:minmax(0,1fr); } }
+  .badge.bad { background:rgba(176,74,63,.15); color:var(--rust); }
+  .dec-out { background:var(--gray-100); border-radius:10px; padding:12px 14px; font-size:14px; color:var(--gray-700); margin-top:12px; }
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><span id="readBar"></span></div>
+<div class="page">
+
+<header>
+  <nav class="crumb" aria-label="站內導覽"><a href="../index.html">← 回教學首頁</a></nav>
+  <div class="eyebrow">GitHub 入門 · 第 8 篇 · 還原與救援</div>
+  <h1>先判斷狀況,再選指令:多數錯誤都能救</h1>
+  <p class="sub">改錯、add 錯、commit 錯、push 錯,各有不同的收回方式。這一篇先教你判斷錯誤走到哪一層,再配上對應的指令,最後教你用 <code>reflog</code> 救回「消失」的 commit。</p>
+  <div class="tldr"><b>TL;DR</b> <strong>還沒 push 可以改寫歷史</strong>(restore / amend / reset);<strong>已經 push 就用 revert</strong> 新增反向 commit。用 <code>--hard</code> 之前先看 <code>git status</code>;真的搞丟了,<code>git reflog</code> 通常救得回來。</div>
+</header>
+
+<div class="layout">
+<nav class="toc" aria-label="本頁目錄">
+  <div class="label">On this page</div>
+  <a href="#what">1. 為什麼要先判斷</a>
+  <a href="#map">2. 全貌圖</a>
+  <a href="#decide">3. 我現在的狀況</a>
+  <a href="#steps">4. 七個步驟</a>
+  <a href="#gotchas">5. 常見卡關</a>
+  <a href="#practice">6. 演練與延伸閱讀</a>
+</nav>
+
+<main>
+<section id="what">
+  <h2>多數錯誤都能救,關鍵是先判斷「走到哪一步了」</h2>
+  <hr class="rule">
+<div class="panel"><h3>用「寫文章」來想</h3><p>你有一份稿子:改到一半的草稿(工作資料夾)、挑好要交的段落(暫存區)、已經存檔的版本(本機歷史)、已經寄給別人的版本(GitHub)。想「收回」一個錯誤,要看它現在<b>在哪一層</b>:越往右,動它的影響越大。</p><p style="margin-bottom:0">原則只有一句:<b>還沒 push 的,可以改寫歷史;已經 push 的,用新增反向 commit 的方式收回。</b></p></div>
+<h3 style="margin-top:26px">六個還原指令一覽</h3>
+<div class="table-wrap"><div class="gt g3"><div class="row"><div class="cell head">指令</div><div class="cell head">作用</div><div class="cell head">安全程度</div></div><div class="row"><div class="cell term"><code>git restore 檔案</code></div><div class="cell">丟掉工作資料夾裡尚未 add 的修改,檔案回到上次 commit 的樣子。</div><div class="cell"><b>不可逆</b>:修改不會留在任何地方</div></div><div class="row"><div class="cell term"><code>git restore --staged 檔案</code></div><div class="cell">把檔案從暫存區拿回來,修改仍保留在工作資料夾。</div><div class="cell">安全</div></div><div class="row"><div class="cell term"><code>git commit --amend</code></div><div class="cell">修改<b>最近一次</b> commit 的訊息或內容。</div><div class="cell">只用在還沒 push 的 commit</div></div><div class="row"><div class="cell term"><code>git revert 代號</code></div><div class="cell">新增一個 commit,內容與指定的 commit 相反。</div><div class="cell"><b>安全</b>:不改歷史,已 push 也可以</div></div><div class="row"><div class="cell term"><code>git reset --soft / --mixed / --hard 代號</code></div><div class="cell">把目前分支移回指定的 commit。三種差別在是否保留修改。</div><div class="cell">--hard 會丟掉修改;已 push 不要用</div></div><div class="row"><div class="cell term"><code>git reflog</code></div><div class="cell">顯示 HEAD 的移動紀錄,找回「消失」的 commit。</div><div class="cell">安全(只讀)</div></div></div></div>
+</section>
+
+<section id="map">
+  <h2>全貌:每個指令作用在哪一層</h2>
+  <hr class="rule">
+<p class="sub" style="margin-bottom:16px">看圖選指令:你的錯誤在哪一層,就用作用在那一層的指令。</p>
+<div class="canvas"><svg viewBox="0 0 900 250" role="img" aria-label="Git 的四個位置與還原指令:工作資料夾、暫存區、本機歷史、GitHub,以及 restore、restore --staged、reset、revert 各自作用的位置">
+      <defs>
+        <marker id="ag" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#87867F"/></marker>
+        <marker id="ac" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker>
+        <style>.m{font:12px ui-monospace,Menlo,monospace}.s{font:12px system-ui,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif}.nn{font:600 12px ui-monospace,Menlo,monospace}</style>
+      </defs>
+      <rect width="900" height="250" fill="#FFFFFF"/>
+      <rect x="20" y="40" width="170" height="80" rx="10" fill="#F0EEE6" stroke="#3D3D3A" stroke-width="1.5"/>
+      <text x="105" y="76" text-anchor="middle" class="s" fill="#141413">工作資料夾</text><text x="105" y="96" text-anchor="middle" class="s" fill="#3D3D3A">你正在改的檔案</text>
+      <rect x="250" y="40" width="170" height="80" rx="10" fill="#F0EEE6" stroke="#3D3D3A" stroke-width="1.5"/>
+      <text x="335" y="76" text-anchor="middle" class="s" fill="#141413">暫存區</text><text x="335" y="96" text-anchor="middle" class="s" fill="#3D3D3A">已 add 的內容</text>
+      <rect x="480" y="40" width="170" height="80" rx="10" fill="#F0EEE6" stroke="#3D3D3A" stroke-width="1.5"/>
+      <text x="565" y="76" text-anchor="middle" class="s" fill="#141413">本機歷史</text><text x="565" y="96" text-anchor="middle" class="s" fill="#3D3D3A">已 commit 的存檔點</text>
+      <rect x="710" y="40" width="170" height="80" rx="10" fill="#E3DACC" stroke="#3D3D3A" stroke-width="2"/>
+      <text x="795" y="76" text-anchor="middle" class="s" fill="#141413">GitHub</text><text x="795" y="96" text-anchor="middle" class="s" fill="#3D3D3A">已 push,別人看得到</text>
+      <path d="M335,44 C335,0 105,0 105,36" fill="none" stroke="#D97757" stroke-width="2" marker-end="url(#ac)"/>
+      <circle cx="220" cy="12" r="11" fill="#D97757"/><text x="220" y="16.5" text-anchor="middle" class="nn" fill="#fff">1</text>
+      <path d="M565,44 C565,0 335,0 335,36" fill="none" stroke="#D97757" stroke-width="2" marker-end="url(#ac)"/>
+      <circle cx="450" cy="12" r="11" fill="#D97757"/><text x="450" y="16.5" text-anchor="middle" class="nn" fill="#fff">2</text>
+      <path d="M565,124 C565,175 335,175 335,124" fill="none" stroke="#B85C3E" stroke-width="2" marker-end="url(#ac)"/>
+      <circle cx="450" cy="160" r="11" fill="#B85C3E"/><text x="450" y="164.5" text-anchor="middle" class="nn" fill="#fff">3</text>
+      <path d="M795,124 C795,205 565,205 565,124" fill="none" stroke="#788C5D" stroke-width="2" marker-end="url(#ag)"/>
+      <circle cx="680" cy="190" r="11" fill="#788C5D"/><text x="680" y="194.5" text-anchor="middle" class="nn" fill="#fff">4</text>
+      <text x="40" y="150" class="m" fill="#3D3D3A">① restore  ② restore --staged</text>
+      <text x="40" y="172" class="m" fill="#3D3D3A">③ reset(動歷史,只用在還沒 push 的)</text>
+      <text x="40" y="194" class="m" fill="#4B5C39">④ revert(新增一個「反向 commit」,已 push 也安全)</text>
+    </svg></div>
+<ol class="legend" style="list-style:none"><li><span class="n">1</span><span><b>restore</b>:工作資料夾回到暫存區(或上次 commit)的樣子。</span></li><li><span class="n">2</span><span><b>restore --staged</b>:從暫存區退回工作資料夾,修改保留。</span></li><li><span class="n">3</span><span><b>reset</b>:本機歷史往回退。只用在還沒 push 的。</span></li><li><span class="n">4</span><span><b>revert</b>:新增反向 commit,不改歷史。已 push 的用它。</span></li></ol>
+</section>
+
+<section id="decide">
+  <h2>我現在的狀況是…</h2>
+  <hr class="rule">
+<p class="sub" style="margin-bottom:14px">選一個最接近你的狀況,看建議的指令、風險與原因。每個指令都有 Copy 按鈕。</p><div class="panel"><div class="sim-buttons" id="decideBtns" role="group" aria-label="選擇你的狀況"></div><div class="sim-result dec-out" id="decideOut" aria-live="polite">選一個狀況,看看該怎麼做。</div></div>
+</section>
+
+<section id="steps">
+  <h2>照著做:七個步驟</h2>
+  <hr class="rule">
+<div class="steps">
+<div class="step"><div class="num">1</div><div>
+<h3>動手前:先看清楚現況</h3>
+<p class="why">還原的第一步永遠是看狀態,不是下指令。你要知道錯誤在哪一層。</p>
+<div class="cmd"><pre data-tpl>git status
+git log --oneline -n 5
+git diff</pre><button type="button" class="copy">Copy</button></div>
+<div class="see"><b class="l">你會看到</b><code>status</code> 告訴你哪些檔案已修改或已 add;<code>log</code> 看最近的 commit;<code>diff</code> 看未 add 的內容。</div>
+<div class="tip"><b class="l">小技巧</b>不確定時,先建一個備份分支:<code>git branch backup</code>。出了狀況還能回來,而且完全不影響目前工作。</div>
+</div></div>
+<div class="step"><div class="num">2</div><div>
+<h3>丟掉未 add 的修改:restore</h3>
+<p class="why">改壞了,想回到上次 commit 的樣子。</p>
+<div class="cmd"><pre data-tpl>git restore notes.txt
+git status</pre><button type="button" class="copy">Copy</button></div>
+<div class="see"><b class="l">你會看到</b><code>notes.txt</code> 回到上次 commit 的內容,不再列在 <code>Changes not staged</code>。</div>
+<div class="warn"><b class="l">危險</b>這個動作<b>不可逆</b>:被丟掉的修改沒有任何地方可以找回。不確定就先 <code>git stash</code>。</div>
+</div></div>
+<div class="step"><div class="num">3</div><div>
+<h3>取消暫存:restore --staged</h3>
+<p class="why">add 錯檔案時用。修改留在工作資料夾,只是不放進這次 commit。</p>
+<div class="cmd"><pre data-tpl>git add secret.txt
+git restore --staged secret.txt
+git status</pre><button type="button" class="copy">Copy</button></div>
+<div class="see"><b class="l">你會看到</b><code>secret.txt</code> 從 <code>Changes to be committed</code> 移到 <code>Untracked files</code> 或 <code>Changes not staged</code>。</div>
+</div></div>
+<div class="step"><div class="num">4</div><div>
+<h3>改最近一次 commit:amend</h3>
+<p class="why">訊息打錯、少加一個檔案,都可以修最近一次 commit。</p>
+<div class="cmd"><pre data-tpl>git commit --amend -m "新增 notes.txt 並補上說明"</pre><button type="button" class="copy">Copy</button></div>
+<div class="see"><b class="l">你會看到</b><code>git log --oneline</code> 最上面那筆的代號變了(因為它是一個新的 commit),舊的那筆被取代。</div>
+<div class="warn"><b class="l">只用在還沒 push</b>amend 會改寫歷史。<b>已經 push 的 commit 不要 amend</b>,否則和別人的歷史對不上。</div>
+</div></div>
+<div class="step"><div class="num">5</div><div>
+<h3>已經 push:revert</h3>
+<p class="why">歷史已經被別人看到了,就不要改歷史。revert 另外再做一個「反向」的 commit,把錯誤抵銷掉。</p>
+<div class="cmd"><pre data-tpl>git log --oneline -n 3
+# 假設要收回的 commit 代號是 a1b2c3d
+git revert a1b2c3d
+git push</pre><button type="button" class="copy">Copy</button></div>
+<div class="see"><b class="l">你會看到</b>出現一個新的 commit,訊息是 <code>Revert "…"</code>;檔案內容回到那個 commit 之前的樣子。若 revert 時出現衝突,和第 3 篇的做法一樣解決後 <code>git revert --continue</code>。</div>
+</div></div>
+<div class="step"><div class="num">6</div><div>
+<h3>還沒 push:reset 三種模式</h3>
+<p class="why">把目前分支移回較早的 commit。三種模式差別只在「對暫存區和工作資料夾怎麼處理」。</p>
+<div class="table-wrap"><div class="gt g3"><div class="row"><div class="cell head">模式</div><div class="cell head">暫存區</div><div class="cell head">工作資料夾</div></div><div class="row"><div class="cell term"><code>--soft</code></div><div class="cell">保留(內容仍是已 add)</div><div class="cell">保留</div></div><div class="row"><div class="cell term"><code>--mixed</code>(預設)</div><div class="cell">清空</div><div class="cell">保留(修改仍在,只是回到未 add)</div></div><div class="row"><div class="cell term"><code>--hard</code></div><div class="cell">清空</div><div class="cell"><b>全部丟掉</b></div></div></div></div>
+<div class="cmd"><pre data-tpl>git reset --soft HEAD~1    # 拆掉最後一個 commit,內容留在暫存區
+git reset HEAD~1           # 預設 mixed:內容留在工作資料夾
+git reset --hard HEAD~1    # 全部丟掉(小心)</pre><button type="button" class="copy">Copy</button></div>
+<div class="see"><b class="l">你會看到</b><code>HEAD~1</code> 的意思是「往前一個 commit」。<code>git log --oneline</code> 少了最後一筆。</div>
+</div></div>
+<div class="step"><div class="num">7</div><div>
+<h3>救回「消失」的 commit:reflog</h3>
+<p class="why">reset --hard、刪錯分支之後,commit 其實還在,只是沒有名字指到它。reflog 記下了 HEAD 的每一次移動。</p>
+<div class="cmd"><pre data-tpl>git reflog
+# 找到出事之前的那一行,例如 e5f6a7b HEAD@{2}
+git reset --hard e5f6a7b</pre><button type="button" class="copy">Copy</button></div>
+<div class="see"><b class="l">你會看到</b>reflog 每一行有代號、動作(commit、reset、checkout…)與說明。回到那個代號,你的 commit 又回來了。</div>
+<div class="tip"><b class="l">小技巧</b>reflog 只存在你的電腦,而且過一段時間(預設數十天)會被清理。出事後越早處理越好。</div>
+</div></div>
+</div>
+</section>
+
+<section id="gotchas">
+  <h2>常見卡關</h2>
+  <hr class="rule">
+<details><summary>我想改很久以前的某個 commit</summary><div class="body"><p>這需要 interactive rebase,風險比較高,而且只適用於還沒 push 的歷史。新手階段建議用 <code>git revert</code> 另外新增一個修正的 commit,更安全。</p></div></details>
+<details><summary>push 被拒絕,是不是該 <code>--force</code>?</summary><div class="body"><p>幾乎都不要。被拒絕通常是因為雲端有你沒有的 commit,<code>--force</code> 會洗掉別人的工作。先 <code>git pull</code>,見第 4 篇。真的必須強制時用 <code>--force-with-lease</code>,並先和團隊確認。</p></div></details>
+<details><summary>我把密碼 commit 上去了,revert 就可以嗎?</summary><div class="body"><p><b>不行。</b>revert 只是新增一個反向 commit,舊的 commit 與密碼仍在歷史裡。請當作已外洩:先到服務端更換金鑰,再看第 10 篇處理歷史。</p></div></details>
+<details><summary><code>git reset</code> 之後工作資料夾的檔案不見了</summary><div class="body"><p>如果用了 <code>--hard</code>,未 commit 的修改已經丟了;已 commit 的內容可以用 <code>git reflog</code> 找回。下次用 <code>--hard</code> 前先 <code>git status</code>,或先 <code>git branch backup</code>。</p></div></details>
+<details><summary>我不小心在 main 上 commit,想改放到新分支</summary><div class="body"><p>先用 <code>git branch 新分支</code> 把 commit 存到新分支,再把 main 退回去:</p><div class="cmd"><pre data-tpl>git branch fix-typo
+git reset --hard origin/main
+git switch fix-typo</pre><button type="button" class="copy">Copy</button></div><p>前提是這些 commit 還沒 push,而且 main 上沒有其他想保留的未存修改。</p></div></details>
+</section>
+
+<section id="practice">
+  <h2>動手演練:確認你真的懂了</h2>
+  <hr class="rule">
+<p class="sub" style="margin-bottom:18px">先選答案再看原因。重點是培養「先判斷在哪一層」的直覺。</p>
+<div class="panel sim" data-simgroup>
+<h3>情境:選一個你遇到的狀況</h3>
+<p style="margin:6px 0 0;color:var(--gray-700)">你想知道用哪個還原指令?</p>
+<div class="sim-buttons" role="group" aria-label="選擇做法"><button type="button" data-sim="u1">commit 已經 push 了,想收回</button><button type="button" data-sim="u2">剛 commit,訊息寫錯(還沒 push)</button><button type="button" data-sim="u3">add 錯了一個檔案</button><button type="button" data-sim="u4"><code>reset --hard</code> 之後後悔了</button></div>
+<div class="sim-result" aria-live="polite">選一個做法,看看對不對。</div>
+</div>
+<div class="panel" id="quiz">
+    <div class="quiz-top"><h3 style="margin:0">快速測驗</h3><span class="count" id="quizCount">1 / 1</span></div>
+    <div class="question" id="quizQ"></div>
+    <div class="answers" id="quizAns"></div>
+    <div class="feedback" id="quizFb" aria-live="polite"></div>
+    <div class="quiz-foot"><span id="quizScore">答對 0 題</span><button type="button" class="primary" id="quizNext" disabled>下一題 →</button></div>
+  </div>
+<h3 style="margin-top:30px">開做之前,對照這張清單</h3>
+<div class="panel">
+<div class="checks" id="checks"><label class="check-item"><input type="checkbox"><span>還原之前我會先看 <code>git status</code> 與 <code>git log</code>。</span></label><label class="check-item"><input type="checkbox"><span>我知道 <code>restore</code> 丟掉的修改無法復原,所以用之前先 <code>git diff</code>。</span></label><label class="check-item"><input type="checkbox"><span>我只對還沒 push 的 commit 使用 amend 與 reset。</span></label><label class="check-item"><input type="checkbox"><span>已 push 的 commit 我會用 <code>git revert</code>。</span></label><label class="check-item"><input type="checkbox"><span>我知道 <code>reset --hard</code> 前先 <code>git status</code>,或先建 backup 分支。</span></label><label class="check-item"><input type="checkbox"><span>我知道 commit 消失時可以用 <code>git reflog</code> 找回。</span></label><label class="check-item"><input type="checkbox"><span>我知道 revert 不能讓已外洩的密碼消失。</span></label></div>
+<div class="check-progress" id="checkProgress">已完成 0 / 7 項</div>
+<div class="bar"><span id="checkBar"></span></div>
+</div>
+<h3 style="margin-top:30px">GitHub 官方文件</h3>
+<div class="resources"><a class="resource" href="https://docs.github.com/en/get-started/using-git/about-git" target="_blank" rel="noopener"><b>關於 Git</b><small>About Git</small></a><a class="resource" href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/reverting-a-pull-request" target="_blank" rel="noopener"><b>從網頁還原一個 PR</b><small>Reverting a pull request</small></a><a class="resource" href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository" target="_blank" rel="noopener"><b>移除 repo 中的敏感資料</b><small>Removing sensitive data from a repository</small></a></div>
+</section>
+</main>
+</div>
+
+<p class="foot" style="margin-top:28px">本頁按鈕名稱以 GitHub 英文介面為準;GitHub 偶爾會微調介面文字與位置,找不到時請用關鍵字對照畫面上相近的按鈕。查證日期:2026-11-06。</p>
+
+<nav class="pager" aria-label="上一篇與下一篇">
+  <a class="prev" href="github-review-guide.html"><small>上一篇</small><b>Code Review 與團隊規範</b></a>
+  <a class="next" href="github-release-guide.html"><small>下一篇</small><b>Release 與版本號</b></a>
+</nav>
+</div>
+
+<script>window.PAGE = {"fill": {}, "sim": {"u1": "<b>用 revert。</b>已 push 的歷史別人可能已經拿到,不能改寫。<code>git revert</code> 新增反向 commit,最安全。", "u2": "<b>用 amend。</b>還沒 push,可以直接修最近一次 commit:<code>git commit --amend -m \"新訊息\"</code>。", "u3": "<b>用 restore --staged。</b>只是離開暫存區,修改內容還在工作資料夾,不會丟東西。", "u4": "<b>用 reflog 找回。</b>commit 沒有真的消失,<code>git reflog</code> 找到代號,再 <code>git reset --hard 代號</code>。"}, "quiz": [{"q": "已經 push 的 commit 想收回,應該用?", "a": ["git reset --hard 再 push --force", "git revert", "刪掉 repo"], "c": 1, "why": "revert 不改歷史,別人 pull 之後也不會出問題。"}, {"q": "<code>git restore 檔名</code> 的特點是?", "a": ["可以隨時復原", "丟掉未 add 的修改,而且不可逆", "會刪除整個檔案"], "c": 1, "why": "被丟掉的修改沒有任何地方可以找回,執行前要確定。"}, {"q": "<code>git reset --mixed</code>(預設)對修改的影響是?", "a": ["全部丟掉", "修改保留在工作資料夾,暫存區清空", "修改保留在暫存區"], "c": 1, "why": "mixed 回到未 add 的狀態,修改仍在。"}, {"q": "<code>reset --hard</code> 之後 commit 消失了,怎麼辦?", "a": ["沒救了", "用 git reflog 找出代號,再 reset 回去", "重新 clone"], "c": 1, "why": "commit 還在,只是沒有名字指到它。reflog 記錄了 HEAD 的移動。"}, {"q": "不確定哪個還原指令安全時,最好先做什麼?", "a": ["直接用 --hard 試試", "建立一個 backup 分支再操作", "刪掉 .git"], "c": 1, "why": "建立分支只是多一個名字,不影響任何東西,出事還能回來。"}], "decide": [{"label": "改了檔案,還沒 add,想丟掉這些修改", "risk": "高", "cmd": "git restore 檔名", "why": "修改會被直接丟掉,<b>無法復原</b>。執行前先 <code>git diff 檔名</code> 確認真的不要了;不確定就先 <code>git stash</code> 暫存起來。"}, {"label": "已經 add,但想拿回來、不要放進這次 commit", "risk": "低", "cmd": "git restore --staged 檔名", "why": "檔案只是離開暫存區,修改內容還在工作資料夾裡,什麼都沒有丟。"}, {"label": "剛 commit,訊息寫錯了(還沒 push)", "risk": "低", "cmd": "git commit --amend -m \"正確的訊息\"", "why": "會取代最近一次 commit。<b>只能用在還沒 push 的 commit</b>,因為它會改寫歷史。"}, {"label": "剛 commit,漏加了一個檔案(還沒 push)", "risk": "低", "cmd": "git add 漏掉的檔案\ngit commit --amend --no-edit", "why": "把漏掉的檔案併進上一個 commit,訊息不變。同樣只用在還沒 push 的 commit。"}, {"label": "commit 了,還沒 push,想退回去重做(保留修改)", "risk": "中", "cmd": "git reset --soft HEAD~1", "why": "把最近一次 commit 拆掉,內容留在暫存區。想連暫存也拿掉、只留修改在工作資料夾,改用 <code>--mixed</code>(預設)。"}, {"label": "commit 了,還沒 push,想整個丟掉", "risk": "高", "cmd": "git reset --hard HEAD~1", "why": "<b>最近一次 commit 與所有修改都會消失</b>。先 <code>git status</code> 確認沒有其他想保留的未存修改;萬一後悔,見最下面的 reflog。"}, {"label": "已經 push 了,想收回那個 commit", "risk": "低", "cmd": "git revert 代號\ngit push", "why": "新增一個反向 commit,不改歷史,別人 pull 之後也不會出問題。<b>已 push 的一律用 revert</b>,不要 reset 再強推。"}, {"label": "reset --hard 之後後悔了,想找回 commit", "risk": "低", "cmd": "git reflog\ngit reset --hard 代號", "why": "reflog 會列出 HEAD 走過的每一步,找出「消失」之前的代號,再 reset 回去。reflog 只存在你的電腦,而且通常只保留一段時間。"}]};</script>
+<script>
+(function () {
+  "use strict";
+  var CFG = window.PAGE || {};
+  function $(id){ return document.getElementById(id); }
+  function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+  function copyText(text, btn){
+    var orig = btn.textContent;
+    function flash(){
+      btn.textContent = "Copied ✓"; btn.classList.add("copied");
+      setTimeout(function(){ btn.textContent = orig; btn.classList.remove("copied"); }, 1200);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(flash, flash);
+    } else {
+      var ta = document.createElement("textarea"); ta.value = text;
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); } catch(e){}
+      document.body.removeChild(ta); flash();
+    }
+  }
+
+  /* ---------- fill-in template values ---------- */
+  var DEF = CFG.fill || {};
+  var vals = {};
+  var RE = /\{([A-Za-z0-9_]+)\}/g;
+  function val(k){ return vals[k] || DEF[k]; }
+  function resolvePlain(t){ return t.replace(RE, function(m, k){ return (k in DEF) ? val(k) : m; }); }
+  function resolveHtml(t){
+    var out = "", last = 0, m;
+    RE.lastIndex = 0;
+    while ((m = RE.exec(t))){
+      if (!(m[1] in DEF)) continue;
+      out += esc(t.slice(last, m.index)) + '<span class="slot">' + esc(val(m[1])) + "</span>";
+      last = RE.lastIndex;
+    }
+    return out + esc(t.slice(last));
+  }
+  function lineHtml(line){
+    if (line.trim().indexOf("# ") === 0) return '<span class="cm">' + resolveHtml(line) + "</span>";
+    var i = line.indexOf("  # ");
+    if (i > -1) return resolveHtml(line.slice(0, i)) + '<span class="cm">' + resolveHtml(line.slice(i)) + "</span>";
+    return resolveHtml(line);
+  }
+  var tplEls = Array.prototype.slice.call(document.querySelectorAll("[data-tpl]"));
+  tplEls.forEach(function(el){ el._tpl = el.textContent; });
+  function renderTpl(){
+    tplEls.forEach(function(el){
+      if (el.tagName === "PRE") el.innerHTML = el._tpl.split("\n").map(lineHtml).join("\n");
+      else el.innerHTML = resolveHtml(el._tpl);
+    });
+  }
+  var inputs = Array.prototype.slice.call(document.querySelectorAll(".fill input"));
+  inputs.forEach(function(inp){
+    inp.placeholder = DEF[inp.dataset.k] || "";
+    inp.addEventListener("input", function(){
+      var v = inp.value;
+      if (!inp.dataset.ns){ v = v.replace(/\s+/g, "-"); if (v !== inp.value) inp.value = v; }
+      vals[inp.dataset.k] = v;
+      renderTpl();
+    });
+  });
+  var rb = $("resetBtn");
+  if (rb) rb.addEventListener("click", function(){
+    inputs.forEach(function(inp){ inp.value = ""; vals[inp.dataset.k] = ""; });
+    renderTpl();
+  });
+  document.querySelectorAll(".cmd .copy").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var pre = btn.parentNode.querySelector("pre");
+      copyText(pre._tpl !== undefined ? resolvePlain(pre._tpl) : pre.textContent, btn);
+    });
+  });
+
+  /* ---------- reading progress + toc spy ---------- */
+  var readBar = $("readBar");
+  function updateBar(){
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    readBar.style.width = (max > 0 ? Math.min(100, window.scrollY / max * 100) : 0) + "%";
+  }
+  window.addEventListener("scroll", updateBar, { passive: true });
+  window.addEventListener("resize", updateBar);
+  updateBar();
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll("nav.toc a"));
+  if ("IntersectionObserver" in window){
+    var spy = new IntersectionObserver(function(es){
+      es.forEach(function(en){
+        if (en.isIntersecting) tocLinks.forEach(function(a){ a.classList.toggle("active", a.getAttribute("href") === "#" + en.target.id); });
+      });
+    }, { rootMargin: "-15% 0px -70% 0px" });
+    tocLinks.forEach(function(a){ var sec = document.querySelector(a.getAttribute("href")); if (sec) spy.observe(sec); });
+  }
+
+  /* ---------- scenario simulators ---------- */
+  var SIM = CFG.sim || {};
+  document.querySelectorAll("[data-simgroup]").forEach(function(group){
+    var btns = Array.prototype.slice.call(group.querySelectorAll("[data-sim]"));
+    var out = group.querySelector(".sim-result");
+    btns.forEach(function(btn){
+      btn.addEventListener("click", function(){
+        btns.forEach(function(b){ b.classList.toggle("selected", b === btn); });
+        out.innerHTML = SIM[btn.dataset.sim] || "";
+      });
+    });
+  });
+
+  /* ---------- quiz ---------- */
+  var QUIZ = CFG.quiz || [];
+  if (QUIZ.length && $("quiz")){
+    var qi = 0, qScore = 0, qDone = false;
+    var qCount = $("quizCount"), qQ = $("quizQ"), qAns = $("quizAns"), qFb = $("quizFb"), qNext = $("quizNext"), qScoreEl = $("quizScore");
+    var renderQuiz = function(){
+      var item = QUIZ[qi]; qDone = false;
+      qCount.textContent = (qi + 1) + " / " + QUIZ.length;
+      qQ.innerHTML = item.q;
+      qAns.innerHTML = "";
+      qFb.className = "feedback"; qFb.textContent = "";
+      qNext.disabled = true;
+      qNext.textContent = qi === QUIZ.length - 1 ? "重新測驗 ↻" : "下一題 →";
+      item.a.forEach(function(text, i){
+        var b = document.createElement("button");
+        b.type = "button"; b.className = "answer";
+        b.innerHTML = '<span class="letter">' + String.fromCharCode(65 + i) + "</span><span>" + esc(text) + "</span>";
+        b.addEventListener("click", function(){ pick(i); });
+        qAns.appendChild(b);
+      });
+    };
+    var pick = function(i){
+      if (qDone) return; qDone = true;
+      var item = QUIZ[qi], good = i === item.c;
+      Array.prototype.forEach.call(qAns.querySelectorAll("button"), function(b, n){
+        b.disabled = true;
+        if (n === item.c) b.classList.add("correct");
+        if (n === i && !good) b.classList.add("wrong");
+      });
+      if (good) qScore++;
+      qFb.className = "feedback show " + (good ? "good" : "bad");
+      qFb.innerHTML = "<b>" + (good ? "答對了!" : "再記一下這個觀念。") + "</b> " + esc(item.why);
+      qScoreEl.textContent = "答對 " + qScore + " / " + (qi + 1) + " 題";
+      qNext.disabled = false;
+    };
+    qNext.addEventListener("click", function(){
+      if (qi === QUIZ.length - 1){ qi = 0; qScore = 0; } else { qi++; }
+      renderQuiz();
+      qScoreEl.textContent = "答對 " + qScore + " 題";
+    });
+    renderQuiz();
+  }
+
+  /* ---------- checklist ---------- */
+  var checks = Array.prototype.slice.call(document.querySelectorAll("#checks input"));
+  function updateChecks(){
+    var n = checks.filter(function(c){ return c.checked; }).length;
+    $("checkProgress").textContent = "已完成 " + n + " / " + checks.length + " 項";
+    $("checkBar").style.width = (n / checks.length * 100) + "%";
+    checks.forEach(function(c){ c.closest(".check-item").classList.toggle("done", c.checked); });
+  }
+  checks.forEach(function(c){ c.addEventListener("change", updateChecks); });
+
+  /* ---------- role tabs (dual-view pages) ---------- */
+  var roleBtns = Array.prototype.slice.call(document.querySelectorAll("[data-role]"));
+  var rolePanels = Array.prototype.slice.call(document.querySelectorAll("[data-panel]"));
+  function setRole(r, focus){
+    roleBtns.forEach(function(b){
+      var on = b.dataset.role === r;
+      b.classList.toggle("on", on);
+      b.setAttribute("aria-selected", on ? "true" : "false");
+      b.tabIndex = on ? 0 : -1;
+      if (on && focus) b.focus();
+    });
+    rolePanels.forEach(function(p){ p.hidden = p.dataset.panel !== r; });
+  }
+  roleBtns.forEach(function(b){
+    b.addEventListener("click", function(){ setRole(b.dataset.role); });
+    b.addEventListener("keydown", function(e){
+      if (e.key === "ArrowLeft" || e.key === "ArrowRight"){
+        e.preventDefault(); setRole(b.dataset.role === "c" ? "o" : "c", true);
+      }
+    });
+  });
+  if (roleBtns.length) setRole("c");
+
+  /* ---------- stage stepper (two columns) ---------- */
+  var STAGES = CFG.stages || [];
+  if (STAGES.length && $("stages")){
+    var stage = 0;
+    var stagesEl = $("stages");
+    var renderStages = function(){
+      stagesEl.innerHTML = STAGES.map(function(s, i){
+        return '<button type="button" data-i="' + i + '" class="' + (i === stage ? "on" : "") + '" aria-pressed="' + (i === stage) + '">' +
+          '<span class="si">階段 ' + (i + 1) + "</span><span>" + s.label + '</span><span class="badge ' + s.tone + '">' + s.badge + "</span></button>";
+      }).join("");
+      var s = STAGES[stage];
+      $("c-h").textContent = s.c.h; $("o-h").textContent = s.o.h;
+      $("c-list").innerHTML = s.c.items.map(function(t){ return "<li>" + t + "</li>"; }).join("");
+      $("o-list").innerHTML = s.o.items.map(function(t){ return "<li>" + t + "</li>"; }).join("");
+      $("prevStage").disabled = stage === 0;
+      $("nextStage").disabled = stage === STAGES.length - 1;
+    };
+    stagesEl.addEventListener("click", function(e){
+      var b = e.target.closest("button[data-i]"); if (!b) return;
+      stage = +b.dataset.i; renderStages();
+    });
+    $("prevStage").addEventListener("click", function(){ if (stage > 0){ stage--; renderStages(); } });
+    $("nextStage").addEventListener("click", function(){ if (stage < STAGES.length - 1){ stage++; renderStages(); } });
+    renderStages();
+  }
+
+  /* ---------- decision picker ---------- */
+  var DECIDE = CFG.decide || [];
+  if (DECIDE.length && $("decideBtns")){
+    var decBtns = $("decideBtns"), decOut = $("decideOut");
+    decBtns.innerHTML = DECIDE.map(function(d, i){
+      return '<button type="button" data-d="' + i + '">' + d.label + "</button>";
+    }).join("");
+    decBtns.addEventListener("click", function(e){
+      var b = e.target.closest("button[data-d]"); if (!b) return;
+      var d = DECIDE[+b.dataset.d];
+      Array.prototype.forEach.call(decBtns.querySelectorAll("button"), function(x){ x.classList.toggle("selected", x === b); });
+      var tone = d.risk === "高" ? "bad" : (d.risk === "中" ? "warn" : "ok");
+      decOut.innerHTML = '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px"><b>建議做法</b><span class="badge ' + tone + '">風險:' + d.risk + "</span></div>" +
+        '<div class="cmd" style="margin:8px 0"><pre></pre><button type="button" class="copy">Copy</button></div><div>' + d.why + "</div>";
+      decOut.querySelector("pre").textContent = d.cmd;
+      decOut.querySelector(".copy").addEventListener("click", function(ev){ copyText(d.cmd, ev.currentTarget); });
+    });
+  }
+
+  renderTpl();
+  if (checks.length) updateChecks();
+})();
+
+</script>
+</body>
+</html>
