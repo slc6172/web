@@ -110,6 +110,8 @@ with sync_playwright() as p:
 
 # ---------- 站台層靜態檢查(不需瀏覽器):head 中繼資料、skip link、sitemap、quick 錨點 ----------
 def static_checks():
+    sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "shared"))
+    import seo
     import json
     seen_t, seen_d = {}, {}
     for pg in pages:
@@ -140,6 +142,21 @@ def static_checks():
         norm = lambda x: x if x.endswith(".html") else (x + ".html" if x else "index.html")
         if set(map(norm, want)) != have:
             errs.append(("sitemap.xml", "與 public/ 頁面不符", sorted(set(map(norm, want)) ^ have)))
+    # 部署設定:wrangler.jsonc 與 SITE_URL、CLEAN_URLS 一致,workflow 與 .gitignore 存在
+    root = os.path.dirname(PUB)
+    wr = os.path.join(root, "wrangler.jsonc")
+    if os.path.exists(wr):
+        w = open(wr, encoding="utf-8").read()
+        nm = re.search(r'"name"\s*:\s*"([^"]+)"', w)
+        if not re.search(r'"directory"\s*:\s*"\./?public/?"', w):
+            errs.append(("wrangler.jsonc", "assets.directory 不是 ./public", ""))
+        if nm and seo.SITE_URL and not re.match(r"https://%s\." % re.escape(nm.group(1)), seo.SITE_URL):
+            errs.append(("wrangler.jsonc", "name 與 seo.SITE_URL 的主機名稱不符", "%s vs %s" % (nm.group(1), seo.SITE_URL)))
+        if "html_handling" in w:
+            errs.append(("wrangler.jsonc", "有設定 html_handling:請確認 seo.CLEAN_URLS 是否仍適用", ""))
+    for f in (".github/workflows/deploy.yml", ".gitignore", "wrangler.jsonc"):
+        if not os.path.exists(os.path.join(root, f)):
+            errs.append((f, "專案根目錄缺少部署相關檔案(打包時要保留)", ""))
     # quick 錨點:SITE 裡每個 a 都要存在於目標頁
     idx = open(os.path.join(PUB, "index.html"), encoding="utf-8").read()
     for cid in re.findall(r'id:"(\w+)", label', idx):

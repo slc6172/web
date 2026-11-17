@@ -68,7 +68,7 @@ python3 _build/verify.py                    # 全站驗證
 - `SKETCHES` 的 `libs` 欄位可列函式庫（`Wire`、`SPI`、`Servo`… 內建的在 ArduinoCore-avr/libraries；第三方的放 `/tmp/avrlibs/<name>`，從 GitHub clone）。
 - `arduino_verify.py` 的 `sim=dict(kind=…)`：`toggle`、`uart`（序列埠輸出，可注入按鈕／序列埠輸入／類比電壓／DHT11／I2C 裝置）、`input`、`dual`、`chase`、`pwm`/`ocr`、`pattern`、`freq`（tone）、`servo`、`adc_pwm`、`adc_edges`、`adc_toggle`、`highlow`、`spi`。`simpin` 參數：`IN@D2=0@500`（注入腳位電位）、`ADC@0=2500@500`（類比電壓，毫伏）、`RX@500=49`（序列埠輸入）、`DHT@D2=26,55`、`I2C@27`、`REG@88`。
 - **驗證不到的**：實體零件個別差異（模組腳位順序、LCD 對比度、I2C 位址 0x27 / 0x3F）、IDE 畫面、`hd44780` 的 I2C 讀取探測（第 18 篇改用「LCD 空殼」版本驗證計時與警示邏輯，真正的 LCD 版本只做編譯驗證；第 14 篇 LCD 程式只編譯）。這些以官方文件為準，頁面寫成「先確認再接」。
-- 最近一次全量驗證結果在 `reports/arduino-verify-report.md`。
+- 最近一次全量驗證結果在 `reports/arduino-verify-report.md`；外部連結檢查在 `reports/link-check.md`（網址區分大小寫，新增前要實際開啟）。
 
 ## 已查證的事實（2026-11-07）
 

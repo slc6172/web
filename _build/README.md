@@ -1,7 +1,7 @@
 # _build · 製作與維護指南
 
 > 給接手的人，或新對話的 Claude：**要修改頁面、新增篇章或新增主題前，先讀完這份**；動到某個主題時，再讀該主題資料夾裡的 `README.md`。
-> `_build/` 不會被部署；只有 `public/` 會上線。部署用的 workflow 由專案擁有者自行維護，**不要改它**。
+> `_build/` 不會被部署；只有 `public/` 會上線。部署相關檔案（`.github/workflows/deploy.yml`、`wrangler.jsonc`、`.gitignore`）由專案擁有者自行維護，**不要改它們**；部署流程與網址規則寫在根目錄 `README.md` 的「部署」。`deploy.yml` 會先檢查 `public/` 是否為 `site_files.py` 的最新輸出、再跑 `verify.py`，通過才 `wrangler deploy`，不建置頁面；所以改完頁面要先在本機跑 `site_files.py` 與 `verify.py` 並 commit `public/`，再 push，否則部署會失敗。
 
 ## 1. 一句話
 
@@ -22,7 +22,7 @@ _build/
 │   ├── h.py             HTML 輔助函式（cmd、step、table、fill、sim、checks、resources…）
 │   ├── fw.py            全形標點轉換
 │   └── seo.py           站台層設定：SITE_URL、description／canonical／Open Graph／favicon／theme-color、skip link
-├── github/              p1 … p11（沒有 p6：PR 頁是手寫的原始樣板）；README.md
+├── github/              p1 … p11（沒有 p6：PR 頁是手寫的原始樣板）；README.md、reports/link-check.md
 ├── arduino/             a01 … a20、bb.py（接線圖）、arduino.css/.js、驗證工具、tools/、reports/；README.md
 └── microfilm/           m1 … m16、mh.py、svgkit.py、kit.js（繪圖積木）、check.py；README.md
 ```
@@ -48,6 +48,15 @@ python3 _build/arduino/arduino_verify.py a03 # Arduino 電路與程式驗證（�
 ```
 
 微電影的繪圖需要 `node`；其他主題只需要 Python 3。
+
+**發佈流程**（`deploy.yml` 會在雲端重跑第 2、3 步，任一步失敗就不部署）：
+
+1. 改規格檔 → `build.py` 重組頁面（改首頁就直接改 `public/index.html`）。
+2. `python3 _build/site_files.py`：補齊 head／skip link／全形標點，更新 sitemap。
+3. `python3 _build/verify.py`：全站驗證要 `ERRORS: []`。
+4. commit（含 `public/`）並 push 到 `main` → GitHub Actions 部署到 Cloudflare Workers。
+
+專案根目錄另有 `wrangler.jsonc`、`.github/workflows/deploy.yml`、`.gitignore`、`LICENSE`，由擁有者維護，工具不會改動，打包上傳用 zip 時要保留。
 
 ## 4. SPEC 欄位（規格檔 `SPEC = {...}`）
 
@@ -106,7 +115,7 @@ python3 _build/arduino/arduino_verify.py a03 # Arduino 電路與程式驗證（�
 
 語意色：clay＝焦點／注意／選中；olive＝成功／完成；rust＝危險／失敗；oat＝中性強調；slate＝墨色。字型：h1/h2/h3 與大數字用 serif（weight 500），內文 sans 15px／行高 1.65，eyebrow、標籤、chip、程式碼用 mono。圓角：面板 12、內層 8–10、膠囊 999；邊框 1.5px；不用漸層；陰影只用在「浮起」狀態。容器 `.page` 最大 1100px，`.layout` 為 190px 目錄＋內容，≤920px 折成單欄；斷點 920、720。
 
-**站台層（由 `shared/seo.py` 統一輸出，規格檔不要手寫）**：每頁 `<head>` 有 description、canonical、`og:*`、`twitter:card`、內嵌 SVG favicon（data URI，零外部資源）、`theme-color`；`<body>` 第一個元素是 skip link（`.skip` → `#main`），`<main id="main" tabindex="-1">`。站台網址 `SITE_URL` 只在 `seo.py` 設定一處（目前 `https://www.slc6172.workers.dev`）；留空時略過 canonical、`og:url` 與 sitemap。Cloudflare 會把 `/x.html` 轉成 `/x`（已實測），所以 `CLEAN_URLS = True`：canonical、`og:url` 與 sitemap 都用沒有 `.html` 的網址，站內相對連結仍寫 `.html`（兩種都能開）。目前不放 og:image（維持零外部資源）。手寫頁（首頁、`github-pr-guide.html`）由 `site_files.py` 就地套用。
+**站台層（由 `shared/seo.py` 統一輸出，規格檔不要手寫）**：每頁 `<head>` 有 description、canonical、`og:*`、`twitter:card`、內嵌 SVG favicon（data URI，零外部資源）、`theme-color`；`<body>` 第一個元素是 skip link（`.skip` → `#main`），`<main id="main" tabindex="-1">`。站台網址 `SITE_URL` 只在 `seo.py` 設定一處（目前 `https://www.slc6172.workers.dev`，必須與 `wrangler.jsonc` 的 `name` 加帳號子網域一致，`verify.py` 會檢查名稱部分）；留空時略過 canonical、`og:url` 與 sitemap。Workers Static Assets 預設會把 `/x.html` 轉成 `/x`（`wrangler.jsonc` 沒有設定 `html_handling`，已實測），所以 `CLEAN_URLS = True`：canonical、`og:url` 與 sitemap 都用沒有 `.html` 的網址，站內相對連結仍寫 `.html`（兩種都能開）。目前不放 og:image（維持零外部資源）。手寫頁（首頁、`github-pr-guide.html`）由 `site_files.py` 就地套用。
 
 **固定元件與導覽**：頁首 `crumb`（← 回教學首頁，連到 `../index.html#<主題>`）→ eyebrow → h1（標題就是結論）→ `.sub` → `.tldr`；左欄 `nav.toc`；每頁必備複製按鈕、閱讀進度條、TOC 高亮、`details` 常見卡關、測驗（3–6 題）、檢查表；頁尾 `.foot` → `.pager`（上一篇／下一篇，第一頁沒有上一篇、最後一頁沒有下一篇）。**所有共用 CSS 都是從 `public/github/github-pr-guide.html` 的 `<style>` 讀來的**（`build.py` 啟動時讀取），要改共用樣式就改那一頁，再重組各頁；後來補的小型樣式放在 `build.py` 的 `EXTRA`。
 
@@ -135,14 +144,14 @@ python3 _build/arduino/arduino_verify.py a03 # Arduino 電路與程式驗證（�
 - 沒有重複 id、沒有失效的相對連結或 `#錨點`（`verify.py` 會檢查）。
 - 搜尋 `http://`、`https://`：只應出現在官方文件連結、SVG `xmlns`，以及 `<head>` 的 canonical／`og:url`。
 - 子頁沒有 `localStorage`（第 6 節的例外除外）。
-- `verify.py` 的站台層檢查：每頁 meta／canonical／og／favicon／theme-color／skip link／`main#main`、title 與 description 不重複、`sitemap.xml` 與 `public/` 頁面相符、`quick` 每個錨點都存在。
+- `verify.py` 的站台層與部署檢查（`wrangler.jsonc` 的 `name` 要與 `SITE_URL` 一致、部署相關檔案要存在）：每頁 meta／canonical／og／favicon／theme-color／skip link／`main#main`、title 與 description 不重複、`sitemap.xml` 與 `public/` 頁面相符、`quick` 每個錨點都存在。
 - **外部連結要實際開啟**（WebFetch 或瀏覽器；shell 通常連不到外網，不能當證據）：結果寫進 `_build/<主題>/reports/link-check.md`（日期、方法、每條狀態）；被轉址的改成最終網址；只拿到頁面外殼的算「無法驗證」，不能寫成已驗證。介面名稱、指令、規格、額度逐項對照官方文件，查證日期在這些做完之後才更新。
 - 用瀏覽器實際點過：複製按鈕、測驗、檢查表、模擬與該頁特有的互動；窄螢幕也看一次。
 - 頁尾的查證日期與首頁 `foot` 同步更新；時效性內容（介面名稱、規格、價格、額度）先對照官方文件再寫。
 
 ## 10. 交給新對話的開場白
 
-> 這是一個由 `/html-effective` 製作的多主題教學站（github、arduino、microfilm）。請先讀 `README.md` 與 `_build/README.md`，再讀 `_build/<主題>/README.md`、`public/github/github-pr-guide.html`（樣板）、該主題最接近的規格檔與 `_build/build.py`。我要【修改某一頁／新增某一篇／新增一個主題】，每一頁都分別用 `/html-effective` 製作並維持既有風格。已記錄在各 README 的決定不要再問我；遇到文件沒涵蓋的新決定，動手前先問我。不要改 `.github/workflows/`。
+> 這是一個由 `/html-effective` 製作的多主題教學站（github、arduino、microfilm）。請先讀 `README.md` 與 `_build/README.md`，再讀 `_build/<主題>/README.md`、`public/github/github-pr-guide.html`（樣板）、該主題最接近的規格檔與 `_build/build.py`。我要【修改某一頁／新增某一篇／新增一個主題】，每一頁都分別用 `/html-effective` 製作並維持既有風格。已記錄在各 README 的決定不要再問我；遇到文件沒涵蓋的新決定，動手前先問我。不要改 `.github/workflows/`、`wrangler.jsonc`、`.gitignore`。
 
 上傳給新對話時，附上整個 repo 的 zip（或至少 `public/index.html`、`_build/` 與要改的頁面）即可；文件已經涵蓋原本分散在各份交接檔的內容。
 
@@ -175,5 +184,5 @@ python3 _build/merge_theme.py NEW.zip --verify --zip /tmp/learning-hub-github-up
 **交給新對話的提示詞**：完整版在專案外的 `merge-theme-prompt.md`（同時上傳目前的 learning-hub zip 與新專案 zip）；精簡版如下，兩者要同步。
 
 > 我有一份現行的教學站專案（learning-hub，已含 github 等主題）和另一份新專案 `NEW.zip`（含 github 主題當風格參考，外加一個新主題）。請把新主題整併進現行專案。
-> 先讀 `README.md`、`_build/README.md`（特別是第 11 節），確認 `_build/shared/seo.py` 與 `_build/site_files.py` 存在（缺就先停下來告訴我）。然後依序：①先跑 `merge_theme.py --dry-run` 並把結果與風險告訴我；②我確認後再正式整併；③完成第 11 節「第二步」的每一項（含第 7 項站台層品質關卡）；④跑 `site_files.py`、全站驗證與主題專用驗證；⑤用 `--zip` 打包上傳用 zip，確認裡面沒有 HANDOFF、DESIGN、進度檔、截圖或暫存檔。
-> 原則：只動新主題與首頁、文件，不改既有主題的頁面內容（`<head>`、skip link、sitemap 這類站台層輸出除外）；全站全形標點；每一頁維持與 github 相同的風格與元件；沒實際開啟過的連結不要宣稱已驗證；不要碰 `.github/workflows/`。遇到文件沒涵蓋的決定，動手前先問我。
+> 先讀 `README.md`、`_build/README.md`（特別是第 11 節），確認 `_build/shared/seo.py` 與 `_build/site_files.py` 存在（缺就先停下來告訴我）。然後依序：①先跑 `merge_theme.py --dry-run` 並把結果與風險告訴我；②我確認後再正式整併；③完成第 11 節「第二步」的每一項（含第 7 項站台層品質關卡）；④跑 `site_files.py`、全站驗證與主題專用驗證；⑤用 `--zip` 打包上傳用 zip，確認裡面沒有 HANDOFF、DESIGN、進度檔、截圖或暫存檔，且**保留**根目錄的 `.github/`、`wrangler.jsonc`、`.gitignore`、`LICENSE`。
+> 原則：只動新主題與首頁、文件，不改既有主題的頁面內容（`<head>`、skip link、sitemap 這類站台層輸出除外）；全站全形標點；每一頁維持與 github 相同的風格與元件；沒實際開啟過的連結不要宣稱已驗證；不要碰 `.github/workflows/`、`wrangler.jsonc`、`.gitignore`。遇到文件沒涵蓋的決定，動手前先問我。
