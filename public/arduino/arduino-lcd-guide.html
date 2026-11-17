@@ -1,0 +1,1212 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LCD1602 I2C 顯示：四條線的小螢幕</title>
+<meta name="description" content="I2C LCD 四條線：VCC、GND、SDA、SCL（不用麵包板）。安裝 hd44780 函式庫，lcd.begin(16, 2)、lcd.print()、lcd.setCurs…">
+<meta name="theme-color" content="#FAF9F5">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='8'%20fill='%23FAF9F5'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='8'%20fill='%23D97757'/%3E%3C/svg%3E">
+<link rel="canonical" href="https://www.slc6172.workers.dev/arduino/arduino-lcd-guide.html">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:site_name" content="自學教學站">
+<meta property="og:title" content="LCD1602 I2C 顯示：四條線的小螢幕">
+<meta property="og:description" content="I2C LCD 四條線：VCC、GND、SDA、SCL（不用麵包板）。安裝 hd44780 函式庫，lcd.begin(16, 2)、lcd.print()、lcd.setCurs…">
+<meta property="og:url" content="https://www.slc6172.workers.dev/arduino/arduino-lcd-guide.html">
+<meta name="twitter:card" content="summary">
+<style>
+  :root {
+    --ivory:#FAF9F5; --white:#FFFFFF; --slate:#141413;
+    --clay:#D97757; --clay-d:#B85C3E; --oat:#E3DACC; --olive:#788C5D; --rust:#B04A3F;
+    --gray-100:#F0EEE6; --gray-300:#D1CFC5; --gray-500:#87867F; --gray-700:#3D3D3A;
+    --serif: ui-serif, Georgia, "Times New Roman", "Noto Serif TC", "Songti TC", "PMingLiU", serif;
+    --sans:  system-ui, -apple-system, "Segoe UI", Roboto, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", Helvetica, Arial, sans-serif;
+    --mono:  ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
+    --border: 1.5px solid var(--gray-300);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  [hidden] { display:none !important; }
+  body { margin:0; padding:56px 24px 120px; background:var(--ivory); color:var(--slate);
+         font-family:var(--sans); font-size:15px; line-height:1.65; -webkit-font-smoothing:antialiased; }
+  .page { max-width:1100px; margin:0 auto; }
+  .page > header { margin-bottom:36px; }
+  .layout { display:grid; grid-template-columns:190px minmax(0,1fr); gap:48px; }
+  .layout > * { min-width:0; }
+  main > section { margin-bottom:56px; scroll-margin-top:24px; }
+
+  .eyebrow { font:12px var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--gray-500);
+             display:flex; align-items:center; gap:12px; margin-bottom:18px; }
+  .eyebrow::before { content:""; width:24px; height:1.5px; background:var(--clay); }
+  h1 { font:500 clamp(30px,4.6vw,42px)/1.18 var(--serif); letter-spacing:-.012em; margin:0 0 12px; }
+  h2 { font:500 25px/1.28 var(--serif); letter-spacing:-.01em; margin:0 0 6px; }
+  h3 { font:500 18px/1.35 var(--serif); margin:0 0 6px; }
+  .sub { color:var(--gray-700); max-width:680px; margin:0 0 4px; }
+  hr.rule { border:0; border-top:1px solid var(--gray-300); margin:10px 0 22px; }
+  p { margin:0 0 12px; }
+  code { font:12.5px var(--mono); background:var(--gray-100); padding:1px 5px; border-radius:4px; }
+  .slot { background:rgba(217,119,87,.14); color:var(--clay-d); border-radius:4px; padding:0 3px; }
+  pre .slot { background:rgba(217,119,87,.22); color:#F2B49E; }
+
+  .panel { background:var(--white); border:var(--border); border-radius:12px; padding:20px 22px; }
+  .tldr { border:var(--border); border-left:3px solid var(--clay); border-radius:10px; background:#fff; padding:16px 18px; margin-top:22px; max-width:820px; }
+  .tldr b { font:600 11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--clay-d); margin-right:6px; }
+
+  /* toc */
+  nav.toc { position:sticky; top:32px; align-self:start; font-size:13px; }
+  nav.toc .label { font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--gray-500); margin-bottom:8px; }
+  nav.toc a { display:block; padding:5px 0; color:var(--gray-700); text-decoration:none; }
+  nav.toc a:hover { color:var(--clay); }
+
+  /* buttons */
+  button { font:12px var(--mono); cursor:pointer; border-radius:999px; padding:9px 16px; transition:background .14s ease, transform .08s ease; }
+  button.primary { background:var(--slate); color:var(--ivory); border:1.5px solid var(--slate); }
+  button.primary:hover:not(:disabled) { background:var(--gray-700); }
+  button.primary:disabled { background:var(--gray-300); border-color:var(--gray-300); cursor:not-allowed; }
+  button.primary.copied { background:var(--olive); border-color:var(--olive); }
+  button.ghost { background:transparent; color:var(--gray-700); border:var(--border); }
+  button.ghost:hover { border-color:var(--gray-500); }
+  button:focus-visible, a:focus-visible, summary:focus-visible, input:focus-visible { outline:2px solid var(--clay); outline-offset:2px; }
+
+  /* tables (grid style) */
+  .table-wrap { overflow-x:auto; border:var(--border); border-radius:12px; background:#fff; }
+  .gt { min-width:560px; }
+  .gt .row { display:grid; gap:0; }
+  .gt .cell { padding:11px 14px; border-top:1px solid var(--gray-300); font-size:13.5px; }
+  .gt .row:first-child .cell { border-top:0; }
+  .gt .cell.head { font:11px var(--sans); text-transform:uppercase; letter-spacing:.06em; color:var(--gray-500); background:var(--gray-100); }
+  .gt .cell.term { font:600 12.5px var(--mono); }
+  .gt.g3 .row { grid-template-columns:150px minmax(0,1fr) minmax(0,1fr); }
+  .gt.g2 .row { grid-template-columns:140px minmax(0,1fr); }
+  .gt.g3b .row { grid-template-columns:170px minmax(0,1.2fr) minmax(0,1fr); }
+
+  /* code blocks */
+  .cmd { position:relative; background:var(--slate); border-radius:12px; margin:10px 0 12px; }
+  .cmd pre { margin:0; padding:16px 78px 16px 18px; font:12.5px/1.7 var(--mono); color:var(--ivory); overflow-x:auto; white-space:pre; }
+  .cmd .cm { color:var(--gray-500); }
+  .cmd button { position:absolute; top:9px; right:9px; padding:5px 11px; font-size:11px; color:var(--ivory);
+                background:rgba(250,249,245,.08); border:1px solid rgba(250,249,245,.28); }
+  .cmd button:hover { background:rgba(250,249,245,.18); }
+  .cmd button.copied { background:var(--olive); border-color:var(--olive); color:#fff; }
+  .cmd .cap { font:11px var(--mono); letter-spacing:.06em; color:var(--gray-500); padding:10px 18px 0; text-transform:uppercase; }
+  .cmd .cap + pre { padding-top:6px; }
+
+  /* diagram */
+  .canvas { background:#fff; border:var(--border); border-radius:12px; padding:14px; overflow-x:auto; }
+  .canvas svg { display:block; width:100%; height:auto; min-width:640px; }
+  .legend { list-style:none; margin:16px 0 0; padding:0; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 24px; }
+  .legend li { display:grid; grid-template-columns:26px minmax(0,1fr); gap:8px; font-size:13.5px; color:var(--gray-700); }
+  .legend .n { width:22px; height:22px; border-radius:50%; background:var(--clay); color:#fff; font:600 12px/22px var(--mono); text-align:center; }
+  .legend .n.k { background:var(--slate); }
+  .role { font:600 10.5px var(--mono); padding:1px 7px; border-radius:999px; margin-left:6px; white-space:nowrap; }
+  .role.c { background:rgba(217,119,87,.14); color:var(--clay-d); border:1px solid rgba(217,119,87,.45); }
+  .role.o { background:var(--oat); color:var(--slate); border:1px solid #CFC3AE; }
+
+  /* fill form */
+  .fill { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:12px; align-items:end; }
+  .fill label { display:block; font:11px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--gray-500); margin-bottom:5px; }
+  .fill input { width:100%; font:13px var(--mono); padding:9px 11px; border:var(--border); border-radius:8px; background:var(--gray-100); color:var(--slate); }
+  .fill-foot { display:flex; gap:12px; align-items:center; margin-top:14px; flex-wrap:wrap; }
+  .fill-foot span { font-size:13px; color:var(--gray-500); }
+
+  /* role tabs */
+  .role-tabs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin:18px 0 26px; }
+  .role-tabs button { text-align:left; font-family:var(--sans); font-size:14px; border-radius:12px; padding:16px 18px; background:#fff;
+                      border:var(--border); color:var(--gray-700); display:flex; flex-direction:column; gap:2px; }
+  .role-tabs button .rt { font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--gray-500); }
+  .role-tabs button b { font:500 20px/1.3 var(--serif); color:var(--slate); }
+  .role-tabs button:hover { border-color:var(--gray-500); }
+  .role-tabs button.on { border-color:var(--clay); background:#FBF1EC; }
+  .role-tabs button.on .rt { color:var(--clay-d); }
+
+  .orient { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-bottom:8px; }
+  .orient .panel { padding:14px 18px; font-size:13.5px; }
+  .orient .k { font:600 11px var(--mono); letter-spacing:.08em; text-transform:uppercase; display:block; margin-bottom:4px; }
+  .orient .known .k { color:#4B5C39; } .orient .new .k { color:var(--clay-d); }
+
+  /* steps */
+  .step { display:grid; grid-template-columns:40px minmax(0,1fr); gap:0 16px; padding:26px 0; border-top:1px solid var(--gray-300); }
+  .steps > .step:first-child { border-top:0; }
+  .step > * { min-width:0; }
+  .num { width:34px; height:34px; border-radius:50%; background:var(--oat); display:flex; align-items:center; justify-content:center; font:600 14px var(--mono); margin-top:2px; }
+  .step h3 { font-size:20px; margin:2px 0 6px; }
+  .why { color:var(--gray-700); margin:0 0 12px; }
+  .ops { margin:0 0 12px; padding-left:22px; color:var(--gray-700); }
+  .ops li { margin-bottom:5px; }
+  .see, .warn, .tip { border:var(--border); border-radius:8px; background:#fff; padding:10px 14px; font-size:13.5px; margin:12px 0; color:var(--gray-700); }
+  .see { border-left:3px solid var(--olive); } .warn { border-left:3px solid var(--rust); } .tip { border-left:3px solid var(--clay); }
+  .see b.l, .warn b.l, .tip b.l { font:600 11px var(--mono); letter-spacing:.08em; text-transform:uppercase; margin-right:6px; }
+  .see b.l { color:#4B5C39; } .warn b.l { color:var(--rust); } .tip b.l { color:var(--clay-d); }
+
+  /* PR compare mock */
+  .pr-mock { display:grid; grid-template-columns:minmax(0,1fr) 44px minmax(0,1fr); gap:0; align-items:stretch; margin:12px 0; }
+  .pr-mock .half { background:#fff; border:var(--border); border-radius:10px; padding:12px 14px; }
+  .pr-mock .half .t { font:600 11px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--gray-500); margin-bottom:6px; }
+  .pr-mock .half .r { font:12.5px var(--mono); margin:2px 0; word-break:break-all; }
+  .pr-mock .half .r i { font-style:normal; color:var(--gray-500); margin-right:6px; }
+  .pr-mock .arr { display:flex; align-items:center; justify-content:center; font:22px var(--mono); color:var(--clay); }
+  .pr-mock .half.base { border-color:var(--clay); background:#FBF1EC; }
+  .mock-cap { font-size:13px; color:var(--gray-500); margin:0 0 12px; }
+
+  .gh-tabs { display:flex; gap:0; border-bottom:1.5px solid var(--gray-300); margin:12px 0; overflow-x:auto; }
+  .gh-tabs span { padding:8px 16px; font-size:13.5px; color:var(--gray-500); white-space:nowrap; }
+  .gh-tabs span.on { color:var(--slate); box-shadow:inset 0 -2px 0 var(--clay); font-weight:600; }
+  .gh-tabs span small { font:11px var(--mono); margin-left:6px; color:var(--gray-500); }
+
+  /* diff */
+  .diff { font:12.5px/1.7 var(--mono); background:#fff; border:var(--border); border-radius:8px; overflow-x:auto; margin:12px 0 0; }
+  .diff-row { display:grid; grid-template-columns:44px 18px minmax(max-content,1fr); white-space:pre; padding-right:14px; }
+  .diff-row .ln { color:var(--gray-500); text-align:right; padding-right:10px; user-select:none; }
+  .diff-row.add { background:rgba(120,140,93,.12); } .diff-row.add .mark { color:var(--olive); font-weight:600; }
+  .diff-row.del { background:rgba(176,74,63,.10); } .diff-row.del .mark { color:var(--rust); font-weight:600; }
+  .bubble { background:#fff; border:var(--border); border-left:4px solid var(--olive); border-radius:8px; padding:10px 14px; margin:8px 0 0 44px; font-size:13px; max-width:560px; }
+  .bubble .who { font:600 11px var(--mono); color:var(--gray-500); display:block; margin-bottom:2px; }
+
+  /* lifecycle */
+  .stages { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; margin:18px 0 16px; }
+  .stages button { text-align:left; font-family:var(--sans); border-radius:10px; padding:11px 12px; background:#fff; border:var(--border); color:var(--gray-700); font-size:13px; display:flex; flex-direction:column; gap:6px; }
+  .stages button:hover { border-color:var(--gray-500); }
+  .stages button.on { border-color:var(--clay); background:#FBF1EC; }
+  .stages button .si { font:11px var(--mono); color:var(--gray-500); }
+  .badge { font:600 11px var(--mono); padding:2px 9px; border-radius:999px; align-self:flex-start; }
+  .badge.ok { background:rgba(120,140,93,.18); color:#4B5C39; }
+  .badge.warn { background:rgba(217,119,87,.18); color:var(--clay-d); }
+  .badge.done { background:var(--slate); color:var(--ivory); }
+  .two { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+  .two .panel h3 { display:flex; align-items:center; gap:8px; }
+  .two ul { margin:8px 0 0; padding-left:20px; color:var(--gray-700); }
+  .two li { margin-bottom:6px; }
+  .stage-nav { display:flex; gap:10px; margin-top:16px; }
+
+  /* details */
+  details { border:var(--border); border-radius:10px; background:#fff; margin:12px 0; overflow:hidden; }
+  summary { list-style:none; cursor:pointer; padding:14px 16px; font:17px/1.4 var(--serif); display:flex; align-items:baseline; gap:10px; }
+  summary::-webkit-details-marker { display:none; }
+  summary::before { content:"▸"; color:var(--gray-500); transition:transform .12s; flex:none; }
+  details[open] > summary::before { transform:rotate(90deg); }
+  details > .body { padding:0 18px 16px; border-top:1px solid var(--gray-300); padding-top:14px; }
+  details > .body > :last-child { margin-bottom:0; }
+
+  .habits { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+  .habits ul { margin:8px 0 0; padding-left:20px; color:var(--gray-700); }
+  .habits li { margin-bottom:6px; }
+  .export { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:8px; padding-top:20px; border-top:1px solid var(--gray-300); }
+  .export span { font-size:13px; color:var(--gray-500); }
+
+  /* progress + toc active */
+  .progress { position:fixed; top:0; left:0; right:0; height:3px; z-index:60; }
+  .progress span { display:block; height:100%; width:0; background:var(--clay); }
+  nav.toc a.active { color:var(--clay-d); font-weight:600; }
+
+  /* route switch */
+  .route-switch { display:flex; gap:6px; flex-wrap:wrap; background:var(--gray-100); padding:5px; border-radius:12px; width:max-content; max-width:100%; margin:16px 0; }
+  .route-switch button { border:0; background:transparent; border-radius:9px; color:var(--gray-500); font:13px var(--sans); padding:9px 14px; }
+  .route-switch button[aria-pressed="true"] { background:#fff; color:var(--slate); box-shadow:inset 0 -2px 0 var(--clay); }
+  .route-steps { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; margin:14px 0; }
+  .route-step { border:var(--border); border-radius:10px; background:#fff; padding:10px 12px; }
+  .route-step.new { border-color:var(--clay); background:#FBF1EC; }
+  .route-step i { font:600 11px var(--mono); color:var(--gray-500); font-style:normal; }
+  .route-step b { display:block; font-size:14px; margin:2px 0; }
+  .route-step small { display:block; font-size:12.5px; color:var(--gray-700); line-height:1.5; }
+  .route-note { font-size:13px; color:var(--gray-500); margin:0 0 4px; }
+
+  /* practice */
+  .sim { margin-bottom:16px; }
+  .sim h3 { margin-bottom:4px; }
+  .sim-buttons { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0; }
+  .sim-buttons button, .answer { font:14px var(--sans); border-radius:10px; border:var(--border); background:#fff; color:var(--gray-700); padding:10px 14px; text-align:left; }
+  .sim-buttons button:hover, .answer:hover:not(:disabled) { border-color:var(--gray-500); }
+  .sim-buttons button.selected { border-color:var(--clay); background:#FBF1EC; color:var(--slate); }
+  .sim-result { background:var(--gray-100); border-radius:10px; padding:12px 14px; font-size:14px; min-height:52px; color:var(--gray-700); }
+  .quiz-top { display:flex; justify-content:space-between; gap:10px; align-items:baseline; flex-wrap:wrap; }
+  .quiz-top .count { font:12px var(--mono); color:var(--gray-500); }
+  .question { font:500 18px/1.45 var(--serif); margin:14px 0 12px; }
+  .answers { display:grid; gap:8px; }
+  .answer { display:flex; gap:10px; align-items:flex-start; }
+  .answer .letter { width:22px; height:22px; flex:none; border-radius:6px; background:var(--gray-100); font:600 11px/22px var(--mono); text-align:center; }
+  .answer:disabled { cursor:default; }
+  .answer.correct { border-color:var(--olive); background:rgba(120,140,93,.12); }
+  .answer.wrong { border-color:var(--rust); background:rgba(176,74,63,.10); }
+  .feedback { display:none; margin-top:12px; padding:12px 14px; border-radius:10px; font-size:14px; border:var(--border); border-left-width:4px; background:#fff; }
+  .feedback.show { display:block; } .feedback.good { border-left-color:var(--olive); } .feedback.bad { border-left-color:var(--clay); }
+  .quiz-foot { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:14px; }
+  .quiz-foot span { font-size:13px; color:var(--gray-500); }
+  .checks { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  .check-item { display:flex; gap:10px; align-items:flex-start; padding:11px 13px; border:var(--border); border-radius:10px; background:#fff; font-size:14px; color:var(--gray-700); cursor:pointer; }
+  .check-item input { accent-color:var(--clay); margin-top:5px; flex:none; }
+  .check-item.done { background:rgba(120,140,93,.10); border-color:rgba(120,140,93,.45); }
+  .bar { height:6px; border-radius:999px; background:var(--gray-100); overflow:hidden; margin-top:8px; }
+  .bar span { display:block; height:100%; width:0; background:var(--olive); transition:width .2s; }
+  .check-progress { font-size:13px; color:var(--gray-500); margin-top:12px; }
+  .resources { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  .resource { display:block; padding:12px 14px; border:var(--border); border-radius:10px; background:#fff; color:var(--slate); text-decoration:none; }
+  .resource:hover { border-color:var(--clay); }
+  .resource b { display:block; font-size:14px; } .resource small { font:12px var(--mono); color:var(--gray-500); }
+  .warn ul { margin:6px 0 0; padding-left:20px; }
+  .foot { font-size:13px; color:var(--gray-500); border-top:1px solid var(--gray-300); padding-top:18px; }
+
+  @media (max-width: 920px) {
+    .layout { grid-template-columns:minmax(0,1fr); gap:24px; }
+    nav.toc { position:static; display:flex; flex-wrap:wrap; gap:4px 16px; }
+    nav.toc .label { width:100%; margin-bottom:2px; }
+    .fill { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .stages { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .two, .habits, .orient, .role-tabs, .legend, .checks, .resources { grid-template-columns:minmax(0,1fr); }
+    .route-steps { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  }
+  @media (max-width: 720px) {
+    body { padding:32px 16px 80px; }
+    .step { grid-template-columns:minmax(0,1fr); }
+    .num { margin-bottom:8px; }
+    .pr-mock { grid-template-columns:minmax(0,1fr); }
+    .pr-mock .arr { transform:rotate(90deg); height:32px; }
+  }
+  /* site nav */
+  .crumb { margin:0 0 18px; font:12px var(--mono); }
+  .crumb a { color:var(--gray-500); text-decoration:none; }
+  .crumb a:hover { color:var(--clay); }
+  .pager { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-top:40px; }
+  .pager a { display:block; padding:14px 18px; border:var(--border); border-radius:12px; background:#fff; color:var(--slate); text-decoration:none; }
+  .pager a:hover { border-color:var(--clay); }
+  .pager small { display:block; font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--gray-500); }
+  .pager b { font:500 17px/1.4 var(--serif); }
+  .pager .next { text-align:right; grid-column:2; }
+  .pager .prev { grid-column:1; }
+  @media (max-width:720px){ .pager{grid-template-columns:minmax(0,1fr);} .pager .next,.pager .prev{grid-column:1;text-align:left;} }
+  @media (prefers-reduced-motion: reduce) { * { transition:none !important; scroll-behavior:auto !important; } }
+
+  .fill.f4 { grid-template-columns:repeat(4,minmax(0,1fr)); }
+  .fill.f3 { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .fill.f2 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  @media (max-width: 920px) { .fill.f4, .fill.f3 { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  @media (max-width: 520px) { .fill.f4, .fill.f3, .fill.f2 { grid-template-columns:minmax(0,1fr); } }
+  .badge.bad { background:rgba(176,74,63,.15); color:var(--rust); }
+  .dec-out { background:var(--gray-100); border-radius:10px; padding:12px 14px; font-size:14px; color:var(--gray-700); margin-top:12px; }
+
+  /* ===== Arduino 主題專用(只有 dir=arduino 的頁面會內嵌) ===== */
+  .el { cursor:pointer; }
+  .el .halo { display:none; }
+  .el.cur .halo, .el.hl .halo { display:block; }
+  .el.future { opacity:.12; }
+  .el.future.hl { opacity:1; }
+  .el:focus { outline:none; }
+  .el:focus-visible .halo { display:block; }
+  .wiring .wnav { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:14px; }
+  .wdots { display:inline-flex; gap:6px; margin:0 4px; flex-wrap:wrap; }
+  .wdot { width:30px; height:30px; padding:0; border-radius:999px; font:12px var(--mono); background:#fff; border:var(--border); color:var(--gray-700); cursor:pointer; }
+  .wdot:hover { border-color:var(--clay); }
+  .wdot.on { border-color:var(--clay); background:#FBF1EC; color:var(--slate); }
+  .wdot.done { border-color:var(--olive); color:var(--olive); }
+  .wcap { margin-top:12px; background:var(--gray-100); border-radius:10px; padding:12px 14px; font-size:14px; line-height:1.65; color:var(--gray-700); }
+  .wcap b.t { display:block; font:500 17px/1.4 var(--serif); color:var(--slate); margin-bottom:4px; }
+  .bbx-info, .linkbox { margin-top:12px; background:var(--gray-100); border-radius:10px; padding:12px 14px; font-size:14px; color:var(--gray-700); min-height:48px; }
+  .newsym { display:inline-block; font:11px var(--mono); letter-spacing:.04em; background:#FBF1EC; color:var(--clay-d); border-radius:999px; padding:1px 9px; margin-right:6px; vertical-align:1px; }
+  .pager .off { display:block; padding:14px 18px; border:1.5px dashed var(--gray-300); border-radius:12px; background:var(--gray-100); color:var(--gray-500); }
+  .pager .off small { display:block; font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; }
+  .pager .off b { font:500 17px/1.4 var(--serif); }
+  .pager .next.off { text-align:right; grid-column:2; }
+  .pager .prev.off { grid-column:1; }
+  .sk { font:12px var(--mono); color:var(--gray-500); margin:6px 0 0; }
+  .spec { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin:14px 0 0; }
+  .spec > div { background:#fff; border:var(--border); border-radius:10px; padding:10px 12px; }
+  .spec .k { font:11px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--gray-500); }
+  .spec .v { font:500 20px/1.3 var(--serif); color:var(--slate); }
+  @media (max-width: 720px) { .spec { grid-template-columns:minmax(0,1fr); } .pager .next.off, .pager .prev.off { grid-column:1; text-align:left; } }
+
+  .gt.g3w .row { grid-template-columns:56px 200px minmax(0,1fr); }
+  @media (max-width: 720px) {
+    .gt { min-width:0; }
+    .gt.g2 .row, .gt.g3 .row, .gt.g3b .row, .gt.g3w .row { grid-template-columns:minmax(0,1fr); border-top:1px solid var(--gray-300); padding:4px 0; }
+    .gt .row:first-child { display:none; }
+    .gt .cell { border-top:0; padding:5px 14px; }
+    .gt .cell[data-h]::before { content:attr(data-h); display:block; font:11px var(--mono); letter-spacing:.04em; color:var(--gray-500); margin-bottom:1px; }
+  }
+
+  .bh { fill:transparent; cursor:pointer; }
+  .bh:hover { fill:rgba(217,119,87,.15); }
+  .bh.on { fill:rgba(217,119,87,.38); }
+  .bh.sel { fill:rgba(217,119,87,.8); }
+  .bbx-bar { display:flex; flex-wrap:wrap; align-items:center; gap:14px; margin-top:12px; font-size:14px; color:var(--gray-700); }
+  .bbx-bar label { display:inline-flex; gap:8px; align-items:center; cursor:pointer; }
+  .rc-svg { display:block; width:100%; max-width:380px; margin:0 auto 14px; }
+  .rc-out, .lc-out { margin-top:12px; background:var(--gray-100); border-radius:10px; padding:12px 14px; font-size:14px; line-height:1.7; color:var(--gray-700); }
+  .calc-bad { color:var(--rust); font-weight:600; }
+  select { font:inherit; font-size:14px; padding:8px 10px; border:var(--border); border-radius:8px; background:#fff; color:var(--slate); width:100%; }
+
+  .pwm-svg { display:block; width:100%; max-width:560px; margin:6px auto 0; }
+  .pwm-led { display:inline-block; width:30px; height:30px; border-radius:50%; border:2px solid var(--gray-300); vertical-align:middle; margin-left:8px; background:rgba(176,74,63,.5); }
+  input[type=range] { width:100%; accent-color:var(--clay); }
+
+  .bd-screen { background:#141413; color:#F0EEE6; font:13px/1.6 var(--mono); border-radius:10px; padding:14px 16px; min-height:96px; white-space:pre-wrap; margin-top:12px; }
+
+  .pot-bar { height:10px; background:var(--gray-100); border-radius:999px; overflow:hidden; margin:12px 0 4px; border:var(--border); }
+  .pot-bar span { display:block; height:100%; width:50%; background:var(--clay); }
+
+  /* 小工具(計算機、示意圖)用的欄位排版:不使用 .fill,避免被頁面上「填入資料」的 Reset 影響 */
+  .wgrid { display:grid; gap:12px; align-items:end; }
+  .wgrid.f2 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .wgrid.f4 { grid-template-columns:repeat(4,minmax(0,1fr)); }
+  .wgrid label { display:block; font:11px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--gray-500); margin-bottom:5px; }
+  .wgrid input:not([type=range]) { width:100%; font:13px var(--mono); padding:9px 11px; border:var(--border); border-radius:8px; background:var(--gray-100); color:var(--slate); }
+  @media (max-width: 720px) { .wgrid.f2, .wgrid.f4 { grid-template-columns:minmax(0,1fr); } }
+
+  .lcd-screen { background:#7BA08A; color:#1D3326; font:600 20px/1.5 var(--mono); letter-spacing:.14em; border-radius:8px; padding:12px 16px; white-space:pre; overflow-x:auto; border:3px solid #3D3D3A; }
+  .lcd-code { background:var(--gray-100); border-radius:10px; padding:10px 14px; font:12.5px/1.6 var(--mono); color:var(--gray-700); white-space:pre-wrap; margin-top:10px; }
+
+  .ds-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-top:12px; }
+  .ds-grid > div { background:#fff; border:var(--border); border-radius:10px; padding:12px 14px; font-size:14px; }
+  .ds-grid .led { display:inline-block; width:24px; height:24px; border-radius:50%; border:2px solid var(--gray-300); vertical-align:middle; margin:0 8px 0 4px; background:#F0EEE6; }
+  @media (max-width: 720px) { .ds-grid { grid-template-columns:minmax(0,1fr); } }
+
+  .bits { display:grid; grid-template-columns:repeat(8,minmax(0,1fr)); gap:8px; margin:12px 0 6px; }
+  .bitc { height:46px; border:var(--border); border-radius:10px; background:#F0EEE6; font:600 13px var(--mono); cursor:pointer; padding:0; }
+  .bitc small { display:block; font-weight:400; font-size:10px; opacity:.8; }
+
+  .skip { position:absolute; left:12px; top:-60px; z-index:100; background:var(--slate); color:var(--ivory);
+          padding:10px 16px; border-radius:8px; font-size:14px; text-decoration:none; }
+  .skip:focus { top:12px; outline:2px solid var(--clay); outline-offset:2px; }
+  main:focus { outline:none; }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">跳到主要內容</a>
+<div class="progress" aria-hidden="true"><span id="readBar"></span></div>
+<div class="page">
+
+<header>
+  <nav class="crumb" aria-label="站內導覽"><a href="../index.html#arduino">← 回教學首頁</a></nav>
+  <div class="eyebrow">Arduino 入門 · 第 14 篇 · LCD1602 I2C</div>
+  <h1>四條線，讓 Arduino 有一個小螢幕</h1>
+  <p class="sub">用 I2C 轉接板的 LCD1602 顯示文字與數字。認識 I2C 的 SDA、SCL，安裝 hd44780 函式庫，並學會調對比。</p>
+  <div class="tldr"><b>TL;DR</b> I2C LCD <strong>四條線：VCC、GND、SDA、SCL</strong>（不用麵包板）。安裝 <strong>hd44780</strong> 函式庫，<code>lcd.begin(16, 2)</code>、<code>lcd.print()</code>、<code>lcd.setCursor(欄, 列)</code>（從 0 算起）。<strong>沒字先調轉接板上的藍色對比旋鈕</strong>。</div>
+</header>
+
+<div class="layout">
+<nav class="toc" aria-label="本頁目錄">
+  <div class="label">On this page</div>
+  <a href="#what">1. LCD 與 I2C</a>
+  <a href="#lib">2. 安裝函式庫</a>
+  <a href="#wire">3. 接線</a>
+  <a href="#contrast">4. 調對比</a>
+  <a href="#fill">5. 填入數值</a>
+  <a href="#code1">6. 程式一：顯示文字</a>
+  <a href="#code2">7. 程式二：會動的數字</a>
+  <a href="#alt">8. 另一個函式庫</a>
+  <a href="#try">9. 改改看</a>
+  <a href="#gotchas">10. 常見卡關</a>
+  <a href="#practice">11. 演練與延伸閱讀</a>
+</nav>
+
+<main id="main" tabindex="-1">
+<section id="what">
+  <h2>LCD1602:Arduino 的小螢幕</h2>
+  <hr class="rule">
+<div class="panel"><h3>認識 LCD1602</h3><p><b>LCD1602 能顯示 2 行、每行 16 個字元</b>（共 32 個字），是最常見的字元型液晶。它本身有 16 隻接腳，接起來很麻煩；所以我們買<b>已經焊好 I2C 轉接板</b>的版本，<b>只要四條線</b>。</p><p style="margin-bottom:0">不只能顯示英文字母和數字，但<b>預設不能顯示中文</b>。這一篇只顯示英文與數字。</p></div>
+<h3 style="margin-top:26px">I2C：用兩條線說話</h3>
+<p><b>I2C</b>（讀作 I-squared-C）是一種只用<b>兩條線</b>就能和多個裝置溝通的方式：<b>SDA</b> 傳資料、<b>SCL</b> 是節拍（時脈）。一條 I2C「匯流排」上可以掛很多裝置，每個裝置有自己的<b>位址</b>，Arduino 叫誰，誰才回應。Uno 上 <b>A4 是 SDA、A5 是 SCL</b>（數位腳位排靠近 AREF 處也有一組同樣訊號的 SDA、SCL）。第 17 篇會更深入。</p>
+<div class="tip"><b class="l">小技巧</b>LCD 的液晶模組是 <b>5 V</b> 供電。接 Uno 的 5V 腳就好，不要接 3.3V，否則背光會很暗、字也看不清楚。</div>
+</section>
+
+<section id="lib">
+  <h2>安裝函式庫：hd44780</h2>
+  <hr class="rule">
+<p class="sub" style="margin-bottom:14px">和第 13 篇一樣，用 Library Manager 安裝。這次我選 <b>hd44780</b> 函式庫（作者 Bill Perry）：它能<b>自動找出轉接板的 I2C 位址</b>，不用猜 <code>0x27</code> 還是 <code>0x3F</code>,新手最容易卡關的地方它幫你處理掉了。</p>
+<ol class="ops"><li>點左側 <b>Library Manager</b>,搜尋 <code>hd44780</code>。</li><li>找到 <b>hd44780(Bill Perry)</b>,按 <b>INSTALL</b>。</li><li>如果跳出相依視窗，按 <b>INSTALL ALL</b>。</li><li>裝好後可看範例：<b>File → Examples → hd44780 → ioClass → hd44780_I2Cexp → HelloWorld</b>。</li></ol>
+<div class="tip"><b class="l">小技巧</b>很多網路教學用的是 <b>LiquidCrystal I2C</b> 這個函式庫（要手動填 I2C 位址）。它也能用，本篇最後有它的寫法。<b>但同名的函式庫有好幾個版本，初始化函式有的叫 <code>init()</code>、有的叫 <code>begin()</code></b>:看到編譯錯誤找不到其中一個，換成另一個試試。</div>
+</section>
+
+<section id="wire">
+  <h2>接線：四條線，不用麵包板</h2>
+  <hr class="rule">
+<div class="panel wiring" data-wiring="lcd-i2c">
+<div class="canvas"><svg viewBox="0 0 560 390" role="img" aria-label="lcd-i2c 的接線圖：Uno 與麵包板，共 3 步" style="min-width:560px">
+<defs><style>.m{font:9px ui-monospace,Menlo,Consolas,monospace}.mb{font:600 10px ui-monospace,Menlo,Consolas,monospace}.s{font:11px system-ui,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif}.sb{font:600 11px system-ui,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif}</style></defs>
+<rect width="560" height="390" fill="#FFFFFF"/>
+<rect x="472" y="56" width="34" height="46" rx="4" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><text x="489.0" y="83.0" class="m" fill="#3D3D3A" text-anchor="middle">USB</text><rect x="40" y="34" width="436" height="112" rx="10" fill="#3D3D3A" stroke="#141413" stroke-width="1.5"/><rect x="190" y="75" width="86" height="30" rx="3" fill="#141413"/><text x="233.0" y="94.0" class="m" fill="#D1CFC5" text-anchor="middle">ATmega328P</text><text x="340.0" y="95.0" class="mb" fill="#F0EEE6" text-anchor="middle">ARDUINO UNO</text><rect x="60.0" y="128.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="64.0" y="123.0" class="m" fill="#F0EEE6" text-anchor="middle">0</text><rect x="78.0" y="128.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="82.0" y="123.0" class="m" fill="#F0EEE6" text-anchor="middle">1</text><rect x="96.0" y="128.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="100.0" y="123.0" class="m" fill="#F0EEE6" text-anchor="middle">2</text><rect x="114.0" y="128.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="118.0" y="123.0" class="m" fill="#F0EEE6" text-anchor="middle">~3</text><rect x="132.0" y="128.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="136.0" y="123.0" class="m" fill="#F0EEE6" text-anchor="middle">4</text><rect x="150.0" y="128.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="154.0" y="123.0" class="m" fill="#F0EEE6" text-anchor="middle">~5</text><rect x="168.0" y="128.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="172.0" y="123.0" class="m" fill="#F0EEE6" text-anchor="middle">~6</text><rect x="186.0" y="128.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="190.0" y="123.0" class="m" fill="#F0EEE6" text-anchor="middle">7</text><rect x="222.0" y="128.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="226.0" y="123.0" class="m" fill="#F0EEE6" text-anchor="middle">8</text><rect x="240.0" y="128.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="244.0" y="123.0" class="m" fill="#F0EEE6" text-anchor="middle">~9</text><rect x="258.0" y="128.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="262.0" y="123.0" class="m" fill="#F0EEE6" text-anchor="middle">~10</text><rect x="276.0" y="128.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="280.0" y="123.0" class="m" fill="#F0EEE6" text-anchor="middle">~11</text><rect x="294.0" y="128.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="298.0" y="123.0" class="m" fill="#F0EEE6" text-anchor="middle">12</text><rect x="312.0" y="128.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="316.0" y="123.0" class="m" fill="#F0EEE6" text-anchor="middle">13</text><rect x="330.0" y="128.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="334.0" y="123.0" class="m" fill="#F0EEE6" text-anchor="middle">GND</text><rect x="348.0" y="128.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text transform="translate(355.0 124.0) rotate(-90)" font-size="8" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#F0EEE6" text-anchor="start">AREF</text><rect x="366.0" y="128.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="370.0" y="123.0" class="m" fill="#F0EEE6" text-anchor="middle">SDA</text><rect x="384.0" y="128.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="388.0" y="123.0" class="m" fill="#F0EEE6" text-anchor="middle">SCL</text><rect x="90.0" y="44.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="94.0" y="65.0" class="m" fill="#F0EEE6" text-anchor="middle">A5</text><rect x="108.0" y="44.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="112.0" y="65.0" class="m" fill="#F0EEE6" text-anchor="middle">A4</text><rect x="126.0" y="44.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="130.0" y="65.0" class="m" fill="#F0EEE6" text-anchor="middle">A3</text><rect x="144.0" y="44.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="148.0" y="65.0" class="m" fill="#F0EEE6" text-anchor="middle">A2</text><rect x="162.0" y="44.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="166.0" y="65.0" class="m" fill="#F0EEE6" text-anchor="middle">A1</text><rect x="180.0" y="44.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="184.0" y="65.0" class="m" fill="#F0EEE6" text-anchor="middle">A0</text><rect x="216.0" y="44.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="220.0" y="65.0" class="m" fill="#F0EEE6" text-anchor="middle">VIN</text><rect x="234.0" y="44.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="238.0" y="65.0" class="m" fill="#F0EEE6" text-anchor="middle">GND</text><rect x="252.0" y="44.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="256.0" y="65.0" class="m" fill="#F0EEE6" text-anchor="middle">GND</text><rect x="270.0" y="44.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="274.0" y="65.0" class="m" fill="#F0EEE6" text-anchor="middle">5V</text><rect x="288.0" y="44.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="292.0" y="65.0" class="m" fill="#F0EEE6" text-anchor="middle">3V3</text><rect x="306.0" y="44.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text transform="translate(313.0 57.0) rotate(-90)" font-size="8" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#F0EEE6" text-anchor="end">RESET</text><rect x="324.0" y="44.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text transform="translate(331.0 57.0) rotate(-90)" font-size="8" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#F0EEE6" text-anchor="end">IOREF</text><rect x="342.0" y="44.0" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227" stroke-width="1"/><text x="346.0" y="65.0" class="m" fill="#F0EEE6" text-anchor="middle">NC</text><text x="64.0" y="106.0" class="m" fill="#D1CFC5" text-anchor="start">DIGITAL 數位腳位(~ = 可輸出 PWM)</text><g class="el" data-step="1" data-part="LCD1"><title>LCD1602 I2C 模組 LCD1:轉接板四隻針腳 VCC、GND、SDA、SCL</title><g class="halo"><rect x="82.0" y="244.0" width="372.0" height="128" rx="9" fill="none" stroke="#D97757" stroke-width="2.5"/><circle cx="160.0" cy="254.0" r="8.5" fill="none" stroke="#D97757" stroke-width="2.5"/><circle cx="180.0" cy="254.0" r="8.5" fill="none" stroke="#D97757" stroke-width="2.5"/><circle cx="200.0" cy="254.0" r="8.5" fill="none" stroke="#D97757" stroke-width="2.5"/><circle cx="220.0" cy="254.0" r="8.5" fill="none" stroke="#D97757" stroke-width="2.5"/></g><rect x="86.0" y="248.0" width="364.0" height="118" rx="6" fill="#3F7D5A" stroke="#141413" stroke-width="1.5"/><rect x="144.0" y="248.0" width="104" height="44" rx="3" fill="#2B2B2B" stroke="#141413"/><text x="160.0" y="270.0" class="m" fill="#F0EEE6" text-anchor="middle">VCC</text><text x="180.0" y="281.0" class="m" fill="#F0EEE6" text-anchor="middle">GND</text><text x="200.0" y="270.0" class="m" fill="#F0EEE6" text-anchor="middle">SDA</text><text x="220.0" y="281.0" class="m" fill="#F0EEE6" text-anchor="middle">SCL</text><rect x="256.0" y="264.0" width="26" height="16" rx="2" fill="#4C78A8" stroke="#141413"/><circle cx="269.0" cy="272.0" r="4.5" fill="#D1CFC5"/><text x="269.0" y="294.0" class="m" fill="#F0EEE6" text-anchor="middle">對比旋鈕</text><text x="308.0" y="338.0" class="mb" fill="#F0EEE6" text-anchor="middle">LCD1602 背面(附 I2C 轉接板)</text><circle cx="160.0" cy="254.0" r="2.6" fill="#E1B93B"/><circle cx="180.0" cy="254.0" r="2.6" fill="#E1B93B"/><circle cx="200.0" cy="254.0" r="2.6" fill="#E1B93B"/><circle cx="220.0" cy="254.0" r="2.6" fill="#E1B93B"/></g><g class="el" data-step="2" data-part="V5"><title>紅色杜邦線 V5:UNO.5V ↔ MOD.VCC</title><g class="halo"><path d="M274.0,48.0 L274.0,16.0 L18.0,16.0 L18.0,228.0 L160.0,228.0 L160.0,254.0" fill="none" stroke="#D97757" stroke-width="13" stroke-linecap="round" stroke-linejoin="round" opacity=".35"/><circle cx="160.0" cy="254.0" r="8.5" fill="none" stroke="#D97757" stroke-width="2.5"/><circle cx="274.0" cy="48.0" r="9" fill="none" stroke="#D97757" stroke-width="2.5"/></g><path d="M274.0,48.0 L274.0,16.0 L18.0,16.0 L18.0,228.0 L160.0,228.0 L160.0,254.0" fill="none" stroke="#141413" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/><path d="M274.0,48.0 L274.0,16.0 L18.0,16.0 L18.0,228.0 L160.0,228.0 L160.0,254.0" fill="none" stroke="#B04A3F" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="274.0" cy="48.0" r="4" fill="#B04A3F" stroke="#141413" stroke-width="1.5"/><circle cx="160.0" cy="254.0" r="4" fill="#B04A3F" stroke="#141413" stroke-width="1.5"/></g><g class="el" data-step="2" data-part="G"><title>黑色杜邦線 G:UNO.GND ↔ MOD.GND</title><g class="halo"><path d="M334.0,132.0 C334.0,193.0 180.0,193.0 180.0,254.0" fill="none" stroke="#D97757" stroke-width="13" stroke-linecap="round" stroke-linejoin="round" opacity=".35"/><circle cx="180.0" cy="254.0" r="8.5" fill="none" stroke="#D97757" stroke-width="2.5"/><circle cx="334.0" cy="132.0" r="9" fill="none" stroke="#D97757" stroke-width="2.5"/></g><path d="M334.0,132.0 C334.0,193.0 180.0,193.0 180.0,254.0" fill="none" stroke="#141413" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/><path d="M334.0,132.0 C334.0,193.0 180.0,193.0 180.0,254.0" fill="none" stroke="#141413" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="334.0" cy="132.0" r="4" fill="#141413" stroke="#141413" stroke-width="1.5"/><circle cx="180.0" cy="254.0" r="4" fill="#141413" stroke="#141413" stroke-width="1.5"/></g><g class="el" data-step="3" data-part="SDA"><title>藍色杜邦線 SDA:UNO.SDA ↔ MOD.SDA</title><g class="halo"><path d="M370.0,132.0 C370.0,193.0 200.0,193.0 200.0,254.0" fill="none" stroke="#D97757" stroke-width="13" stroke-linecap="round" stroke-linejoin="round" opacity=".35"/><circle cx="200.0" cy="254.0" r="8.5" fill="none" stroke="#D97757" stroke-width="2.5"/><circle cx="370.0" cy="132.0" r="9" fill="none" stroke="#D97757" stroke-width="2.5"/></g><path d="M370.0,132.0 C370.0,193.0 200.0,193.0 200.0,254.0" fill="none" stroke="#141413" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/><path d="M370.0,132.0 C370.0,193.0 200.0,193.0 200.0,254.0" fill="none" stroke="#5B7FA6" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="370.0" cy="132.0" r="4" fill="#5B7FA6" stroke="#141413" stroke-width="1.5"/><circle cx="200.0" cy="254.0" r="4" fill="#5B7FA6" stroke="#141413" stroke-width="1.5"/></g><g class="el" data-step="3" data-part="SCL"><title>黃色杜邦線 SCL:UNO.SCL ↔ MOD.SCL</title><g class="halo"><path d="M388.0,132.0 C388.0,193.0 220.0,193.0 220.0,254.0" fill="none" stroke="#D97757" stroke-width="13" stroke-linecap="round" stroke-linejoin="round" opacity=".35"/><circle cx="220.0" cy="254.0" r="8.5" fill="none" stroke="#D97757" stroke-width="2.5"/><circle cx="388.0" cy="132.0" r="9" fill="none" stroke="#D97757" stroke-width="2.5"/></g><path d="M388.0,132.0 C388.0,193.0 220.0,193.0 220.0,254.0" fill="none" stroke="#141413" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/><path d="M388.0,132.0 C388.0,193.0 220.0,193.0 220.0,254.0" fill="none" stroke="#E1B93B" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="388.0" cy="132.0" r="4" fill="#E1B93B" stroke="#141413" stroke-width="1.5"/><circle cx="220.0" cy="254.0" r="4" fill="#E1B93B" stroke="#141413" stroke-width="1.5"/></g>
+</svg></div>
+<div class="wnav"><button type="button" class="ghost" data-w="prev">← 上一步</button><span class="wdots" role="group" aria-label="跳到步驟"><button type="button" class="wdot" data-w="1" aria-label="第 1 步">1</button><button type="button" class="wdot" data-w="2" aria-label="第 2 步">2</button><button type="button" class="wdot" data-w="3" aria-label="第 3 步">3</button></span><button type="button" class="primary" data-w="next">下一步 →</button><button type="button" class="ghost" data-w="all">看完整接線</button><button type="button" class="ghost" data-w="reset">Reset</button></div>
+<div class="wcap" aria-live="polite"></div>
+</div>
+<p class="sk">LCD 的實物比圖大（約 8 公分寬）；圖只是示意。<b>5V 的線要繞過 Uno 的左邊</b>。以轉接板上印的針腳名稱為準（手機上可以左右滑動圖）。</p>
+<h3 style="margin-top:26px">接線表</h3>
+<div class="table-wrap"><div class="gt g3w"><div class="row"><div class="cell head">步驟</div><div class="cell head">零件</div><div class="cell head">插在哪裡</div></div><div class="row"><div class="cell term">1</div><div class="cell">LCD1602 I2C 模組（LCD1）</div><div class="cell">轉接板上有四隻針腳 <b>VCC、GND、SDA、SCL</b>（<b>先看轉接板上印的字</b>，順序依廠牌而異），用母頭的杜邦線連到 Uno,<b>不經過麵包板</b></div></div><div class="row"><div class="cell term">2</div><div class="cell">紅色杜邦線 V5</div><div class="cell">一端插 Uno 的 5V 腳，另一端插 LCD 轉接板的 <code>VCC</code> 針腳</div></div><div class="row"><div class="cell term">2</div><div class="cell">黑色杜邦線 G</div><div class="cell">一端插 Uno 的 GND 腳，另一端插 LCD 轉接板的 <code>GND</code> 針腳</div></div><div class="row"><div class="cell term">3</div><div class="cell">藍色杜邦線 SDA</div><div class="cell">一端插 Uno 的 SDA 腳（數位腳位排靠近 AREF 的那兩個；與 A4 是同一個訊號），另一端插 LCD 轉接板的 <code>SDA</code> 針腳</div></div><div class="row"><div class="cell term">3</div><div class="cell">黃色杜邦線 SCL</div><div class="cell">一端插 Uno 的 SCL 腳（數位腳位排靠近 AREF 的那兩個；與 A5 是同一個訊號），另一端插 LCD 轉接板的 <code>SCL</code> 針腳</div></div></div></div>
+<div class="warn"><b class="l">注意</b><b>轉接板針腳的順序因廠牌而異</b>（有的是 GND、VCC、SDA、SCL，有的是 VCC、GND、SDA、SCL）。<b>一律對照你的轉接板上印的字接線</b>，不要照圖上的位置接。VCC 與 GND 接反會損壞轉接板。接線前先拔 USB。</div>
+<h3 style="margin-top:26px">原理圖</h3>
+<div class="canvas"><svg viewBox="0 0 440 220" role="img" aria-label="LCD I2C 原理圖" style="min-width:440px"><defs><style>.m{font:9px ui-monospace,Menlo,Consolas,monospace}.mb{font:600 10px ui-monospace,Menlo,Consolas,monospace}.s{font:11px system-ui,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif}.sb{font:600 11px system-ui,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif}</style></defs><rect width="440" height="220" fill="#FFFFFF"/><g class="el" data-part="LCD1" tabindex="0" role="button" aria-label="LCD 模組，點一下看它在實物上是哪一個"><rect class="halo" x="108" y="26" width="160" height="168" rx="12" fill="none" stroke="#D97757" stroke-width="2.5"/><rect x="120" y="34" width="136" height="152" rx="8" fill="#F0EEE6" stroke="#3D3D3A" stroke-width="1.8"/><text x="188.0" y="104.0" class="mb" fill="#141413" text-anchor="middle">LCD1602</text><text x="188.0" y="120.0" class="s" fill="#87867F" text-anchor="middle">I2C 轉接板</text><text x="130.0" y="64.0" class="m" fill="#141413" text-anchor="start">VCC</text><text x="130.0" y="164.0" class="m" fill="#141413" text-anchor="start">GND</text><text x="246.0" y="88.0" class="m" fill="#141413" text-anchor="end">SDA</text><text x="246.0" y="144.0" class="m" fill="#141413" text-anchor="end">SCL</text></g><line x1="120" y1="60" x2="78" y2="60" stroke="#3D3D3A" stroke-width="2"/><line x1="78" y1="60" x2="78" y2="40" stroke="#3D3D3A" stroke-width="2"/><line x1="62" y1="40" x2="94" y2="40" stroke="#3D3D3A" stroke-width="2.4" stroke-linecap="round"/><text x="78.0" y="32.0" class="mb" fill="#B04A3F" text-anchor="middle">5V</text><line x1="120" y1="160" x2="78" y2="160" stroke="#3D3D3A" stroke-width="2"/><line x1="78" y1="160" x2="78" y2="176" stroke="#3D3D3A" stroke-width="2"/><line x1="64" y1="176" x2="92" y2="176" stroke="#3D3D3A" stroke-width="2.2" stroke-linecap="round"/><line x1="69" y1="183" x2="87" y2="183" stroke="#3D3D3A" stroke-width="2.2" stroke-linecap="round"/><line x1="74" y1="190" x2="82" y2="190" stroke="#3D3D3A" stroke-width="2.2" stroke-linecap="round"/><line x1="256" y1="84" x2="300" y2="84" stroke="#3D3D3A" stroke-width="2"/><rect x="300" y="69" width="112" height="30" rx="8" fill="#F0EEE6" stroke="#3D3D3A" stroke-width="1.5"/><text x="356.0" y="88.0" class="mb" fill="#141413" text-anchor="middle">Uno SDA(A4)</text><line x1="256" y1="140" x2="300" y2="140" stroke="#3D3D3A" stroke-width="2"/><rect x="300" y="125" width="112" height="30" rx="8" fill="#F0EEE6" stroke="#3D3D3A" stroke-width="1.5"/><text x="356.0" y="144.0" class="mb" fill="#141413" text-anchor="middle">Uno SCL(A5)</text><text x="278.0" y="76.0" class="mb" fill="#87867F" text-anchor="middle">⇄</text><text x="278.0" y="132.0" class="mb" fill="#87867F" text-anchor="middle">→</text></svg></div>
+<ol class="legend" style="list-style:none"></ol>
+<div class="linkbox" id="linkInfo" style="margin-top:12px">點原理圖裡的 LCD 方框，看它在實物上是哪一個。</div>
+</section>
+
+<section id="contrast">
+  <h2>接上之後的第一件事：調對比</h2>
+  <hr class="rule">
+<p class="sub" style="margin-bottom:14px">轉接板上有一個<b>藍色的小旋鈕（對比旋鈕，其實是一顆微調電阻）</b>。對比調錯時，<b>畫面會是「整排白色方塊」或「完全空白」</b>，即使程式與接線都對。</p>
+<ol class="ops"><li>上傳程式一，讓背光亮起。</li><li>用小<b>十字或一字螺絲起子</b>，<b>慢慢</b>轉那顆藍色旋鈕，一邊看螢幕。</li><li>轉到<b>白色方塊消失、字清楚出現</b>就停。</li></ol>
+<div class="see"><b class="l">你會看到</b>對比正確時，第一行是 <code>Hello, Arduino!</code>,第二行是 <code>LCD1602 I2C</code>。</div>
+<div class="tip"><b class="l">小技巧</b>這是 LCD 最常見的「明明都對卻沒字」原因，幾乎每個人都會遇到一次。</div>
+</section>
+
+<section id="fill">
+  <h2>先填入計數的間隔</h2>
+  <hr class="rule">
+<div class="panel"><div class="fill f1"><div><label for="in-gap">程式二：每次加 1 之間的間隔（毫秒）</label><input id="in-gap" data-k="gap" data-ns="1" autocomplete="off" spellcheck="false"></div></div><div class="fill-foot"><button type="button" class="ghost" id="resetBtn">Reset</button><span>空白時顯示範例值；<span class="slot">橘底</span>文字就是會被替換的部分。</span></div></div>
+<p class="sk">空白時用範例值 500 毫秒。</p>
+</section>
+
+<section id="code1">
+  <h2>程式一：顯示兩行字</h2>
+  <hr class="rule">
+<p class="sub" style="margin-bottom:14px">先在這裡預覽：輸入文字，看看螢幕與對應的程式碼：</p>
+<div class="panel" data-lcdsim><div class="wgrid f2"><div><label>第一行（最多 16 個英文字母 / 數字）</label><input data-lcd="l1" value="Hello, Arduino!" autocomplete="off" spellcheck="false"></div><div><label>第二行</label><input data-lcd="l2" value="LCD1602 I2C" autocomplete="off" spellcheck="false"></div></div><div class="lcd-screen" style="margin-top:12px" aria-live="polite"></div><div class="lcd-code"></div></div>
+<div class="cmd"><div class="cap">LCD1602：顯示 Hello 與第二行</div><pre data-tpl data-cpp>// 第 14 篇:LCD1602 顯示文字
+#include &lt;Wire.h&gt;
+#include &lt;hd44780.h&gt;                         // 函式庫 hd44780(要先用 Library Manager 安裝)
+#include &lt;hd44780ioClass/hd44780_I2Cexp.h&gt;   // 這個類別能自動找出 I2C 位址
+
+hd44780_I2Cexp lcd;                          // 建立 LCD 物件
+
+void setup() {
+  int status = lcd.begin(16, 2);             // 16 欄、2 列。回傳 0 表示成功
+  if (status) {                              // 不是 0:找不到 LCD
+    hd44780::fatalError(status);             // 用板子上的 L 燈閃爍代表錯誤,並停在這裡
+  }
+  lcd.print("Hello, Arduino!");              // 第一行(游標一開始在左上角)
+  lcd.setCursor(0, 1);                       // 游標移到第 0 欄、第 1 列(也就是第二行開頭)
+  lcd.print("LCD1602 I2C");
+}
+
+void loop() {
+}
+</pre><button type="button" class="copy">Copy</button></div>
+<div class="table-wrap"><div class="gt g2"><div class="row"><div class="cell head">這一行</div><div class="cell head">它在做什麼</div></div><div class="row"><div class="cell term"><code>hd44780_I2Cexp lcd;</code></div><div class="cell">建立 LCD 物件。<code>I2Cexp</code> 表示「透過 I2C 轉接板、自動偵測」。</div></div><div class="row"><div class="cell term"><code>lcd.begin(16, 2)</code></div><div class="cell">啟動 LCD:16 欄、2 列。<b>回傳 0 表示成功</b>，不是 0 表示出錯（找不到）。</div></div><div class="row"><div class="cell term"><code>hd44780::fatalError(status);</code></div><div class="cell">出錯時，用 Uno 的 L 燈閃爍來報告，並停住。看到 L 燈在閃，就是 LCD 沒找到（檢查接線）。</div></div><div class="row"><div class="cell term"><code>lcd.print("…")</code></div><div class="cell">在游標位置印出文字。和 <code>Serial.print</code> 用法一樣，可以印文字、數字。</div></div><div class="row"><div class="cell term"><code>lcd.setCursor(0, 1);</code></div><div class="cell">把游標移到<b>第 0 欄、第 1 列</b>。<b>欄、列都是從 0 開始</b>：第一行是 0、第二行是 1。</div></div></div></div>
+<div class="see"><b class="l">你會看到</b>調好對比後，第一行顯示 <code>Hello, Arduino!</code>,第二行顯示 <code>LCD1602 I2C</code>。</div>
+</section>
+
+<section id="code2">
+  <h2>程式二：會動的數字</h2>
+  <hr class="rule">
+<div class="cmd"><div class="cap">LCD：每 0.5 秒加 1</div><pre data-tpl data-cpp>// 第 14 篇:會動的數字
+#include &lt;Wire.h&gt;
+#include &lt;hd44780.h&gt;
+#include &lt;hd44780ioClass/hd44780_I2Cexp.h&gt;
+
+hd44780_I2Cexp lcd;
+int count = 0;
+
+void setup() {
+  int status = lcd.begin(16, 2);
+  if (status) {
+    hd44780::fatalError(status);
+  }
+  lcd.print("Counter");
+}
+
+void loop() {
+  lcd.setCursor(0, 1);              // 每次都回到第二行開頭
+  lcd.print("count: ");
+  lcd.print(count);                 // print 也能印數字
+  lcd.print("   ");                 // 多印幾個空白,把上一次殘留的字蓋掉
+  count = count + 1;
+  delay({gap});
+}
+</pre><button type="button" class="copy">Copy</button></div>
+<div class="table-wrap"><div class="gt g2"><div class="row"><div class="cell head">這一行</div><div class="cell head">它在做什麼</div></div><div class="row"><div class="cell term"><code>lcd.setCursor(0, 1);</code></div><div class="cell">每次都先回到第二行開頭，才不會越寫越右。</div></div><div class="row"><div class="cell term"><code>lcd.print(count);</code></div><div class="cell">印出變數的值，例如 <code>12</code>。</div></div><div class="row"><div class="cell term"><code>lcd.print("   ");</code></div><div class="cell">多印三個空白。數字由 <code>10</code> 變成 <code>9</code> 這種情況（位數變少）時，把上一次殘留的字蓋掉。</div></div></div></div>
+<div class="see"><b class="l">你會看到</b>第二行顯示 <code>count: 0</code>、<code>count: 1</code>… 不斷增加。</div>
+<div class="table-wrap"><div class="gt g3"><div class="row"><div class="cell head">函式</div><div class="cell head">作用</div><div class="cell head">例子</div></div><div class="row"><div class="cell term"><code>lcd.print(x)</code></div><div class="cell">在游標處印出文字或數字</div><div class="cell"><code>lcd.print("Hi");</code></div></div><div class="row"><div class="cell term"><code>lcd.setCursor(欄, 列)</code></div><div class="cell">移動游標（從 0 算起）</div><div class="cell"><code>lcd.setCursor(5, 1);</code></div></div><div class="row"><div class="cell term"><code>lcd.clear()</code></div><div class="cell">清除整個螢幕（游標回左上角）</div><div class="cell"><code>lcd.clear();</code></div></div><div class="row"><div class="cell term"><code>lcd.noBacklight()</code> / <code>lcd.backlight()</code></div><div class="cell">關閉 / 打開背光</div><div class="cell"><code>lcd.noBacklight();</code></div></div></div></div>
+</section>
+
+<section id="alt">
+  <h2>別的教學用的函式庫：LiquidCrystal I2C</h2>
+  <hr class="rule">
+<div class="cmd"><div class="cap">LiquidCrystal I2C 版本</div><pre data-tpl data-cpp>// 另一個常見的函式庫:LiquidCrystal I2C(很多教學用它)
+#include &lt;Wire.h&gt;
+#include &lt;LiquidCrystal_I2C.h&gt;
+
+LiquidCrystal_I2C lcd(0x27, 16, 2);   // I2C 位址 0x27(有些模組是 0x3F)、16 欄、2 列
+
+void setup() {
+  lcd.begin();                        // 較舊的版本要寫成 lcd.init();
+  lcd.backlight();                    // 打開背光
+  lcd.print("Hello, Arduino!");
+  lcd.setCursor(0, 1);
+  lcd.print("LiquidCrystal I2C");
+}
+
+void loop() {
+}
+</pre><button type="button" class="copy">Copy</button></div>
+<ol class="ops"><li><b>位址要自己填</b>：<code>0x27</code> 或 <code>0x3F</code>。不確定就用第 17 篇的 I2C 掃描程式查。</li><li><b>初始化</b>依版本不同：<code>lcd.begin()</code> 或 <code>lcd.init()</code>。</li><li><b>打開背光</b>：<code>lcd.backlight()</code>。後面的 <code>setCursor</code>、<code>print</code> 和上面完全一樣。</li></ol>
+</section>
+
+<section id="try">
+  <h2>改改看</h2>
+  <hr class="rule">
+<div class="table-wrap"><div class="gt g3"><div class="row"><div class="cell head">挑戰</div><div class="cell head">怎麼改</div><div class="cell head">你會看到</div></div><div class="row"><div class="cell term">顯示自己的名字</div><div class="cell">把 <code>Hello, Arduino!</code> 換成你的英文名字</div><div class="cell">螢幕顯示你的名字。</div></div><div class="row"><div class="cell term">第二行靠右</div><div class="cell"><code>lcd.setCursor(8, 1);</code></div><div class="cell">文字從第 9 個位置開始。</div></div><div class="row"><div class="cell term">閃爍的背光</div><div class="cell">在 <code>loop()</code> 加 <code>lcd.noBacklight(); delay(500); lcd.backlight(); delay(500);</code></div><div class="cell">背光一閃一閃。</div></div><div class="row"><div class="cell term">接上第 13 篇的 DHT11</div><div class="cell">把溫度、濕度顯示在 LCD 上（第 18 篇綜合專案會用到類似做法）</div><div class="cell">不用開電腦也能看溫濕度。</div></div></div></div>
+</section>
+
+<section id="gotchas">
+  <h2>常見卡關</h2>
+  <hr class="rule">
+<details open><summary>背光亮，但螢幕只有一排白色方塊，或完全空白</summary><div class="body"><p><b>對比沒調好。</b>用小螺絲起子慢慢轉轉接板上的藍色旋鈕，直到字出現。這是最常見的原因，先做這個。</p></div></details><details><summary>L 燈一直規律地閃（程式停在 fatalError）</summary><div class="body"><ol class="ops"><li><b>找不到 LCD</b>:檢查四條線。<b>SDA 與 SCL 沒有接反</b>、VCC 是 5V、GND 有接。</li><li>杜邦線的母頭有沒有插緊轉接板的針腳。</li><li>你的轉接板針腳順序，是否和接線一致（對照上面印的字）。</li></ol></div></details><details><summary>編譯錯誤：找不到 hd44780.h</summary><div class="body"><p>函式庫沒裝。回 Library Manager，搜尋 <code>hd44780</code>,安裝作者 Bill Perry 的那一個。</p></div></details><details><summary>完全沒反應，背光也不亮</summary><div class="body"><p>VCC 與 GND 沒有接好。用另一條杜邦線、或換一組針腳確認。USB 有沒有接上、<code>ON</code> 燈有沒有亮。</p></div></details><details><summary>顯示亂碼、或字母怪怪的</summary><div class="body"><p>電壓不足或接觸不良，檢查 VCC 是否為 5V。也要確認顯示的是英文與數字，預設的 LCD 不能直接顯示中文。</p></div></details>
+</section>
+
+<section id="practice">
+  <h2>動手演練與延伸閱讀</h2>
+  <hr class="rule">
+<div class="panel sim" data-simgroup>
+<h3>情境：背光亮著，螢幕上只有一排白色方塊</h3>
+<p style="margin:6px 0 0;color:var(--gray-700)">你應該先？</p>
+<div class="sim-buttons" role="group" aria-label="選擇做法"><button type="button" data-sim="a1">改寫程式</button><button type="button" data-sim="a2">用螺絲起子慢慢轉轉接板上的藍色對比旋鈕</button><button type="button" data-sim="a3">換 USB 線</button></div>
+<div class="sim-result" aria-live="polite">選一個做法，看看對不對。</div>
+</div>
+<div class="panel" id="quiz">
+    <div class="quiz-top"><h3 style="margin:0">快速測驗</h3><span class="count" id="quizCount">1 / 1</span></div>
+    <div class="question" id="quizQ"></div>
+    <div class="answers" id="quizAns"></div>
+    <div class="feedback" id="quizFb" aria-live="polite"></div>
+    <div class="quiz-foot"><span id="quizScore">答對 0 題</span><button type="button" class="primary" id="quizNext" disabled>下一題 →</button></div>
+  </div>
+<h3 style="margin-top:30px">做完之後，對照這張清單</h3>
+<div class="panel">
+<div class="checks" id="checks"><label class="check-item"><input type="checkbox"><span>我知道 LCD1602 是 2 行 16 字，I2C 只用 SDA、SCL 兩條線。</span></label><label class="check-item"><input type="checkbox"><span>我用 Library Manager 安裝了 hd44780 函式庫。</span></label><label class="check-item"><input type="checkbox"><span>我的四條線依轉接板上印的字接好（VCC、GND、SDA、SCL）。</span></label><label class="check-item"><input type="checkbox"><span>我調好了對比，螢幕顯示出文字。</span></label><label class="check-item"><input type="checkbox"><span>我會用 <code>setCursor</code>（從 0 算起）與 <code>print</code>。</span></label><label class="check-item"><input type="checkbox"><span>我知道要多印空白把殘留的字蓋掉。</span></label></div>
+<div class="check-progress" id="checkProgress">已完成 0 / 6 項</div>
+<div class="bar"><span id="checkBar"></span></div>
+</div>
+<h3 style="margin-top:30px">Arduino 官方文件</h3>
+<div class="resources"><a class="resource" href="https://docs.arduino.cc/software/ide-v2/tutorials/ide-v2-installing-a-library" target="_blank" rel="noopener"><b>在 IDE 2 安裝函式庫</b><small>Installing libraries</small></a><a class="resource" href="https://docs.arduino.cc/language-reference/en/functions/communication/wire/" target="_blank" rel="noopener"><b>Wire 函式庫（I2C）</b><small>Arduino language reference</small></a></div>
+</section>
+</main>
+</div>
+
+<p class="foot" style="margin-top:28px">本主題以 Arduino IDE 2.x(Windows)與 Arduino Uno R3 為準。零件規格與電路數值是常見範例，請以你手上零件的規格為準；每次改接線前，先拔掉 USB。查證日期：2026-11-07。</p>
+
+<nav class="pager" aria-label="上一篇與下一篇">
+  <a class="prev" href="arduino-dht-guide.html"><small>上一篇</small><b>溫濕度 DHT11 與安裝函式庫</b></a>
+  <a class="next" href="arduino-millis-guide.html"><small>下一篇</small><b>millis()：不卡住的計時</b></a>
+</nav>
+</div>
+
+<script>window.PAGE = {"fill": {"gap": "500"}, "sim": {"a1": "<b>不用。</b>背光亮但沒字，幾乎一定是<b>對比沒調好</b>。程式不用動。", "a2": "<b>對。</b>慢慢轉轉接板上的藍色對比旋鈕，直到白色方塊消失、字出現。這是 LCD 最常見的「沒字」原因。", "a3": "<b>沒有用。</b>換 USB 線不影響螢幕的對比。"}, "quiz": [{"q": "I2C 用哪兩條訊號線？", "a": ["SDA 與 SCL", "TX 與 RX", "VCC 與 GND"], "c": 0, "why": "SDA 傳資料，SCL 是時脈。"}, {"q": "Uno 上 I2C 的 SDA 與 SCL 在哪兩個腳位？", "a": ["A4 與 A5", "2 與 3", "0 與 1"], "c": 0, "why": "A4 = SDA、A5 = SCL。"}, {"q": "<code>lcd.setCursor(0, 1)</code> 把游標移到？", "a": ["第二行的開頭", "第一行的開頭", "第 1 欄第 0 列"], "c": 0, "why": "欄與列都從 0 開始：列 1 是第二行。"}, {"q": "背光亮、但螢幕只有一排白色方塊，最可能的原因是？", "a": ["對比沒調好", "程式寫錯", "Uno 壞了"], "c": 0, "why": "調轉接板上的藍色旋鈕。"}, {"q": "為什麼數字變少位數時要多印空白？", "a": ["把上一次殘留的字蓋掉", "讓背光更亮", "節省記憶體"], "c": 0, "why": "LCD 不會自動清除舊字。"}], "wiring": [{"id": "lcd-i2c", "intro": "先<strong>拔掉 USB 線</strong>。LCD1602 加了 I2C 轉接板之後，只剩<b>四條線</b>：VCC、GND、SDA、SCL。這次<b>不用麵包板</b>，用公對母杜邦線直接從 Uno 接到轉接板的針腳。", "done": "四條線：5V → VCC、GND → GND、SDA → SDA、SCL → SCL。檢查：<b>SDA 與 SCL 沒有接反</b>，VCC 接的是 5V（不是 3.3V，否則背光會很暗）。", "steps": [{"t": "擺好 LCD", "x": "LCD 模組<b>不用插麵包板</b>：平放在桌上，<b>背面朝上</b>，就能看到黏在背面的黑色 I2C 轉接板與四隻針腳。<br>轉接板上印著 <b>VCC、GND、SDA、SCL</b>（<b>順序依廠牌而異</b>，以你的轉接板上的字為準，圖上的順序只是示意）。"}, {"t": "電源線：5V 與 GND", "x": "用<b>公對母杜邦線</b>（母頭那端插轉接板的針腳）：<br>紅線：轉接板 <b>VCC</b> ← Uno <b>5V</b>（電源腳位排，Uno 上緣，要繞過左邊）。<br>黑線：轉接板 <b>GND</b> ← Uno 數位腳位排的 <b>GND</b>。"}, {"t": "訊號線：SDA 與 SCL", "x": "藍線：轉接板 <b>SDA</b> ← Uno <b>SDA</b>（數位腳位排，靠近 AREF 那兩個之一；和 A4 是同一個訊號）。<br>黃線：轉接板 <b>SCL</b> ← Uno <b>SCL</b>（同上，和 A5 是同一個訊號）。<br>I2C 只用這兩條線：<b>SDA 傳資料，SCL 是節拍</b>。"}]}], "parts": {"LCD1": "<b>LCD1602(LCD1)</b>:原理圖上是方框，四邊標 VCC、GND、SDA、SCL；實物是綠色的液晶模組，背面黏著一塊黑色的 I2C 轉接板，上面有四隻針腳與一個藍色對比旋鈕。", "V5": "<b>紅色杜邦線 V5</b>:原理圖上就是一條線，代表「這兩點接在一起」；麵包板上是這條 紅色杜邦線。", "G": "<b>黑色杜邦線 G</b>:原理圖上就是一條線，代表「這兩點接在一起」；麵包板上是這條 黑色杜邦線。", "SDA": "<b>藍色杜邦線 SDA</b>:原理圖上就是一條線，代表「這兩點接在一起」；麵包板上是這條 藍色杜邦線。", "SCL": "<b>黃色杜邦線 SCL</b>:原理圖上就是一條線，代表「這兩點接在一起」；麵包板上是這條 黃色杜邦線。"}};</script>
+<script>
+(function () {
+  "use strict";
+  var CFG = window.PAGE || {};
+  function $(id){ return document.getElementById(id); }
+  function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+  function copyText(text, btn){
+    var orig = btn.textContent;
+    function flash(){
+      btn.textContent = "Copied ✓"; btn.classList.add("copied");
+      setTimeout(function(){ btn.textContent = orig; btn.classList.remove("copied"); }, 1200);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(flash, flash);
+    } else {
+      var ta = document.createElement("textarea"); ta.value = text;
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); } catch(e){}
+      document.body.removeChild(ta); flash();
+    }
+  }
+
+  /* ---------- fill-in template values ---------- */
+  var DEF = CFG.fill || {};
+  var vals = {};
+  var RE = /\{([A-Za-z0-9_]+)\}/g;
+  function val(k){ return vals[k] || DEF[k]; }
+  function resolvePlain(t){ return t.replace(RE, function(m, k){ return (k in DEF) ? val(k) : m; }); }
+  function resolveHtml(t){
+    var out = "", last = 0, m;
+    RE.lastIndex = 0;
+    while ((m = RE.exec(t))){
+      if (!(m[1] in DEF)) continue;
+      out += esc(t.slice(last, m.index)) + '<span class="slot">' + esc(val(m[1])) + "</span>";
+      last = RE.lastIndex;
+    }
+    return out + esc(t.slice(last));
+  }
+  function lineHtml(line, cpp){
+    if (cpp){
+      var j = line.indexOf("//");
+      if (j > -1) return resolveHtml(line.slice(0, j)) + '<span class="cm">' + resolveHtml(line.slice(j)) + "</span>";
+      return resolveHtml(line);
+    }
+    if (line.trim().indexOf("# ") === 0) return '<span class="cm">' + resolveHtml(line) + "</span>";
+    var i = line.indexOf("  # ");
+    if (i > -1) return resolveHtml(line.slice(0, i)) + '<span class="cm">' + resolveHtml(line.slice(i)) + "</span>";
+    return resolveHtml(line);
+  }
+  var tplEls = Array.prototype.slice.call(document.querySelectorAll("[data-tpl]"));
+  tplEls.forEach(function(el){ el._tpl = el.textContent; });
+  function renderTpl(){
+    tplEls.forEach(function(el){
+      if (el.tagName === "PRE") el.innerHTML = el._tpl.split("\n").map(function(l){ return lineHtml(l, el.hasAttribute("data-cpp")); }).join("\n");
+      else el.innerHTML = resolveHtml(el._tpl);
+    });
+  }
+  var inputs = Array.prototype.slice.call(document.querySelectorAll(".fill input"));
+  inputs.forEach(function(inp){
+    inp.placeholder = DEF[inp.dataset.k] || "";
+    inp.addEventListener("input", function(){
+      var v = inp.value;
+      if (!inp.dataset.ns){ v = v.replace(/\s+/g, "-"); if (v !== inp.value) inp.value = v; }
+      vals[inp.dataset.k] = v;
+      renderTpl();
+    });
+  });
+  var rb = $("resetBtn");
+  if (rb) rb.addEventListener("click", function(){
+    inputs.forEach(function(inp){ inp.value = ""; vals[inp.dataset.k] = ""; });
+    renderTpl();
+  });
+  document.querySelectorAll(".cmd .copy").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var pre = btn.parentNode.querySelector("pre");
+      copyText(pre._tpl !== undefined ? resolvePlain(pre._tpl) : pre.textContent, btn);
+    });
+  });
+
+  /* ---------- reading progress + toc spy ---------- */
+  var readBar = $("readBar");
+  function updateBar(){
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    readBar.style.width = (max > 0 ? Math.min(100, window.scrollY / max * 100) : 0) + "%";
+  }
+  window.addEventListener("scroll", updateBar, { passive: true });
+  window.addEventListener("resize", updateBar);
+  updateBar();
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll("nav.toc a"));
+  if ("IntersectionObserver" in window){
+    var spy = new IntersectionObserver(function(es){
+      es.forEach(function(en){
+        if (en.isIntersecting) tocLinks.forEach(function(a){ a.classList.toggle("active", a.getAttribute("href") === "#" + en.target.id); });
+      });
+    }, { rootMargin: "-15% 0px -70% 0px" });
+    tocLinks.forEach(function(a){ var sec = document.querySelector(a.getAttribute("href")); if (sec) spy.observe(sec); });
+  }
+
+  /* ---------- scenario simulators ---------- */
+  var SIM = CFG.sim || {};
+  document.querySelectorAll("[data-simgroup]").forEach(function(group){
+    var btns = Array.prototype.slice.call(group.querySelectorAll("[data-sim]"));
+    var out = group.querySelector(".sim-result");
+    btns.forEach(function(btn){
+      btn.addEventListener("click", function(){
+        btns.forEach(function(b){ b.classList.toggle("selected", b === btn); });
+        out.innerHTML = SIM[btn.dataset.sim] || "";
+      });
+    });
+  });
+
+  /* ---------- quiz ---------- */
+  var QUIZ = CFG.quiz || [];
+  if (QUIZ.length && $("quiz")){
+    var qi = 0, qScore = 0, qDone = false;
+    var qCount = $("quizCount"), qQ = $("quizQ"), qAns = $("quizAns"), qFb = $("quizFb"), qNext = $("quizNext"), qScoreEl = $("quizScore");
+    var renderQuiz = function(){
+      var item = QUIZ[qi]; qDone = false;
+      qCount.textContent = (qi + 1) + " / " + QUIZ.length;
+      qQ.innerHTML = item.q;
+      qAns.innerHTML = "";
+      qFb.className = "feedback"; qFb.textContent = "";
+      qNext.disabled = true;
+      qNext.textContent = qi === QUIZ.length - 1 ? "重新測驗 ↻" : "下一題 →";
+      item.a.forEach(function(text, i){
+        var b = document.createElement("button");
+        b.type = "button"; b.className = "answer";
+        b.innerHTML = '<span class="letter">' + String.fromCharCode(65 + i) + "</span><span>" + esc(text) + "</span>";
+        b.addEventListener("click", function(){ pick(i); });
+        qAns.appendChild(b);
+      });
+    };
+    var pick = function(i){
+      if (qDone) return; qDone = true;
+      var item = QUIZ[qi], good = i === item.c;
+      Array.prototype.forEach.call(qAns.querySelectorAll("button"), function(b, n){
+        b.disabled = true;
+        if (n === item.c) b.classList.add("correct");
+        if (n === i && !good) b.classList.add("wrong");
+      });
+      if (good) qScore++;
+      qFb.className = "feedback show " + (good ? "good" : "bad");
+      qFb.innerHTML = "<b>" + (good ? "答對了！" : "再記一下這個觀念。") + "</b> " + esc(item.why);
+      qScoreEl.textContent = "答對 " + qScore + " / " + (qi + 1) + " 題";
+      qNext.disabled = false;
+    };
+    qNext.addEventListener("click", function(){
+      if (qi === QUIZ.length - 1){ qi = 0; qScore = 0; } else { qi++; }
+      renderQuiz();
+      qScoreEl.textContent = "答對 " + qScore + " 題";
+    });
+    renderQuiz();
+  }
+
+  /* ---------- checklist ---------- */
+  var checks = Array.prototype.slice.call(document.querySelectorAll("#checks input"));
+  function updateChecks(){
+    var n = checks.filter(function(c){ return c.checked; }).length;
+    $("checkProgress").textContent = "已完成 " + n + " / " + checks.length + " 項";
+    $("checkBar").style.width = (n / checks.length * 100) + "%";
+    checks.forEach(function(c){ c.closest(".check-item").classList.toggle("done", c.checked); });
+  }
+  checks.forEach(function(c){ c.addEventListener("change", updateChecks); });
+
+  /* ---------- role tabs (dual-view pages) ---------- */
+  var roleBtns = Array.prototype.slice.call(document.querySelectorAll("[data-role]"));
+  var rolePanels = Array.prototype.slice.call(document.querySelectorAll("[data-panel]"));
+  function setRole(r, focus){
+    roleBtns.forEach(function(b){
+      var on = b.dataset.role === r;
+      b.classList.toggle("on", on);
+      b.setAttribute("aria-selected", on ? "true" : "false");
+      b.tabIndex = on ? 0 : -1;
+      if (on && focus) b.focus();
+    });
+    rolePanels.forEach(function(p){ p.hidden = p.dataset.panel !== r; });
+  }
+  roleBtns.forEach(function(b){
+    b.addEventListener("click", function(){ setRole(b.dataset.role); });
+    b.addEventListener("keydown", function(e){
+      if (e.key === "ArrowLeft" || e.key === "ArrowRight"){
+        e.preventDefault(); setRole(b.dataset.role === "c" ? "o" : "c", true);
+      }
+    });
+  });
+  if (roleBtns.length) setRole("c");
+
+  /* ---------- stage stepper (two columns) ---------- */
+  var STAGES = CFG.stages || [];
+  if (STAGES.length && $("stages")){
+    var stage = 0;
+    var stagesEl = $("stages");
+    var renderStages = function(){
+      stagesEl.innerHTML = STAGES.map(function(s, i){
+        return '<button type="button" data-i="' + i + '" class="' + (i === stage ? "on" : "") + '" aria-pressed="' + (i === stage) + '">' +
+          '<span class="si">階段 ' + (i + 1) + "</span><span>" + s.label + '</span><span class="badge ' + s.tone + '">' + s.badge + "</span></button>";
+      }).join("");
+      var s = STAGES[stage];
+      $("c-h").textContent = s.c.h; $("o-h").textContent = s.o.h;
+      $("c-list").innerHTML = s.c.items.map(function(t){ return "<li>" + t + "</li>"; }).join("");
+      $("o-list").innerHTML = s.o.items.map(function(t){ return "<li>" + t + "</li>"; }).join("");
+      $("prevStage").disabled = stage === 0;
+      $("nextStage").disabled = stage === STAGES.length - 1;
+    };
+    stagesEl.addEventListener("click", function(e){
+      var b = e.target.closest("button[data-i]"); if (!b) return;
+      stage = +b.dataset.i; renderStages();
+    });
+    $("prevStage").addEventListener("click", function(){ if (stage > 0){ stage--; renderStages(); } });
+    $("nextStage").addEventListener("click", function(){ if (stage < STAGES.length - 1){ stage++; renderStages(); } });
+    renderStages();
+  }
+
+  /* ---------- decision picker ---------- */
+  var DECIDE = CFG.decide || [];
+  if (DECIDE.length && $("decideBtns")){
+    var decBtns = $("decideBtns"), decOut = $("decideOut");
+    decBtns.innerHTML = DECIDE.map(function(d, i){
+      return '<button type="button" data-d="' + i + '">' + d.label + "</button>";
+    }).join("");
+    decBtns.addEventListener("click", function(e){
+      var b = e.target.closest("button[data-d]"); if (!b) return;
+      var d = DECIDE[+b.dataset.d];
+      Array.prototype.forEach.call(decBtns.querySelectorAll("button"), function(x){ x.classList.toggle("selected", x === b); });
+      var tone = d.risk === "高" ? "bad" : (d.risk === "中" ? "warn" : "ok");
+      decOut.innerHTML = '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px"><b>建議做法</b><span class="badge ' + tone + '">風險：' + d.risk + "</span></div>" +
+        '<div class="cmd" style="margin:8px 0"><pre></pre><button type="button" class="copy">Copy</button></div><div>' + d.why + "</div>";
+      decOut.querySelector("pre").textContent = d.cmd;
+      decOut.querySelector(".copy").addEventListener("click", function(ev){ copyText(d.cmd, ev.currentTarget); });
+    });
+  }
+
+  renderTpl();
+  if (checks.length) updateChecks();
+})();
+
+/* Arduino 主題專用互動:接線步驟播放、原理圖與麵包板連動。只有 dir=arduino 的頁面會內嵌。 */
+(function () {
+  "use strict";
+  var CFG = window.PAGE || {};
+
+  /* ---------- 表格:手機版直式堆疊時,每格補上欄名 ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll(".gt"), function (t) {
+    var rows = t.querySelectorAll(".row");
+    if (rows.length < 2) return;
+    var heads = Array.prototype.map.call(rows[0].children, function (c) { return c.textContent; });
+    for (var i = 1; i < rows.length; i++)
+      Array.prototype.forEach.call(rows[i].children, function (c, k) { if (k > 0 && heads[k]) c.setAttribute("data-h", heads[k]); });
+  });
+
+  /* ---------- 接線步驟播放 ---------- */
+  var WIRES = CFG.wiring || [];
+  Array.prototype.forEach.call(document.querySelectorAll("[data-wiring]"), function (box) {
+    var id = box.getAttribute("data-wiring"), conf = null;
+    WIRES.forEach(function (w) { if (w.id === id) conf = w; });
+    if (!conf) return;
+    var n = conf.steps.length, cur = 0;                 // cur: 0=還沒開始, 1..n=第幾步, n+1=全部完成
+    var els = Array.prototype.slice.call(box.querySelectorAll(".el"));
+    var cap = box.querySelector(".wcap");
+    var dots = Array.prototype.slice.call(box.querySelectorAll(".wdot"));
+    var bPrev = box.querySelector('[data-w="prev"]'), bNext = box.querySelector('[data-w="next"]');
+    function render() {
+      els.forEach(function (el) {
+        var s = +el.getAttribute("data-step");
+        el.classList.toggle("future", cur <= n && s > cur);
+        el.classList.toggle("cur", s === cur);
+      });
+      dots.forEach(function (d) {
+        var i = +d.getAttribute("data-w");
+        d.classList.toggle("on", i === cur);
+        d.classList.toggle("done", i < cur);
+        d.setAttribute("aria-pressed", i === cur ? "true" : "false");
+      });
+      if (cur === 0) cap.innerHTML = '<b class="t">開始前</b>' + (conf.intro || "");
+      else if (cur <= n) cap.innerHTML = '<b class="t">第 ' + cur + " 步：" + conf.steps[cur - 1].t + "</b>" + conf.steps[cur - 1].x;
+      else cap.innerHTML = '<b class="t">完整接線</b>' + (conf.done || "");
+      bPrev.disabled = cur === 0;
+      bNext.disabled = cur > n;
+    }
+    box.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-w]");
+      if (!b) return;
+      var k = b.getAttribute("data-w");
+      if (k === "prev") { if (cur > 0) cur = cur > n ? n : cur - 1; }
+      else if (k === "next") { if (cur <= n) cur++; }
+      else if (k === "all") cur = n + 1;
+      else if (k === "reset") cur = 0;
+      else cur = +k;
+      render();
+    });
+    box.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowRight" && cur <= n) { cur++; render(); e.preventDefault(); }
+      else if (e.key === "ArrowLeft" && cur > 0) { cur = cur > n ? n : cur - 1; render(); e.preventDefault(); }
+    });
+    render();
+  });
+
+
+  /* ---------- 麵包板內部連線探索圖 ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll("[data-bbx]"), function (box) {
+    var cells = Array.prototype.slice.call(box.querySelectorAll(".bh"));
+    var info = box.querySelector(".bbx-info"), split = box.querySelector(".bbx-split");
+    var sel = null, DEF = info.innerHTML;
+    function net(c) { return c.getAttribute(split && split.checked ? "data-net2" : "data-net"); }
+    function paint() {
+      if (!sel) { cells.forEach(function (c) { c.classList.remove("on", "sel"); }); info.innerHTML = DEF; return; }
+      var k = net(sel), mates = [];
+      cells.forEach(function (c) {
+        var on = net(c) === k;
+        c.classList.toggle("on", on); c.classList.toggle("sel", c === sel);
+        if (on && c !== sel) mates.push(c.getAttribute("data-h"));
+      });
+      var h = sel.getAttribute("data-h"), txt;
+      if (/^[tb]/.test(h)) {
+        txt = "你點的是 <code>" + h + "</code>,它屬於電源軌。<b>同一條軌上共 " + (mates.length + 1) + " 個孔彼此相通</b>" +
+              (split && split.checked ? "（這片麵包板的電源軌在中間斷開，左半與右半不相通）。" : "。") + "把 5V 接到 + 軌、GND 接到 − 軌，之後整排孔都能取用。";
+      } else {
+        txt = "你點的是 <code>" + h + "</code>,它和 <code>" + mates.join("、") + "</code> 在內部相通(同一欄的 " + (/[a-e]/.test(h[0]) ? "a–e" : "f–j") + ")。" +
+              "把兩個零件的腳插在這 " + (mates.length + 1) + " 個孔裡，它們就接在一起了。";
+      }
+      info.innerHTML = txt;
+    }
+    box.addEventListener("click", function (e) {
+      var c = e.target.closest(".bh");
+      if (!c) return;
+      sel = sel === c ? null : c; paint();
+    });
+    if (split) split.addEventListener("change", paint);
+  });
+
+  /* ---------- 電阻色環計算機 ---------- */
+  var COL = [["黑", "#141413"], ["棕", "#8B5A3C"], ["紅", "#B04A3F"], ["橙", "#D97757"], ["黃", "#E1B93B"], ["綠", "#788C5D"], ["藍", "#5B7FA6"], ["紫", "#7A5C8F"], ["灰", "#87867F"], ["白", "#FFFFFF"]];
+  var MUL = [[0, "黑 ×1", "#141413"], [1, "棕 ×10", "#8B5A3C"], [2, "紅 ×100", "#B04A3F"], [3, "橙 ×1k", "#D97757"], [4, "黃 ×10k", "#E1B93B"], [5, "綠 ×100k", "#788C5D"], [6, "藍 ×1M", "#5B7FA6"], [-1, "金 ×0.1", "#C9A227"], [-2, "銀 ×0.01", "#BFBFBF"]];
+  function fmtOhm(v) {
+    if (v >= 1e6) return +(v / 1e6).toFixed(2) + " MΩ";
+    if (v >= 1e3) return +(v / 1e3).toFixed(2) + " kΩ";
+    return +v.toFixed(2) + " Ω";
+  }
+  function parseOhm(s) {
+    var m = /^\s*(\d+(?:\.\d+)?)\s*([kKmM]?)\s*[ΩΩohmOHM]*\s*$/.exec(s || "");
+    if (!m) return NaN;
+    var v = parseFloat(m[1]), u = m[2];
+    return u === "k" || u === "K" ? v * 1e3 : (u === "M" || u === "m" ? v * 1e6 : v);
+  }
+  Array.prototype.forEach.call(document.querySelectorAll("[data-rcalc]"), function (box) {
+    var s1 = box.querySelector('[data-rc="b1"]'), s2 = box.querySelector('[data-rc="b2"]'), s3 = box.querySelector('[data-rc="b3"]');
+    var inp = box.querySelector('[data-rc="val"]'), out = box.querySelector(".rc-out");
+    var r1 = box.querySelector(".rc1"), r2 = box.querySelector(".rc2"), r3 = box.querySelector(".rc3");
+    COL.forEach(function (c, i) { if (i > 0) s1.add(new Option(c[0] + " " + i, i)); });
+    COL.forEach(function (c, i) { s2.add(new Option(c[0] + " " + i, i)); });
+    MUL.forEach(function (m) { s3.add(new Option(m[1], m[0])); });
+    function mulColor(e) { for (var i = 0; i < MUL.length; i++) if (MUL[i][0] === e) return MUL[i][2]; return "#141413"; }
+    function showBands() {
+      r1.setAttribute("fill", COL[+s1.value][1]); r2.setAttribute("fill", COL[+s2.value][1]); r3.setAttribute("fill", mulColor(+s3.value));
+    }
+    function fromSelects() {
+      var v = (+s1.value * 10 + +s2.value) * Math.pow(10, +s3.value);
+      inp.value = fmtOhm(v).replace(" ", "").replace("Ω", "");
+      var mc = MUL.filter(function (m) { return m[0] === +s3.value; })[0][1].split(" ")[0];
+      out.innerHTML = "<b>" + COL[+s1.value][0] + "、" + COL[+s2.value][0] + "、" + mc + "、金</b> = " + (+s1.value * 10 + +s2.value) + " × " + (+s3.value >= 0 ? Math.pow(10, +s3.value) : Math.pow(10, +s3.value)) + " = <b>" + fmtOhm(v) + "</b>（誤差 ±5%）";
+      showBands();
+    }
+    function fromInput() {
+      var v = parseOhm(inp.value);
+      if (!(v >= 1)) { out.innerHTML = "請輸入數字，例如 <code>220</code>、<code>4.7k</code>、<code>10k</code>。"; return; }
+      var e = Math.floor(Math.log10(v)) - 1, m = Math.round(v / Math.pow(10, e));
+      if (m === 100) { m = 10; e += 1; }
+      if (e < -2 || e > 6 || m < 10) { out.innerHTML = "這個值超出 4 環電阻的範圍。"; return; }
+      if (e < 0) { e = e; }
+      s1.value = Math.floor(m / 10); s2.value = m % 10; s3.value = e;
+      var exact = Math.abs(m * Math.pow(10, e) - v) < 1e-9;
+      fromSelects();
+      if (!exact) out.innerHTML += "<br>(你輸入的值不能用 4 環精確表示，已顯示最接近的 " + fmtOhm(m * Math.pow(10, e)) + ")";
+    }
+    [s1, s2, s3].forEach(function (s) { s.addEventListener("change", fromSelects); });
+    inp.addEventListener("input", fromInput);
+    s1.value = 2; s2.value = 2; s3.value = 1; fromSelects();
+  });
+
+  /* ---------- LED 限流電阻計算機 ---------- */
+  var E12 = [10, 12, 15, 18, 22, 27, 33, 39, 47, 56, 68, 82];
+  function nextE12(r) {
+    var d = Math.pow(10, Math.floor(Math.log10(r)) - 1);
+    for (var k = 0; k < 4; k++) for (var i = 0; i < E12.length; i++) { var v = E12[i] * d * Math.pow(10, k); if (v >= r - 1e-9) return v; }
+    return r;
+  }
+  Array.prototype.forEach.call(document.querySelectorAll("[data-ledcalc]"), function (box) {
+    var vf = box.querySelector('[data-lc="vf"]'), ma = box.querySelector('[data-lc="ma"]'), out = box.querySelector(".lc-out");
+    function calc() {
+      var v = parseFloat(vf.value), i = parseFloat(ma.value);
+      if (!(i > 0)) { out.innerHTML = "請輸入大於 0 的電流（毫安）。"; return; }
+      var r = (5 - v) / (i / 1000), std = nextE12(r), real = (5 - v) / std * 1000;
+      var msg = "電阻上要承擔的電壓 = 5 − " + v + " = <b>" + (5 - v).toFixed(1) + " V</b><br>" +
+                "理論電阻 R = " + (5 - v).toFixed(1) + " ÷ " + (i / 1000) + " A = <b>" + Math.round(r) + " Ω</b><br>" +
+                "取不小於它的標準值 → <b>" + fmtOhm(std) + "</b>,實際電流約 <b>" + real.toFixed(1) + " mA</b>";
+      if (real > 20) msg += "<br><span class=\"calc-bad\">超過 Uno 每腳建議上限 20 mA，請選更大的電阻或降低目標電流。</span>";
+      else if (real < 1) msg += "<br>電流太小，LED 可能幾乎看不出來在亮。";
+      out.innerHTML = msg;
+    }
+    vf.addEventListener("change", calc); ma.addEventListener("input", calc); calc();
+  });
+
+
+  /* ---------- PWM 示意 ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll("[data-pwmbox]"), function (box) {
+    var rng = box.querySelector('[data-pwm="v"]'), num = box.querySelector('[data-pwm="num"]');
+    var wave = box.querySelector(".pwm-wave"), out = box.querySelector(".pwm-out"), led = box.querySelector(".pwm-led");
+    var pin = box.getAttribute("data-pin") || "9";
+    function draw(v) {
+      var d = v / 255, P = 110, x0 = 50, pts = [], i;
+      for (i = 0; i < 4; i++) {
+        var x = x0 + i * P, hi = d * P;
+        if (d <= 0) { pts.push(x + "," + 120, (x + P) + "," + 120); }
+        else if (d >= 1) { pts.push(x + "," + 30, (x + P) + "," + 30); }
+        else { pts.push(x + "," + 120, x + "," + 30, (x + hi) + "," + 30, (x + hi) + "," + 120, (x + P) + "," + 120); }
+      }
+      wave.setAttribute("points", pts.join(" "));
+      led.style.background = "rgba(176,74,63," + (0.08 + 0.92 * d).toFixed(2) + ")";
+      out.innerHTML = "<code>analogWrite(" + pin + ", " + v + ");</code> → 一個週期裡有 <b>" + Math.round(d * 100) + "%</b> 的時間是 5 V，其餘是 0 V → 平均電壓約 <b>" + (5 * d).toFixed(2) + " V</b>。" +
+        (v === 0 ? "（0 等於一直輸出 LOW,LED 全滅。）" : (v === 255 ? "（255 等於一直輸出 HIGH,LED 全亮。）" : "LED 因為閃得太快，看起來是「半亮」。"));
+    }
+    function set(v) { v = Math.max(0, Math.min(255, Math.round(+v || 0))); rng.value = v; num.value = v; draw(v); }
+    rng.addEventListener("input", function () { set(rng.value); });
+    num.addEventListener("input", function () { if (num.value !== "") set(num.value); });
+    set(rng.value);
+  });
+
+
+  /* ---------- 按鈕與上拉電阻示意 ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll("[data-btnsim]"), function (box) {
+    var mode = box.querySelector('[data-bs="mode"]'), btn = box.querySelector('[data-bs="btn"]');
+    var open = box.querySelector(".sw-open"), closed = box.querySelector(".sw-closed"), pu = box.querySelector(".pu");
+    var lvl = box.querySelector(".bs-level"), out = box.querySelector(".bs-out"), node = box.querySelector(".bs-node");
+    var pressed = false;
+    function render() {
+      var pull = mode.value === "pullup", read, txt, col;
+      open.style.display = pressed ? "none" : "block";
+      closed.style.display = pressed ? "block" : "none";
+      pu.style.opacity = pull ? "1" : "0.18";
+      btn.textContent = pressed ? "目前：按住中（點一下放開）" : "目前：放開（點一下按住）";
+      btn.setAttribute("aria-pressed", pressed ? "true" : "false");
+      if (pull && !pressed) { read = "HIGH(1)"; col = "#788C5D"; txt = "<b>沒按</b>：5 V 經過內建上拉電阻到達 2 號腳。D2 沒有別的去處，幾乎沒有電流，電壓留在約 5 V → <code>digitalRead(2)</code> = <b>HIGH(1)</b>。"; }
+      else if (pull && pressed) { read = "LOW(0)"; col = "#B04A3F"; txt = "<b>按下</b>：按鈕把 2 號腳接到 GND。上拉電阻只讓一點點電流通過（5 V ÷ 約 20–50 kΩ,約 0.1–0.25 mA），2 號腳電壓被拉到約 0 V → <code>digitalRead(2)</code> = <b>LOW(0)</b>。"; }
+      else if (!pull && !pressed) { read = "不確定"; col = "#87867F"; txt = "<b>沒按</b>：2 號腳什麼都沒接，像一根天線，會收到周圍的雜訊，讀到的值<b>在 HIGH 與 LOW 之間亂跳</b>。這叫<b>浮接</b>，是新手最常踩的坑。"; }
+      else { read = "LOW(0)"; col = "#B04A3F"; txt = "<b>按下</b>：2 號腳接到 GND → LOW。但<b>放開的瞬間又回到浮接</b>，讀值不穩，所以這樣的接法不能用。"; }
+      lvl.textContent = "digitalRead(2) → " + read;
+      lvl.setAttribute("fill", col);
+      node.setAttribute("fill", col);
+      out.innerHTML = txt;
+    }
+    btn.addEventListener("click", function () { pressed = !pressed; render(); });
+    mode.addEventListener("change", render);
+    render();
+  });
+
+
+  /* ---------- 鮑率不一致 → 亂碼 示意 ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll("[data-baudsim]"), function (box) {
+    var sel = box.querySelector('[data-bd="monitor"]'), scr = box.querySelector(".bd-screen"), note = box.querySelector(".bd-note");
+    var prog = box.getAttribute("data-prog") || "9600";
+    var GARBLE = { lower: "\u00ff\u00ff\u00e0\u00e0 \u00fe\u00fe\ufffd\ufffd\ufffd\ufffd\n\u00ff\u00fc\ufffd\ufffd\u00ff\u00ff \u00e0\ufffd\ufffd", higher: "\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\n\ufffd\ufffd\ufffd \ufffd\ufffd\ufffd\ufffd\ufffd\ufffd" };
+    function render() {
+      var m = +sel.value, p = +prog;
+      if (m === p) { scr.textContent = "Hello, Arduino!\ncount = 0\ncount = 1\ncount = 2"; scr.style.color = "#3D3D3A"; note.innerHTML = "<b>兩邊都是 " + p + "。</b>文字正常顯示。"; }
+      else { scr.textContent = m < p ? GARBLE.lower : GARBLE.higher; scr.style.color = "#B04A3F"; note.innerHTML = "程式用 <code>Serial.begin(" + p + ")</code>,Serial Monitor 卻選 <b>" + m + "</b>:雙方講話速度不同，對方聽到的是亂碼。<b>把 Serial Monitor 右上角的 baud 選成和程式一樣。</b>"; }
+    }
+    sel.addEventListener("change", render); render();
+  });
+
+
+  /* ---------- 電位器分壓示意 ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll("[data-potsim]"), function (box) {
+    var rng = box.querySelector('[data-pot="v"]'), out = box.querySelector(".pot-out"), bar = box.querySelector(".pot-bar span"), led = box.querySelector(".pwm-led");
+    function render() {
+      var pos = +rng.value, x = pos / 100;
+      var rt = 10 * (1 - x), rb = 10 * x, v = 5 * x, adc = Math.round(x * 1023), mapped = Math.floor(adc * 255 / 1023);
+      bar.style.width = pos + "%";
+      led.style.background = "rgba(176,74,63," + (0.08 + 0.92 * mapped / 255).toFixed(2) + ")";
+      out.innerHTML = "旋鈕轉到 <b>" + pos + "%</b>:<br>" +
+        "上段電阻（5V 到中間腳）= <b>" + rt.toFixed(1) + " kΩ</b>,下段電阻（中間腳到 GND）= <b>" + rb.toFixed(1) + " kΩ</b>（加起來永遠是 10 kΩ）<br>" +
+        "中間腳（接 A0）電壓 = 5 V × " + rb.toFixed(1) + " ÷ 10 = <b>" + v.toFixed(2) + " V</b><br>" +
+        "<code>analogRead(A0)</code> ≈ <b>" + adc + "</b>(0–1023)<br>" +
+        "<code>map(值, 0, 1023, 0, 255)</code> ≈ <b>" + mapped + "</b> → LED 亮度";
+    }
+    rng.addEventListener("input", render); render();
+  });
+
+
+  /* ---------- 光敏電阻分壓示意 ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll("[data-ldrsim]"), function (box) {
+    var rng = box.querySelector('[data-ldr="v"]'), thr = box.querySelector('[data-ldr="thr"]'), out = box.querySelector(".ldr-out"), bar = box.querySelector(".pot-bar span"), led = box.querySelector(".pwm-led");
+    function fmt(v) { return v >= 1e6 ? (v / 1e6).toFixed(2) + " MΩ" : (v >= 1e3 ? (v / 1e3).toFixed(1) + " kΩ" : Math.round(v) + " Ω"); }
+    function render() {
+      var x = +rng.value / 100, r = 1e6 * Math.pow(1e-3, x), v = 5 * 10000 / (r + 10000), adc = Math.round(v / 5 * 1023), t = parseInt(thr.value, 10);
+      bar.style.width = (adc / 1023 * 100) + "%";
+      var on = !isNaN(t) && adc < t;
+      led.style.background = on ? "rgba(176,74,63,1)" : "rgba(176,74,63,.08)";
+      out.innerHTML = "環境亮度 <b>" + Math.round(x * 100) + "%</b>:光敏電阻約 <b>" + fmt(r) + "</b>（範例值）<br>" +
+        "A0 電壓 = 5 V × 10 kΩ ÷ （光敏電阻 + 10 kΩ） = <b>" + v.toFixed(2) + " V</b> → <code>analogRead(A0)</code> ≈ <b>" + adc + "</b><br>" +
+        "門檻 " + (isNaN(t) ? "?" : t) + ":<b>" + (on ? "讀值低於門檻 → 天黑，LED 亮" : "讀值不低於門檻 → 夠亮，LED 滅") + "</b>";
+    }
+    rng.addEventListener("input", render); thr.addEventListener("input", render); render();
+  });
+
+
+  /* ---------- 超音波:距離 ↔ 回波時間 ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll("[data-sonicsim]"), function (box) {
+    var rng = box.querySelector('[data-so="d"]'), out = box.querySelector(".so-out"), bar = box.querySelector(".pot-bar span");
+    function render() {
+      var d = +rng.value, t = d * 2 / 0.0343;
+      bar.style.width = (d / 400 * 100) + "%";
+      out.innerHTML = "物體在 <b>" + d + " cm</b> 外：聲音來回 <b>" + (d * 2) + " cm</b>,<br>花的時間 = " + (d * 2) + " ÷ 0.0343 ≈ <b>" + Math.round(t) + " 微秒</b>(約 " + (t / 1000).toFixed(2) + " 毫秒)<br>" +
+        "所以 Echo 腳會維持 HIGH 約 <b>" + Math.round(t) + " 微秒</b>；程式用 <code>duration * 0.0343 / 2</code> 換回 " + d + " cm。" +
+        (d < 2 || d > 400 ? "<br><span class=\"calc-bad\">HC-SR04 的有效範圍約 2–400 cm，超出可能不準。</span>" : "");
+    }
+    rng.addEventListener("input", render); render();
+  });
+
+
+  /* ---------- 伺服馬達:角度 ↔ 脈衝寬度 ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll("[data-servosim]"), function (box) {
+    var rng = box.querySelector('[data-sv="a"]'), out = box.querySelector(".sv-out"), wave = box.querySelector(".sv-wave"), arm = box.querySelector(".sv-arm");
+    function render() {
+      var a = +rng.value, w = Math.round(544 + a / 180 * (2400 - 544));
+      var px = 50 + w / 20000 * 400;   // 20 ms 對應 400 px
+      wave.setAttribute("points", "50,110 50,40 " + px + ",40 " + px + ",110 450,110");
+      arm.setAttribute("transform", "rotate(" + (-a) + " 400 130)");
+      out.innerHTML = "<code>myServo.write(" + a + ");</code> → 每 20 毫秒送一次脈衝，<b>HIGH 長度約 " + w + " 微秒(" + (w / 1000).toFixed(2) + " 毫秒)</b>。伺服馬達依脈衝寬度轉到對應角度。";
+    }
+    rng.addEventListener("input", render); render();
+  });
+
+
+  /* ---------- LCD1602 預覽 ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll("[data-lcdsim]"), function (box) {
+    var l1 = box.querySelector('[data-lcd="l1"]'), l2 = box.querySelector('[data-lcd="l2"]'), scr = box.querySelector(".lcd-screen"), code = box.querySelector(".lcd-code");
+    function pad(s) { s = (s || "").slice(0, 16); while (s.length < 16) s += " "; return s; }
+    function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;"); }
+    function render() {
+      var a = l1.value, b = l2.value;
+      scr.textContent = pad(a) + "\n" + pad(b);
+      var warn = (a.length > 16 || b.length > 16) ? "\n// ⚠ 超過 16 個字的部分不會顯示" : "";
+      code.innerHTML = "lcd.setCursor(0, 0);\nlcd.print(\"" + esc(a.slice(0, 16)) + "\");\nlcd.setCursor(0, 1);\nlcd.print(\"" + esc(b.slice(0, 16)) + "\");" + warn;
+    }
+    l1.addEventListener("input", render); l2.addEventListener("input", render); render();
+  });
+
+
+  /* ---------- delay() 版 vs millis() 版:按鈕會不會漏掉 ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll("[data-delaysim]"), function (box) {
+    var tap = box.querySelector('[data-ds="tap"]'), reset = box.querySelector('[data-ds="reset"]'), log = box.querySelector(".ds-log");
+    var d1 = box.querySelector(".ds-d1"), d2 = box.querySelector(".ds-d2"), m1 = box.querySelector(".ds-m1"), m2 = box.querySelector(".ds-m2");
+    var t, down, downUntil, led2d, led2m, timer, pendingD;
+    function on(el, v) { el.style.background = v ? "#B04A3F" : "#F0EEE6"; el.setAttribute("data-on", v ? "1" : "0"); }
+    function say(s) { log.innerHTML += (log.innerHTML ? "<br>" : "") + s; }
+    function paint() { var ph = (t % 1000) < 500; on(d1, ph); on(m1, ph); on(d2, led2d); on(m2, led2m); }
+    function init() {
+      t = 0; down = false; downUntil = 0; led2d = false; led2m = false; pendingD = false; log.innerHTML = "（還沒有操作。點「按一下按鈕」。）"; paint();
+    }
+    function step() {
+      t += 50;
+      if (down && t >= downUntil) down = false;
+      if (t % 1000 === 0) {            // delay 版:每輪 loop 結束時才檢查一次按鈕
+        if (pendingD) { if (down) { led2d = !led2d; say("t=" + (t / 1000) + " 秒：<b>delay 版</b>醒來，按鈕還按著 → 切換 LED2。"); } else { say("t=" + (t / 1000) + " 秒：<b>delay 版</b>醒來時按鈕已經放開 → <b>漏掉了！</b>"); } pendingD = false; }
+      }
+      paint();
+    }
+    tap.addEventListener("click", function () {
+      if (down) return;
+      down = true; downUntil = t + 300; pendingD = true;
+      led2m = !led2m;
+      say("t=" + (t / 1000).toFixed(2) + " 秒：你按下按鈕（按 0.3 秒）。<b>millis 版</b>立刻切換 LED2。");
+      paint();
+    });
+    reset.addEventListener("click", init);
+    init();
+    timer = setInterval(step, 50);
+    window.addEventListener("pagehide", function () { clearInterval(timer); });
+  });
+
+
+  /* ---------- 位元組 ↔ 八顆 LED ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll("[data-bitsim]"), function (box) {
+    var num = box.querySelector('[data-bs8="n"]'), out = box.querySelector(".bits-out"), cells = Array.prototype.slice.call(box.querySelectorAll(".bitc"));
+    function render(v) {
+      v = Math.max(0, Math.min(255, Math.round(+v || 0)));
+      cells.forEach(function (c) { var b = +c.getAttribute("data-b"); var on = (v >> b) & 1; c.style.background = on ? "#B04A3F" : "#F0EEE6"; c.style.color = on ? "#fff" : "#3D3D3A"; c.setAttribute("data-on", on); });
+      num.value = v;
+      var bin = ("00000000" + v.toString(2)).slice(-8);
+      out.innerHTML = "<code>0b" + bin + "</code> = 十進位 <b>" + v + "</b> = 十六進位 <code>0x" + ("0" + v.toString(16).toUpperCase()).slice(-2) + "</code>。每個 <b>1</b> 是一顆亮的燈，最右邊是 Q0，最左邊是 Q7。";
+    }
+    cells.forEach(function (c) { c.addEventListener("click", function () { render((+num.value || 0) ^ (1 << (+c.getAttribute("data-b")))); }); });
+    num.addEventListener("input", function () { if (num.value !== "") render(num.value); });
+    render(num.value);
+  });
+
+  /* ---------- 原理圖 ↔ 麵包板 連動 ---------- */
+  var PARTS = CFG.parts || {};
+  var infos = Array.prototype.slice.call(document.querySelectorAll(".linkbox"));
+  infos.forEach(function (b) { b._def = b.innerHTML; });
+  var sel = "";
+  function hl(ref) {
+    sel = sel === ref ? "" : ref;
+    Array.prototype.forEach.call(document.querySelectorAll("[data-part]"), function (el) {
+      el.classList.toggle("hl", sel !== "" && el.getAttribute("data-part") === sel);
+    });
+    infos.forEach(function (b) { b.innerHTML = sel ? (PARTS[sel] || "") : b._def; });
+  }
+  document.addEventListener("click", function (e) {
+    var el = e.target.closest("[data-part]");
+    if (el) hl(el.getAttribute("data-part"));
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    var el = e.target.closest && e.target.closest("[data-part]");
+    if (el) { e.preventDefault(); hl(el.getAttribute("data-part")); }
+  });
+})();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,747 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>軸線與連戲：180 度、30 度、視線匹配、正反打</title>
+<meta name="description" content="軸線（180 度）：攝影機放同一側；視線匹配：A 看右、B 看左；30 度規則：連續兩格要換夠多；正反打：輪流拍說話的人。核心：讓觀眾一直知道誰在哪、看向誰。">
+<meta name="theme-color" content="#FAF9F5">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='8'%20fill='%23FAF9F5'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='8'%20fill='%23D97757'/%3E%3C/svg%3E">
+<link rel="canonical" href="https://www.slc6172.workers.dev/microfilm/microfilm-continuity-guide.html">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:site_name" content="自學教學站">
+<meta property="og:title" content="軸線與連戲：180 度、30 度、視線匹配、正反打">
+<meta property="og:description" content="軸線（180 度）：攝影機放同一側；視線匹配：A 看右、B 看左；30 度規則：連續兩格要換夠多；正反打：輪流拍說話的人。核心：讓觀眾一直知道誰在哪、看向誰。">
+<meta property="og:url" content="https://www.slc6172.workers.dev/microfilm/microfilm-continuity-guide.html">
+<meta name="twitter:card" content="summary">
+<style>
+  :root {
+    --ivory:#FAF9F5; --white:#FFFFFF; --slate:#141413;
+    --clay:#D97757; --clay-d:#B85C3E; --oat:#E3DACC; --olive:#788C5D; --rust:#B04A3F;
+    --gray-100:#F0EEE6; --gray-300:#D1CFC5; --gray-500:#87867F; --gray-700:#3D3D3A;
+    --serif: ui-serif, Georgia, "Times New Roman", "Noto Serif TC", "Songti TC", "PMingLiU", serif;
+    --sans:  system-ui, -apple-system, "Segoe UI", Roboto, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", Helvetica, Arial, sans-serif;
+    --mono:  ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
+    --border: 1.5px solid var(--gray-300);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  [hidden] { display:none !important; }
+  body { margin:0; padding:56px 24px 120px; background:var(--ivory); color:var(--slate);
+         font-family:var(--sans); font-size:15px; line-height:1.65; -webkit-font-smoothing:antialiased; }
+  .page { max-width:1100px; margin:0 auto; }
+  .page > header { margin-bottom:36px; }
+  .layout { display:grid; grid-template-columns:190px minmax(0,1fr); gap:48px; }
+  .layout > * { min-width:0; }
+  main > section { margin-bottom:56px; scroll-margin-top:24px; }
+
+  .eyebrow { font:12px var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--gray-500);
+             display:flex; align-items:center; gap:12px; margin-bottom:18px; }
+  .eyebrow::before { content:""; width:24px; height:1.5px; background:var(--clay); }
+  h1 { font:500 clamp(30px,4.6vw,42px)/1.18 var(--serif); letter-spacing:-.012em; margin:0 0 12px; }
+  h2 { font:500 25px/1.28 var(--serif); letter-spacing:-.01em; margin:0 0 6px; }
+  h3 { font:500 18px/1.35 var(--serif); margin:0 0 6px; }
+  .sub { color:var(--gray-700); max-width:680px; margin:0 0 4px; }
+  hr.rule { border:0; border-top:1px solid var(--gray-300); margin:10px 0 22px; }
+  p { margin:0 0 12px; }
+  code { font:12.5px var(--mono); background:var(--gray-100); padding:1px 5px; border-radius:4px; }
+  .slot { background:rgba(217,119,87,.14); color:var(--clay-d); border-radius:4px; padding:0 3px; }
+  pre .slot { background:rgba(217,119,87,.22); color:#F2B49E; }
+
+  .panel { background:var(--white); border:var(--border); border-radius:12px; padding:20px 22px; }
+  .tldr { border:var(--border); border-left:3px solid var(--clay); border-radius:10px; background:#fff; padding:16px 18px; margin-top:22px; max-width:820px; }
+  .tldr b { font:600 11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--clay-d); margin-right:6px; }
+
+  /* toc */
+  nav.toc { position:sticky; top:32px; align-self:start; font-size:13px; }
+  nav.toc .label { font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--gray-500); margin-bottom:8px; }
+  nav.toc a { display:block; padding:5px 0; color:var(--gray-700); text-decoration:none; }
+  nav.toc a:hover { color:var(--clay); }
+
+  /* buttons */
+  button { font:12px var(--mono); cursor:pointer; border-radius:999px; padding:9px 16px; transition:background .14s ease, transform .08s ease; }
+  button.primary { background:var(--slate); color:var(--ivory); border:1.5px solid var(--slate); }
+  button.primary:hover:not(:disabled) { background:var(--gray-700); }
+  button.primary:disabled { background:var(--gray-300); border-color:var(--gray-300); cursor:not-allowed; }
+  button.primary.copied { background:var(--olive); border-color:var(--olive); }
+  button.ghost { background:transparent; color:var(--gray-700); border:var(--border); }
+  button.ghost:hover { border-color:var(--gray-500); }
+  button:focus-visible, a:focus-visible, summary:focus-visible, input:focus-visible { outline:2px solid var(--clay); outline-offset:2px; }
+
+  /* tables (grid style) */
+  .table-wrap { overflow-x:auto; border:var(--border); border-radius:12px; background:#fff; }
+  .gt { min-width:560px; }
+  .gt .row { display:grid; gap:0; }
+  .gt .cell { padding:11px 14px; border-top:1px solid var(--gray-300); font-size:13.5px; }
+  .gt .row:first-child .cell { border-top:0; }
+  .gt .cell.head { font:11px var(--sans); text-transform:uppercase; letter-spacing:.06em; color:var(--gray-500); background:var(--gray-100); }
+  .gt .cell.term { font:600 12.5px var(--mono); }
+  .gt.g3 .row { grid-template-columns:150px minmax(0,1fr) minmax(0,1fr); }
+  .gt.g2 .row { grid-template-columns:140px minmax(0,1fr); }
+  .gt.g3b .row { grid-template-columns:170px minmax(0,1.2fr) minmax(0,1fr); }
+
+  /* code blocks */
+  .cmd { position:relative; background:var(--slate); border-radius:12px; margin:10px 0 12px; }
+  .cmd pre { margin:0; padding:16px 78px 16px 18px; font:12.5px/1.7 var(--mono); color:var(--ivory); overflow-x:auto; white-space:pre; }
+  .cmd .cm { color:var(--gray-500); }
+  .cmd button { position:absolute; top:9px; right:9px; padding:5px 11px; font-size:11px; color:var(--ivory);
+                background:rgba(250,249,245,.08); border:1px solid rgba(250,249,245,.28); }
+  .cmd button:hover { background:rgba(250,249,245,.18); }
+  .cmd button.copied { background:var(--olive); border-color:var(--olive); color:#fff; }
+  .cmd .cap { font:11px var(--mono); letter-spacing:.06em; color:var(--gray-500); padding:10px 18px 0; text-transform:uppercase; }
+  .cmd .cap + pre { padding-top:6px; }
+
+  /* diagram */
+  .canvas { background:#fff; border:var(--border); border-radius:12px; padding:14px; overflow-x:auto; }
+  .canvas svg { display:block; width:100%; height:auto; min-width:640px; }
+  .legend { list-style:none; margin:16px 0 0; padding:0; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 24px; }
+  .legend li { display:grid; grid-template-columns:26px minmax(0,1fr); gap:8px; font-size:13.5px; color:var(--gray-700); }
+  .legend .n { width:22px; height:22px; border-radius:50%; background:var(--clay); color:#fff; font:600 12px/22px var(--mono); text-align:center; }
+  .legend .n.k { background:var(--slate); }
+  .role { font:600 10.5px var(--mono); padding:1px 7px; border-radius:999px; margin-left:6px; white-space:nowrap; }
+  .role.c { background:rgba(217,119,87,.14); color:var(--clay-d); border:1px solid rgba(217,119,87,.45); }
+  .role.o { background:var(--oat); color:var(--slate); border:1px solid #CFC3AE; }
+
+  /* fill form */
+  .fill { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:12px; align-items:end; }
+  .fill label { display:block; font:11px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--gray-500); margin-bottom:5px; }
+  .fill input { width:100%; font:13px var(--mono); padding:9px 11px; border:var(--border); border-radius:8px; background:var(--gray-100); color:var(--slate); }
+  .fill-foot { display:flex; gap:12px; align-items:center; margin-top:14px; flex-wrap:wrap; }
+  .fill-foot span { font-size:13px; color:var(--gray-500); }
+
+  /* role tabs */
+  .role-tabs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin:18px 0 26px; }
+  .role-tabs button { text-align:left; font-family:var(--sans); font-size:14px; border-radius:12px; padding:16px 18px; background:#fff;
+                      border:var(--border); color:var(--gray-700); display:flex; flex-direction:column; gap:2px; }
+  .role-tabs button .rt { font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--gray-500); }
+  .role-tabs button b { font:500 20px/1.3 var(--serif); color:var(--slate); }
+  .role-tabs button:hover { border-color:var(--gray-500); }
+  .role-tabs button.on { border-color:var(--clay); background:#FBF1EC; }
+  .role-tabs button.on .rt { color:var(--clay-d); }
+
+  .orient { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-bottom:8px; }
+  .orient .panel { padding:14px 18px; font-size:13.5px; }
+  .orient .k { font:600 11px var(--mono); letter-spacing:.08em; text-transform:uppercase; display:block; margin-bottom:4px; }
+  .orient .known .k { color:#4B5C39; } .orient .new .k { color:var(--clay-d); }
+
+  /* steps */
+  .step { display:grid; grid-template-columns:40px minmax(0,1fr); gap:0 16px; padding:26px 0; border-top:1px solid var(--gray-300); }
+  .steps > .step:first-child { border-top:0; }
+  .step > * { min-width:0; }
+  .num { width:34px; height:34px; border-radius:50%; background:var(--oat); display:flex; align-items:center; justify-content:center; font:600 14px var(--mono); margin-top:2px; }
+  .step h3 { font-size:20px; margin:2px 0 6px; }
+  .why { color:var(--gray-700); margin:0 0 12px; }
+  .ops { margin:0 0 12px; padding-left:22px; color:var(--gray-700); }
+  .ops li { margin-bottom:5px; }
+  .see, .warn, .tip { border:var(--border); border-radius:8px; background:#fff; padding:10px 14px; font-size:13.5px; margin:12px 0; color:var(--gray-700); }
+  .see { border-left:3px solid var(--olive); } .warn { border-left:3px solid var(--rust); } .tip { border-left:3px solid var(--clay); }
+  .see b.l, .warn b.l, .tip b.l { font:600 11px var(--mono); letter-spacing:.08em; text-transform:uppercase; margin-right:6px; }
+  .see b.l { color:#4B5C39; } .warn b.l { color:var(--rust); } .tip b.l { color:var(--clay-d); }
+
+  /* PR compare mock */
+  .pr-mock { display:grid; grid-template-columns:minmax(0,1fr) 44px minmax(0,1fr); gap:0; align-items:stretch; margin:12px 0; }
+  .pr-mock .half { background:#fff; border:var(--border); border-radius:10px; padding:12px 14px; }
+  .pr-mock .half .t { font:600 11px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--gray-500); margin-bottom:6px; }
+  .pr-mock .half .r { font:12.5px var(--mono); margin:2px 0; word-break:break-all; }
+  .pr-mock .half .r i { font-style:normal; color:var(--gray-500); margin-right:6px; }
+  .pr-mock .arr { display:flex; align-items:center; justify-content:center; font:22px var(--mono); color:var(--clay); }
+  .pr-mock .half.base { border-color:var(--clay); background:#FBF1EC; }
+  .mock-cap { font-size:13px; color:var(--gray-500); margin:0 0 12px; }
+
+  .gh-tabs { display:flex; gap:0; border-bottom:1.5px solid var(--gray-300); margin:12px 0; overflow-x:auto; }
+  .gh-tabs span { padding:8px 16px; font-size:13.5px; color:var(--gray-500); white-space:nowrap; }
+  .gh-tabs span.on { color:var(--slate); box-shadow:inset 0 -2px 0 var(--clay); font-weight:600; }
+  .gh-tabs span small { font:11px var(--mono); margin-left:6px; color:var(--gray-500); }
+
+  /* diff */
+  .diff { font:12.5px/1.7 var(--mono); background:#fff; border:var(--border); border-radius:8px; overflow-x:auto; margin:12px 0 0; }
+  .diff-row { display:grid; grid-template-columns:44px 18px minmax(max-content,1fr); white-space:pre; padding-right:14px; }
+  .diff-row .ln { color:var(--gray-500); text-align:right; padding-right:10px; user-select:none; }
+  .diff-row.add { background:rgba(120,140,93,.12); } .diff-row.add .mark { color:var(--olive); font-weight:600; }
+  .diff-row.del { background:rgba(176,74,63,.10); } .diff-row.del .mark { color:var(--rust); font-weight:600; }
+  .bubble { background:#fff; border:var(--border); border-left:4px solid var(--olive); border-radius:8px; padding:10px 14px; margin:8px 0 0 44px; font-size:13px; max-width:560px; }
+  .bubble .who { font:600 11px var(--mono); color:var(--gray-500); display:block; margin-bottom:2px; }
+
+  /* lifecycle */
+  .stages { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; margin:18px 0 16px; }
+  .stages button { text-align:left; font-family:var(--sans); border-radius:10px; padding:11px 12px; background:#fff; border:var(--border); color:var(--gray-700); font-size:13px; display:flex; flex-direction:column; gap:6px; }
+  .stages button:hover { border-color:var(--gray-500); }
+  .stages button.on { border-color:var(--clay); background:#FBF1EC; }
+  .stages button .si { font:11px var(--mono); color:var(--gray-500); }
+  .badge { font:600 11px var(--mono); padding:2px 9px; border-radius:999px; align-self:flex-start; }
+  .badge.ok { background:rgba(120,140,93,.18); color:#4B5C39; }
+  .badge.warn { background:rgba(217,119,87,.18); color:var(--clay-d); }
+  .badge.done { background:var(--slate); color:var(--ivory); }
+  .two { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+  .two .panel h3 { display:flex; align-items:center; gap:8px; }
+  .two ul { margin:8px 0 0; padding-left:20px; color:var(--gray-700); }
+  .two li { margin-bottom:6px; }
+  .stage-nav { display:flex; gap:10px; margin-top:16px; }
+
+  /* details */
+  details { border:var(--border); border-radius:10px; background:#fff; margin:12px 0; overflow:hidden; }
+  summary { list-style:none; cursor:pointer; padding:14px 16px; font:17px/1.4 var(--serif); display:flex; align-items:baseline; gap:10px; }
+  summary::-webkit-details-marker { display:none; }
+  summary::before { content:"▸"; color:var(--gray-500); transition:transform .12s; flex:none; }
+  details[open] > summary::before { transform:rotate(90deg); }
+  details > .body { padding:0 18px 16px; border-top:1px solid var(--gray-300); padding-top:14px; }
+  details > .body > :last-child { margin-bottom:0; }
+
+  .habits { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+  .habits ul { margin:8px 0 0; padding-left:20px; color:var(--gray-700); }
+  .habits li { margin-bottom:6px; }
+  .export { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:8px; padding-top:20px; border-top:1px solid var(--gray-300); }
+  .export span { font-size:13px; color:var(--gray-500); }
+
+  /* progress + toc active */
+  .progress { position:fixed; top:0; left:0; right:0; height:3px; z-index:60; }
+  .progress span { display:block; height:100%; width:0; background:var(--clay); }
+  nav.toc a.active { color:var(--clay-d); font-weight:600; }
+
+  /* route switch */
+  .route-switch { display:flex; gap:6px; flex-wrap:wrap; background:var(--gray-100); padding:5px; border-radius:12px; width:max-content; max-width:100%; margin:16px 0; }
+  .route-switch button { border:0; background:transparent; border-radius:9px; color:var(--gray-500); font:13px var(--sans); padding:9px 14px; }
+  .route-switch button[aria-pressed="true"] { background:#fff; color:var(--slate); box-shadow:inset 0 -2px 0 var(--clay); }
+  .route-steps { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; margin:14px 0; }
+  .route-step { border:var(--border); border-radius:10px; background:#fff; padding:10px 12px; }
+  .route-step.new { border-color:var(--clay); background:#FBF1EC; }
+  .route-step i { font:600 11px var(--mono); color:var(--gray-500); font-style:normal; }
+  .route-step b { display:block; font-size:14px; margin:2px 0; }
+  .route-step small { display:block; font-size:12.5px; color:var(--gray-700); line-height:1.5; }
+  .route-note { font-size:13px; color:var(--gray-500); margin:0 0 4px; }
+
+  /* practice */
+  .sim { margin-bottom:16px; }
+  .sim h3 { margin-bottom:4px; }
+  .sim-buttons { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0; }
+  .sim-buttons button, .answer { font:14px var(--sans); border-radius:10px; border:var(--border); background:#fff; color:var(--gray-700); padding:10px 14px; text-align:left; }
+  .sim-buttons button:hover, .answer:hover:not(:disabled) { border-color:var(--gray-500); }
+  .sim-buttons button.selected { border-color:var(--clay); background:#FBF1EC; color:var(--slate); }
+  .sim-result { background:var(--gray-100); border-radius:10px; padding:12px 14px; font-size:14px; min-height:52px; color:var(--gray-700); }
+  .quiz-top { display:flex; justify-content:space-between; gap:10px; align-items:baseline; flex-wrap:wrap; }
+  .quiz-top .count { font:12px var(--mono); color:var(--gray-500); }
+  .question { font:500 18px/1.45 var(--serif); margin:14px 0 12px; }
+  .answers { display:grid; gap:8px; }
+  .answer { display:flex; gap:10px; align-items:flex-start; }
+  .answer .letter { width:22px; height:22px; flex:none; border-radius:6px; background:var(--gray-100); font:600 11px/22px var(--mono); text-align:center; }
+  .answer:disabled { cursor:default; }
+  .answer.correct { border-color:var(--olive); background:rgba(120,140,93,.12); }
+  .answer.wrong { border-color:var(--rust); background:rgba(176,74,63,.10); }
+  .feedback { display:none; margin-top:12px; padding:12px 14px; border-radius:10px; font-size:14px; border:var(--border); border-left-width:4px; background:#fff; }
+  .feedback.show { display:block; } .feedback.good { border-left-color:var(--olive); } .feedback.bad { border-left-color:var(--clay); }
+  .quiz-foot { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:14px; }
+  .quiz-foot span { font-size:13px; color:var(--gray-500); }
+  .checks { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  .check-item { display:flex; gap:10px; align-items:flex-start; padding:11px 13px; border:var(--border); border-radius:10px; background:#fff; font-size:14px; color:var(--gray-700); cursor:pointer; }
+  .check-item input { accent-color:var(--clay); margin-top:5px; flex:none; }
+  .check-item.done { background:rgba(120,140,93,.10); border-color:rgba(120,140,93,.45); }
+  .bar { height:6px; border-radius:999px; background:var(--gray-100); overflow:hidden; margin-top:8px; }
+  .bar span { display:block; height:100%; width:0; background:var(--olive); transition:width .2s; }
+  .check-progress { font-size:13px; color:var(--gray-500); margin-top:12px; }
+  .resources { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  .resource { display:block; padding:12px 14px; border:var(--border); border-radius:10px; background:#fff; color:var(--slate); text-decoration:none; }
+  .resource:hover { border-color:var(--clay); }
+  .resource b { display:block; font-size:14px; } .resource small { font:12px var(--mono); color:var(--gray-500); }
+  .warn ul { margin:6px 0 0; padding-left:20px; }
+  .foot { font-size:13px; color:var(--gray-500); border-top:1px solid var(--gray-300); padding-top:18px; }
+
+  @media (max-width: 920px) {
+    .layout { grid-template-columns:minmax(0,1fr); gap:24px; }
+    nav.toc { position:static; display:flex; flex-wrap:wrap; gap:4px 16px; }
+    nav.toc .label { width:100%; margin-bottom:2px; }
+    .fill { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .stages { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .two, .habits, .orient, .role-tabs, .legend, .checks, .resources { grid-template-columns:minmax(0,1fr); }
+    .route-steps { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  }
+  @media (max-width: 720px) {
+    body { padding:32px 16px 80px; }
+    .step { grid-template-columns:minmax(0,1fr); }
+    .num { margin-bottom:8px; }
+    .pr-mock { grid-template-columns:minmax(0,1fr); }
+    .pr-mock .arr { transform:rotate(90deg); height:32px; }
+  }
+  /* site nav */
+  .crumb { margin:0 0 18px; font:12px var(--mono); }
+  .crumb a { color:var(--gray-500); text-decoration:none; }
+  .crumb a:hover { color:var(--clay); }
+  .pager { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-top:40px; }
+  .pager a { display:block; padding:14px 18px; border:var(--border); border-radius:12px; background:#fff; color:var(--slate); text-decoration:none; }
+  .pager a:hover { border-color:var(--clay); }
+  .pager small { display:block; font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--gray-500); }
+  .pager b { font:500 17px/1.4 var(--serif); }
+  .pager .next { text-align:right; grid-column:2; }
+  .pager .prev { grid-column:1; }
+  @media (max-width:720px){ .pager{grid-template-columns:minmax(0,1fr);} .pager .next,.pager .prev{grid-column:1;text-align:left;} }
+  @media (prefers-reduced-motion: reduce) { * { transition:none !important; scroll-behavior:auto !important; } }
+
+  .fill.f4 { grid-template-columns:repeat(4,minmax(0,1fr)); }
+  .fill.f3 { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .fill.f2 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  @media (max-width: 920px) { .fill.f4, .fill.f3 { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  @media (max-width: 520px) { .fill.f4, .fill.f3, .fill.f2 { grid-template-columns:minmax(0,1fr); } }
+  .badge.bad { background:rgba(176,74,63,.15); color:var(--rust); }
+  .dec-out { background:var(--gray-100); border-radius:10px; padding:12px 14px; font-size:14px; color:var(--gray-700); margin-top:12px; }
+
+  .sb { margin:0; background:#fff; border:var(--border); border-radius:12px; overflow:hidden; }
+  .sb-pic { position:relative; border-bottom:var(--border); background:var(--gray-100); }
+  .sb-pic svg { display:block; width:100%; height:auto; aspect-ratio:16/9; }
+  .sb-n { position:absolute; left:8px; top:8px; z-index:1; min-width:22px; height:22px; padding:0 6px; border-radius:999px; display:grid; place-items:center; background:var(--slate); color:#fff; font:600 12px var(--mono); }
+  .sb figcaption { padding:10px 12px 12px; display:grid; gap:6px; font-size:13.5px; line-height:1.55; color:var(--gray-700); }
+  .sb figcaption b { font:600 11px var(--mono); letter-spacing:.06em; color:var(--gray-500); margin-right:8px; }
+  .sb .mk { display:inline-grid; place-items:center; width:18px; height:18px; margin-right:6px; border-radius:50%; background:var(--clay); color:#fff; font:600 11px var(--mono); vertical-align:1px; }
+  .sb-pic .mk { position:absolute; right:8px; top:8px; width:22px; height:22px; margin:0; z-index:1; }
+  .sbrow { display:grid; gap:14px; margin:14px 0; }
+  .sbrow.c2 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .sbrow.c3 { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .sbrow.c4 { grid-template-columns:repeat(4,minmax(0,1fr)); }
+  @media (max-width: 920px) { .sbrow.c3, .sbrow.c4 { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  @media (max-width: 520px) { .sbrow.c2, .sbrow.c3, .sbrow.c4 { grid-template-columns:minmax(0,1fr); } }
+  .sbone { max-width:520px; margin:14px 0; }
+  .lv { display:inline-block; margin-right:8px; padding:2px 10px; border-radius:999px; font:600 11px var(--mono); letter-spacing:.04em; vertical-align:2px; }
+  .lv.l1 { background:rgba(120,140,93,.18); color:#5C6E45; }
+  .lv.l2 { background:var(--oat); color:var(--gray-700); }
+  .lv.l3 { background:rgba(217,119,87,.18); color:var(--clay-d); }
+  .shotfig { margin:0; }
+  .shotfig svg { display:block; width:100%; height:auto; aspect-ratio:16/9; border:var(--border); border-radius:10px; background:var(--gray-100); }
+  .shotfig figcaption { font-size:13px; color:var(--gray-700); margin-top:6px; line-height:1.5; }
+  .shotfig.empty svg { background:#fff; border-style:dashed; }
+  .arrow-row { display:flex; gap:14px; align-items:flex-end; flex-wrap:wrap; margin:14px 0; }
+  .arrow-row .shotfig svg { width:auto; height:150px; }
+  .arrow-row .shotfig figcaption { text-align:center; font:600 12px var(--mono); color:var(--gray-700); }
+  @media (max-width: 520px) { .arrow-row .shotfig svg { height:110px; } }
+  .ar-43 svg { aspect-ratio:4/3; } .ar-11 svg { aspect-ratio:1/1; } .ar-916 svg { aspect-ratio:9/16; }
+  .duo { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+  @media (max-width: 720px) { .duo { grid-template-columns:minmax(0,1fr); } }
+  .duo .box > b { display:block; font:600 11px var(--mono); letter-spacing:.06em; color:var(--gray-500); margin-bottom:6px; }
+  .duo svg { display:block; width:100%; height:auto; aspect-ratio:16/9; border:var(--border); border-radius:10px; background:var(--gray-100); }
+  .master { touch-action:none; cursor:grab; border-radius:10px; } .master:active { cursor:grabbing; }
+  .master:focus-visible { outline:2px solid var(--clay); outline-offset:3px; }
+  .rng { display:flex; align-items:center; gap:12px; margin:14px 0 4px; font:12px var(--mono); color:var(--gray-500); }
+  .rng input { flex:1; accent-color:var(--clay); }
+  .info { margin-top:12px; background:var(--gray-100); border-radius:10px; padding:12px 14px; font-size:14px; line-height:1.65; color:var(--gray-700); }
+  .info h4 { margin:0 0 4px; font:500 20px var(--serif); color:var(--slate); } .info h4 small { font:12px var(--mono); color:var(--gray-500); margin-left:8px; }
+  .lab { display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); gap:16px; align-items:start; }
+  @media (max-width: 720px) { .lab { grid-template-columns:minmax(0,1fr); } }
+  .lab .stage svg { display:block; width:100%; height:auto; aspect-ratio:16/9; border:var(--border); border-radius:10px; background:var(--gray-100); }
+  .lab .grp { margin:0 0 12px; } .lab .grp > b { display:block; font:600 11px var(--mono); letter-spacing:.06em; color:var(--gray-500); margin-bottom:6px; }
+  .lab .opts { display:flex; flex-wrap:wrap; gap:6px; }
+  .lab .opts button { font:600 13px var(--sans); padding:7px 12px; border:var(--border); border-radius:999px; background:#fff; color:var(--slate); cursor:pointer; }
+  .lab .opts button:hover { border-color:var(--clay); }
+  .lab .opts button.on { background:var(--slate); color:#fff; border-color:var(--slate); }
+  .lab .opts button:focus-visible { outline:2px solid var(--clay); outline-offset:2px; }
+  .verdict { margin-top:12px; background:var(--gray-100); border-radius:10px; padding:12px 14px; font-size:14px; line-height:1.6; color:var(--gray-700); }
+  .verdict b.ok { color:#5C6E45; } .verdict b.no { color:var(--rust); }
+  .later { display:inline-block; margin-left:8px; padding:2px 10px; border-radius:999px; background:var(--oat); color:var(--gray-700); font:600 11px var(--mono); vertical-align:3px; }
+  .ctl { display:grid; gap:10px; grid-template-columns:repeat(2,minmax(0,1fr)); margin:12px 0; }
+  .ctl label { display:block; font:12px var(--mono); color:var(--gray-500); margin-bottom:4px; }
+  .ctl input { width:100%; font:15px var(--sans); padding:9px 12px; border:var(--border); border-radius:8px; background:#fff; color:var(--slate); }
+  .ctl input:focus-visible { outline:2px solid var(--clay); outline-offset:1px; }
+  @media (max-width: 720px) { .ctl { grid-template-columns:minmax(0,1fr); } }
+  .legend-key { display:flex; gap:18px; flex-wrap:wrap; margin:8px 0 0; font-size:13.5px; color:var(--gray-700); }
+  .legend-key span { display:inline-flex; align-items:center; gap:8px; }
+  .legend-key svg { width:44px; height:14px; }
+
+  .ch { margin:12px 0; }
+  .ch .opts { display:flex; flex-wrap:wrap; gap:6px; }
+  .ch .opts button { font:600 13px var(--sans); padding:7px 14px; border:var(--border); border-radius:999px; background:#fff; color:var(--slate); cursor:pointer; }
+  .ch .opts button:hover { border-color:var(--clay); }
+  .ch .opts button:focus-visible { outline:2px solid var(--clay); outline-offset:2px; }
+  .ch .opts button.ok { background:#5C6E45; color:#fff; border-color:#5C6E45; }
+  .ch .opts button.no { background:var(--rust); color:#fff; border-color:var(--rust); }
+  .ch .res { margin-top:12px; font-size:14px; line-height:1.65; color:var(--gray-700); }
+  .ch .res[hidden] { display:none; }
+  .ch .res .shotfig { max-width:420px; margin-top:8px; }
+
+  .mvpair { display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); gap:10px; align-items:center; margin:14px 0; }
+  .mvpair .mid { font:600 22px var(--mono); color:var(--clay); text-align:center; }
+  .mvpair .mid small { display:block; font:600 11px var(--mono); color:var(--gray-500); letter-spacing:.04em; }
+  @media (max-width: 520px) { .mvpair { grid-template-columns:minmax(0,1fr); } .mvpair .mid { transform:rotate(90deg); } }
+  .anim .stagebox { display:grid; gap:12px; }
+  .anim .stagebox.two { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  @media (max-width: 720px) { .anim .stagebox.two { grid-template-columns:minmax(0,1fr); } }
+  .anim .stage svg { display:block; width:100%; height:auto; aspect-ratio:16/9; border:var(--border); border-radius:10px; background:var(--gray-100); }
+  .anim .stage > b { display:block; font:600 11px var(--mono); letter-spacing:.06em; color:var(--gray-500); margin-bottom:6px; }
+  .anim .bar2 { display:flex; align-items:center; gap:12px; margin:12px 0 4px; }
+  .anim .bar2 input { flex:1; accent-color:var(--clay); }
+  .anim button.play { font:600 12px var(--mono); padding:8px 16px; border-radius:999px; border:0; background:var(--slate); color:#fff; cursor:pointer; min-width:84px; }
+  .anim button.play:focus-visible { outline:2px solid var(--clay); outline-offset:2px; }
+  .anim .note2 { font-size:13px; color:var(--gray-500); margin:6px 0 0; }
+  .anim .rm { display:none; font-size:13px; color:var(--gray-500); margin:6px 0 0; }
+  .anim.reduced .rm { display:block; } .anim.reduced button.play { display:none; }
+  .fx { display:flex; flex-wrap:wrap; gap:6px; margin:10px 0 0; }
+  .fx button { font:600 13px var(--sans); padding:7px 12px; border:var(--border); border-radius:999px; background:#fff; color:var(--slate); cursor:pointer; }
+  .fx button.on { background:var(--slate); color:#fff; border-color:var(--slate); }
+  .fx button:focus-visible { outline:2px solid var(--clay); outline-offset:2px; }
+  .feel { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin:12px 0; }
+  .feel > div { background:#fff; border:var(--border); border-radius:10px; padding:10px 12px; font-size:14px; line-height:1.6; color:var(--gray-700); }
+  .feel b { display:block; font:600 11px var(--mono); letter-spacing:.06em; color:var(--gray-500); margin-bottom:2px; }
+  @media (max-width: 520px) { .feel { grid-template-columns:minmax(0,1fr); } }
+
+  .skip { position:absolute; left:12px; top:-60px; z-index:100; background:var(--slate); color:var(--ivory);
+          padding:10px 16px; border-radius:8px; font-size:14px; text-decoration:none; }
+  .skip:focus { top:12px; outline:2px solid var(--clay); outline-offset:2px; }
+  main:focus { outline:none; }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">跳到主要內容</a>
+<div class="progress" aria-hidden="true"><span id="readBar"></span></div>
+<div class="page">
+
+<header>
+  <nav class="crumb" aria-label="站內導覽"><a href="../index.html#microfilm">← 回教學首頁</a></nav>
+  <div class="eyebrow">微電影分鏡入門 · 第 13 篇 · 軸線與連戲</div>
+  <h1>軸線與連戲：讓剪出來的畫面不會「跳」</h1>
+  <p class="sub">拍的時候都好看，剪起來卻怪怪的？這一篇由簡單到複雜學四個規則：軸線、視線匹配、30 度規則、正反打，讓觀眾一直知道誰在哪、看向誰。</p>
+  <div class="tldr"><b>TL;DR</b> <strong>軸線（180 度）</strong>：攝影機放同一側；<strong>視線匹配</strong>：A 看右、B 看左；<strong>30 度規則</strong>：連續兩格要換夠多；<strong>正反打</strong>：輪流拍說話的人。核心：讓觀眾<strong>一直知道誰在哪、看向誰</strong>。</div>
+</header>
+
+<div class="layout">
+<nav class="toc" aria-label="本頁目錄">
+  <div class="label">On this page</div>
+  <a href="#start">1. 為什麼要連戲</a>
+  <a href="#axis">2. 軸線</a>
+  <a href="#eye">3. 視線匹配</a>
+  <a href="#deg">4. 30 度規則</a>
+  <a href="#sr">5. 正反打</a>
+  <a href="#pick">6. 你來選</a>
+  <a href="#practice">7. 演練與檢查</a>
+</nav>
+
+<main id="main" tabindex="-1">
+<section id="start">
+  <h2>連戲：讓剪出來的畫面「接得上」</h2>
+  <hr class="rule">
+<p class="sub" style="margin-bottom:10px"><span class="lv l1">Level 1 · 先讀這段</span>拍的時候每個鏡頭都很好看，剪在一起卻會覺得<b>人物突然換邊、看的方向亂了、畫面「跳」了一下</b>。這就是連戲出了問題。這一篇學四個規則，由簡單到複雜：<b>軸線 → 視線 → 30 度 → 正反打</b>。</p>
+<div class="table-wrap"><div class="gt g3"><div class="row"><div class="cell head">規則</div><div class="cell head">一句話</div><div class="cell head">沒做到會怎樣</div></div><div class="row"><div class="cell term">軸線（180 度）</div><div class="cell">攝影機都放在軸線的同一側</div><div class="cell">人物突然換邊</div></div><div class="row"><div class="cell term">視線匹配</div><div class="cell">A 看右，B 就要看左</div><div class="cell">兩個人像在看同一個方向</div></div><div class="row"><div class="cell term">30 度規則</div><div class="cell">同一個人連續兩格，角度或景別要差夠多</div><div class="cell">畫面像跳了一下</div></div><div class="row"><div class="cell term">正反打</div><div class="cell">兩個方向輪流拍，輪流剪</div><div class="cell">（做對的話）對話自然</div></div></div></div>
+<div class="tip"><b class="l">小技巧</b>連戲的核心只有一件事：<b>讓觀眾一直知道誰在哪、誰看向誰</b>。觀眾搞懂了，才有心力看故事。</div>
+</section>
+
+<section id="axis">
+  <h2>軸線：兩個人之間那條看不見的線</h2>
+  <hr class="rule">
+<p><span class="lv l1">Level 1 · 跟著做</span>兩個人面對面，他們之間有一條<b>看不見的線</b>，叫<b>軸線</b>。規則很簡單：<b>攝影機只放在軸線的同一側</b>（圖中綠色這一邊），不要跨到另一邊。看俯視圖：</p>
+<div class="sbone"><figure class="shotfig "><svg viewBox="0 0 320 180" role="img" aria-label="俯視圖：兩人面對面，軸線在中間，攝影機都放在綠色的同一側" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><rect x="0" y="0" width="320" height="180" fill="#F0EEE6"/><rect x="0" y="90" width="320" height="90" fill="#788C5D" opacity=".16"/><line x1="0" y1="90" x2="320" y2="90" stroke="#B04A3F" stroke-width="1.8" stroke-dasharray="7 5"/><text x="312" y="85" text-anchor="end" font-size="9" font-weight="700" fill="#B04A3F" style="font-family:system-ui,sans-serif">軸線</text><path d="M70,150 L107.7,114.2 L122,152.1 Z" fill="#D97757" opacity=".2" stroke="#D97757" stroke-width="1"/><rect x="64" y="145" width="12" height="10" rx="2" fill="#D97757"/><text x="70" y="169" text-anchor="middle" font-size="9.5" font-weight="700" fill="#B85C3E" style="font-family:system-ui,sans-serif">①</text><path d="M250,150 L198,152.1 L212.3,114.2 Z" fill="#D97757" opacity=".2" stroke="#D97757" stroke-width="1"/><rect x="244" y="145" width="12" height="10" rx="2" fill="#D97757"/><text x="250" y="169" text-anchor="middle" font-size="9.5" font-weight="700" fill="#B85C3E" style="font-family:system-ui,sans-serif">②</text><path d="M200,30 L167.6,70.7 L148.3,35.2 Z" fill="#B04A3F" opacity=".2" stroke="#B04A3F" stroke-width="1"/><rect x="194" y="25" width="12" height="10" rx="2" fill="#B04A3F"/><text x="200" y="21" text-anchor="middle" font-size="9.5" font-weight="700" fill="#B04A3F" style="font-family:system-ui,sans-serif">③ 跨軸</text><circle cx="90" cy="90" r="11" fill="#D97757" stroke="#3D3D3A" stroke-width="1.5"/><path d="M105,90 L93.6,97.1 L93.6,82.9 Z" fill="#141413"/><text x="90" y="115" text-anchor="middle" font-size="10" font-weight="700" fill="#3D3D3A" style="font-family:system-ui,sans-serif">小安</text><circle cx="230" cy="90" r="11" fill="#788C5D" stroke="#3D3D3A" stroke-width="1.5"/><path d="M215,90 L226.4,82.9 L226.4,97.1 Z" fill="#141413"/><text x="230" y="115" text-anchor="middle" font-size="10" font-weight="700" fill="#3D3D3A" style="font-family:system-ui,sans-serif">小宇</text></svg><figcaption><b>①②</b>都在綠色這一側，是對的。<b>③</b>跨過軸線，畫面裡兩個人會換邊。</figcaption></figure></div>
+<div class="tip"><b class="l">小技巧</b>這張圖是「從上面往下看」，方便你想像攝影機放哪裡。畫分鏡時，可以先在紙上畫這樣的俯視圖，再畫每一格。</div>
+</section>
+
+<section id="eye">
+  <h2>視線匹配：A 看右，B 就要看左</h2>
+  <hr class="rule">
+<p><span class="lv l2">Level 2 · 再多認識</span>兩個人面對面時，<b>小安看向右邊，小宇就要看向左邊</b>，觀眾才知道他們在看對方。先看對的接法：</p>
+<div class="sbrow c2"><figure class="shotfig "><svg viewBox="90.7 23 138.7 78" role="img" aria-label="小安在畫面左邊，看向右邊" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><rect x="-900" y="-420" width="2120" height="550" fill="#F0EEE6"/><rect x="-900" y="130" width="2120" height="500" fill="#E3DACC"/><line x1="-900" y1="130" x2="1220" y2="130" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><rect x="16" y="26" width="170" height="104" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><rect x="34" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="34" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="72" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="72" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="110" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="110" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="148" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="148" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="86" y="100" width="26" height="30" fill="#87867F" stroke="#3D3D3A" stroke-width="1"/><rect x="202" y="70" width="14" height="60" fill="#3D3D3A"/><rect x="276" y="70" width="14" height="60" fill="#3D3D3A"/><rect x="202" y="76" width="88" height="6" fill="#3D3D3A"/><rect x="234" y="44" width="10" height="86" fill="#87867F"/><circle cx="239" cy="40" r="24" fill="#788C5D"/><line x1="125" y1="92" x2="120" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><line x1="125" y1="92" x2="130" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><rect x="98" y="62" width="13" height="30" rx="5" fill="#B85C3E"/><rect x="110" y="56" width="30" height="40" rx="12" fill="#D97757"/><line x1="125" y1="64" x2="121" y2="88" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><line x1="125" y1="64" x2="129" y2="88" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><circle cx="129" cy="88" r="3.6" fill="#E3DACC"/><circle cx="121" cy="88" r="3.6" fill="#E3DACC"/><circle cx="127" cy="46" r="11" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M115.4,46 A11.6 11.6 0 0 1 138.6,46 Z" fill="#141413"/><circle cx="119" cy="47" r="5" fill="#141413"/><circle cx="132.5" cy="47.5" r="1.6" fill="#141413"/><line x1="129.5" y1="52.5" x2="134.5" y2="52.5" stroke="#141413" stroke-width="1.3" stroke-linecap="round"/></svg><figcaption><b>①</b>小安在左邊，看向右邊。</figcaption></figure><figure class="shotfig "><svg viewBox="90.7 23 138.7 78" role="img" aria-label="小宇在畫面右邊，看向左邊" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><rect x="-900" y="-420" width="2120" height="550" fill="#F0EEE6"/><rect x="-900" y="130" width="2120" height="500" fill="#E3DACC"/><line x1="-900" y1="130" x2="1220" y2="130" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><rect x="16" y="26" width="170" height="104" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><rect x="34" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="34" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="72" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="72" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="110" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="110" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="148" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="148" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="86" y="100" width="26" height="30" fill="#87867F" stroke="#3D3D3A" stroke-width="1"/><rect x="202" y="70" width="14" height="60" fill="#3D3D3A"/><rect x="276" y="70" width="14" height="60" fill="#3D3D3A"/><rect x="202" y="76" width="88" height="6" fill="#3D3D3A"/><rect x="234" y="44" width="10" height="86" fill="#87867F"/><circle cx="239" cy="40" r="24" fill="#788C5D"/><g transform="translate(390 0) scale(-1 1)"><line x1="195" y1="92" x2="190" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><line x1="195" y1="92" x2="200" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><rect x="180" y="56" width="30" height="40" rx="12" fill="#788C5D"/><line x1="195" y1="64" x2="191" y2="88" stroke="#788C5D" stroke-width="7" stroke-linecap="round"/><line x1="195" y1="64" x2="199" y2="88" stroke="#788C5D" stroke-width="7" stroke-linecap="round"/><circle cx="199" cy="88" r="3.6" fill="#E3DACC"/><circle cx="191" cy="88" r="3.6" fill="#E3DACC"/><circle cx="195" cy="46" r="11" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M183.4,46 A11.6 11.6 0 0 1 206.6,46 Z" fill="#3D3D3A"/><circle cx="200.5" cy="47.5" r="1.6" fill="#141413"/><line x1="197.5" y1="52.5" x2="202.5" y2="52.5" stroke="#141413" stroke-width="1.3" stroke-linecap="round"/></g></svg><figcaption><b>②</b>小宇在右邊，看向左邊。✓ 面對面</figcaption></figure></div>
+<p>如果攝影機<b>跨過軸線</b>，第二格變成這樣：</p>
+<div class="sbrow c2"><figure class="shotfig "><svg viewBox="90.7 23 138.7 78" role="img" aria-label="小安在畫面左邊，看向右邊" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><rect x="-900" y="-420" width="2120" height="550" fill="#F0EEE6"/><rect x="-900" y="130" width="2120" height="500" fill="#E3DACC"/><line x1="-900" y1="130" x2="1220" y2="130" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><rect x="16" y="26" width="170" height="104" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><rect x="34" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="34" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="72" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="72" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="110" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="110" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="148" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="148" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="86" y="100" width="26" height="30" fill="#87867F" stroke="#3D3D3A" stroke-width="1"/><rect x="202" y="70" width="14" height="60" fill="#3D3D3A"/><rect x="276" y="70" width="14" height="60" fill="#3D3D3A"/><rect x="202" y="76" width="88" height="6" fill="#3D3D3A"/><rect x="234" y="44" width="10" height="86" fill="#87867F"/><circle cx="239" cy="40" r="24" fill="#788C5D"/><line x1="125" y1="92" x2="120" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><line x1="125" y1="92" x2="130" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><rect x="98" y="62" width="13" height="30" rx="5" fill="#B85C3E"/><rect x="110" y="56" width="30" height="40" rx="12" fill="#D97757"/><line x1="125" y1="64" x2="121" y2="88" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><line x1="125" y1="64" x2="129" y2="88" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><circle cx="129" cy="88" r="3.6" fill="#E3DACC"/><circle cx="121" cy="88" r="3.6" fill="#E3DACC"/><circle cx="127" cy="46" r="11" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M115.4,46 A11.6 11.6 0 0 1 138.6,46 Z" fill="#141413"/><circle cx="119" cy="47" r="5" fill="#141413"/><circle cx="132.5" cy="47.5" r="1.6" fill="#141413"/><line x1="129.5" y1="52.5" x2="134.5" y2="52.5" stroke="#141413" stroke-width="1.3" stroke-linecap="round"/></svg><figcaption><b>①</b>小安在左邊，看向右邊。</figcaption></figure><figure class="shotfig "><svg viewBox="90.7 23 138.7 78" role="img" aria-label="跨過軸線：小宇跑到左邊，看向右邊" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><rect x="-900" y="-420" width="2120" height="550" fill="#F0EEE6"/><rect x="-900" y="130" width="2120" height="500" fill="#E3DACC"/><line x1="-900" y1="130" x2="1220" y2="130" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><rect x="16" y="26" width="170" height="104" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><rect x="34" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="34" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="72" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="72" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="110" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="110" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="148" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="148" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="86" y="100" width="26" height="30" fill="#87867F" stroke="#3D3D3A" stroke-width="1"/><rect x="202" y="70" width="14" height="60" fill="#3D3D3A"/><rect x="276" y="70" width="14" height="60" fill="#3D3D3A"/><rect x="202" y="76" width="88" height="6" fill="#3D3D3A"/><rect x="234" y="44" width="10" height="86" fill="#87867F"/><circle cx="239" cy="40" r="24" fill="#788C5D"/><line x1="125" y1="92" x2="120" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><line x1="125" y1="92" x2="130" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><rect x="110" y="56" width="30" height="40" rx="12" fill="#788C5D"/><line x1="125" y1="64" x2="121" y2="88" stroke="#788C5D" stroke-width="7" stroke-linecap="round"/><line x1="125" y1="64" x2="129" y2="88" stroke="#788C5D" stroke-width="7" stroke-linecap="round"/><circle cx="129" cy="88" r="3.6" fill="#E3DACC"/><circle cx="121" cy="88" r="3.6" fill="#E3DACC"/><circle cx="127" cy="46" r="11" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M115.4,46 A11.6 11.6 0 0 1 138.6,46 Z" fill="#3D3D3A"/><circle cx="119" cy="47" r="5" fill="#3D3D3A"/><circle cx="132.5" cy="47.5" r="1.6" fill="#141413"/><line x1="129.5" y1="52.5" x2="134.5" y2="52.5" stroke="#141413" stroke-width="1.3" stroke-linecap="round"/></svg><figcaption><b>②</b>小宇跑到左邊，也看向右邊。✗ 兩個人像在看同一個方向</figcaption></figure></div>
+<div class="warn"><b class="l">觀眾的疑惑</b>第二種接法，觀眾會想：「他們不是面對面嗎？怎麼好像都看向同一個地方？」注意力就從故事上移開了。</div>
+</section>
+
+<section id="deg">
+  <h2>30 度規則：連續兩格要「換夠多」</h2>
+  <hr class="rule">
+<p><span class="lv l2">Level 2 · 再多認識</span>同一個人連續兩格，如果<b>景別差不多、角度也差不多</b>，剪起來會像畫面「跳」了一下（叫「跳接」）。解法有兩個：<b>換景別</b>（例如腰上景接特寫），或<b>把攝影機移開至少約 30 度</b>。</p>
+<div class="sbone"><figure class="shotfig "><svg viewBox="0 0 320 180" role="img" aria-label="俯視圖：三個機位，②和①太近，③和①差了約 30 度以上" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk6" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk6" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><rect x="0" y="0" width="320" height="180" fill="#F0EEE6"/><path d="M160,165 L139.8,117.1 L180.2,117.1 Z" fill="#D97757" opacity=".2" stroke="#D97757" stroke-width="1"/><rect x="154" y="160" width="12" height="10" rx="2" fill="#D97757"/><text x="160" y="184" text-anchor="middle" font-size="9.5" font-weight="700" fill="#B85C3E" style="font-family:system-ui,sans-serif">① 起點</text><path d="M176,165 L149.1,120.5 L189.1,114.7 Z" fill="#B04A3F" opacity=".2" stroke="#B04A3F" stroke-width="1"/><rect x="170" y="160" width="12" height="10" rx="2" fill="#B04A3F"/><text x="176" y="184" text-anchor="middle" font-size="9.5" font-weight="700" fill="#B04A3F" style="font-family:system-ui,sans-serif">② 差太少</text><path d="M85,148 L99.3,98 L130.8,123.4 Z" fill="#D97757" opacity=".2" stroke="#D97757" stroke-width="1"/><rect x="79" y="143" width="12" height="10" rx="2" fill="#D97757"/><text x="85" y="167" text-anchor="middle" font-size="9.5" font-weight="700" fill="#B85C3E" style="font-family:system-ui,sans-serif">③ 夠遠</text><circle cx="160" cy="55" r="11" fill="#D97757" stroke="#3D3D3A" stroke-width="1.5"/><path d="M160,70 L152.9,58.6 L167.1,58.6 Z" fill="#141413"/><text x="160" y="80" text-anchor="middle" font-size="10" font-weight="700" fill="#3D3D3A" style="font-family:system-ui,sans-serif">小安</text></svg><figcaption><b>①②</b>幾乎在同一個位置，剪起來會跳。<b>③</b>差了夠多角度，剪起來順。</figcaption></figure></div>
+<div class="sbrow c3"><figure class="shotfig "><svg viewBox="90.7 23 138.7 78" role="img" aria-label="小安，腰上景" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk7" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk7" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><rect x="-900" y="-420" width="2120" height="550" fill="#F0EEE6"/><rect x="-900" y="130" width="2120" height="500" fill="#E3DACC"/><line x1="-900" y1="130" x2="1220" y2="130" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><rect x="16" y="26" width="170" height="104" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><rect x="34" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="34" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="72" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="72" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="110" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="110" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="148" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="148" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="86" y="100" width="26" height="30" fill="#87867F" stroke="#3D3D3A" stroke-width="1"/><rect x="202" y="70" width="14" height="60" fill="#3D3D3A"/><rect x="276" y="70" width="14" height="60" fill="#3D3D3A"/><rect x="202" y="76" width="88" height="6" fill="#3D3D3A"/><rect x="234" y="44" width="10" height="86" fill="#87867F"/><circle cx="239" cy="40" r="24" fill="#788C5D"/><line x1="160" y1="92" x2="155" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><line x1="160" y1="92" x2="165" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><rect x="133" y="62" width="13" height="30" rx="5" fill="#B85C3E"/><rect x="145" y="56" width="30" height="40" rx="12" fill="#D97757"/><line x1="160" y1="64" x2="156" y2="88" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><line x1="160" y1="64" x2="164" y2="88" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><circle cx="164" cy="88" r="3.6" fill="#E3DACC"/><circle cx="156" cy="88" r="3.6" fill="#E3DACC"/><circle cx="162" cy="46" r="11" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M150.4,46 A11.6 11.6 0 0 1 173.6,46 Z" fill="#141413"/><circle cx="154" cy="47" r="5" fill="#141413"/><circle cx="167.5" cy="47.5" r="1.6" fill="#141413"/><line x1="164.5" y1="52.5" x2="169.5" y2="52.5" stroke="#141413" stroke-width="1.3" stroke-linecap="round"/></svg><figcaption><b>①</b>腰上景</figcaption></figure><figure class="shotfig "><svg viewBox="92.7 23 138.7 78" role="img" aria-label="小安，幾乎一樣的腰上景（只差一點點）" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk8" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk8" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><rect x="-900" y="-420" width="2120" height="550" fill="#F0EEE6"/><rect x="-900" y="130" width="2120" height="500" fill="#E3DACC"/><line x1="-900" y1="130" x2="1220" y2="130" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><rect x="16" y="26" width="170" height="104" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><rect x="34" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="34" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="72" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="72" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="110" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="110" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="148" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="148" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="86" y="100" width="26" height="30" fill="#87867F" stroke="#3D3D3A" stroke-width="1"/><rect x="202" y="70" width="14" height="60" fill="#3D3D3A"/><rect x="276" y="70" width="14" height="60" fill="#3D3D3A"/><rect x="202" y="76" width="88" height="6" fill="#3D3D3A"/><rect x="234" y="44" width="10" height="86" fill="#87867F"/><circle cx="239" cy="40" r="24" fill="#788C5D"/><line x1="163" y1="92" x2="158" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><line x1="163" y1="92" x2="168" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><rect x="136" y="62" width="13" height="30" rx="5" fill="#B85C3E"/><rect x="148" y="56" width="30" height="40" rx="12" fill="#D97757"/><line x1="163" y1="64" x2="159" y2="88" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><line x1="163" y1="64" x2="167" y2="88" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><circle cx="167" cy="88" r="3.6" fill="#E3DACC"/><circle cx="159" cy="88" r="3.6" fill="#E3DACC"/><circle cx="165" cy="46" r="11" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M153.4,46 A11.6 11.6 0 0 1 176.6,46 Z" fill="#141413"/><circle cx="157" cy="47" r="5" fill="#141413"/><circle cx="170.5" cy="47.5" r="1.6" fill="#141413"/><line x1="167.5" y1="52.5" x2="172.5" y2="52.5" stroke="#141413" stroke-width="1.3" stroke-linecap="round"/></svg><figcaption><b>②</b>幾乎一樣 ✗ 跳</figcaption></figure><figure class="shotfig "><svg viewBox="103 20 114 64" role="img" aria-label="小安，換成特寫" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk9" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk9" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><rect x="-900" y="-420" width="2120" height="550" fill="#F0EEE6"/><rect x="-900" y="130" width="2120" height="500" fill="#E3DACC"/><line x1="-900" y1="130" x2="1220" y2="130" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><rect x="16" y="26" width="170" height="104" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><rect x="34" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="34" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="72" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="72" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="110" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="110" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="148" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="148" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="86" y="100" width="26" height="30" fill="#87867F" stroke="#3D3D3A" stroke-width="1"/><rect x="202" y="70" width="14" height="60" fill="#3D3D3A"/><rect x="276" y="70" width="14" height="60" fill="#3D3D3A"/><rect x="202" y="76" width="88" height="6" fill="#3D3D3A"/><rect x="234" y="44" width="10" height="86" fill="#87867F"/><circle cx="239" cy="40" r="24" fill="#788C5D"/><line x1="160" y1="92" x2="155" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><line x1="160" y1="92" x2="165" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><rect x="133" y="62" width="13" height="30" rx="5" fill="#B85C3E"/><rect x="145" y="56" width="30" height="40" rx="12" fill="#D97757"/><line x1="160" y1="64" x2="156" y2="88" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><line x1="160" y1="64" x2="164" y2="88" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><circle cx="164" cy="88" r="3.6" fill="#E3DACC"/><circle cx="156" cy="88" r="3.6" fill="#E3DACC"/><circle cx="162" cy="46" r="11" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M150.4,46 A11.6 11.6 0 0 1 173.6,46 Z" fill="#141413"/><circle cx="154" cy="47" r="5" fill="#141413"/><circle cx="167.5" cy="47.5" r="1.6" fill="#141413"/><circle cx="167" cy="53.5" r="2" fill="#FFFFFF" stroke="#141413" stroke-width="1"/><line x1="165.5" y1="43" x2="169.5" y2="42.4" stroke="#141413" stroke-width="1.2" stroke-linecap="round"/></svg><figcaption><b>②</b>換成特寫 ✓ 順</figcaption></figure></div>
+<div class="tip"><b class="l">小技巧</b>30 度只是常用的經驗法則。最簡單的記法：<b>每一格都要比上一格「明顯不一樣」</b>，觀眾才會覺得是新的畫面。</div>
+</section>
+
+<section id="sr">
+  <h2>正反打：對話最常用的拍法</h2>
+  <hr class="rule">
+<p><span class="lv l3">Level 3 · 挑戰</span>前面的三個規則，合在一起就是<b>正反打</b>：兩個人對話，<b>輪流拍</b>說話的人，攝影機都放在軸線同一側，<b>視線匹配</b>，剪的時候輪流接。第 6 篇的過肩鏡頭就是這樣用的。</p>
+<div class="sbone"><figure class="shotfig "><svg viewBox="0 0 320 180" role="img" aria-label="俯視圖：正反打的兩個機位，都在軸線的同一側" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk10" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk10" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><rect x="0" y="0" width="320" height="180" fill="#F0EEE6"/><rect x="0" y="90" width="320" height="90" fill="#788C5D" opacity=".16"/><line x1="0" y1="90" x2="320" y2="90" stroke="#B04A3F" stroke-width="1.8" stroke-dasharray="7 5"/><text x="312" y="85" text-anchor="end" font-size="9" font-weight="700" fill="#B04A3F" style="font-family:system-ui,sans-serif">軸線</text><path d="M55,145 L94.6,111.3 L106.8,150 Z" fill="#D97757" opacity=".2" stroke="#D97757" stroke-width="1"/><rect x="49" y="140" width="12" height="10" rx="2" fill="#D97757"/><text x="55" y="164" text-anchor="middle" font-size="9.5" font-weight="700" fill="#B85C3E" style="font-family:system-ui,sans-serif">① 小安肩後</text><path d="M265,145 L213.2,150 L225.4,111.3 Z" fill="#D97757" opacity=".2" stroke="#D97757" stroke-width="1"/><rect x="259" y="140" width="12" height="10" rx="2" fill="#D97757"/><text x="265" y="164" text-anchor="middle" font-size="9.5" font-weight="700" fill="#B85C3E" style="font-family:system-ui,sans-serif">② 小宇肩後</text><circle cx="90" cy="90" r="11" fill="#D97757" stroke="#3D3D3A" stroke-width="1.5"/><path d="M105,90 L93.6,97.1 L93.6,82.9 Z" fill="#141413"/><text x="90" y="115" text-anchor="middle" font-size="10" font-weight="700" fill="#3D3D3A" style="font-family:system-ui,sans-serif">小安</text><circle cx="230" cy="90" r="11" fill="#788C5D" stroke="#3D3D3A" stroke-width="1.5"/><path d="M215,90 L226.4,82.9 L226.4,97.1 Z" fill="#141413"/><text x="230" y="115" text-anchor="middle" font-size="10" font-weight="700" fill="#3D3D3A" style="font-family:system-ui,sans-serif">小宇</text></svg><figcaption>兩個機位都在軸線同一側。①拍小宇，②拍小安。</figcaption></figure></div>
+<div class="sbrow c4"><figure class="sb"><div class="sb-pic"><span class="sb-n">1</span><svg viewBox="44 17 231 130" role="img" aria-label="雙人鏡頭：小安在左邊，小宇在右邊，面對面" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk11" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk11" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><rect x="-900" y="-420" width="2120" height="550" fill="#F0EEE6"/><rect x="-900" y="130" width="2120" height="500" fill="#E3DACC"/><line x1="-900" y1="130" x2="1220" y2="130" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><rect x="16" y="26" width="170" height="104" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><rect x="34" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="34" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="72" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="72" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="110" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="110" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="148" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="148" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="86" y="100" width="26" height="30" fill="#87867F" stroke="#3D3D3A" stroke-width="1"/><rect x="202" y="70" width="14" height="60" fill="#3D3D3A"/><rect x="276" y="70" width="14" height="60" fill="#3D3D3A"/><rect x="202" y="76" width="88" height="6" fill="#3D3D3A"/><rect x="234" y="44" width="10" height="86" fill="#87867F"/><circle cx="239" cy="40" r="24" fill="#788C5D"/><line x1="120" y1="92" x2="115" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><line x1="120" y1="92" x2="125" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><rect x="93" y="62" width="13" height="30" rx="5" fill="#B85C3E"/><rect x="105" y="56" width="30" height="40" rx="12" fill="#D97757"/><line x1="120" y1="64" x2="116" y2="88" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><line x1="120" y1="64" x2="124" y2="88" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><circle cx="124" cy="88" r="3.6" fill="#E3DACC"/><circle cx="116" cy="88" r="3.6" fill="#E3DACC"/><circle cx="122" cy="46" r="11" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M110.4,46 A11.6 11.6 0 0 1 133.6,46 Z" fill="#141413"/><circle cx="114" cy="47" r="5" fill="#141413"/><circle cx="127.5" cy="47.5" r="1.6" fill="#141413"/><path d="M124,52 Q127,56 130,52" fill="none" stroke="#141413" stroke-width="1.3" stroke-linecap="round"/><g transform="translate(400 0) scale(-1 1)"><line x1="200" y1="92" x2="195" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><line x1="200" y1="92" x2="205" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><rect x="185" y="56" width="30" height="40" rx="12" fill="#788C5D"/><line x1="200" y1="64" x2="196" y2="88" stroke="#788C5D" stroke-width="7" stroke-linecap="round"/><line x1="200" y1="64" x2="204" y2="88" stroke="#788C5D" stroke-width="7" stroke-linecap="round"/><circle cx="204" cy="88" r="3.6" fill="#E3DACC"/><circle cx="196" cy="88" r="3.6" fill="#E3DACC"/><circle cx="200" cy="46" r="11" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M188.4,46 A11.6 11.6 0 0 1 211.6,46 Z" fill="#3D3D3A"/><circle cx="205.5" cy="47.5" r="1.6" fill="#141413"/><path d="M202,52 Q205,56 208,52" fill="none" stroke="#141413" stroke-width="1.3" stroke-linecap="round"/></g></svg></div><figcaption><div><b>動作</b><span>小安遞出紙條。</span></div><div><b>鏡頭</b><span>全景，雙人鏡頭。<b>先交代位置</b>。</span></div></figcaption></figure><figure class="sb"><div class="sb-pic"><span class="sb-n">2</span><svg viewBox="0 0 320 180" role="img" aria-label="過肩鏡頭：小安的肩後，看小宇（小宇在右邊）" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk12" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk12" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><rect x="-900" y="-420" width="2120" height="550" fill="#F0EEE6"/><rect x="-900" y="130" width="2120" height="500" fill="#E3DACC"/><line x1="-900" y1="130" x2="1220" y2="130" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><rect x="16" y="26" width="170" height="104" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><rect x="34" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="34" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="72" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="72" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="110" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="110" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="148" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="148" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="86" y="100" width="26" height="30" fill="#87867F" stroke="#3D3D3A" stroke-width="1"/><rect x="202" y="70" width="14" height="60" fill="#3D3D3A"/><rect x="276" y="70" width="14" height="60" fill="#3D3D3A"/><rect x="202" y="76" width="88" height="6" fill="#3D3D3A"/><rect x="234" y="44" width="10" height="86" fill="#87867F"/><circle cx="239" cy="40" r="24" fill="#788C5D"/><line x1="225" y1="95" x2="220.4" y2="130" stroke="#3D3D3A" stroke-width="8.3" stroke-linecap="round"/><line x1="225" y1="95" x2="229.6" y2="130" stroke="#3D3D3A" stroke-width="8.3" stroke-linecap="round"/><rect x="211.2" y="61.9" width="27.6" height="36.8" rx="11" fill="#788C5D"/><line x1="225" y1="69.3" x2="212.1" y2="91.4" stroke="#788C5D" stroke-width="6.4" stroke-linecap="round"/><line x1="225" y1="69.3" x2="237.9" y2="91.4" stroke="#788C5D" stroke-width="6.4" stroke-linecap="round"/><circle cx="237.9" cy="91.4" r="3.3" fill="#E3DACC"/><circle cx="212.1" cy="91.4" r="3.3" fill="#E3DACC"/><circle cx="225" cy="52.7" r="10.1" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M214.3,52.7 A10.7 10.7 0 0 1 235.7,52.7 Z" fill="#3D3D3A"/><circle cx="220.9" cy="54.1" r="1.5" fill="#141413"/><circle cx="229.1" cy="54.1" r="1.5" fill="#141413"/><path d="M222.2,58.2 Q225,61.9 227.8,58.2" fill="none" stroke="#141413" stroke-width="1.3" stroke-linecap="round"/><line x1="36" y1="123.5" x2="27.3" y2="190" stroke="#3D3D3A" stroke-width="15.8" stroke-linecap="round"/><line x1="36" y1="123.5" x2="44.8" y2="190" stroke="#3D3D3A" stroke-width="15.8" stroke-linecap="round"/><rect x="15" y="67.5" width="42" height="52.5" rx="10.5" fill="#B85C3E"/><rect x="9.8" y="60.5" width="52.5" height="70" rx="21" fill="#D97757"/><line x1="36" y1="74.5" x2="11.5" y2="116.5" stroke="#D97757" stroke-width="12.3" stroke-linecap="round"/><line x1="36" y1="74.5" x2="60.5" y2="116.5" stroke="#D97757" stroke-width="12.3" stroke-linecap="round"/><circle cx="60.5" cy="116.5" r="6.3" fill="#E3DACC"/><circle cx="11.5" cy="116.5" r="6.3" fill="#E3DACC"/><circle cx="36" cy="43" r="19.3" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M15.7,43 A20.3 20.3 0 0 1 56.3,43 Z" fill="#141413"/><circle cx="36" cy="43" r="20.3" fill="#141413"/></svg></div><figcaption><div><b>動作</b><span>小安說話。</span></div><div><b>鏡頭</b><span>過肩，從小安肩後看小宇。</span></div></figcaption></figure><figure class="sb"><div class="sb-pic"><span class="sb-n">3</span><svg viewBox="0 0 320 180" role="img" aria-label="過肩鏡頭：小宇的肩後，看小安（小安在左邊）" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk13" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk13" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><rect x="-900" y="-420" width="2120" height="550" fill="#F0EEE6"/><rect x="-900" y="130" width="2120" height="500" fill="#E3DACC"/><line x1="-900" y1="130" x2="1220" y2="130" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><rect x="16" y="26" width="170" height="104" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><rect x="34" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="34" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="72" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="72" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="110" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="110" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="148" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="148" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="86" y="100" width="26" height="30" fill="#87867F" stroke="#3D3D3A" stroke-width="1"/><rect x="202" y="70" width="14" height="60" fill="#3D3D3A"/><rect x="276" y="70" width="14" height="60" fill="#3D3D3A"/><rect x="202" y="76" width="88" height="6" fill="#3D3D3A"/><rect x="234" y="44" width="10" height="86" fill="#87867F"/><circle cx="239" cy="40" r="24" fill="#788C5D"/><line x1="95" y1="95" x2="90.4" y2="130" stroke="#3D3D3A" stroke-width="8.3" stroke-linecap="round"/><line x1="95" y1="95" x2="99.6" y2="130" stroke="#3D3D3A" stroke-width="8.3" stroke-linecap="round"/><rect x="81.2" y="61.9" width="27.6" height="36.8" rx="11" fill="#D97757"/><line x1="95" y1="69.3" x2="82.1" y2="91.4" stroke="#D97757" stroke-width="6.4" stroke-linecap="round"/><line x1="95" y1="69.3" x2="107.9" y2="91.4" stroke="#D97757" stroke-width="6.4" stroke-linecap="round"/><circle cx="107.9" cy="91.4" r="3.3" fill="#E3DACC"/><circle cx="82.1" cy="91.4" r="3.3" fill="#E3DACC"/><circle cx="95" cy="52.7" r="10.1" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M84.3,52.7 A10.7 10.7 0 0 1 105.7,52.7 Z" fill="#141413"/><circle cx="90.9" cy="54.1" r="1.5" fill="#141413"/><circle cx="99.1" cy="54.1" r="1.5" fill="#141413"/><path d="M92.2,58.2 Q95,61.9 97.8,58.2" fill="none" stroke="#141413" stroke-width="1.3" stroke-linecap="round"/><line x1="284" y1="123.5" x2="275.3" y2="190" stroke="#3D3D3A" stroke-width="15.8" stroke-linecap="round"/><line x1="284" y1="123.5" x2="292.8" y2="190" stroke="#3D3D3A" stroke-width="15.8" stroke-linecap="round"/><rect x="257.8" y="60.5" width="52.5" height="70" rx="21" fill="#788C5D"/><line x1="284" y1="74.5" x2="259.5" y2="116.5" stroke="#788C5D" stroke-width="12.3" stroke-linecap="round"/><line x1="284" y1="74.5" x2="308.5" y2="116.5" stroke="#788C5D" stroke-width="12.3" stroke-linecap="round"/><circle cx="308.5" cy="116.5" r="6.3" fill="#E3DACC"/><circle cx="259.5" cy="116.5" r="6.3" fill="#E3DACC"/><circle cx="284" cy="43" r="19.3" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M263.7,43 A20.3 20.3 0 0 1 304.3,43 Z" fill="#3D3D3A"/><circle cx="284" cy="43" r="20.3" fill="#3D3D3A"/></svg></div><figcaption><div><b>動作</b><span>小宇回答。</span></div><div><b>鏡頭</b><span>過肩，從小宇肩後看小安。<b>換邊</b>輪流拍。</span></div></figcaption></figure><figure class="sb"><div class="sb-pic"><span class="sb-n">4</span><svg viewBox="103 20 114 64" role="img" aria-label="小安的反應：笑了" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk14" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk14" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><rect x="0" y="-420" width="320" height="550" fill="#F0EEE6"/><rect x="0" y="130" width="320" height="300" fill="#E3DACC"/><line x1="0" y1="130" x2="320" y2="130" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="0" y1="152" x2="320" y2="152" stroke="#D1CFC5" stroke-width="1" stroke-linecap="round"/><line x1="0" y1="168" x2="320" y2="168" stroke="#D1CFC5" stroke-width="1" stroke-linecap="round"/><rect x="4" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="12" y1="38" x2="34" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="12" y1="44" x2="34" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="35" cy="84" r="2.4" fill="#3D3D3A"/><rect x="48" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="56" y1="38" x2="78" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="56" y1="44" x2="78" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="79" cy="84" r="2.4" fill="#3D3D3A"/><rect x="92" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="100" y1="38" x2="122" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="100" y1="44" x2="122" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="123" cy="84" r="2.4" fill="#3D3D3A"/><rect x="136" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="144" y1="38" x2="166" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="144" y1="44" x2="166" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="167" cy="84" r="2.4" fill="#3D3D3A"/><rect x="180" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="188" y1="38" x2="210" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="188" y1="44" x2="210" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="211" cy="84" r="2.4" fill="#3D3D3A"/><rect x="228" y="24" width="80" height="82" rx="2" fill="#FFFFFF" stroke="#87867F" stroke-width="1.5"/><line x1="268" y1="24" x2="268" y2="106" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="228" y1="65" x2="308" y2="65" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="290" cy="48" r="12" fill="#788C5D" opacity=".45"/><line x1="160" y1="92" x2="155" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><line x1="160" y1="92" x2="165" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><rect x="133" y="62" width="13" height="30" rx="5" fill="#B85C3E"/><rect x="145" y="56" width="30" height="40" rx="12" fill="#D97757"/><line x1="160" y1="64" x2="156" y2="88" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><line x1="160" y1="64" x2="164" y2="88" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><circle cx="164" cy="88" r="3.6" fill="#E3DACC"/><circle cx="156" cy="88" r="3.6" fill="#E3DACC"/><circle cx="162" cy="46" r="11" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M150.4,46 A11.6 11.6 0 0 1 173.6,46 Z" fill="#141413"/><circle cx="154" cy="47" r="5" fill="#141413"/><circle cx="167.5" cy="47.5" r="1.6" fill="#141413"/><path d="M164,52 Q167,56 170,52" fill="none" stroke="#141413" stroke-width="1.3" stroke-linecap="round"/></svg></div><figcaption><div><b>動作</b><span>小安笑了。</span></div><div><b>鏡頭</b><span>近景，<b>反應鏡頭</b>。</span></div></figcaption></figure></div>
+<details><summary>進階：一定要換到另一邊，怎麼辦？</summary><div class="body">有時劇情真的需要換邊。常見做法：① 先拍一個<b>剛好在軸線上</b>的鏡頭，當作「橋」，讓觀眾重新定位。② 讓人物在畫面裡<b>走過去換位置</b>，軸線跟著移動。③ 用<b>插入鏡頭</b>（第 6 篇）當作緩衝。學會規則之後，再刻意打破，效果才會有意義。</div></details>
+</section>
+
+<section id="pick">
+  <h2>你來選</h2>
+  <hr class="rule">
+<p class="sub" style="margin-bottom:8px"><span class="lv l2">Level 2 · 自己改</span>讀情境，選最好的做法。</p>
+<div class="panel ch" data-ans="0"><p style="margin:0 0 10px"><b>1.</b> 兩人面對面對話，攝影機要放在哪裡？</p><div class="opts"><button type="button" data-i="0">軸線的同一側</button><button type="button" data-i="1">兩邊輪流放</button><button type="button" data-i="2">隨便放</button></div><div class="res" hidden><span class="vd"></span> 同一側才能讓兩人的左右位置保持一致。<figure class="shotfig "><svg viewBox="0 0 320 180" role="img" aria-label="俯視圖：兩人面對面，軸線在中間，攝影機都放在綠色的同一側" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk15" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk15" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><rect x="0" y="0" width="320" height="180" fill="#F0EEE6"/><rect x="0" y="90" width="320" height="90" fill="#788C5D" opacity=".16"/><line x1="0" y1="90" x2="320" y2="90" stroke="#B04A3F" stroke-width="1.8" stroke-dasharray="7 5"/><text x="312" y="85" text-anchor="end" font-size="9" font-weight="700" fill="#B04A3F" style="font-family:system-ui,sans-serif">軸線</text><path d="M70,150 L107.7,114.2 L122,152.1 Z" fill="#D97757" opacity=".2" stroke="#D97757" stroke-width="1"/><rect x="64" y="145" width="12" height="10" rx="2" fill="#D97757"/><text x="70" y="169" text-anchor="middle" font-size="9.5" font-weight="700" fill="#B85C3E" style="font-family:system-ui,sans-serif">①</text><path d="M250,150 L198,152.1 L212.3,114.2 Z" fill="#D97757" opacity=".2" stroke="#D97757" stroke-width="1"/><rect x="244" y="145" width="12" height="10" rx="2" fill="#D97757"/><text x="250" y="169" text-anchor="middle" font-size="9.5" font-weight="700" fill="#B85C3E" style="font-family:system-ui,sans-serif">②</text><path d="M200,30 L167.6,70.7 L148.3,35.2 Z" fill="#B04A3F" opacity=".2" stroke="#B04A3F" stroke-width="1"/><rect x="194" y="25" width="12" height="10" rx="2" fill="#B04A3F"/><text x="200" y="21" text-anchor="middle" font-size="9.5" font-weight="700" fill="#B04A3F" style="font-family:system-ui,sans-serif">③ 跨軸</text><circle cx="90" cy="90" r="11" fill="#D97757" stroke="#3D3D3A" stroke-width="1.5"/><path d="M105,90 L93.6,97.1 L93.6,82.9 Z" fill="#141413"/><text x="90" y="115" text-anchor="middle" font-size="10" font-weight="700" fill="#3D3D3A" style="font-family:system-ui,sans-serif">小安</text><circle cx="230" cy="90" r="11" fill="#788C5D" stroke="#3D3D3A" stroke-width="1.5"/><path d="M215,90 L226.4,82.9 L226.4,97.1 Z" fill="#141413"/><text x="230" y="115" text-anchor="middle" font-size="10" font-weight="700" fill="#3D3D3A" style="font-family:system-ui,sans-serif">小宇</text></svg><figcaption>俯視圖</figcaption></figure></div></div><div class="panel ch" data-ans="0"><p style="margin:0 0 10px"><b>2.</b> 第一格小安在左邊看向右邊。第二格的小宇應該？</p><div class="opts"><button type="button" data-i="0">在右邊看向左邊</button><button type="button" data-i="1">在左邊看向右邊</button><button type="button" data-i="2">看向鏡頭</button></div><div class="res" hidden><span class="vd"></span> A 看右、B 看左，觀眾才知道他們在看對方。<figure class="shotfig "><svg viewBox="90.7 23 138.7 78" role="img" aria-label="小宇在畫面右邊，看向左邊" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk16" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk16" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><rect x="-900" y="-420" width="2120" height="550" fill="#F0EEE6"/><rect x="-900" y="130" width="2120" height="500" fill="#E3DACC"/><line x1="-900" y1="130" x2="1220" y2="130" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><rect x="16" y="26" width="170" height="104" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><rect x="34" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="34" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="72" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="72" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="110" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="110" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="148" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="148" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="86" y="100" width="26" height="30" fill="#87867F" stroke="#3D3D3A" stroke-width="1"/><rect x="202" y="70" width="14" height="60" fill="#3D3D3A"/><rect x="276" y="70" width="14" height="60" fill="#3D3D3A"/><rect x="202" y="76" width="88" height="6" fill="#3D3D3A"/><rect x="234" y="44" width="10" height="86" fill="#87867F"/><circle cx="239" cy="40" r="24" fill="#788C5D"/><g transform="translate(390 0) scale(-1 1)"><line x1="195" y1="92" x2="190" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><line x1="195" y1="92" x2="200" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><rect x="180" y="56" width="30" height="40" rx="12" fill="#788C5D"/><line x1="195" y1="64" x2="191" y2="88" stroke="#788C5D" stroke-width="7" stroke-linecap="round"/><line x1="195" y1="64" x2="199" y2="88" stroke="#788C5D" stroke-width="7" stroke-linecap="round"/><circle cx="199" cy="88" r="3.6" fill="#E3DACC"/><circle cx="191" cy="88" r="3.6" fill="#E3DACC"/><circle cx="195" cy="46" r="11" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M183.4,46 A11.6 11.6 0 0 1 206.6,46 Z" fill="#3D3D3A"/><circle cx="200.5" cy="47.5" r="1.6" fill="#141413"/><line x1="197.5" y1="52.5" x2="202.5" y2="52.5" stroke="#141413" stroke-width="1.3" stroke-linecap="round"/></g></svg><figcaption>視線匹配</figcaption></figure></div></div><div class="panel ch" data-ans="1"><p style="margin:0 0 10px"><b>3.</b> 同一個人連續兩格，景別與角度都幾乎一樣，剪起來會？</p><div class="opts"><button type="button" data-i="0">很順</button><button type="button" data-i="1">像跳了一下</button><button type="button" data-i="2">完全沒影響</button></div><div class="res" hidden><span class="vd"></span> 這叫跳接，可以靠換景別或移開角度避免。<figure class="shotfig "><svg viewBox="92.7 23 138.7 78" role="img" aria-label="小安，幾乎一樣的腰上景（只差一點點）" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk17" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk17" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><rect x="-900" y="-420" width="2120" height="550" fill="#F0EEE6"/><rect x="-900" y="130" width="2120" height="500" fill="#E3DACC"/><line x1="-900" y1="130" x2="1220" y2="130" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><rect x="16" y="26" width="170" height="104" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><rect x="34" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="34" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="72" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="72" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="110" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="110" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="148" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="148" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="86" y="100" width="26" height="30" fill="#87867F" stroke="#3D3D3A" stroke-width="1"/><rect x="202" y="70" width="14" height="60" fill="#3D3D3A"/><rect x="276" y="70" width="14" height="60" fill="#3D3D3A"/><rect x="202" y="76" width="88" height="6" fill="#3D3D3A"/><rect x="234" y="44" width="10" height="86" fill="#87867F"/><circle cx="239" cy="40" r="24" fill="#788C5D"/><line x1="163" y1="92" x2="158" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><line x1="163" y1="92" x2="168" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><rect x="136" y="62" width="13" height="30" rx="5" fill="#B85C3E"/><rect x="148" y="56" width="30" height="40" rx="12" fill="#D97757"/><line x1="163" y1="64" x2="159" y2="88" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><line x1="163" y1="64" x2="167" y2="88" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><circle cx="167" cy="88" r="3.6" fill="#E3DACC"/><circle cx="159" cy="88" r="3.6" fill="#E3DACC"/><circle cx="165" cy="46" r="11" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M153.4,46 A11.6 11.6 0 0 1 176.6,46 Z" fill="#141413"/><circle cx="157" cy="47" r="5" fill="#141413"/><circle cx="170.5" cy="47.5" r="1.6" fill="#141413"/><line x1="167.5" y1="52.5" x2="172.5" y2="52.5" stroke="#141413" stroke-width="1.3" stroke-linecap="round"/></svg><figcaption>太像了</figcaption></figure></div></div><div class="panel ch" data-ans="0"><p style="margin:0 0 10px"><b>4.</b> 想讓第二格接得順，最簡單的做法？</p><div class="opts"><button type="button" data-i="0">換成特寫</button><button type="button" data-i="1">把畫面只移一點點</button><button type="button" data-i="2">同樣的鏡頭再拍一次</button></div><div class="res" hidden><span class="vd"></span> 明顯換景別，觀眾就會覺得是新畫面。<figure class="shotfig "><svg viewBox="103 20 114 64" role="img" aria-label="小安，換成特寫" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk18" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk18" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><rect x="-900" y="-420" width="2120" height="550" fill="#F0EEE6"/><rect x="-900" y="130" width="2120" height="500" fill="#E3DACC"/><line x1="-900" y1="130" x2="1220" y2="130" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><rect x="16" y="26" width="170" height="104" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><rect x="34" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="34" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="72" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="72" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="110" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="110" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="148" y="40" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="148" y="80" width="24" height="26" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><rect x="86" y="100" width="26" height="30" fill="#87867F" stroke="#3D3D3A" stroke-width="1"/><rect x="202" y="70" width="14" height="60" fill="#3D3D3A"/><rect x="276" y="70" width="14" height="60" fill="#3D3D3A"/><rect x="202" y="76" width="88" height="6" fill="#3D3D3A"/><rect x="234" y="44" width="10" height="86" fill="#87867F"/><circle cx="239" cy="40" r="24" fill="#788C5D"/><line x1="160" y1="92" x2="155" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><line x1="160" y1="92" x2="165" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><rect x="133" y="62" width="13" height="30" rx="5" fill="#B85C3E"/><rect x="145" y="56" width="30" height="40" rx="12" fill="#D97757"/><line x1="160" y1="64" x2="156" y2="88" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><line x1="160" y1="64" x2="164" y2="88" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><circle cx="164" cy="88" r="3.6" fill="#E3DACC"/><circle cx="156" cy="88" r="3.6" fill="#E3DACC"/><circle cx="162" cy="46" r="11" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M150.4,46 A11.6 11.6 0 0 1 173.6,46 Z" fill="#141413"/><circle cx="154" cy="47" r="5" fill="#141413"/><circle cx="167.5" cy="47.5" r="1.6" fill="#141413"/><circle cx="167" cy="53.5" r="2" fill="#FFFFFF" stroke="#141413" stroke-width="1"/><line x1="165.5" y1="43" x2="169.5" y2="42.4" stroke="#141413" stroke-width="1.2" stroke-linecap="round"/></svg><figcaption>換成特寫</figcaption></figure></div></div>
+<div class="panel" style="margin-top:14px"><h3><span class="lv l3">Level 3 · 挑戰</span></h3><p style="margin:0">把《紙條》第 6 段畫成<b>正反打</b>四格（雙人 → 小安肩後 → 小宇肩後 → 小安反應），並先畫一張<b>俯視圖</b>標出軸線與兩個機位。檢查：兩個過肩鏡頭裡，小安是不是都在左邊？</p></div>
+</section>
+
+<section id="practice">
+  <h2>動手演練與檢查</h2>
+  <hr class="rule">
+<div class="panel sim" data-simgroup>
+<h3>情境：剪接時發現兩人的對話「怪怪的，像在看同一個方向」</h3>
+<p style="margin:6px 0 0;color:var(--gray-700)">最可能的原因？</p>
+<div class="sim-buttons" role="group" aria-label="選擇做法"><button type="button" data-sim="a1">攝影機跨過了軸線</button><button type="button" data-sim="a2">景別選錯了</button><button type="button" data-sim="a3">角色太小了</button></div>
+<div class="sim-result" aria-live="polite">選一個做法，看看對不對。</div>
+</div>
+<div class="panel" id="quiz">
+    <div class="quiz-top"><h3 style="margin:0">快速測驗</h3><span class="count" id="quizCount">1 / 1</span></div>
+    <div class="question" id="quizQ"></div>
+    <div class="answers" id="quizAns"></div>
+    <div class="feedback" id="quizFb" aria-live="polite"></div>
+    <div class="quiz-foot"><span id="quizScore">答對 0 題</span><button type="button" class="primary" id="quizNext" disabled>下一題 →</button></div>
+  </div>
+<h3 style="margin-top:30px">開做之前，對照這張清單</h3>
+<div class="panel">
+<div class="checks" id="checks"><label class="check-item"><input type="checkbox"><span>我知道軸線是兩人之間看不見的那條線。</span></label><label class="check-item"><input type="checkbox"><span>我知道攝影機要放在軸線的同一側。</span></label><label class="check-item"><input type="checkbox"><span>我知道 A 看右，B 就要看左。</span></label><label class="check-item"><input type="checkbox"><span>我知道連續兩格太像會「跳接」，要換景別或換角度。</span></label><label class="check-item"><input type="checkbox"><span>我能說出正反打的做法：輪流拍、同一側、視線匹配。</span></label><label class="check-item"><input type="checkbox"><span>我已畫出《紙條》第 6 段的俯視圖與四格正反打。</span></label></div>
+<div class="check-progress" id="checkProgress">已完成 0 / 6 項</div>
+<div class="bar"><span id="checkBar"></span></div>
+</div>
+<h3 style="margin-top:30px">可自查的延伸閱讀</h3>
+<div class="panel"><ul style="margin:0;padding-left:20px"><li>看一段兩人對話的場景，留意每個人在畫面左邊還是右邊，有沒有一直保持不變。</li><li>用「180 度規則 30 度規則 視線匹配 正反打 跳接」當關鍵字，看不同來源怎麼說明。</li></ul></div>
+</section>
+</main>
+</div>
+
+<p class="foot" style="margin-top:28px">本頁是觀念與練習教學，不依賴特定器材：用手機、相機、平板都能照著做。不同學校或書籍對鏡頭名稱的叫法可能略有不同。內容整理日期：2026-11-10。</p>
+
+<nav class="pager" aria-label="上一篇與下一篇">
+  <a class="prev" href="microfilm-special-moves-guide.html"><small>上一篇</small><b>特殊運鏡</b></a>
+  <a class="next" href="microfilm-scenes-guide.html"><small>下一篇</small><b>情節配鏡頭速查</b></a>
+</nav>
+</div>
+
+<script>window.PAGE = {"sim": {"a1": "<b>很有可能！</b>跨過軸線，兩人的左右位置就會對調，看起來像在看同一個方向。", "a2": "<b>不太像。</b>景別影響的是看到多少，不是「看向哪裡」。", "a3": "<b>不太像。</b>人物的大小不會造成看向的方向錯亂。"}, "quiz": [{"q": "軸線是什麼？", "a": ["兩個人之間看不見的線", "畫面的邊框", "攝影機的線"], "c": 0, "why": "它決定攝影機該放在哪一側。"}, {"q": "攝影機跨過軸線，最可能發生什麼？", "a": ["兩人的左右位置對調，像在看同一方向", "畫面變暗", "人物變大"], "c": 0, "why": "觀眾會搞不清楚誰在哪。"}, {"q": "「視線匹配」是指？", "a": ["A 看右、B 就看左，讓視線接得上", "兩個人看同一個地方", "兩個人都看鏡頭"], "c": 0, "why": "面對面的兩人，方向相反才接得上。"}, {"q": "什麼叫「跳接」？", "a": ["兩格太像，剪起來畫面像跳一下", "兩格差很多", "剪太慢"], "c": 0, "why": "景別與角度要夠不一樣。"}, {"q": "正反打指的是？", "a": ["兩個方向輪流拍、輪流剪", "只拍一個人", "鏡頭一直不動"], "c": 0, "why": "對話最常用的拍法。"}]};</script>
+<script>
+(function () {
+  "use strict";
+  var CFG = window.PAGE || {};
+  function $(id){ return document.getElementById(id); }
+  function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+  function copyText(text, btn){
+    var orig = btn.textContent;
+    function flash(){
+      btn.textContent = "Copied ✓"; btn.classList.add("copied");
+      setTimeout(function(){ btn.textContent = orig; btn.classList.remove("copied"); }, 1200);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(flash, flash);
+    } else {
+      var ta = document.createElement("textarea"); ta.value = text;
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); } catch(e){}
+      document.body.removeChild(ta); flash();
+    }
+  }
+
+  /* ---------- fill-in template values ---------- */
+  var DEF = CFG.fill || {};
+  var vals = {};
+  var RE = /\{([A-Za-z0-9_]+)\}/g;
+  function val(k){ return vals[k] || DEF[k]; }
+  function resolvePlain(t){ return t.replace(RE, function(m, k){ return (k in DEF) ? val(k) : m; }); }
+  function resolveHtml(t){
+    var out = "", last = 0, m;
+    RE.lastIndex = 0;
+    while ((m = RE.exec(t))){
+      if (!(m[1] in DEF)) continue;
+      out += esc(t.slice(last, m.index)) + '<span class="slot">' + esc(val(m[1])) + "</span>";
+      last = RE.lastIndex;
+    }
+    return out + esc(t.slice(last));
+  }
+  function lineHtml(line){
+    if (line.trim().indexOf("# ") === 0) return '<span class="cm">' + resolveHtml(line) + "</span>";
+    var i = line.indexOf("  # ");
+    if (i > -1) return resolveHtml(line.slice(0, i)) + '<span class="cm">' + resolveHtml(line.slice(i)) + "</span>";
+    return resolveHtml(line);
+  }
+  var tplEls = Array.prototype.slice.call(document.querySelectorAll("[data-tpl]"));
+  tplEls.forEach(function(el){ el._tpl = el.textContent; });
+  function renderTpl(){
+    tplEls.forEach(function(el){
+      if (el.tagName === "PRE") el.innerHTML = el._tpl.split("\n").map(lineHtml).join("\n");
+      else el.innerHTML = resolveHtml(el._tpl);
+    });
+  }
+  var inputs = Array.prototype.slice.call(document.querySelectorAll(".fill input"));
+  inputs.forEach(function(inp){
+    inp.placeholder = DEF[inp.dataset.k] || "";
+    inp.addEventListener("input", function(){
+      var v = inp.value;
+      if (!inp.dataset.ns){ v = v.replace(/\s+/g, "-"); if (v !== inp.value) inp.value = v; }
+      vals[inp.dataset.k] = v;
+      renderTpl();
+    });
+  });
+  var rb = $("resetBtn");
+  if (rb) rb.addEventListener("click", function(){
+    inputs.forEach(function(inp){ inp.value = ""; vals[inp.dataset.k] = ""; });
+    renderTpl();
+  });
+  document.querySelectorAll(".cmd .copy").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var pre = btn.parentNode.querySelector("pre");
+      copyText(pre._tpl !== undefined ? resolvePlain(pre._tpl) : pre.textContent, btn);
+    });
+  });
+
+  /* ---------- reading progress + toc spy ---------- */
+  var readBar = $("readBar");
+  function updateBar(){
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    readBar.style.width = (max > 0 ? Math.min(100, window.scrollY / max * 100) : 0) + "%";
+  }
+  window.addEventListener("scroll", updateBar, { passive: true });
+  window.addEventListener("resize", updateBar);
+  updateBar();
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll("nav.toc a"));
+  if ("IntersectionObserver" in window){
+    var spy = new IntersectionObserver(function(es){
+      es.forEach(function(en){
+        if (en.isIntersecting) tocLinks.forEach(function(a){ a.classList.toggle("active", a.getAttribute("href") === "#" + en.target.id); });
+      });
+    }, { rootMargin: "-15% 0px -70% 0px" });
+    tocLinks.forEach(function(a){ var sec = document.querySelector(a.getAttribute("href")); if (sec) spy.observe(sec); });
+  }
+
+  /* ---------- scenario simulators ---------- */
+  var SIM = CFG.sim || {};
+  document.querySelectorAll("[data-simgroup]").forEach(function(group){
+    var btns = Array.prototype.slice.call(group.querySelectorAll("[data-sim]"));
+    var out = group.querySelector(".sim-result");
+    btns.forEach(function(btn){
+      btn.addEventListener("click", function(){
+        btns.forEach(function(b){ b.classList.toggle("selected", b === btn); });
+        out.innerHTML = SIM[btn.dataset.sim] || "";
+      });
+    });
+  });
+
+  /* ---------- quiz ---------- */
+  var QUIZ = CFG.quiz || [];
+  if (QUIZ.length && $("quiz")){
+    var qi = 0, qScore = 0, qDone = false;
+    var qCount = $("quizCount"), qQ = $("quizQ"), qAns = $("quizAns"), qFb = $("quizFb"), qNext = $("quizNext"), qScoreEl = $("quizScore");
+    var renderQuiz = function(){
+      var item = QUIZ[qi]; qDone = false;
+      qCount.textContent = (qi + 1) + " / " + QUIZ.length;
+      qQ.innerHTML = item.q;
+      qAns.innerHTML = "";
+      qFb.className = "feedback"; qFb.textContent = "";
+      qNext.disabled = true;
+      qNext.textContent = qi === QUIZ.length - 1 ? "重新測驗 ↻" : "下一題 →";
+      item.a.forEach(function(text, i){
+        var b = document.createElement("button");
+        b.type = "button"; b.className = "answer";
+        b.innerHTML = '<span class="letter">' + String.fromCharCode(65 + i) + "</span><span>" + esc(text) + "</span>";
+        b.addEventListener("click", function(){ pick(i); });
+        qAns.appendChild(b);
+      });
+    };
+    var pick = function(i){
+      if (qDone) return; qDone = true;
+      var item = QUIZ[qi], good = i === item.c;
+      Array.prototype.forEach.call(qAns.querySelectorAll("button"), function(b, n){
+        b.disabled = true;
+        if (n === item.c) b.classList.add("correct");
+        if (n === i && !good) b.classList.add("wrong");
+      });
+      if (good) qScore++;
+      qFb.className = "feedback show " + (good ? "good" : "bad");
+      qFb.innerHTML = "<b>" + (good ? "答對了！" : "再記一下這個觀念。") + "</b> " + esc(item.why);
+      qScoreEl.textContent = "答對 " + qScore + " / " + (qi + 1) + " 題";
+      qNext.disabled = false;
+    };
+    qNext.addEventListener("click", function(){
+      if (qi === QUIZ.length - 1){ qi = 0; qScore = 0; } else { qi++; }
+      renderQuiz();
+      qScoreEl.textContent = "答對 " + qScore + " 題";
+    });
+    renderQuiz();
+  }
+
+  /* ---------- checklist ---------- */
+  var checks = Array.prototype.slice.call(document.querySelectorAll("#checks input"));
+  function updateChecks(){
+    var n = checks.filter(function(c){ return c.checked; }).length;
+    $("checkProgress").textContent = "已完成 " + n + " / " + checks.length + " 項";
+    $("checkBar").style.width = (n / checks.length * 100) + "%";
+    checks.forEach(function(c){ c.closest(".check-item").classList.toggle("done", c.checked); });
+  }
+  checks.forEach(function(c){ c.addEventListener("change", updateChecks); });
+
+  /* ---------- role tabs (dual-view pages) ---------- */
+  var roleBtns = Array.prototype.slice.call(document.querySelectorAll("[data-role]"));
+  var rolePanels = Array.prototype.slice.call(document.querySelectorAll("[data-panel]"));
+  function setRole(r, focus){
+    roleBtns.forEach(function(b){
+      var on = b.dataset.role === r;
+      b.classList.toggle("on", on);
+      b.setAttribute("aria-selected", on ? "true" : "false");
+      b.tabIndex = on ? 0 : -1;
+      if (on && focus) b.focus();
+    });
+    rolePanels.forEach(function(p){ p.hidden = p.dataset.panel !== r; });
+  }
+  roleBtns.forEach(function(b){
+    b.addEventListener("click", function(){ setRole(b.dataset.role); });
+    b.addEventListener("keydown", function(e){
+      if (e.key === "ArrowLeft" || e.key === "ArrowRight"){
+        e.preventDefault(); setRole(b.dataset.role === "c" ? "o" : "c", true);
+      }
+    });
+  });
+  if (roleBtns.length) setRole("c");
+
+  /* ---------- stage stepper (two columns) ---------- */
+  var STAGES = CFG.stages || [];
+  if (STAGES.length && $("stages")){
+    var stage = 0;
+    var stagesEl = $("stages");
+    var renderStages = function(){
+      stagesEl.innerHTML = STAGES.map(function(s, i){
+        return '<button type="button" data-i="' + i + '" class="' + (i === stage ? "on" : "") + '" aria-pressed="' + (i === stage) + '">' +
+          '<span class="si">階段 ' + (i + 1) + "</span><span>" + s.label + '</span><span class="badge ' + s.tone + '">' + s.badge + "</span></button>";
+      }).join("");
+      var s = STAGES[stage];
+      $("c-h").textContent = s.c.h; $("o-h").textContent = s.o.h;
+      $("c-list").innerHTML = s.c.items.map(function(t){ return "<li>" + t + "</li>"; }).join("");
+      $("o-list").innerHTML = s.o.items.map(function(t){ return "<li>" + t + "</li>"; }).join("");
+      $("prevStage").disabled = stage === 0;
+      $("nextStage").disabled = stage === STAGES.length - 1;
+    };
+    stagesEl.addEventListener("click", function(e){
+      var b = e.target.closest("button[data-i]"); if (!b) return;
+      stage = +b.dataset.i; renderStages();
+    });
+    $("prevStage").addEventListener("click", function(){ if (stage > 0){ stage--; renderStages(); } });
+    $("nextStage").addEventListener("click", function(){ if (stage < STAGES.length - 1){ stage++; renderStages(); } });
+    renderStages();
+  }
+
+  /* ---------- decision picker ---------- */
+  var DECIDE = CFG.decide || [];
+  if (DECIDE.length && $("decideBtns")){
+    var decBtns = $("decideBtns"), decOut = $("decideOut");
+    decBtns.innerHTML = DECIDE.map(function(d, i){
+      return '<button type="button" data-d="' + i + '">' + d.label + "</button>";
+    }).join("");
+    decBtns.addEventListener("click", function(e){
+      var b = e.target.closest("button[data-d]"); if (!b) return;
+      var d = DECIDE[+b.dataset.d];
+      Array.prototype.forEach.call(decBtns.querySelectorAll("button"), function(x){ x.classList.toggle("selected", x === b); });
+      var tone = d.risk === "高" ? "bad" : (d.risk === "中" ? "warn" : "ok");
+      decOut.innerHTML = '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px"><b>建議做法</b><span class="badge ' + tone + '">風險：' + d.risk + "</span></div>" +
+        '<div class="cmd" style="margin:8px 0"><pre></pre><button type="button" class="copy">Copy</button></div><div>' + d.why + "</div>";
+      decOut.querySelector("pre").textContent = d.cmd;
+      decOut.querySelector(".copy").addEventListener("click", function(ev){ copyText(d.cmd, ev.currentTarget); });
+    });
+  }
+
+  renderTpl();
+  if (checks.length) updateChecks();
+})();
+
+</script>
+<script>
+Array.prototype.forEach.call(document.querySelectorAll(".ch"), function (c) {
+  c.querySelector(".opts").addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    var a = +c.dataset.ans, i = +b.dataset.i, bs = c.querySelectorAll(".opts button");
+    Array.prototype.forEach.call(bs, function (x, j) { x.classList.toggle("ok", j === a); x.classList.toggle("no", j === i && i !== a); x.setAttribute("aria-pressed", j === i); });
+    c.querySelector(".vd").innerHTML = i === a ? "<b>答對了！</b>" : "<b>再想想。</b>比較適合的是「" + bs[a].textContent + "」。";
+    c.querySelector(".res").hidden = false;
+  });
+});
+</script>
+</body>
+</html>

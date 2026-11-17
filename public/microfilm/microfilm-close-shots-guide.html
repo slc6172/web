@@ -1,0 +1,737 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>近景、胸上景、特寫、大特寫的功能</title>
+<meta name="description" content="越近越強調：近景看表情與手上的東西，胸上景更專注在臉，特寫放大情緒，大特寫只給一個小細節。每一個特寫都要有理由，並且先遠後近。">
+<meta name="theme-color" content="#FAF9F5">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='8'%20fill='%23FAF9F5'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='8'%20fill='%23D97757'/%3E%3C/svg%3E">
+<link rel="canonical" href="https://www.slc6172.workers.dev/microfilm/microfilm-close-shots-guide.html">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:site_name" content="自學教學站">
+<meta property="og:title" content="近景、胸上景、特寫、大特寫的功能">
+<meta property="og:description" content="越近越強調：近景看表情與手上的東西，胸上景更專注在臉，特寫放大情緒，大特寫只給一個小細節。每一個特寫都要有理由，並且先遠後近。">
+<meta property="og:url" content="https://www.slc6172.workers.dev/microfilm/microfilm-close-shots-guide.html">
+<meta name="twitter:card" content="summary">
+<style>
+  :root {
+    --ivory:#FAF9F5; --white:#FFFFFF; --slate:#141413;
+    --clay:#D97757; --clay-d:#B85C3E; --oat:#E3DACC; --olive:#788C5D; --rust:#B04A3F;
+    --gray-100:#F0EEE6; --gray-300:#D1CFC5; --gray-500:#87867F; --gray-700:#3D3D3A;
+    --serif: ui-serif, Georgia, "Times New Roman", "Noto Serif TC", "Songti TC", "PMingLiU", serif;
+    --sans:  system-ui, -apple-system, "Segoe UI", Roboto, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", Helvetica, Arial, sans-serif;
+    --mono:  ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
+    --border: 1.5px solid var(--gray-300);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  [hidden] { display:none !important; }
+  body { margin:0; padding:56px 24px 120px; background:var(--ivory); color:var(--slate);
+         font-family:var(--sans); font-size:15px; line-height:1.65; -webkit-font-smoothing:antialiased; }
+  .page { max-width:1100px; margin:0 auto; }
+  .page > header { margin-bottom:36px; }
+  .layout { display:grid; grid-template-columns:190px minmax(0,1fr); gap:48px; }
+  .layout > * { min-width:0; }
+  main > section { margin-bottom:56px; scroll-margin-top:24px; }
+
+  .eyebrow { font:12px var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--gray-500);
+             display:flex; align-items:center; gap:12px; margin-bottom:18px; }
+  .eyebrow::before { content:""; width:24px; height:1.5px; background:var(--clay); }
+  h1 { font:500 clamp(30px,4.6vw,42px)/1.18 var(--serif); letter-spacing:-.012em; margin:0 0 12px; }
+  h2 { font:500 25px/1.28 var(--serif); letter-spacing:-.01em; margin:0 0 6px; }
+  h3 { font:500 18px/1.35 var(--serif); margin:0 0 6px; }
+  .sub { color:var(--gray-700); max-width:680px; margin:0 0 4px; }
+  hr.rule { border:0; border-top:1px solid var(--gray-300); margin:10px 0 22px; }
+  p { margin:0 0 12px; }
+  code { font:12.5px var(--mono); background:var(--gray-100); padding:1px 5px; border-radius:4px; }
+  .slot { background:rgba(217,119,87,.14); color:var(--clay-d); border-radius:4px; padding:0 3px; }
+  pre .slot { background:rgba(217,119,87,.22); color:#F2B49E; }
+
+  .panel { background:var(--white); border:var(--border); border-radius:12px; padding:20px 22px; }
+  .tldr { border:var(--border); border-left:3px solid var(--clay); border-radius:10px; background:#fff; padding:16px 18px; margin-top:22px; max-width:820px; }
+  .tldr b { font:600 11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--clay-d); margin-right:6px; }
+
+  /* toc */
+  nav.toc { position:sticky; top:32px; align-self:start; font-size:13px; }
+  nav.toc .label { font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--gray-500); margin-bottom:8px; }
+  nav.toc a { display:block; padding:5px 0; color:var(--gray-700); text-decoration:none; }
+  nav.toc a:hover { color:var(--clay); }
+
+  /* buttons */
+  button { font:12px var(--mono); cursor:pointer; border-radius:999px; padding:9px 16px; transition:background .14s ease, transform .08s ease; }
+  button.primary { background:var(--slate); color:var(--ivory); border:1.5px solid var(--slate); }
+  button.primary:hover:not(:disabled) { background:var(--gray-700); }
+  button.primary:disabled { background:var(--gray-300); border-color:var(--gray-300); cursor:not-allowed; }
+  button.primary.copied { background:var(--olive); border-color:var(--olive); }
+  button.ghost { background:transparent; color:var(--gray-700); border:var(--border); }
+  button.ghost:hover { border-color:var(--gray-500); }
+  button:focus-visible, a:focus-visible, summary:focus-visible, input:focus-visible { outline:2px solid var(--clay); outline-offset:2px; }
+
+  /* tables (grid style) */
+  .table-wrap { overflow-x:auto; border:var(--border); border-radius:12px; background:#fff; }
+  .gt { min-width:560px; }
+  .gt .row { display:grid; gap:0; }
+  .gt .cell { padding:11px 14px; border-top:1px solid var(--gray-300); font-size:13.5px; }
+  .gt .row:first-child .cell { border-top:0; }
+  .gt .cell.head { font:11px var(--sans); text-transform:uppercase; letter-spacing:.06em; color:var(--gray-500); background:var(--gray-100); }
+  .gt .cell.term { font:600 12.5px var(--mono); }
+  .gt.g3 .row { grid-template-columns:150px minmax(0,1fr) minmax(0,1fr); }
+  .gt.g2 .row { grid-template-columns:140px minmax(0,1fr); }
+  .gt.g3b .row { grid-template-columns:170px minmax(0,1.2fr) minmax(0,1fr); }
+
+  /* code blocks */
+  .cmd { position:relative; background:var(--slate); border-radius:12px; margin:10px 0 12px; }
+  .cmd pre { margin:0; padding:16px 78px 16px 18px; font:12.5px/1.7 var(--mono); color:var(--ivory); overflow-x:auto; white-space:pre; }
+  .cmd .cm { color:var(--gray-500); }
+  .cmd button { position:absolute; top:9px; right:9px; padding:5px 11px; font-size:11px; color:var(--ivory);
+                background:rgba(250,249,245,.08); border:1px solid rgba(250,249,245,.28); }
+  .cmd button:hover { background:rgba(250,249,245,.18); }
+  .cmd button.copied { background:var(--olive); border-color:var(--olive); color:#fff; }
+  .cmd .cap { font:11px var(--mono); letter-spacing:.06em; color:var(--gray-500); padding:10px 18px 0; text-transform:uppercase; }
+  .cmd .cap + pre { padding-top:6px; }
+
+  /* diagram */
+  .canvas { background:#fff; border:var(--border); border-radius:12px; padding:14px; overflow-x:auto; }
+  .canvas svg { display:block; width:100%; height:auto; min-width:640px; }
+  .legend { list-style:none; margin:16px 0 0; padding:0; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 24px; }
+  .legend li { display:grid; grid-template-columns:26px minmax(0,1fr); gap:8px; font-size:13.5px; color:var(--gray-700); }
+  .legend .n { width:22px; height:22px; border-radius:50%; background:var(--clay); color:#fff; font:600 12px/22px var(--mono); text-align:center; }
+  .legend .n.k { background:var(--slate); }
+  .role { font:600 10.5px var(--mono); padding:1px 7px; border-radius:999px; margin-left:6px; white-space:nowrap; }
+  .role.c { background:rgba(217,119,87,.14); color:var(--clay-d); border:1px solid rgba(217,119,87,.45); }
+  .role.o { background:var(--oat); color:var(--slate); border:1px solid #CFC3AE; }
+
+  /* fill form */
+  .fill { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:12px; align-items:end; }
+  .fill label { display:block; font:11px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--gray-500); margin-bottom:5px; }
+  .fill input { width:100%; font:13px var(--mono); padding:9px 11px; border:var(--border); border-radius:8px; background:var(--gray-100); color:var(--slate); }
+  .fill-foot { display:flex; gap:12px; align-items:center; margin-top:14px; flex-wrap:wrap; }
+  .fill-foot span { font-size:13px; color:var(--gray-500); }
+
+  /* role tabs */
+  .role-tabs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin:18px 0 26px; }
+  .role-tabs button { text-align:left; font-family:var(--sans); font-size:14px; border-radius:12px; padding:16px 18px; background:#fff;
+                      border:var(--border); color:var(--gray-700); display:flex; flex-direction:column; gap:2px; }
+  .role-tabs button .rt { font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--gray-500); }
+  .role-tabs button b { font:500 20px/1.3 var(--serif); color:var(--slate); }
+  .role-tabs button:hover { border-color:var(--gray-500); }
+  .role-tabs button.on { border-color:var(--clay); background:#FBF1EC; }
+  .role-tabs button.on .rt { color:var(--clay-d); }
+
+  .orient { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-bottom:8px; }
+  .orient .panel { padding:14px 18px; font-size:13.5px; }
+  .orient .k { font:600 11px var(--mono); letter-spacing:.08em; text-transform:uppercase; display:block; margin-bottom:4px; }
+  .orient .known .k { color:#4B5C39; } .orient .new .k { color:var(--clay-d); }
+
+  /* steps */
+  .step { display:grid; grid-template-columns:40px minmax(0,1fr); gap:0 16px; padding:26px 0; border-top:1px solid var(--gray-300); }
+  .steps > .step:first-child { border-top:0; }
+  .step > * { min-width:0; }
+  .num { width:34px; height:34px; border-radius:50%; background:var(--oat); display:flex; align-items:center; justify-content:center; font:600 14px var(--mono); margin-top:2px; }
+  .step h3 { font-size:20px; margin:2px 0 6px; }
+  .why { color:var(--gray-700); margin:0 0 12px; }
+  .ops { margin:0 0 12px; padding-left:22px; color:var(--gray-700); }
+  .ops li { margin-bottom:5px; }
+  .see, .warn, .tip { border:var(--border); border-radius:8px; background:#fff; padding:10px 14px; font-size:13.5px; margin:12px 0; color:var(--gray-700); }
+  .see { border-left:3px solid var(--olive); } .warn { border-left:3px solid var(--rust); } .tip { border-left:3px solid var(--clay); }
+  .see b.l, .warn b.l, .tip b.l { font:600 11px var(--mono); letter-spacing:.08em; text-transform:uppercase; margin-right:6px; }
+  .see b.l { color:#4B5C39; } .warn b.l { color:var(--rust); } .tip b.l { color:var(--clay-d); }
+
+  /* PR compare mock */
+  .pr-mock { display:grid; grid-template-columns:minmax(0,1fr) 44px minmax(0,1fr); gap:0; align-items:stretch; margin:12px 0; }
+  .pr-mock .half { background:#fff; border:var(--border); border-radius:10px; padding:12px 14px; }
+  .pr-mock .half .t { font:600 11px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--gray-500); margin-bottom:6px; }
+  .pr-mock .half .r { font:12.5px var(--mono); margin:2px 0; word-break:break-all; }
+  .pr-mock .half .r i { font-style:normal; color:var(--gray-500); margin-right:6px; }
+  .pr-mock .arr { display:flex; align-items:center; justify-content:center; font:22px var(--mono); color:var(--clay); }
+  .pr-mock .half.base { border-color:var(--clay); background:#FBF1EC; }
+  .mock-cap { font-size:13px; color:var(--gray-500); margin:0 0 12px; }
+
+  .gh-tabs { display:flex; gap:0; border-bottom:1.5px solid var(--gray-300); margin:12px 0; overflow-x:auto; }
+  .gh-tabs span { padding:8px 16px; font-size:13.5px; color:var(--gray-500); white-space:nowrap; }
+  .gh-tabs span.on { color:var(--slate); box-shadow:inset 0 -2px 0 var(--clay); font-weight:600; }
+  .gh-tabs span small { font:11px var(--mono); margin-left:6px; color:var(--gray-500); }
+
+  /* diff */
+  .diff { font:12.5px/1.7 var(--mono); background:#fff; border:var(--border); border-radius:8px; overflow-x:auto; margin:12px 0 0; }
+  .diff-row { display:grid; grid-template-columns:44px 18px minmax(max-content,1fr); white-space:pre; padding-right:14px; }
+  .diff-row .ln { color:var(--gray-500); text-align:right; padding-right:10px; user-select:none; }
+  .diff-row.add { background:rgba(120,140,93,.12); } .diff-row.add .mark { color:var(--olive); font-weight:600; }
+  .diff-row.del { background:rgba(176,74,63,.10); } .diff-row.del .mark { color:var(--rust); font-weight:600; }
+  .bubble { background:#fff; border:var(--border); border-left:4px solid var(--olive); border-radius:8px; padding:10px 14px; margin:8px 0 0 44px; font-size:13px; max-width:560px; }
+  .bubble .who { font:600 11px var(--mono); color:var(--gray-500); display:block; margin-bottom:2px; }
+
+  /* lifecycle */
+  .stages { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; margin:18px 0 16px; }
+  .stages button { text-align:left; font-family:var(--sans); border-radius:10px; padding:11px 12px; background:#fff; border:var(--border); color:var(--gray-700); font-size:13px; display:flex; flex-direction:column; gap:6px; }
+  .stages button:hover { border-color:var(--gray-500); }
+  .stages button.on { border-color:var(--clay); background:#FBF1EC; }
+  .stages button .si { font:11px var(--mono); color:var(--gray-500); }
+  .badge { font:600 11px var(--mono); padding:2px 9px; border-radius:999px; align-self:flex-start; }
+  .badge.ok { background:rgba(120,140,93,.18); color:#4B5C39; }
+  .badge.warn { background:rgba(217,119,87,.18); color:var(--clay-d); }
+  .badge.done { background:var(--slate); color:var(--ivory); }
+  .two { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+  .two .panel h3 { display:flex; align-items:center; gap:8px; }
+  .two ul { margin:8px 0 0; padding-left:20px; color:var(--gray-700); }
+  .two li { margin-bottom:6px; }
+  .stage-nav { display:flex; gap:10px; margin-top:16px; }
+
+  /* details */
+  details { border:var(--border); border-radius:10px; background:#fff; margin:12px 0; overflow:hidden; }
+  summary { list-style:none; cursor:pointer; padding:14px 16px; font:17px/1.4 var(--serif); display:flex; align-items:baseline; gap:10px; }
+  summary::-webkit-details-marker { display:none; }
+  summary::before { content:"▸"; color:var(--gray-500); transition:transform .12s; flex:none; }
+  details[open] > summary::before { transform:rotate(90deg); }
+  details > .body { padding:0 18px 16px; border-top:1px solid var(--gray-300); padding-top:14px; }
+  details > .body > :last-child { margin-bottom:0; }
+
+  .habits { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+  .habits ul { margin:8px 0 0; padding-left:20px; color:var(--gray-700); }
+  .habits li { margin-bottom:6px; }
+  .export { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:8px; padding-top:20px; border-top:1px solid var(--gray-300); }
+  .export span { font-size:13px; color:var(--gray-500); }
+
+  /* progress + toc active */
+  .progress { position:fixed; top:0; left:0; right:0; height:3px; z-index:60; }
+  .progress span { display:block; height:100%; width:0; background:var(--clay); }
+  nav.toc a.active { color:var(--clay-d); font-weight:600; }
+
+  /* route switch */
+  .route-switch { display:flex; gap:6px; flex-wrap:wrap; background:var(--gray-100); padding:5px; border-radius:12px; width:max-content; max-width:100%; margin:16px 0; }
+  .route-switch button { border:0; background:transparent; border-radius:9px; color:var(--gray-500); font:13px var(--sans); padding:9px 14px; }
+  .route-switch button[aria-pressed="true"] { background:#fff; color:var(--slate); box-shadow:inset 0 -2px 0 var(--clay); }
+  .route-steps { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; margin:14px 0; }
+  .route-step { border:var(--border); border-radius:10px; background:#fff; padding:10px 12px; }
+  .route-step.new { border-color:var(--clay); background:#FBF1EC; }
+  .route-step i { font:600 11px var(--mono); color:var(--gray-500); font-style:normal; }
+  .route-step b { display:block; font-size:14px; margin:2px 0; }
+  .route-step small { display:block; font-size:12.5px; color:var(--gray-700); line-height:1.5; }
+  .route-note { font-size:13px; color:var(--gray-500); margin:0 0 4px; }
+
+  /* practice */
+  .sim { margin-bottom:16px; }
+  .sim h3 { margin-bottom:4px; }
+  .sim-buttons { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0; }
+  .sim-buttons button, .answer { font:14px var(--sans); border-radius:10px; border:var(--border); background:#fff; color:var(--gray-700); padding:10px 14px; text-align:left; }
+  .sim-buttons button:hover, .answer:hover:not(:disabled) { border-color:var(--gray-500); }
+  .sim-buttons button.selected { border-color:var(--clay); background:#FBF1EC; color:var(--slate); }
+  .sim-result { background:var(--gray-100); border-radius:10px; padding:12px 14px; font-size:14px; min-height:52px; color:var(--gray-700); }
+  .quiz-top { display:flex; justify-content:space-between; gap:10px; align-items:baseline; flex-wrap:wrap; }
+  .quiz-top .count { font:12px var(--mono); color:var(--gray-500); }
+  .question { font:500 18px/1.45 var(--serif); margin:14px 0 12px; }
+  .answers { display:grid; gap:8px; }
+  .answer { display:flex; gap:10px; align-items:flex-start; }
+  .answer .letter { width:22px; height:22px; flex:none; border-radius:6px; background:var(--gray-100); font:600 11px/22px var(--mono); text-align:center; }
+  .answer:disabled { cursor:default; }
+  .answer.correct { border-color:var(--olive); background:rgba(120,140,93,.12); }
+  .answer.wrong { border-color:var(--rust); background:rgba(176,74,63,.10); }
+  .feedback { display:none; margin-top:12px; padding:12px 14px; border-radius:10px; font-size:14px; border:var(--border); border-left-width:4px; background:#fff; }
+  .feedback.show { display:block; } .feedback.good { border-left-color:var(--olive); } .feedback.bad { border-left-color:var(--clay); }
+  .quiz-foot { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:14px; }
+  .quiz-foot span { font-size:13px; color:var(--gray-500); }
+  .checks { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  .check-item { display:flex; gap:10px; align-items:flex-start; padding:11px 13px; border:var(--border); border-radius:10px; background:#fff; font-size:14px; color:var(--gray-700); cursor:pointer; }
+  .check-item input { accent-color:var(--clay); margin-top:5px; flex:none; }
+  .check-item.done { background:rgba(120,140,93,.10); border-color:rgba(120,140,93,.45); }
+  .bar { height:6px; border-radius:999px; background:var(--gray-100); overflow:hidden; margin-top:8px; }
+  .bar span { display:block; height:100%; width:0; background:var(--olive); transition:width .2s; }
+  .check-progress { font-size:13px; color:var(--gray-500); margin-top:12px; }
+  .resources { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  .resource { display:block; padding:12px 14px; border:var(--border); border-radius:10px; background:#fff; color:var(--slate); text-decoration:none; }
+  .resource:hover { border-color:var(--clay); }
+  .resource b { display:block; font-size:14px; } .resource small { font:12px var(--mono); color:var(--gray-500); }
+  .warn ul { margin:6px 0 0; padding-left:20px; }
+  .foot { font-size:13px; color:var(--gray-500); border-top:1px solid var(--gray-300); padding-top:18px; }
+
+  @media (max-width: 920px) {
+    .layout { grid-template-columns:minmax(0,1fr); gap:24px; }
+    nav.toc { position:static; display:flex; flex-wrap:wrap; gap:4px 16px; }
+    nav.toc .label { width:100%; margin-bottom:2px; }
+    .fill { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .stages { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .two, .habits, .orient, .role-tabs, .legend, .checks, .resources { grid-template-columns:minmax(0,1fr); }
+    .route-steps { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  }
+  @media (max-width: 720px) {
+    body { padding:32px 16px 80px; }
+    .step { grid-template-columns:minmax(0,1fr); }
+    .num { margin-bottom:8px; }
+    .pr-mock { grid-template-columns:minmax(0,1fr); }
+    .pr-mock .arr { transform:rotate(90deg); height:32px; }
+  }
+  /* site nav */
+  .crumb { margin:0 0 18px; font:12px var(--mono); }
+  .crumb a { color:var(--gray-500); text-decoration:none; }
+  .crumb a:hover { color:var(--clay); }
+  .pager { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-top:40px; }
+  .pager a { display:block; padding:14px 18px; border:var(--border); border-radius:12px; background:#fff; color:var(--slate); text-decoration:none; }
+  .pager a:hover { border-color:var(--clay); }
+  .pager small { display:block; font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--gray-500); }
+  .pager b { font:500 17px/1.4 var(--serif); }
+  .pager .next { text-align:right; grid-column:2; }
+  .pager .prev { grid-column:1; }
+  @media (max-width:720px){ .pager{grid-template-columns:minmax(0,1fr);} .pager .next,.pager .prev{grid-column:1;text-align:left;} }
+  @media (prefers-reduced-motion: reduce) { * { transition:none !important; scroll-behavior:auto !important; } }
+
+  .fill.f4 { grid-template-columns:repeat(4,minmax(0,1fr)); }
+  .fill.f3 { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .fill.f2 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  @media (max-width: 920px) { .fill.f4, .fill.f3 { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  @media (max-width: 520px) { .fill.f4, .fill.f3, .fill.f2 { grid-template-columns:minmax(0,1fr); } }
+  .badge.bad { background:rgba(176,74,63,.15); color:var(--rust); }
+  .dec-out { background:var(--gray-100); border-radius:10px; padding:12px 14px; font-size:14px; color:var(--gray-700); margin-top:12px; }
+
+  .sb { margin:0; background:#fff; border:var(--border); border-radius:12px; overflow:hidden; }
+  .sb-pic { position:relative; border-bottom:var(--border); background:var(--gray-100); }
+  .sb-pic svg { display:block; width:100%; height:auto; aspect-ratio:16/9; }
+  .sb-n { position:absolute; left:8px; top:8px; z-index:1; min-width:22px; height:22px; padding:0 6px; border-radius:999px; display:grid; place-items:center; background:var(--slate); color:#fff; font:600 12px var(--mono); }
+  .sb figcaption { padding:10px 12px 12px; display:grid; gap:6px; font-size:13.5px; line-height:1.55; color:var(--gray-700); }
+  .sb figcaption b { font:600 11px var(--mono); letter-spacing:.06em; color:var(--gray-500); margin-right:8px; }
+  .sb .mk { display:inline-grid; place-items:center; width:18px; height:18px; margin-right:6px; border-radius:50%; background:var(--clay); color:#fff; font:600 11px var(--mono); vertical-align:1px; }
+  .sb-pic .mk { position:absolute; right:8px; top:8px; width:22px; height:22px; margin:0; z-index:1; }
+  .sbrow { display:grid; gap:14px; margin:14px 0; }
+  .sbrow.c2 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .sbrow.c3 { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .sbrow.c4 { grid-template-columns:repeat(4,minmax(0,1fr)); }
+  @media (max-width: 920px) { .sbrow.c3, .sbrow.c4 { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  @media (max-width: 520px) { .sbrow.c2, .sbrow.c3, .sbrow.c4 { grid-template-columns:minmax(0,1fr); } }
+  .sbone { max-width:520px; margin:14px 0; }
+  .lv { display:inline-block; margin-right:8px; padding:2px 10px; border-radius:999px; font:600 11px var(--mono); letter-spacing:.04em; vertical-align:2px; }
+  .lv.l1 { background:rgba(120,140,93,.18); color:#5C6E45; }
+  .lv.l2 { background:var(--oat); color:var(--gray-700); }
+  .lv.l3 { background:rgba(217,119,87,.18); color:var(--clay-d); }
+  .shotfig { margin:0; }
+  .shotfig svg { display:block; width:100%; height:auto; aspect-ratio:16/9; border:var(--border); border-radius:10px; background:var(--gray-100); }
+  .shotfig figcaption { font-size:13px; color:var(--gray-700); margin-top:6px; line-height:1.5; }
+  .shotfig.empty svg { background:#fff; border-style:dashed; }
+  .arrow-row { display:flex; gap:14px; align-items:flex-end; flex-wrap:wrap; margin:14px 0; }
+  .arrow-row .shotfig svg { width:auto; height:150px; }
+  .arrow-row .shotfig figcaption { text-align:center; font:600 12px var(--mono); color:var(--gray-700); }
+  @media (max-width: 520px) { .arrow-row .shotfig svg { height:110px; } }
+  .ar-43 svg { aspect-ratio:4/3; } .ar-11 svg { aspect-ratio:1/1; } .ar-916 svg { aspect-ratio:9/16; }
+  .duo { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+  @media (max-width: 720px) { .duo { grid-template-columns:minmax(0,1fr); } }
+  .duo .box > b { display:block; font:600 11px var(--mono); letter-spacing:.06em; color:var(--gray-500); margin-bottom:6px; }
+  .duo svg { display:block; width:100%; height:auto; aspect-ratio:16/9; border:var(--border); border-radius:10px; background:var(--gray-100); }
+  .master { touch-action:none; cursor:grab; border-radius:10px; } .master:active { cursor:grabbing; }
+  .master:focus-visible { outline:2px solid var(--clay); outline-offset:3px; }
+  .rng { display:flex; align-items:center; gap:12px; margin:14px 0 4px; font:12px var(--mono); color:var(--gray-500); }
+  .rng input { flex:1; accent-color:var(--clay); }
+  .info { margin-top:12px; background:var(--gray-100); border-radius:10px; padding:12px 14px; font-size:14px; line-height:1.65; color:var(--gray-700); }
+  .info h4 { margin:0 0 4px; font:500 20px var(--serif); color:var(--slate); } .info h4 small { font:12px var(--mono); color:var(--gray-500); margin-left:8px; }
+  .lab { display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); gap:16px; align-items:start; }
+  @media (max-width: 720px) { .lab { grid-template-columns:minmax(0,1fr); } }
+  .lab .stage svg { display:block; width:100%; height:auto; aspect-ratio:16/9; border:var(--border); border-radius:10px; background:var(--gray-100); }
+  .lab .grp { margin:0 0 12px; } .lab .grp > b { display:block; font:600 11px var(--mono); letter-spacing:.06em; color:var(--gray-500); margin-bottom:6px; }
+  .lab .opts { display:flex; flex-wrap:wrap; gap:6px; }
+  .lab .opts button { font:600 13px var(--sans); padding:7px 12px; border:var(--border); border-radius:999px; background:#fff; color:var(--slate); cursor:pointer; }
+  .lab .opts button:hover { border-color:var(--clay); }
+  .lab .opts button.on { background:var(--slate); color:#fff; border-color:var(--slate); }
+  .lab .opts button:focus-visible { outline:2px solid var(--clay); outline-offset:2px; }
+  .verdict { margin-top:12px; background:var(--gray-100); border-radius:10px; padding:12px 14px; font-size:14px; line-height:1.6; color:var(--gray-700); }
+  .verdict b.ok { color:#5C6E45; } .verdict b.no { color:var(--rust); }
+  .later { display:inline-block; margin-left:8px; padding:2px 10px; border-radius:999px; background:var(--oat); color:var(--gray-700); font:600 11px var(--mono); vertical-align:3px; }
+  .ctl { display:grid; gap:10px; grid-template-columns:repeat(2,minmax(0,1fr)); margin:12px 0; }
+  .ctl label { display:block; font:12px var(--mono); color:var(--gray-500); margin-bottom:4px; }
+  .ctl input { width:100%; font:15px var(--sans); padding:9px 12px; border:var(--border); border-radius:8px; background:#fff; color:var(--slate); }
+  .ctl input:focus-visible { outline:2px solid var(--clay); outline-offset:1px; }
+  @media (max-width: 720px) { .ctl { grid-template-columns:minmax(0,1fr); } }
+  .legend-key { display:flex; gap:18px; flex-wrap:wrap; margin:8px 0 0; font-size:13.5px; color:var(--gray-700); }
+  .legend-key span { display:inline-flex; align-items:center; gap:8px; }
+  .legend-key svg { width:44px; height:14px; }
+
+  .ch { margin:12px 0; }
+  .ch .opts { display:flex; flex-wrap:wrap; gap:6px; }
+  .ch .opts button { font:600 13px var(--sans); padding:7px 14px; border:var(--border); border-radius:999px; background:#fff; color:var(--slate); cursor:pointer; }
+  .ch .opts button:hover { border-color:var(--clay); }
+  .ch .opts button:focus-visible { outline:2px solid var(--clay); outline-offset:2px; }
+  .ch .opts button.ok { background:#5C6E45; color:#fff; border-color:#5C6E45; }
+  .ch .opts button.no { background:var(--rust); color:#fff; border-color:var(--rust); }
+  .ch .res { margin-top:12px; font-size:14px; line-height:1.65; color:var(--gray-700); }
+  .ch .res[hidden] { display:none; }
+  .ch .res .shotfig { max-width:420px; margin-top:8px; }
+
+  .mvpair { display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); gap:10px; align-items:center; margin:14px 0; }
+  .mvpair .mid { font:600 22px var(--mono); color:var(--clay); text-align:center; }
+  .mvpair .mid small { display:block; font:600 11px var(--mono); color:var(--gray-500); letter-spacing:.04em; }
+  @media (max-width: 520px) { .mvpair { grid-template-columns:minmax(0,1fr); } .mvpair .mid { transform:rotate(90deg); } }
+  .anim .stagebox { display:grid; gap:12px; }
+  .anim .stagebox.two { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  @media (max-width: 720px) { .anim .stagebox.two { grid-template-columns:minmax(0,1fr); } }
+  .anim .stage svg { display:block; width:100%; height:auto; aspect-ratio:16/9; border:var(--border); border-radius:10px; background:var(--gray-100); }
+  .anim .stage > b { display:block; font:600 11px var(--mono); letter-spacing:.06em; color:var(--gray-500); margin-bottom:6px; }
+  .anim .bar2 { display:flex; align-items:center; gap:12px; margin:12px 0 4px; }
+  .anim .bar2 input { flex:1; accent-color:var(--clay); }
+  .anim button.play { font:600 12px var(--mono); padding:8px 16px; border-radius:999px; border:0; background:var(--slate); color:#fff; cursor:pointer; min-width:84px; }
+  .anim button.play:focus-visible { outline:2px solid var(--clay); outline-offset:2px; }
+  .anim .note2 { font-size:13px; color:var(--gray-500); margin:6px 0 0; }
+  .anim .rm { display:none; font-size:13px; color:var(--gray-500); margin:6px 0 0; }
+  .anim.reduced .rm { display:block; } .anim.reduced button.play { display:none; }
+  .fx { display:flex; flex-wrap:wrap; gap:6px; margin:10px 0 0; }
+  .fx button { font:600 13px var(--sans); padding:7px 12px; border:var(--border); border-radius:999px; background:#fff; color:var(--slate); cursor:pointer; }
+  .fx button.on { background:var(--slate); color:#fff; border-color:var(--slate); }
+  .fx button:focus-visible { outline:2px solid var(--clay); outline-offset:2px; }
+  .feel { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin:12px 0; }
+  .feel > div { background:#fff; border:var(--border); border-radius:10px; padding:10px 12px; font-size:14px; line-height:1.6; color:var(--gray-700); }
+  .feel b { display:block; font:600 11px var(--mono); letter-spacing:.06em; color:var(--gray-500); margin-bottom:2px; }
+  @media (max-width: 520px) { .feel { grid-template-columns:minmax(0,1fr); } }
+
+  .skip { position:absolute; left:12px; top:-60px; z-index:100; background:var(--slate); color:var(--ivory);
+          padding:10px 16px; border-radius:8px; font-size:14px; text-decoration:none; }
+  .skip:focus { top:12px; outline:2px solid var(--clay); outline-offset:2px; }
+  main:focus { outline:none; }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">跳到主要內容</a>
+<div class="progress" aria-hidden="true"><span id="readBar"></span></div>
+<div class="page">
+
+<header>
+  <nav class="crumb" aria-label="站內導覽"><a href="../index.html#microfilm">← 回教學首頁</a></nav>
+  <div class="eyebrow">微電影分鏡入門 · 第 5 篇 · 近景到大特寫</div>
+  <h1>近景、胸上景、特寫、大特寫：把注意力放在情緒上</h1>
+  <p class="sub">學完拍得遠的一半，這一篇學拍得近的一半。近的景別是「放大鏡」，放大哪裡，觀眾就看哪裡。</p>
+  <div class="tldr"><b>TL;DR</b> 越近越強調：<strong>近景</strong>看表情與手上的東西，<strong>胸上景</strong>更專注在臉，<strong>特寫</strong>放大情緒，<strong>大特寫</strong>只給一個小細節。每一個特寫都要有理由，並且<strong>先遠後近</strong>。</div>
+</header>
+
+<div class="layout">
+<nav class="toc" aria-label="本頁目錄">
+  <div class="label">On this page</div>
+  <a href="#start">1. 近的景別</a>
+  <a href="#near">2. 近景與胸上景</a>
+  <a href="#cu">3. 特寫</a>
+  <a href="#ecu">4. 大特寫</a>
+  <a href="#lab">5. 你來選景別</a>
+  <a href="#practice">6. 演練與檢查</a>
+</nav>
+
+<main id="main" tabindex="-1">
+<section id="start">
+  <h2>拍得越近，越像在說「你看這裡」</h2>
+  <hr class="rule">
+<p class="sub" style="margin-bottom:10px"><span class="lv l1">Level 1 · 跟著做</span>上一篇學拍得遠的一半，這一篇學<b>拍得近</b>的一半：近景、胸上景、特寫、大特寫。它們有一個共通的功能：<b>把觀眾的注意力放在情緒上</b>。</p>
+<div class="table-wrap"><div class="gt g3"><div class="row"><div class="cell head">景別</div><div class="cell head">拍到哪裡</div><div class="cell head">主要功能</div></div><div class="row"><div class="cell term">近景</div><div class="cell">胸口以上</div><div class="cell">表情 + 手上的小物件</div></div><div class="row"><div class="cell term">胸上景</div><div class="cell">肩膀以上</div><div class="cell">更專注在臉</div></div><div class="row"><div class="cell term">特寫</div><div class="cell">整張臉</div><div class="cell">強調情緒</div></div><div class="row"><div class="cell term">大特寫</div><div class="cell">眼睛或物件細節</div><div class="cell">最強烈的強調</div></div></div></div>
+<div class="tip"><b class="l">小技巧</b>越近，越強調，但也越不能亂用。<b>每個特寫都應該有理由。</b></div>
+</section>
+
+<section id="near">
+  <h2>近景與胸上景：看表情，但還有一點身體</h2>
+  <hr class="rule">
+<p>《紙條》第 3 段，小安讀紙條。近景讓我們看到<b>她的臉，也看得到手上的紙條</b>。</p>
+<div class="sbrow c2"><figure class="shotfig "><svg viewBox="553.8 32 92.4 52" role="img" aria-label="近景：表情與手上的紙條" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><rect x="0" y="-420" width="1200" height="550" fill="#F0EEE6"/><rect x="0" y="130" width="1200" height="300" fill="#E3DACC"/><line x1="0" y1="130" x2="1200" y2="130" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="0" y1="152" x2="1200" y2="152" stroke="#D1CFC5" stroke-width="1" stroke-linecap="round"/><line x1="0" y1="168" x2="1200" y2="168" stroke="#D1CFC5" stroke-width="1" stroke-linecap="round"/><rect x="532" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="540" y1="38" x2="562" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="540" y1="44" x2="562" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="563" cy="84" r="2.4" fill="#3D3D3A"/><rect x="576" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="584" y1="38" x2="606" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="584" y1="44" x2="606" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="607" cy="84" r="2.4" fill="#3D3D3A"/><rect x="620" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="628" y1="38" x2="650" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="628" y1="44" x2="650" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="651" cy="84" r="2.4" fill="#3D3D3A"/><line x1="600" y1="92" x2="595" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><line x1="600" y1="92" x2="605" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><rect x="573" y="62" width="13" height="30" rx="5" fill="#B85C3E"/><rect x="585" y="56" width="30" height="40" rx="12" fill="#D97757"/><line x1="600" y1="64" x2="614" y2="74" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><line x1="600" y1="64" x2="614" y2="72" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><circle cx="614" cy="72" r="3.6" fill="#E3DACC"/><circle cx="614" cy="74" r="3.6" fill="#E3DACC"/><rect x="608" y="60" width="15" height="19" rx="1" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><circle cx="602" cy="46" r="11" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M590.4,46 A11.6 11.6 0 0 1 613.6,46 Z" fill="#141413"/><circle cx="594" cy="47" r="5" fill="#141413"/><circle cx="607.5" cy="47.5" r="1.6" fill="#141413"/><line x1="604.5" y1="53.5" x2="609.5" y2="52.5" stroke="#141413" stroke-width="1.3" stroke-linecap="round"/><line x1="605.5" y1="43.6" x2="609.5" y2="42" stroke="#141413" stroke-width="1.2" stroke-linecap="round"/></svg><figcaption><b>近景</b>：胸口以上。表情清楚，手上的紙條也還在。</figcaption></figure><figure class="shotfig "><svg viewBox="570.7 30.7 58.7 33" role="img" aria-label="胸上景：頭和肩膀" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><rect x="0" y="-420" width="1200" height="550" fill="#F0EEE6"/><rect x="0" y="130" width="1200" height="300" fill="#E3DACC"/><line x1="0" y1="130" x2="1200" y2="130" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="0" y1="152" x2="1200" y2="152" stroke="#D1CFC5" stroke-width="1" stroke-linecap="round"/><line x1="0" y1="168" x2="1200" y2="168" stroke="#D1CFC5" stroke-width="1" stroke-linecap="round"/><rect x="532" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="540" y1="38" x2="562" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="540" y1="44" x2="562" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="563" cy="84" r="2.4" fill="#3D3D3A"/><rect x="576" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="584" y1="38" x2="606" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="584" y1="44" x2="606" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="607" cy="84" r="2.4" fill="#3D3D3A"/><rect x="620" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="628" y1="38" x2="650" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="628" y1="44" x2="650" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="651" cy="84" r="2.4" fill="#3D3D3A"/><line x1="600" y1="92" x2="595" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><line x1="600" y1="92" x2="605" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><rect x="573" y="62" width="13" height="30" rx="5" fill="#B85C3E"/><rect x="585" y="56" width="30" height="40" rx="12" fill="#D97757"/><line x1="600" y1="64" x2="596" y2="88" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><line x1="600" y1="64" x2="604" y2="88" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><circle cx="604" cy="88" r="3.6" fill="#E3DACC"/><circle cx="596" cy="88" r="3.6" fill="#E3DACC"/><circle cx="602" cy="46" r="11" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M590.4,46 A11.6 11.6 0 0 1 613.6,46 Z" fill="#141413"/><circle cx="594" cy="47" r="5" fill="#141413"/><circle cx="607.5" cy="47.5" r="1.6" fill="#141413"/><line x1="604.5" y1="52.5" x2="609.5" y2="52.5" stroke="#141413" stroke-width="1.3" stroke-linecap="round"/></svg><figcaption><b>胸上景</b>：肩膀以上。更專心看臉，身體語言變少。</figcaption></figure></div>
+<div class="panel"><h3>什麼時候用？</h3><ul style="margin:0;padding-left:20px"><li>角色在<b>聽</b>別人說話，觀眾要看他的反應。</li><li>角色手上拿著重要的東西，同時要看表情。</li><li>想離角色近一點，但還不想把情緒推到最高。</li></ul></div>
+</section>
+
+<section id="cu">
+  <h2>特寫：一張臉就是一個情緒</h2>
+  <hr class="rule">
+<p>小安的表情從疑惑變成驚訝。想讓觀眾<b>確實看到這個變化</b>，就用特寫，而且要用<b>兩格</b>，一格疑惑、一格驚訝。</p>
+<div class="sbrow c2"><figure class="shotfig "><svg viewBox="576.3 31.4 47.5 26.7" role="img" aria-label="特寫：疑惑的臉" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><rect x="0" y="-420" width="1200" height="550" fill="#F0EEE6"/><rect x="0" y="130" width="1200" height="300" fill="#E3DACC"/><line x1="0" y1="130" x2="1200" y2="130" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="0" y1="152" x2="1200" y2="152" stroke="#D1CFC5" stroke-width="1" stroke-linecap="round"/><line x1="0" y1="168" x2="1200" y2="168" stroke="#D1CFC5" stroke-width="1" stroke-linecap="round"/><rect x="576" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="584" y1="38" x2="606" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="584" y1="44" x2="606" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="607" cy="84" r="2.4" fill="#3D3D3A"/><rect x="620" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="628" y1="38" x2="650" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="628" y1="44" x2="650" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="651" cy="84" r="2.4" fill="#3D3D3A"/><line x1="600" y1="92" x2="595" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><line x1="600" y1="92" x2="605" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><rect x="573" y="62" width="13" height="30" rx="5" fill="#B85C3E"/><rect x="585" y="56" width="30" height="40" rx="12" fill="#D97757"/><line x1="600" y1="64" x2="614" y2="74" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><line x1="600" y1="64" x2="614" y2="72" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><circle cx="614" cy="72" r="3.6" fill="#E3DACC"/><circle cx="614" cy="74" r="3.6" fill="#E3DACC"/><rect x="608" y="60" width="15" height="19" rx="1" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><circle cx="602" cy="46" r="11" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M590.4,46 A11.6 11.6 0 0 1 613.6,46 Z" fill="#141413"/><circle cx="594" cy="47" r="5" fill="#141413"/><circle cx="607.5" cy="47.5" r="1.6" fill="#141413"/><line x1="604.5" y1="53.5" x2="609.5" y2="52.5" stroke="#141413" stroke-width="1.3" stroke-linecap="round"/><line x1="605.5" y1="43.6" x2="609.5" y2="42" stroke="#141413" stroke-width="1.2" stroke-linecap="round"/></svg><figcaption><b>第 1 格</b>：疑惑。</figcaption></figure><figure class="shotfig "><svg viewBox="576.3 31.4 47.5 26.7" role="img" aria-label="特寫：驚訝的臉" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><rect x="0" y="-420" width="1200" height="550" fill="#F0EEE6"/><rect x="0" y="130" width="1200" height="300" fill="#E3DACC"/><line x1="0" y1="130" x2="1200" y2="130" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="0" y1="152" x2="1200" y2="152" stroke="#D1CFC5" stroke-width="1" stroke-linecap="round"/><line x1="0" y1="168" x2="1200" y2="168" stroke="#D1CFC5" stroke-width="1" stroke-linecap="round"/><rect x="576" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="584" y1="38" x2="606" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="584" y1="44" x2="606" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="607" cy="84" r="2.4" fill="#3D3D3A"/><rect x="620" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="628" y1="38" x2="650" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="628" y1="44" x2="650" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="651" cy="84" r="2.4" fill="#3D3D3A"/><line x1="600" y1="92" x2="595" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><line x1="600" y1="92" x2="605" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><rect x="573" y="62" width="13" height="30" rx="5" fill="#B85C3E"/><rect x="585" y="56" width="30" height="40" rx="12" fill="#D97757"/><line x1="600" y1="64" x2="614" y2="74" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><line x1="600" y1="64" x2="614" y2="72" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><circle cx="614" cy="72" r="3.6" fill="#E3DACC"/><circle cx="614" cy="74" r="3.6" fill="#E3DACC"/><rect x="608" y="60" width="15" height="19" rx="1" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><circle cx="602" cy="46" r="11" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M590.4,46 A11.6 11.6 0 0 1 613.6,46 Z" fill="#141413"/><circle cx="594" cy="47" r="5" fill="#141413"/><circle cx="607.5" cy="47.5" r="1.6" fill="#141413"/><circle cx="607" cy="53.5" r="2" fill="#FFFFFF" stroke="#141413" stroke-width="1"/><line x1="605.5" y1="43" x2="609.5" y2="42.4" stroke="#141413" stroke-width="1.2" stroke-linecap="round"/></svg><figcaption><b>第 2 格</b>：驚訝。</figcaption></figure></div>
+<div class="tip"><b class="l">小技巧</b>特寫要拍的是「表情有變化」的那一刻。表情沒有變，就不需要特寫。</div>
+<div class="warn"><b class="l">別一直用特寫</b>全片都是特寫，觀眾會喘不過氣，也看不出哪裡才是重點。<b>先遠後近</b>：先用遠一點的景別讓觀眾知道狀況，再靠近人物。</div>
+</section>
+
+<section id="ecu">
+  <h2>大特寫：只讓觀眾看這一個小地方</h2>
+  <hr class="rule">
+<p><span class="lv l2">Level 2 · 再多認識</span>大特寫把畫面縮到只剩<b>臉的一部分</b>，或一個<b>物件的細節</b>。</p>
+<div class="sbrow c2"><figure class="shotfig "><svg viewBox="160 52 54 30.4" role="img" aria-label="大特寫：櫃門夾著的紙條" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><rect x="0" y="-420" width="320" height="550" fill="#F0EEE6"/><rect x="0" y="130" width="320" height="300" fill="#E3DACC"/><line x1="0" y1="130" x2="320" y2="130" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="0" y1="152" x2="320" y2="152" stroke="#D1CFC5" stroke-width="1" stroke-linecap="round"/><line x1="0" y1="168" x2="320" y2="168" stroke="#D1CFC5" stroke-width="1" stroke-linecap="round"/><rect x="4" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="12" y1="38" x2="34" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="12" y1="44" x2="34" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="35" cy="84" r="2.4" fill="#3D3D3A"/><rect x="48" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="56" y1="38" x2="78" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="56" y1="44" x2="78" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="79" cy="84" r="2.4" fill="#3D3D3A"/><rect x="92" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="100" y1="38" x2="122" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="100" y1="44" x2="122" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="123" cy="84" r="2.4" fill="#3D3D3A"/><rect x="136" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="144" y1="38" x2="166" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="144" y1="44" x2="166" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="167" cy="84" r="2.4" fill="#3D3D3A"/><rect x="180" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="188" y1="38" x2="210" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="188" y1="44" x2="210" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="211" cy="84" r="2.4" fill="#3D3D3A"/><rect x="228" y="24" width="80" height="82" rx="2" fill="#FFFFFF" stroke="#87867F" stroke-width="1.5"/><line x1="268" y1="24" x2="268" y2="106" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="228" y1="65" x2="308" y2="65" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="290" cy="48" r="12" fill="#788C5D" opacity=".45"/><rect x="176" y="60" width="22" height="28" rx="1.5" fill="#FFFFFF" stroke="#87867F" stroke-width="1.2"/><line x1="180" y1="67" x2="194" y2="67" stroke="#D1CFC5" stroke-width="1.1" stroke-linecap="round"/><line x1="180" y1="72" x2="194" y2="72" stroke="#D1CFC5" stroke-width="1.1" stroke-linecap="round"/><line x1="180" y1="77" x2="189" y2="77" stroke="#D1CFC5" stroke-width="1.1" stroke-linecap="round"/></svg><figcaption><b>物件的大特寫</b>：櫃門夾著的紙條。觀眾知道「這張紙條很重要」。</figcaption></figure><figure class="shotfig "><svg viewBox="587.6 40.5 24.9 14" role="img" aria-label="大特寫：眼睛一帶" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk6" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk6" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><rect x="0" y="-420" width="1200" height="550" fill="#F0EEE6"/><rect x="0" y="130" width="1200" height="300" fill="#E3DACC"/><line x1="0" y1="130" x2="1200" y2="130" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="0" y1="152" x2="1200" y2="152" stroke="#D1CFC5" stroke-width="1" stroke-linecap="round"/><line x1="0" y1="168" x2="1200" y2="168" stroke="#D1CFC5" stroke-width="1" stroke-linecap="round"/><rect x="576" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="584" y1="38" x2="606" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="584" y1="44" x2="606" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="607" cy="84" r="2.4" fill="#3D3D3A"/><rect x="620" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="628" y1="38" x2="650" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="628" y1="44" x2="650" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="651" cy="84" r="2.4" fill="#3D3D3A"/><line x1="600" y1="92" x2="595" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><line x1="600" y1="92" x2="605" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><rect x="573" y="62" width="13" height="30" rx="5" fill="#B85C3E"/><rect x="585" y="56" width="30" height="40" rx="12" fill="#D97757"/><line x1="600" y1="64" x2="596" y2="88" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><line x1="600" y1="64" x2="604" y2="88" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><circle cx="604" cy="88" r="3.6" fill="#E3DACC"/><circle cx="596" cy="88" r="3.6" fill="#E3DACC"/><circle cx="602" cy="46" r="11" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M590.4,46 A11.6 11.6 0 0 1 613.6,46 Z" fill="#141413"/><circle cx="594" cy="47" r="5" fill="#141413"/><circle cx="607.5" cy="47.5" r="1.6" fill="#141413"/><circle cx="607" cy="53.5" r="2" fill="#FFFFFF" stroke="#141413" stroke-width="1"/><line x1="605.5" y1="43" x2="609.5" y2="42.4" stroke="#141413" stroke-width="1.2" stroke-linecap="round"/></svg><figcaption><b>臉的局部</b>：眼睛一帶。把情緒推到最高。</figcaption></figure></div>
+<h3 style="margin-top:22px">把幾種景別接起來看</h3>
+<p class="sub" style="margin-bottom:6px">《紙條》第 2、3 段：小安看見紙條 → 紙條上的字 → 她的反應。由遠到近，像是一步一步走近。</p>
+<div class="sbrow c3"><figure class="sb"><div class="sb-pic"><span class="sb-n">1</span><svg viewBox="80.7 23 138.7 78" role="img" aria-label="腰上景：小安看見櫃門上的紙條" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk7" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk7" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><rect x="0" y="-420" width="320" height="550" fill="#F0EEE6"/><rect x="0" y="130" width="320" height="300" fill="#E3DACC"/><line x1="0" y1="130" x2="320" y2="130" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="0" y1="152" x2="320" y2="152" stroke="#D1CFC5" stroke-width="1" stroke-linecap="round"/><line x1="0" y1="168" x2="320" y2="168" stroke="#D1CFC5" stroke-width="1" stroke-linecap="round"/><rect x="4" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="12" y1="38" x2="34" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="12" y1="44" x2="34" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="35" cy="84" r="2.4" fill="#3D3D3A"/><rect x="48" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="56" y1="38" x2="78" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="56" y1="44" x2="78" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="79" cy="84" r="2.4" fill="#3D3D3A"/><rect x="92" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="100" y1="38" x2="122" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="100" y1="44" x2="122" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="123" cy="84" r="2.4" fill="#3D3D3A"/><rect x="136" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="144" y1="38" x2="166" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="144" y1="44" x2="166" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="167" cy="84" r="2.4" fill="#3D3D3A"/><rect x="180" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="188" y1="38" x2="210" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="188" y1="44" x2="210" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="211" cy="84" r="2.4" fill="#3D3D3A"/><rect x="228" y="24" width="80" height="82" rx="2" fill="#FFFFFF" stroke="#87867F" stroke-width="1.5"/><line x1="268" y1="24" x2="268" y2="106" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="228" y1="65" x2="308" y2="65" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="290" cy="48" r="12" fill="#788C5D" opacity=".45"/><rect x="176" y="60" width="22" height="28" rx="1.5" fill="#FFFFFF" stroke="#87867F" stroke-width="1.2"/><line x1="180" y1="67" x2="194" y2="67" stroke="#D1CFC5" stroke-width="1.1" stroke-linecap="round"/><line x1="180" y1="72" x2="194" y2="72" stroke="#D1CFC5" stroke-width="1.1" stroke-linecap="round"/><line x1="180" y1="77" x2="189" y2="77" stroke="#D1CFC5" stroke-width="1.1" stroke-linecap="round"/><line x1="130" y1="92" x2="125" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><line x1="130" y1="92" x2="135" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><rect x="103" y="62" width="13" height="30" rx="5" fill="#B85C3E"/><rect x="115" y="56" width="30" height="40" rx="12" fill="#D97757"/><line x1="130" y1="64" x2="126" y2="88" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><line x1="130" y1="64" x2="134" y2="88" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><circle cx="134" cy="88" r="3.6" fill="#E3DACC"/><circle cx="126" cy="88" r="3.6" fill="#E3DACC"/><circle cx="132" cy="46" r="11" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M120.4,46 A11.6 11.6 0 0 1 143.6,46 Z" fill="#141413"/><circle cx="124" cy="47" r="5" fill="#141413"/><circle cx="137.5" cy="47.5" r="1.6" fill="#141413"/><line x1="134.5" y1="52.5" x2="139.5" y2="52.5" stroke="#141413" stroke-width="1.3" stroke-linecap="round"/></svg></div><figcaption><div><b>動作</b><span>小安看見櫃門夾著紙條。</span></div><div><b>鏡頭</b><span>腰上景。先讓觀眾看到她和紙條的位置。</span></div></figcaption></figure><figure class="sb"><div class="sb-pic"><span class="sb-n">2</span><svg viewBox="160 52 54 30.4" role="img" aria-label="大特寫：櫃門夾著的紙條" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk8" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk8" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><rect x="0" y="-420" width="320" height="550" fill="#F0EEE6"/><rect x="0" y="130" width="320" height="300" fill="#E3DACC"/><line x1="0" y1="130" x2="320" y2="130" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="0" y1="152" x2="320" y2="152" stroke="#D1CFC5" stroke-width="1" stroke-linecap="round"/><line x1="0" y1="168" x2="320" y2="168" stroke="#D1CFC5" stroke-width="1" stroke-linecap="round"/><rect x="4" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="12" y1="38" x2="34" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="12" y1="44" x2="34" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="35" cy="84" r="2.4" fill="#3D3D3A"/><rect x="48" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="56" y1="38" x2="78" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="56" y1="44" x2="78" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="79" cy="84" r="2.4" fill="#3D3D3A"/><rect x="92" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="100" y1="38" x2="122" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="100" y1="44" x2="122" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="123" cy="84" r="2.4" fill="#3D3D3A"/><rect x="136" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="144" y1="38" x2="166" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="144" y1="44" x2="166" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="167" cy="84" r="2.4" fill="#3D3D3A"/><rect x="180" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="188" y1="38" x2="210" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="188" y1="44" x2="210" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="211" cy="84" r="2.4" fill="#3D3D3A"/><rect x="228" y="24" width="80" height="82" rx="2" fill="#FFFFFF" stroke="#87867F" stroke-width="1.5"/><line x1="268" y1="24" x2="268" y2="106" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="228" y1="65" x2="308" y2="65" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="290" cy="48" r="12" fill="#788C5D" opacity=".45"/><rect x="176" y="60" width="22" height="28" rx="1.5" fill="#FFFFFF" stroke="#87867F" stroke-width="1.2"/><line x1="180" y1="67" x2="194" y2="67" stroke="#D1CFC5" stroke-width="1.1" stroke-linecap="round"/><line x1="180" y1="72" x2="194" y2="72" stroke="#D1CFC5" stroke-width="1.1" stroke-linecap="round"/><line x1="180" y1="77" x2="189" y2="77" stroke="#D1CFC5" stroke-width="1.1" stroke-linecap="round"/></svg></div><figcaption><div><b>動作</b><span>紙條特寫。</span></div><div><b>鏡頭</b><span>大特寫。讓觀眾知道這張紙條很重要。</span></div></figcaption></figure><figure class="sb"><div class="sb-pic"><span class="sb-n">3</span><svg viewBox="576.3 31.4 47.5 26.7" role="img" aria-label="特寫：她的表情" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk9" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk9" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><rect x="0" y="-420" width="1200" height="550" fill="#F0EEE6"/><rect x="0" y="130" width="1200" height="300" fill="#E3DACC"/><line x1="0" y1="130" x2="1200" y2="130" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="0" y1="152" x2="1200" y2="152" stroke="#D1CFC5" stroke-width="1" stroke-linecap="round"/><line x1="0" y1="168" x2="1200" y2="168" stroke="#D1CFC5" stroke-width="1" stroke-linecap="round"/><rect x="576" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="584" y1="38" x2="606" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="584" y1="44" x2="606" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="607" cy="84" r="2.4" fill="#3D3D3A"/><rect x="620" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="628" y1="38" x2="650" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="628" y1="44" x2="650" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="651" cy="84" r="2.4" fill="#3D3D3A"/><line x1="600" y1="92" x2="595" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><line x1="600" y1="92" x2="605" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><rect x="573" y="62" width="13" height="30" rx="5" fill="#B85C3E"/><rect x="585" y="56" width="30" height="40" rx="12" fill="#D97757"/><line x1="600" y1="64" x2="614" y2="74" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><line x1="600" y1="64" x2="614" y2="72" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><circle cx="614" cy="72" r="3.6" fill="#E3DACC"/><circle cx="614" cy="74" r="3.6" fill="#E3DACC"/><rect x="608" y="60" width="15" height="19" rx="1" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><circle cx="602" cy="46" r="11" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M590.4,46 A11.6 11.6 0 0 1 613.6,46 Z" fill="#141413"/><circle cx="594" cy="47" r="5" fill="#141413"/><circle cx="607.5" cy="47.5" r="1.6" fill="#141413"/><circle cx="607" cy="53.5" r="2" fill="#FFFFFF" stroke="#141413" stroke-width="1"/><line x1="605.5" y1="43" x2="609.5" y2="42.4" stroke="#141413" stroke-width="1.2" stroke-linecap="round"/></svg></div><figcaption><div><b>動作</b><span>小安驚訝。</span></div><div><b>鏡頭</b><span>特寫。紙條帶來的情緒。</span></div></figcaption></figure></div>
+</section>
+
+<section id="lab">
+  <h2>你來選景別</h2>
+  <hr class="rule">
+<p class="sub" style="margin-bottom:8px"><span class="lv l2">Level 2 · 自己改</span>讀情境，選最適合的景別。</p>
+<div class="panel ch" data-ans="1"><p style="margin:0 0 10px"><b>1.</b> 小安讀完紙條，觀眾要看到她心裡的震驚。</p><div class="opts"><button type="button" data-i="0">全景</button><button type="button" data-i="1">特寫</button><button type="button" data-i="2">大遠景</button></div><div class="res" hidden><span class="vd"></span> 特寫整張臉，表情最清楚。<figure class="shotfig "><svg viewBox="576.3 31.4 47.5 26.7" role="img" aria-label="特寫：驚訝的臉" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk10" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk10" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><rect x="0" y="-420" width="1200" height="550" fill="#F0EEE6"/><rect x="0" y="130" width="1200" height="300" fill="#E3DACC"/><line x1="0" y1="130" x2="1200" y2="130" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="0" y1="152" x2="1200" y2="152" stroke="#D1CFC5" stroke-width="1" stroke-linecap="round"/><line x1="0" y1="168" x2="1200" y2="168" stroke="#D1CFC5" stroke-width="1" stroke-linecap="round"/><rect x="576" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="584" y1="38" x2="606" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="584" y1="44" x2="606" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="607" cy="84" r="2.4" fill="#3D3D3A"/><rect x="620" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="628" y1="38" x2="650" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="628" y1="44" x2="650" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="651" cy="84" r="2.4" fill="#3D3D3A"/><line x1="600" y1="92" x2="595" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><line x1="600" y1="92" x2="605" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><rect x="573" y="62" width="13" height="30" rx="5" fill="#B85C3E"/><rect x="585" y="56" width="30" height="40" rx="12" fill="#D97757"/><line x1="600" y1="64" x2="614" y2="74" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><line x1="600" y1="64" x2="614" y2="72" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><circle cx="614" cy="72" r="3.6" fill="#E3DACC"/><circle cx="614" cy="74" r="3.6" fill="#E3DACC"/><rect x="608" y="60" width="15" height="19" rx="1" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><circle cx="602" cy="46" r="11" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M590.4,46 A11.6 11.6 0 0 1 613.6,46 Z" fill="#141413"/><circle cx="594" cy="47" r="5" fill="#141413"/><circle cx="607.5" cy="47.5" r="1.6" fill="#141413"/><circle cx="607" cy="53.5" r="2" fill="#FFFFFF" stroke="#141413" stroke-width="1"/><line x1="605.5" y1="43" x2="609.5" y2="42.4" stroke="#141413" stroke-width="1.2" stroke-linecap="round"/></svg><figcaption>特寫</figcaption></figure></div></div><div class="panel ch" data-ans="2"><p style="margin:0 0 10px"><b>2.</b> 想讓觀眾看清楚紙條上寫了什麼。</p><div class="opts"><button type="button" data-i="0">遠景</button><button type="button" data-i="1">腰上景</button><button type="button" data-i="2">大特寫</button></div><div class="res" hidden><span class="vd"></span> 物件的細節靠大特寫。<figure class="shotfig "><svg viewBox="160 52 54 30.4" role="img" aria-label="大特寫：櫃門夾著的紙條" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk11" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk11" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><rect x="0" y="-420" width="320" height="550" fill="#F0EEE6"/><rect x="0" y="130" width="320" height="300" fill="#E3DACC"/><line x1="0" y1="130" x2="320" y2="130" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="0" y1="152" x2="320" y2="152" stroke="#D1CFC5" stroke-width="1" stroke-linecap="round"/><line x1="0" y1="168" x2="320" y2="168" stroke="#D1CFC5" stroke-width="1" stroke-linecap="round"/><rect x="4" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="12" y1="38" x2="34" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="12" y1="44" x2="34" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="35" cy="84" r="2.4" fill="#3D3D3A"/><rect x="48" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="56" y1="38" x2="78" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="56" y1="44" x2="78" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="79" cy="84" r="2.4" fill="#3D3D3A"/><rect x="92" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="100" y1="38" x2="122" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="100" y1="44" x2="122" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="123" cy="84" r="2.4" fill="#3D3D3A"/><rect x="136" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="144" y1="38" x2="166" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="144" y1="44" x2="166" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="167" cy="84" r="2.4" fill="#3D3D3A"/><rect x="180" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="188" y1="38" x2="210" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="188" y1="44" x2="210" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="211" cy="84" r="2.4" fill="#3D3D3A"/><rect x="228" y="24" width="80" height="82" rx="2" fill="#FFFFFF" stroke="#87867F" stroke-width="1.5"/><line x1="268" y1="24" x2="268" y2="106" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="228" y1="65" x2="308" y2="65" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="290" cy="48" r="12" fill="#788C5D" opacity=".45"/><rect x="176" y="60" width="22" height="28" rx="1.5" fill="#FFFFFF" stroke="#87867F" stroke-width="1.2"/><line x1="180" y1="67" x2="194" y2="67" stroke="#D1CFC5" stroke-width="1.1" stroke-linecap="round"/><line x1="180" y1="72" x2="194" y2="72" stroke="#D1CFC5" stroke-width="1.1" stroke-linecap="round"/><line x1="180" y1="77" x2="189" y2="77" stroke="#D1CFC5" stroke-width="1.1" stroke-linecap="round"/></svg><figcaption>大特寫</figcaption></figure></div></div><div class="panel ch" data-ans="0"><p style="margin:0 0 10px"><b>3.</b> 小安站在置物櫃前讀紙條，想同時看到表情和手上的紙條。</p><div class="opts"><button type="button" data-i="0">近景</button><button type="button" data-i="1">大遠景</button><button type="button" data-i="2">大特寫</button></div><div class="res" hidden><span class="vd"></span> 近景胸口以上，臉和手上的東西都在。<figure class="shotfig "><svg viewBox="553.8 32 92.4 52" role="img" aria-label="近景：表情與手上的紙條" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk12" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk12" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><rect x="0" y="-420" width="1200" height="550" fill="#F0EEE6"/><rect x="0" y="130" width="1200" height="300" fill="#E3DACC"/><line x1="0" y1="130" x2="1200" y2="130" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="0" y1="152" x2="1200" y2="152" stroke="#D1CFC5" stroke-width="1" stroke-linecap="round"/><line x1="0" y1="168" x2="1200" y2="168" stroke="#D1CFC5" stroke-width="1" stroke-linecap="round"/><rect x="532" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="540" y1="38" x2="562" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="540" y1="44" x2="562" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="563" cy="84" r="2.4" fill="#3D3D3A"/><rect x="576" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="584" y1="38" x2="606" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="584" y1="44" x2="606" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="607" cy="84" r="2.4" fill="#3D3D3A"/><rect x="620" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="628" y1="38" x2="650" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="628" y1="44" x2="650" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="651" cy="84" r="2.4" fill="#3D3D3A"/><line x1="600" y1="92" x2="595" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><line x1="600" y1="92" x2="605" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><rect x="573" y="62" width="13" height="30" rx="5" fill="#B85C3E"/><rect x="585" y="56" width="30" height="40" rx="12" fill="#D97757"/><line x1="600" y1="64" x2="614" y2="74" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><line x1="600" y1="64" x2="614" y2="72" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><circle cx="614" cy="72" r="3.6" fill="#E3DACC"/><circle cx="614" cy="74" r="3.6" fill="#E3DACC"/><rect x="608" y="60" width="15" height="19" rx="1" fill="#FFFFFF" stroke="#87867F" stroke-width="1"/><circle cx="602" cy="46" r="11" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M590.4,46 A11.6 11.6 0 0 1 613.6,46 Z" fill="#141413"/><circle cx="594" cy="47" r="5" fill="#141413"/><circle cx="607.5" cy="47.5" r="1.6" fill="#141413"/><line x1="604.5" y1="53.5" x2="609.5" y2="52.5" stroke="#141413" stroke-width="1.3" stroke-linecap="round"/><line x1="605.5" y1="43.6" x2="609.5" y2="42" stroke="#141413" stroke-width="1.2" stroke-linecap="round"/></svg><figcaption>近景</figcaption></figure></div></div>
+<div class="panel" style="margin-top:14px"><h3><span class="lv l3">Level 3 · 挑戰</span></h3><p style="margin:0">把《紙條》第 2、3 段畫成<b>三格</b>：先用腰上景讓觀眾知道狀況，再大特寫紙條，最後特寫她的表情。檢查：有沒有「由遠到近」？</p></div>
+</section>
+
+<section id="practice">
+  <h2>動手演練與檢查</h2>
+  <hr class="rule">
+<div class="panel sim" data-simgroup>
+<h3>情境：你的分鏡裡連續五格都是大特寫</h3>
+<p style="margin:6px 0 0;color:var(--gray-700)">這樣的問題是什麼？</p>
+<div class="sim-buttons" role="group" aria-label="選擇做法"><button type="button" data-sim="a1">沒有問題，越近越好</button><button type="button" data-sim="a2">看不出重點，觀眾也會喘不過氣</button><button type="button" data-sim="a3">表情看不清楚</button></div>
+<div class="sim-result" aria-live="polite">選一個做法，看看對不對。</div>
+</div>
+<div class="panel" id="quiz">
+    <div class="quiz-top"><h3 style="margin:0">快速測驗</h3><span class="count" id="quizCount">1 / 1</span></div>
+    <div class="question" id="quizQ"></div>
+    <div class="answers" id="quizAns"></div>
+    <div class="feedback" id="quizFb" aria-live="polite"></div>
+    <div class="quiz-foot"><span id="quizScore">答對 0 題</span><button type="button" class="primary" id="quizNext" disabled>下一題 →</button></div>
+  </div>
+<h3 style="margin-top:30px">開做之前，對照這張清單</h3>
+<div class="panel">
+<div class="checks" id="checks"><label class="check-item"><input type="checkbox"><span>我知道近的景別是用來把注意力放在情緒上。</span></label><label class="check-item"><input type="checkbox"><span>我能分出近景、胸上景、特寫、大特寫。</span></label><label class="check-item"><input type="checkbox"><span>我知道特寫要拍「表情有變化」的那一刻。</span></label><label class="check-item"><input type="checkbox"><span>我知道特寫不能一直用，要先遠後近。</span></label><label class="check-item"><input type="checkbox"><span>我已把《紙條》第 2、3 段畫成由遠到近的三格。</span></label></div>
+<div class="check-progress" id="checkProgress">已完成 0 / 5 項</div>
+<div class="bar"><span id="checkBar"></span></div>
+</div>
+<h3 style="margin-top:30px">可自查的延伸閱讀</h3>
+<div class="panel"><ul style="margin:0;padding-left:20px"><li>看一場讓你很有感覺的戲，數數它用了幾次特寫、特寫出現在什麼時機。</li><li>比較一場「全是中景」和一場「中景與特寫交替」的戲，感覺有什麼不同。</li></ul></div>
+</section>
+</main>
+</div>
+
+<p class="foot" style="margin-top:28px">本頁是觀念與練習教學，不依賴特定器材：用手機、相機、平板都能照著做。不同學校或書籍對鏡頭名稱的叫法可能略有不同。內容整理日期：2026-11-10。</p>
+
+<nav class="pager" aria-label="上一篇與下一篇">
+  <a class="prev" href="microfilm-wide-shots-guide.html"><small>上一篇</small><b>遠景、全景、中景</b></a>
+  <a class="next" href="microfilm-relation-shots-guide.html"><small>下一篇</small><b>關係鏡頭</b></a>
+</nav>
+</div>
+
+<script>window.PAGE = {"sim": {"a1": "<b>不是。</b>越近越強調，但全是大特寫會讓觀眾分不出哪裡重要。", "a2": "<b>正確！</b>強調要有對比。先用遠一點的景別鋪陳，最近的鏡頭才有力量。", "a3": "<b>不是。</b>大特寫的表情很清楚，問題在於沒有重點。"}, "quiz": [{"q": "近的景別最主要的功能是？", "a": ["交代地點", "把注意力放在情緒上", "展示全身動作"], "c": 1, "why": "越近越強調情緒。"}, {"q": "特寫最適合在什麼時候用？", "a": ["表情有明顯變化的那一刻", "每一格都用", "只有開場用"], "c": 0, "why": "表情沒有變，就不需要特寫。"}, {"q": "大特寫適合拍什麼？", "a": ["整個走廊", "臉的局部或物件細節", "全身"], "c": 1, "why": "例如眼睛、一張紙條上的字。"}, {"q": "為什麼不能一直用特寫？", "a": ["因為特寫很難拍", "全是特寫，觀眾看不出重點，也會很累", "因為特寫會讓畫面變暗"], "c": 1, "why": "要先遠後近，有對比才有力量。"}]};</script>
+<script>
+(function () {
+  "use strict";
+  var CFG = window.PAGE || {};
+  function $(id){ return document.getElementById(id); }
+  function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+  function copyText(text, btn){
+    var orig = btn.textContent;
+    function flash(){
+      btn.textContent = "Copied ✓"; btn.classList.add("copied");
+      setTimeout(function(){ btn.textContent = orig; btn.classList.remove("copied"); }, 1200);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(flash, flash);
+    } else {
+      var ta = document.createElement("textarea"); ta.value = text;
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); } catch(e){}
+      document.body.removeChild(ta); flash();
+    }
+  }
+
+  /* ---------- fill-in template values ---------- */
+  var DEF = CFG.fill || {};
+  var vals = {};
+  var RE = /\{([A-Za-z0-9_]+)\}/g;
+  function val(k){ return vals[k] || DEF[k]; }
+  function resolvePlain(t){ return t.replace(RE, function(m, k){ return (k in DEF) ? val(k) : m; }); }
+  function resolveHtml(t){
+    var out = "", last = 0, m;
+    RE.lastIndex = 0;
+    while ((m = RE.exec(t))){
+      if (!(m[1] in DEF)) continue;
+      out += esc(t.slice(last, m.index)) + '<span class="slot">' + esc(val(m[1])) + "</span>";
+      last = RE.lastIndex;
+    }
+    return out + esc(t.slice(last));
+  }
+  function lineHtml(line){
+    if (line.trim().indexOf("# ") === 0) return '<span class="cm">' + resolveHtml(line) + "</span>";
+    var i = line.indexOf("  # ");
+    if (i > -1) return resolveHtml(line.slice(0, i)) + '<span class="cm">' + resolveHtml(line.slice(i)) + "</span>";
+    return resolveHtml(line);
+  }
+  var tplEls = Array.prototype.slice.call(document.querySelectorAll("[data-tpl]"));
+  tplEls.forEach(function(el){ el._tpl = el.textContent; });
+  function renderTpl(){
+    tplEls.forEach(function(el){
+      if (el.tagName === "PRE") el.innerHTML = el._tpl.split("\n").map(lineHtml).join("\n");
+      else el.innerHTML = resolveHtml(el._tpl);
+    });
+  }
+  var inputs = Array.prototype.slice.call(document.querySelectorAll(".fill input"));
+  inputs.forEach(function(inp){
+    inp.placeholder = DEF[inp.dataset.k] || "";
+    inp.addEventListener("input", function(){
+      var v = inp.value;
+      if (!inp.dataset.ns){ v = v.replace(/\s+/g, "-"); if (v !== inp.value) inp.value = v; }
+      vals[inp.dataset.k] = v;
+      renderTpl();
+    });
+  });
+  var rb = $("resetBtn");
+  if (rb) rb.addEventListener("click", function(){
+    inputs.forEach(function(inp){ inp.value = ""; vals[inp.dataset.k] = ""; });
+    renderTpl();
+  });
+  document.querySelectorAll(".cmd .copy").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var pre = btn.parentNode.querySelector("pre");
+      copyText(pre._tpl !== undefined ? resolvePlain(pre._tpl) : pre.textContent, btn);
+    });
+  });
+
+  /* ---------- reading progress + toc spy ---------- */
+  var readBar = $("readBar");
+  function updateBar(){
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    readBar.style.width = (max > 0 ? Math.min(100, window.scrollY / max * 100) : 0) + "%";
+  }
+  window.addEventListener("scroll", updateBar, { passive: true });
+  window.addEventListener("resize", updateBar);
+  updateBar();
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll("nav.toc a"));
+  if ("IntersectionObserver" in window){
+    var spy = new IntersectionObserver(function(es){
+      es.forEach(function(en){
+        if (en.isIntersecting) tocLinks.forEach(function(a){ a.classList.toggle("active", a.getAttribute("href") === "#" + en.target.id); });
+      });
+    }, { rootMargin: "-15% 0px -70% 0px" });
+    tocLinks.forEach(function(a){ var sec = document.querySelector(a.getAttribute("href")); if (sec) spy.observe(sec); });
+  }
+
+  /* ---------- scenario simulators ---------- */
+  var SIM = CFG.sim || {};
+  document.querySelectorAll("[data-simgroup]").forEach(function(group){
+    var btns = Array.prototype.slice.call(group.querySelectorAll("[data-sim]"));
+    var out = group.querySelector(".sim-result");
+    btns.forEach(function(btn){
+      btn.addEventListener("click", function(){
+        btns.forEach(function(b){ b.classList.toggle("selected", b === btn); });
+        out.innerHTML = SIM[btn.dataset.sim] || "";
+      });
+    });
+  });
+
+  /* ---------- quiz ---------- */
+  var QUIZ = CFG.quiz || [];
+  if (QUIZ.length && $("quiz")){
+    var qi = 0, qScore = 0, qDone = false;
+    var qCount = $("quizCount"), qQ = $("quizQ"), qAns = $("quizAns"), qFb = $("quizFb"), qNext = $("quizNext"), qScoreEl = $("quizScore");
+    var renderQuiz = function(){
+      var item = QUIZ[qi]; qDone = false;
+      qCount.textContent = (qi + 1) + " / " + QUIZ.length;
+      qQ.innerHTML = item.q;
+      qAns.innerHTML = "";
+      qFb.className = "feedback"; qFb.textContent = "";
+      qNext.disabled = true;
+      qNext.textContent = qi === QUIZ.length - 1 ? "重新測驗 ↻" : "下一題 →";
+      item.a.forEach(function(text, i){
+        var b = document.createElement("button");
+        b.type = "button"; b.className = "answer";
+        b.innerHTML = '<span class="letter">' + String.fromCharCode(65 + i) + "</span><span>" + esc(text) + "</span>";
+        b.addEventListener("click", function(){ pick(i); });
+        qAns.appendChild(b);
+      });
+    };
+    var pick = function(i){
+      if (qDone) return; qDone = true;
+      var item = QUIZ[qi], good = i === item.c;
+      Array.prototype.forEach.call(qAns.querySelectorAll("button"), function(b, n){
+        b.disabled = true;
+        if (n === item.c) b.classList.add("correct");
+        if (n === i && !good) b.classList.add("wrong");
+      });
+      if (good) qScore++;
+      qFb.className = "feedback show " + (good ? "good" : "bad");
+      qFb.innerHTML = "<b>" + (good ? "答對了！" : "再記一下這個觀念。") + "</b> " + esc(item.why);
+      qScoreEl.textContent = "答對 " + qScore + " / " + (qi + 1) + " 題";
+      qNext.disabled = false;
+    };
+    qNext.addEventListener("click", function(){
+      if (qi === QUIZ.length - 1){ qi = 0; qScore = 0; } else { qi++; }
+      renderQuiz();
+      qScoreEl.textContent = "答對 " + qScore + " 題";
+    });
+    renderQuiz();
+  }
+
+  /* ---------- checklist ---------- */
+  var checks = Array.prototype.slice.call(document.querySelectorAll("#checks input"));
+  function updateChecks(){
+    var n = checks.filter(function(c){ return c.checked; }).length;
+    $("checkProgress").textContent = "已完成 " + n + " / " + checks.length + " 項";
+    $("checkBar").style.width = (n / checks.length * 100) + "%";
+    checks.forEach(function(c){ c.closest(".check-item").classList.toggle("done", c.checked); });
+  }
+  checks.forEach(function(c){ c.addEventListener("change", updateChecks); });
+
+  /* ---------- role tabs (dual-view pages) ---------- */
+  var roleBtns = Array.prototype.slice.call(document.querySelectorAll("[data-role]"));
+  var rolePanels = Array.prototype.slice.call(document.querySelectorAll("[data-panel]"));
+  function setRole(r, focus){
+    roleBtns.forEach(function(b){
+      var on = b.dataset.role === r;
+      b.classList.toggle("on", on);
+      b.setAttribute("aria-selected", on ? "true" : "false");
+      b.tabIndex = on ? 0 : -1;
+      if (on && focus) b.focus();
+    });
+    rolePanels.forEach(function(p){ p.hidden = p.dataset.panel !== r; });
+  }
+  roleBtns.forEach(function(b){
+    b.addEventListener("click", function(){ setRole(b.dataset.role); });
+    b.addEventListener("keydown", function(e){
+      if (e.key === "ArrowLeft" || e.key === "ArrowRight"){
+        e.preventDefault(); setRole(b.dataset.role === "c" ? "o" : "c", true);
+      }
+    });
+  });
+  if (roleBtns.length) setRole("c");
+
+  /* ---------- stage stepper (two columns) ---------- */
+  var STAGES = CFG.stages || [];
+  if (STAGES.length && $("stages")){
+    var stage = 0;
+    var stagesEl = $("stages");
+    var renderStages = function(){
+      stagesEl.innerHTML = STAGES.map(function(s, i){
+        return '<button type="button" data-i="' + i + '" class="' + (i === stage ? "on" : "") + '" aria-pressed="' + (i === stage) + '">' +
+          '<span class="si">階段 ' + (i + 1) + "</span><span>" + s.label + '</span><span class="badge ' + s.tone + '">' + s.badge + "</span></button>";
+      }).join("");
+      var s = STAGES[stage];
+      $("c-h").textContent = s.c.h; $("o-h").textContent = s.o.h;
+      $("c-list").innerHTML = s.c.items.map(function(t){ return "<li>" + t + "</li>"; }).join("");
+      $("o-list").innerHTML = s.o.items.map(function(t){ return "<li>" + t + "</li>"; }).join("");
+      $("prevStage").disabled = stage === 0;
+      $("nextStage").disabled = stage === STAGES.length - 1;
+    };
+    stagesEl.addEventListener("click", function(e){
+      var b = e.target.closest("button[data-i]"); if (!b) return;
+      stage = +b.dataset.i; renderStages();
+    });
+    $("prevStage").addEventListener("click", function(){ if (stage > 0){ stage--; renderStages(); } });
+    $("nextStage").addEventListener("click", function(){ if (stage < STAGES.length - 1){ stage++; renderStages(); } });
+    renderStages();
+  }
+
+  /* ---------- decision picker ---------- */
+  var DECIDE = CFG.decide || [];
+  if (DECIDE.length && $("decideBtns")){
+    var decBtns = $("decideBtns"), decOut = $("decideOut");
+    decBtns.innerHTML = DECIDE.map(function(d, i){
+      return '<button type="button" data-d="' + i + '">' + d.label + "</button>";
+    }).join("");
+    decBtns.addEventListener("click", function(e){
+      var b = e.target.closest("button[data-d]"); if (!b) return;
+      var d = DECIDE[+b.dataset.d];
+      Array.prototype.forEach.call(decBtns.querySelectorAll("button"), function(x){ x.classList.toggle("selected", x === b); });
+      var tone = d.risk === "高" ? "bad" : (d.risk === "中" ? "warn" : "ok");
+      decOut.innerHTML = '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px"><b>建議做法</b><span class="badge ' + tone + '">風險：' + d.risk + "</span></div>" +
+        '<div class="cmd" style="margin:8px 0"><pre></pre><button type="button" class="copy">Copy</button></div><div>' + d.why + "</div>";
+      decOut.querySelector("pre").textContent = d.cmd;
+      decOut.querySelector(".copy").addEventListener("click", function(ev){ copyText(d.cmd, ev.currentTarget); });
+    });
+  }
+
+  renderTpl();
+  if (checks.length) updateChecks();
+})();
+
+</script>
+<script>
+Array.prototype.forEach.call(document.querySelectorAll(".ch"), function (c) {
+  c.querySelector(".opts").addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    var a = +c.dataset.ans, i = +b.dataset.i, bs = c.querySelectorAll(".opts button");
+    Array.prototype.forEach.call(bs, function (x, j) { x.classList.toggle("ok", j === a); x.classList.toggle("no", j === i && i !== a); x.setAttribute("aria-pressed", j === i); });
+    c.querySelector(".vd").innerHTML = i === a ? "<b>答對了！</b>" : "<b>再想想。</b>比較適合的是「" + bs[a].textContent + "」。";
+    c.querySelector(".res").hidden = false;
+  });
+});
+</script>
+</body>
+</html>

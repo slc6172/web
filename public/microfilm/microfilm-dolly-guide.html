@@ -1,0 +1,1076 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>推拉、橫移、跟拍、環繞：鏡頭真的走動的四種運鏡</title>
+<meta name="description" content="推靠近、專注；拉退開、結束或孤單；橫移從側面平行走；跟拍跟在人物後面；環繞繞著人物轉，要少用。鏡頭移動畫成橘色虛線，而且都要慢。">
+<meta name="theme-color" content="#FAF9F5">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='8'%20fill='%23FAF9F5'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='8'%20fill='%23D97757'/%3E%3C/svg%3E">
+<link rel="canonical" href="https://www.slc6172.workers.dev/microfilm/microfilm-dolly-guide.html">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:site_name" content="自學教學站">
+<meta property="og:title" content="推拉、橫移、跟拍、環繞：鏡頭真的走動的四種運鏡">
+<meta property="og:description" content="推靠近、專注；拉退開、結束或孤單；橫移從側面平行走；跟拍跟在人物後面；環繞繞著人物轉，要少用。鏡頭移動畫成橘色虛線，而且都要慢。">
+<meta property="og:url" content="https://www.slc6172.workers.dev/microfilm/microfilm-dolly-guide.html">
+<meta name="twitter:card" content="summary">
+<style>
+  :root {
+    --ivory:#FAF9F5; --white:#FFFFFF; --slate:#141413;
+    --clay:#D97757; --clay-d:#B85C3E; --oat:#E3DACC; --olive:#788C5D; --rust:#B04A3F;
+    --gray-100:#F0EEE6; --gray-300:#D1CFC5; --gray-500:#87867F; --gray-700:#3D3D3A;
+    --serif: ui-serif, Georgia, "Times New Roman", "Noto Serif TC", "Songti TC", "PMingLiU", serif;
+    --sans:  system-ui, -apple-system, "Segoe UI", Roboto, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", Helvetica, Arial, sans-serif;
+    --mono:  ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
+    --border: 1.5px solid var(--gray-300);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  [hidden] { display:none !important; }
+  body { margin:0; padding:56px 24px 120px; background:var(--ivory); color:var(--slate);
+         font-family:var(--sans); font-size:15px; line-height:1.65; -webkit-font-smoothing:antialiased; }
+  .page { max-width:1100px; margin:0 auto; }
+  .page > header { margin-bottom:36px; }
+  .layout { display:grid; grid-template-columns:190px minmax(0,1fr); gap:48px; }
+  .layout > * { min-width:0; }
+  main > section { margin-bottom:56px; scroll-margin-top:24px; }
+
+  .eyebrow { font:12px var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--gray-500);
+             display:flex; align-items:center; gap:12px; margin-bottom:18px; }
+  .eyebrow::before { content:""; width:24px; height:1.5px; background:var(--clay); }
+  h1 { font:500 clamp(30px,4.6vw,42px)/1.18 var(--serif); letter-spacing:-.012em; margin:0 0 12px; }
+  h2 { font:500 25px/1.28 var(--serif); letter-spacing:-.01em; margin:0 0 6px; }
+  h3 { font:500 18px/1.35 var(--serif); margin:0 0 6px; }
+  .sub { color:var(--gray-700); max-width:680px; margin:0 0 4px; }
+  hr.rule { border:0; border-top:1px solid var(--gray-300); margin:10px 0 22px; }
+  p { margin:0 0 12px; }
+  code { font:12.5px var(--mono); background:var(--gray-100); padding:1px 5px; border-radius:4px; }
+  .slot { background:rgba(217,119,87,.14); color:var(--clay-d); border-radius:4px; padding:0 3px; }
+  pre .slot { background:rgba(217,119,87,.22); color:#F2B49E; }
+
+  .panel { background:var(--white); border:var(--border); border-radius:12px; padding:20px 22px; }
+  .tldr { border:var(--border); border-left:3px solid var(--clay); border-radius:10px; background:#fff; padding:16px 18px; margin-top:22px; max-width:820px; }
+  .tldr b { font:600 11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--clay-d); margin-right:6px; }
+
+  /* toc */
+  nav.toc { position:sticky; top:32px; align-self:start; font-size:13px; }
+  nav.toc .label { font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--gray-500); margin-bottom:8px; }
+  nav.toc a { display:block; padding:5px 0; color:var(--gray-700); text-decoration:none; }
+  nav.toc a:hover { color:var(--clay); }
+
+  /* buttons */
+  button { font:12px var(--mono); cursor:pointer; border-radius:999px; padding:9px 16px; transition:background .14s ease, transform .08s ease; }
+  button.primary { background:var(--slate); color:var(--ivory); border:1.5px solid var(--slate); }
+  button.primary:hover:not(:disabled) { background:var(--gray-700); }
+  button.primary:disabled { background:var(--gray-300); border-color:var(--gray-300); cursor:not-allowed; }
+  button.primary.copied { background:var(--olive); border-color:var(--olive); }
+  button.ghost { background:transparent; color:var(--gray-700); border:var(--border); }
+  button.ghost:hover { border-color:var(--gray-500); }
+  button:focus-visible, a:focus-visible, summary:focus-visible, input:focus-visible { outline:2px solid var(--clay); outline-offset:2px; }
+
+  /* tables (grid style) */
+  .table-wrap { overflow-x:auto; border:var(--border); border-radius:12px; background:#fff; }
+  .gt { min-width:560px; }
+  .gt .row { display:grid; gap:0; }
+  .gt .cell { padding:11px 14px; border-top:1px solid var(--gray-300); font-size:13.5px; }
+  .gt .row:first-child .cell { border-top:0; }
+  .gt .cell.head { font:11px var(--sans); text-transform:uppercase; letter-spacing:.06em; color:var(--gray-500); background:var(--gray-100); }
+  .gt .cell.term { font:600 12.5px var(--mono); }
+  .gt.g3 .row { grid-template-columns:150px minmax(0,1fr) minmax(0,1fr); }
+  .gt.g2 .row { grid-template-columns:140px minmax(0,1fr); }
+  .gt.g3b .row { grid-template-columns:170px minmax(0,1.2fr) minmax(0,1fr); }
+
+  /* code blocks */
+  .cmd { position:relative; background:var(--slate); border-radius:12px; margin:10px 0 12px; }
+  .cmd pre { margin:0; padding:16px 78px 16px 18px; font:12.5px/1.7 var(--mono); color:var(--ivory); overflow-x:auto; white-space:pre; }
+  .cmd .cm { color:var(--gray-500); }
+  .cmd button { position:absolute; top:9px; right:9px; padding:5px 11px; font-size:11px; color:var(--ivory);
+                background:rgba(250,249,245,.08); border:1px solid rgba(250,249,245,.28); }
+  .cmd button:hover { background:rgba(250,249,245,.18); }
+  .cmd button.copied { background:var(--olive); border-color:var(--olive); color:#fff; }
+  .cmd .cap { font:11px var(--mono); letter-spacing:.06em; color:var(--gray-500); padding:10px 18px 0; text-transform:uppercase; }
+  .cmd .cap + pre { padding-top:6px; }
+
+  /* diagram */
+  .canvas { background:#fff; border:var(--border); border-radius:12px; padding:14px; overflow-x:auto; }
+  .canvas svg { display:block; width:100%; height:auto; min-width:640px; }
+  .legend { list-style:none; margin:16px 0 0; padding:0; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 24px; }
+  .legend li { display:grid; grid-template-columns:26px minmax(0,1fr); gap:8px; font-size:13.5px; color:var(--gray-700); }
+  .legend .n { width:22px; height:22px; border-radius:50%; background:var(--clay); color:#fff; font:600 12px/22px var(--mono); text-align:center; }
+  .legend .n.k { background:var(--slate); }
+  .role { font:600 10.5px var(--mono); padding:1px 7px; border-radius:999px; margin-left:6px; white-space:nowrap; }
+  .role.c { background:rgba(217,119,87,.14); color:var(--clay-d); border:1px solid rgba(217,119,87,.45); }
+  .role.o { background:var(--oat); color:var(--slate); border:1px solid #CFC3AE; }
+
+  /* fill form */
+  .fill { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:12px; align-items:end; }
+  .fill label { display:block; font:11px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--gray-500); margin-bottom:5px; }
+  .fill input { width:100%; font:13px var(--mono); padding:9px 11px; border:var(--border); border-radius:8px; background:var(--gray-100); color:var(--slate); }
+  .fill-foot { display:flex; gap:12px; align-items:center; margin-top:14px; flex-wrap:wrap; }
+  .fill-foot span { font-size:13px; color:var(--gray-500); }
+
+  /* role tabs */
+  .role-tabs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin:18px 0 26px; }
+  .role-tabs button { text-align:left; font-family:var(--sans); font-size:14px; border-radius:12px; padding:16px 18px; background:#fff;
+                      border:var(--border); color:var(--gray-700); display:flex; flex-direction:column; gap:2px; }
+  .role-tabs button .rt { font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--gray-500); }
+  .role-tabs button b { font:500 20px/1.3 var(--serif); color:var(--slate); }
+  .role-tabs button:hover { border-color:var(--gray-500); }
+  .role-tabs button.on { border-color:var(--clay); background:#FBF1EC; }
+  .role-tabs button.on .rt { color:var(--clay-d); }
+
+  .orient { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-bottom:8px; }
+  .orient .panel { padding:14px 18px; font-size:13.5px; }
+  .orient .k { font:600 11px var(--mono); letter-spacing:.08em; text-transform:uppercase; display:block; margin-bottom:4px; }
+  .orient .known .k { color:#4B5C39; } .orient .new .k { color:var(--clay-d); }
+
+  /* steps */
+  .step { display:grid; grid-template-columns:40px minmax(0,1fr); gap:0 16px; padding:26px 0; border-top:1px solid var(--gray-300); }
+  .steps > .step:first-child { border-top:0; }
+  .step > * { min-width:0; }
+  .num { width:34px; height:34px; border-radius:50%; background:var(--oat); display:flex; align-items:center; justify-content:center; font:600 14px var(--mono); margin-top:2px; }
+  .step h3 { font-size:20px; margin:2px 0 6px; }
+  .why { color:var(--gray-700); margin:0 0 12px; }
+  .ops { margin:0 0 12px; padding-left:22px; color:var(--gray-700); }
+  .ops li { margin-bottom:5px; }
+  .see, .warn, .tip { border:var(--border); border-radius:8px; background:#fff; padding:10px 14px; font-size:13.5px; margin:12px 0; color:var(--gray-700); }
+  .see { border-left:3px solid var(--olive); } .warn { border-left:3px solid var(--rust); } .tip { border-left:3px solid var(--clay); }
+  .see b.l, .warn b.l, .tip b.l { font:600 11px var(--mono); letter-spacing:.08em; text-transform:uppercase; margin-right:6px; }
+  .see b.l { color:#4B5C39; } .warn b.l { color:var(--rust); } .tip b.l { color:var(--clay-d); }
+
+  /* PR compare mock */
+  .pr-mock { display:grid; grid-template-columns:minmax(0,1fr) 44px minmax(0,1fr); gap:0; align-items:stretch; margin:12px 0; }
+  .pr-mock .half { background:#fff; border:var(--border); border-radius:10px; padding:12px 14px; }
+  .pr-mock .half .t { font:600 11px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--gray-500); margin-bottom:6px; }
+  .pr-mock .half .r { font:12.5px var(--mono); margin:2px 0; word-break:break-all; }
+  .pr-mock .half .r i { font-style:normal; color:var(--gray-500); margin-right:6px; }
+  .pr-mock .arr { display:flex; align-items:center; justify-content:center; font:22px var(--mono); color:var(--clay); }
+  .pr-mock .half.base { border-color:var(--clay); background:#FBF1EC; }
+  .mock-cap { font-size:13px; color:var(--gray-500); margin:0 0 12px; }
+
+  .gh-tabs { display:flex; gap:0; border-bottom:1.5px solid var(--gray-300); margin:12px 0; overflow-x:auto; }
+  .gh-tabs span { padding:8px 16px; font-size:13.5px; color:var(--gray-500); white-space:nowrap; }
+  .gh-tabs span.on { color:var(--slate); box-shadow:inset 0 -2px 0 var(--clay); font-weight:600; }
+  .gh-tabs span small { font:11px var(--mono); margin-left:6px; color:var(--gray-500); }
+
+  /* diff */
+  .diff { font:12.5px/1.7 var(--mono); background:#fff; border:var(--border); border-radius:8px; overflow-x:auto; margin:12px 0 0; }
+  .diff-row { display:grid; grid-template-columns:44px 18px minmax(max-content,1fr); white-space:pre; padding-right:14px; }
+  .diff-row .ln { color:var(--gray-500); text-align:right; padding-right:10px; user-select:none; }
+  .diff-row.add { background:rgba(120,140,93,.12); } .diff-row.add .mark { color:var(--olive); font-weight:600; }
+  .diff-row.del { background:rgba(176,74,63,.10); } .diff-row.del .mark { color:var(--rust); font-weight:600; }
+  .bubble { background:#fff; border:var(--border); border-left:4px solid var(--olive); border-radius:8px; padding:10px 14px; margin:8px 0 0 44px; font-size:13px; max-width:560px; }
+  .bubble .who { font:600 11px var(--mono); color:var(--gray-500); display:block; margin-bottom:2px; }
+
+  /* lifecycle */
+  .stages { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; margin:18px 0 16px; }
+  .stages button { text-align:left; font-family:var(--sans); border-radius:10px; padding:11px 12px; background:#fff; border:var(--border); color:var(--gray-700); font-size:13px; display:flex; flex-direction:column; gap:6px; }
+  .stages button:hover { border-color:var(--gray-500); }
+  .stages button.on { border-color:var(--clay); background:#FBF1EC; }
+  .stages button .si { font:11px var(--mono); color:var(--gray-500); }
+  .badge { font:600 11px var(--mono); padding:2px 9px; border-radius:999px; align-self:flex-start; }
+  .badge.ok { background:rgba(120,140,93,.18); color:#4B5C39; }
+  .badge.warn { background:rgba(217,119,87,.18); color:var(--clay-d); }
+  .badge.done { background:var(--slate); color:var(--ivory); }
+  .two { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+  .two .panel h3 { display:flex; align-items:center; gap:8px; }
+  .two ul { margin:8px 0 0; padding-left:20px; color:var(--gray-700); }
+  .two li { margin-bottom:6px; }
+  .stage-nav { display:flex; gap:10px; margin-top:16px; }
+
+  /* details */
+  details { border:var(--border); border-radius:10px; background:#fff; margin:12px 0; overflow:hidden; }
+  summary { list-style:none; cursor:pointer; padding:14px 16px; font:17px/1.4 var(--serif); display:flex; align-items:baseline; gap:10px; }
+  summary::-webkit-details-marker { display:none; }
+  summary::before { content:"▸"; color:var(--gray-500); transition:transform .12s; flex:none; }
+  details[open] > summary::before { transform:rotate(90deg); }
+  details > .body { padding:0 18px 16px; border-top:1px solid var(--gray-300); padding-top:14px; }
+  details > .body > :last-child { margin-bottom:0; }
+
+  .habits { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+  .habits ul { margin:8px 0 0; padding-left:20px; color:var(--gray-700); }
+  .habits li { margin-bottom:6px; }
+  .export { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:8px; padding-top:20px; border-top:1px solid var(--gray-300); }
+  .export span { font-size:13px; color:var(--gray-500); }
+
+  /* progress + toc active */
+  .progress { position:fixed; top:0; left:0; right:0; height:3px; z-index:60; }
+  .progress span { display:block; height:100%; width:0; background:var(--clay); }
+  nav.toc a.active { color:var(--clay-d); font-weight:600; }
+
+  /* route switch */
+  .route-switch { display:flex; gap:6px; flex-wrap:wrap; background:var(--gray-100); padding:5px; border-radius:12px; width:max-content; max-width:100%; margin:16px 0; }
+  .route-switch button { border:0; background:transparent; border-radius:9px; color:var(--gray-500); font:13px var(--sans); padding:9px 14px; }
+  .route-switch button[aria-pressed="true"] { background:#fff; color:var(--slate); box-shadow:inset 0 -2px 0 var(--clay); }
+  .route-steps { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; margin:14px 0; }
+  .route-step { border:var(--border); border-radius:10px; background:#fff; padding:10px 12px; }
+  .route-step.new { border-color:var(--clay); background:#FBF1EC; }
+  .route-step i { font:600 11px var(--mono); color:var(--gray-500); font-style:normal; }
+  .route-step b { display:block; font-size:14px; margin:2px 0; }
+  .route-step small { display:block; font-size:12.5px; color:var(--gray-700); line-height:1.5; }
+  .route-note { font-size:13px; color:var(--gray-500); margin:0 0 4px; }
+
+  /* practice */
+  .sim { margin-bottom:16px; }
+  .sim h3 { margin-bottom:4px; }
+  .sim-buttons { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0; }
+  .sim-buttons button, .answer { font:14px var(--sans); border-radius:10px; border:var(--border); background:#fff; color:var(--gray-700); padding:10px 14px; text-align:left; }
+  .sim-buttons button:hover, .answer:hover:not(:disabled) { border-color:var(--gray-500); }
+  .sim-buttons button.selected { border-color:var(--clay); background:#FBF1EC; color:var(--slate); }
+  .sim-result { background:var(--gray-100); border-radius:10px; padding:12px 14px; font-size:14px; min-height:52px; color:var(--gray-700); }
+  .quiz-top { display:flex; justify-content:space-between; gap:10px; align-items:baseline; flex-wrap:wrap; }
+  .quiz-top .count { font:12px var(--mono); color:var(--gray-500); }
+  .question { font:500 18px/1.45 var(--serif); margin:14px 0 12px; }
+  .answers { display:grid; gap:8px; }
+  .answer { display:flex; gap:10px; align-items:flex-start; }
+  .answer .letter { width:22px; height:22px; flex:none; border-radius:6px; background:var(--gray-100); font:600 11px/22px var(--mono); text-align:center; }
+  .answer:disabled { cursor:default; }
+  .answer.correct { border-color:var(--olive); background:rgba(120,140,93,.12); }
+  .answer.wrong { border-color:var(--rust); background:rgba(176,74,63,.10); }
+  .feedback { display:none; margin-top:12px; padding:12px 14px; border-radius:10px; font-size:14px; border:var(--border); border-left-width:4px; background:#fff; }
+  .feedback.show { display:block; } .feedback.good { border-left-color:var(--olive); } .feedback.bad { border-left-color:var(--clay); }
+  .quiz-foot { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:14px; }
+  .quiz-foot span { font-size:13px; color:var(--gray-500); }
+  .checks { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  .check-item { display:flex; gap:10px; align-items:flex-start; padding:11px 13px; border:var(--border); border-radius:10px; background:#fff; font-size:14px; color:var(--gray-700); cursor:pointer; }
+  .check-item input { accent-color:var(--clay); margin-top:5px; flex:none; }
+  .check-item.done { background:rgba(120,140,93,.10); border-color:rgba(120,140,93,.45); }
+  .bar { height:6px; border-radius:999px; background:var(--gray-100); overflow:hidden; margin-top:8px; }
+  .bar span { display:block; height:100%; width:0; background:var(--olive); transition:width .2s; }
+  .check-progress { font-size:13px; color:var(--gray-500); margin-top:12px; }
+  .resources { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  .resource { display:block; padding:12px 14px; border:var(--border); border-radius:10px; background:#fff; color:var(--slate); text-decoration:none; }
+  .resource:hover { border-color:var(--clay); }
+  .resource b { display:block; font-size:14px; } .resource small { font:12px var(--mono); color:var(--gray-500); }
+  .warn ul { margin:6px 0 0; padding-left:20px; }
+  .foot { font-size:13px; color:var(--gray-500); border-top:1px solid var(--gray-300); padding-top:18px; }
+
+  @media (max-width: 920px) {
+    .layout { grid-template-columns:minmax(0,1fr); gap:24px; }
+    nav.toc { position:static; display:flex; flex-wrap:wrap; gap:4px 16px; }
+    nav.toc .label { width:100%; margin-bottom:2px; }
+    .fill { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .stages { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .two, .habits, .orient, .role-tabs, .legend, .checks, .resources { grid-template-columns:minmax(0,1fr); }
+    .route-steps { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  }
+  @media (max-width: 720px) {
+    body { padding:32px 16px 80px; }
+    .step { grid-template-columns:minmax(0,1fr); }
+    .num { margin-bottom:8px; }
+    .pr-mock { grid-template-columns:minmax(0,1fr); }
+    .pr-mock .arr { transform:rotate(90deg); height:32px; }
+  }
+  /* site nav */
+  .crumb { margin:0 0 18px; font:12px var(--mono); }
+  .crumb a { color:var(--gray-500); text-decoration:none; }
+  .crumb a:hover { color:var(--clay); }
+  .pager { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-top:40px; }
+  .pager a { display:block; padding:14px 18px; border:var(--border); border-radius:12px; background:#fff; color:var(--slate); text-decoration:none; }
+  .pager a:hover { border-color:var(--clay); }
+  .pager small { display:block; font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--gray-500); }
+  .pager b { font:500 17px/1.4 var(--serif); }
+  .pager .next { text-align:right; grid-column:2; }
+  .pager .prev { grid-column:1; }
+  @media (max-width:720px){ .pager{grid-template-columns:minmax(0,1fr);} .pager .next,.pager .prev{grid-column:1;text-align:left;} }
+  @media (prefers-reduced-motion: reduce) { * { transition:none !important; scroll-behavior:auto !important; } }
+
+  .fill.f4 { grid-template-columns:repeat(4,minmax(0,1fr)); }
+  .fill.f3 { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .fill.f2 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  @media (max-width: 920px) { .fill.f4, .fill.f3 { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  @media (max-width: 520px) { .fill.f4, .fill.f3, .fill.f2 { grid-template-columns:minmax(0,1fr); } }
+  .badge.bad { background:rgba(176,74,63,.15); color:var(--rust); }
+  .dec-out { background:var(--gray-100); border-radius:10px; padding:12px 14px; font-size:14px; color:var(--gray-700); margin-top:12px; }
+
+  .sb { margin:0; background:#fff; border:var(--border); border-radius:12px; overflow:hidden; }
+  .sb-pic { position:relative; border-bottom:var(--border); background:var(--gray-100); }
+  .sb-pic svg { display:block; width:100%; height:auto; aspect-ratio:16/9; }
+  .sb-n { position:absolute; left:8px; top:8px; z-index:1; min-width:22px; height:22px; padding:0 6px; border-radius:999px; display:grid; place-items:center; background:var(--slate); color:#fff; font:600 12px var(--mono); }
+  .sb figcaption { padding:10px 12px 12px; display:grid; gap:6px; font-size:13.5px; line-height:1.55; color:var(--gray-700); }
+  .sb figcaption b { font:600 11px var(--mono); letter-spacing:.06em; color:var(--gray-500); margin-right:8px; }
+  .sb .mk { display:inline-grid; place-items:center; width:18px; height:18px; margin-right:6px; border-radius:50%; background:var(--clay); color:#fff; font:600 11px var(--mono); vertical-align:1px; }
+  .sb-pic .mk { position:absolute; right:8px; top:8px; width:22px; height:22px; margin:0; z-index:1; }
+  .sbrow { display:grid; gap:14px; margin:14px 0; }
+  .sbrow.c2 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .sbrow.c3 { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .sbrow.c4 { grid-template-columns:repeat(4,minmax(0,1fr)); }
+  @media (max-width: 920px) { .sbrow.c3, .sbrow.c4 { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  @media (max-width: 520px) { .sbrow.c2, .sbrow.c3, .sbrow.c4 { grid-template-columns:minmax(0,1fr); } }
+  .sbone { max-width:520px; margin:14px 0; }
+  .lv { display:inline-block; margin-right:8px; padding:2px 10px; border-radius:999px; font:600 11px var(--mono); letter-spacing:.04em; vertical-align:2px; }
+  .lv.l1 { background:rgba(120,140,93,.18); color:#5C6E45; }
+  .lv.l2 { background:var(--oat); color:var(--gray-700); }
+  .lv.l3 { background:rgba(217,119,87,.18); color:var(--clay-d); }
+  .shotfig { margin:0; }
+  .shotfig svg { display:block; width:100%; height:auto; aspect-ratio:16/9; border:var(--border); border-radius:10px; background:var(--gray-100); }
+  .shotfig figcaption { font-size:13px; color:var(--gray-700); margin-top:6px; line-height:1.5; }
+  .shotfig.empty svg { background:#fff; border-style:dashed; }
+  .arrow-row { display:flex; gap:14px; align-items:flex-end; flex-wrap:wrap; margin:14px 0; }
+  .arrow-row .shotfig svg { width:auto; height:150px; }
+  .arrow-row .shotfig figcaption { text-align:center; font:600 12px var(--mono); color:var(--gray-700); }
+  @media (max-width: 520px) { .arrow-row .shotfig svg { height:110px; } }
+  .ar-43 svg { aspect-ratio:4/3; } .ar-11 svg { aspect-ratio:1/1; } .ar-916 svg { aspect-ratio:9/16; }
+  .duo { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+  @media (max-width: 720px) { .duo { grid-template-columns:minmax(0,1fr); } }
+  .duo .box > b { display:block; font:600 11px var(--mono); letter-spacing:.06em; color:var(--gray-500); margin-bottom:6px; }
+  .duo svg { display:block; width:100%; height:auto; aspect-ratio:16/9; border:var(--border); border-radius:10px; background:var(--gray-100); }
+  .master { touch-action:none; cursor:grab; border-radius:10px; } .master:active { cursor:grabbing; }
+  .master:focus-visible { outline:2px solid var(--clay); outline-offset:3px; }
+  .rng { display:flex; align-items:center; gap:12px; margin:14px 0 4px; font:12px var(--mono); color:var(--gray-500); }
+  .rng input { flex:1; accent-color:var(--clay); }
+  .info { margin-top:12px; background:var(--gray-100); border-radius:10px; padding:12px 14px; font-size:14px; line-height:1.65; color:var(--gray-700); }
+  .info h4 { margin:0 0 4px; font:500 20px var(--serif); color:var(--slate); } .info h4 small { font:12px var(--mono); color:var(--gray-500); margin-left:8px; }
+  .lab { display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); gap:16px; align-items:start; }
+  @media (max-width: 720px) { .lab { grid-template-columns:minmax(0,1fr); } }
+  .lab .stage svg { display:block; width:100%; height:auto; aspect-ratio:16/9; border:var(--border); border-radius:10px; background:var(--gray-100); }
+  .lab .grp { margin:0 0 12px; } .lab .grp > b { display:block; font:600 11px var(--mono); letter-spacing:.06em; color:var(--gray-500); margin-bottom:6px; }
+  .lab .opts { display:flex; flex-wrap:wrap; gap:6px; }
+  .lab .opts button { font:600 13px var(--sans); padding:7px 12px; border:var(--border); border-radius:999px; background:#fff; color:var(--slate); cursor:pointer; }
+  .lab .opts button:hover { border-color:var(--clay); }
+  .lab .opts button.on { background:var(--slate); color:#fff; border-color:var(--slate); }
+  .lab .opts button:focus-visible { outline:2px solid var(--clay); outline-offset:2px; }
+  .verdict { margin-top:12px; background:var(--gray-100); border-radius:10px; padding:12px 14px; font-size:14px; line-height:1.6; color:var(--gray-700); }
+  .verdict b.ok { color:#5C6E45; } .verdict b.no { color:var(--rust); }
+  .later { display:inline-block; margin-left:8px; padding:2px 10px; border-radius:999px; background:var(--oat); color:var(--gray-700); font:600 11px var(--mono); vertical-align:3px; }
+  .ctl { display:grid; gap:10px; grid-template-columns:repeat(2,minmax(0,1fr)); margin:12px 0; }
+  .ctl label { display:block; font:12px var(--mono); color:var(--gray-500); margin-bottom:4px; }
+  .ctl input { width:100%; font:15px var(--sans); padding:9px 12px; border:var(--border); border-radius:8px; background:#fff; color:var(--slate); }
+  .ctl input:focus-visible { outline:2px solid var(--clay); outline-offset:1px; }
+  @media (max-width: 720px) { .ctl { grid-template-columns:minmax(0,1fr); } }
+  .legend-key { display:flex; gap:18px; flex-wrap:wrap; margin:8px 0 0; font-size:13.5px; color:var(--gray-700); }
+  .legend-key span { display:inline-flex; align-items:center; gap:8px; }
+  .legend-key svg { width:44px; height:14px; }
+
+  .ch { margin:12px 0; }
+  .ch .opts { display:flex; flex-wrap:wrap; gap:6px; }
+  .ch .opts button { font:600 13px var(--sans); padding:7px 14px; border:var(--border); border-radius:999px; background:#fff; color:var(--slate); cursor:pointer; }
+  .ch .opts button:hover { border-color:var(--clay); }
+  .ch .opts button:focus-visible { outline:2px solid var(--clay); outline-offset:2px; }
+  .ch .opts button.ok { background:#5C6E45; color:#fff; border-color:#5C6E45; }
+  .ch .opts button.no { background:var(--rust); color:#fff; border-color:var(--rust); }
+  .ch .res { margin-top:12px; font-size:14px; line-height:1.65; color:var(--gray-700); }
+  .ch .res[hidden] { display:none; }
+  .ch .res .shotfig { max-width:420px; margin-top:8px; }
+
+  .mvpair { display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); gap:10px; align-items:center; margin:14px 0; }
+  .mvpair .mid { font:600 22px var(--mono); color:var(--clay); text-align:center; }
+  .mvpair .mid small { display:block; font:600 11px var(--mono); color:var(--gray-500); letter-spacing:.04em; }
+  @media (max-width: 520px) { .mvpair { grid-template-columns:minmax(0,1fr); } .mvpair .mid { transform:rotate(90deg); } }
+  .anim .stagebox { display:grid; gap:12px; }
+  .anim .stagebox.two { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  @media (max-width: 720px) { .anim .stagebox.two { grid-template-columns:minmax(0,1fr); } }
+  .anim .stage svg { display:block; width:100%; height:auto; aspect-ratio:16/9; border:var(--border); border-radius:10px; background:var(--gray-100); }
+  .anim .stage > b { display:block; font:600 11px var(--mono); letter-spacing:.06em; color:var(--gray-500); margin-bottom:6px; }
+  .anim .bar2 { display:flex; align-items:center; gap:12px; margin:12px 0 4px; }
+  .anim .bar2 input { flex:1; accent-color:var(--clay); }
+  .anim button.play { font:600 12px var(--mono); padding:8px 16px; border-radius:999px; border:0; background:var(--slate); color:#fff; cursor:pointer; min-width:84px; }
+  .anim button.play:focus-visible { outline:2px solid var(--clay); outline-offset:2px; }
+  .anim .note2 { font-size:13px; color:var(--gray-500); margin:6px 0 0; }
+  .anim .rm { display:none; font-size:13px; color:var(--gray-500); margin:6px 0 0; }
+  .anim.reduced .rm { display:block; } .anim.reduced button.play { display:none; }
+  .fx { display:flex; flex-wrap:wrap; gap:6px; margin:10px 0 0; }
+  .fx button { font:600 13px var(--sans); padding:7px 12px; border:var(--border); border-radius:999px; background:#fff; color:var(--slate); cursor:pointer; }
+  .fx button.on { background:var(--slate); color:#fff; border-color:var(--slate); }
+  .fx button:focus-visible { outline:2px solid var(--clay); outline-offset:2px; }
+  .feel { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin:12px 0; }
+  .feel > div { background:#fff; border:var(--border); border-radius:10px; padding:10px 12px; font-size:14px; line-height:1.6; color:var(--gray-700); }
+  .feel b { display:block; font:600 11px var(--mono); letter-spacing:.06em; color:var(--gray-500); margin-bottom:2px; }
+  @media (max-width: 520px) { .feel { grid-template-columns:minmax(0,1fr); } }
+
+  .skip { position:absolute; left:12px; top:-60px; z-index:100; background:var(--slate); color:var(--ivory);
+          padding:10px 16px; border-radius:8px; font-size:14px; text-decoration:none; }
+  .skip:focus { top:12px; outline:2px solid var(--clay); outline-offset:2px; }
+  main:focus { outline:none; }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">跳到主要內容</a>
+<div class="progress" aria-hidden="true"><span id="readBar"></span></div>
+<div class="page">
+
+<header>
+  <nav class="crumb" aria-label="站內導覽"><a href="../index.html#microfilm">← 回教學首頁</a></nav>
+  <div class="eyebrow">微電影分鏡入門 · 第 10 篇 · 推拉、橫移、跟拍、環繞</div>
+  <h1>推拉、橫移、跟拍、環繞：鏡頭真的「走」起來</h1>
+  <p class="sub">搖攝是原地轉頭，這一篇的鏡頭會真的走。由簡單到複雜學四種：推拉、橫移、跟拍、環繞，每一種都有動畫與觀眾感受。</p>
+  <div class="tldr"><b>TL;DR</b> <strong>推</strong>靠近、專注；<strong>拉</strong>退開、結束或孤單；<strong>橫移</strong>從側面平行走；<strong>跟拍</strong>跟在人物後面；<strong>環繞</strong>繞著人物轉，要少用。鏡頭移動畫成<strong>橘色虛線</strong>，而且都要慢。</div>
+</header>
+
+<div class="layout">
+<nav class="toc" aria-label="本頁目錄">
+  <div class="label">On this page</div>
+  <a href="#start">1. 四種走法</a>
+  <a href="#pp">2. 推與拉</a>
+  <a href="#tr">3. 橫移與跟拍</a>
+  <a href="#orb">4. 環繞</a>
+  <a href="#story">5. 《紙條》裡怎麼用</a>
+  <a href="#pick">6. 你來選運鏡</a>
+  <a href="#practice">7. 演練與檢查</a>
+</nav>
+
+<main id="main" tabindex="-1">
+<section id="start">
+  <h2>鏡頭「走」起來：四種基本方式</h2>
+  <hr class="rule">
+<p class="sub" style="margin-bottom:10px"><span class="lv l1">Level 1 · 跟著做</span>上一篇的搖攝、俯仰，鏡頭站在原地轉。這一篇的鏡頭是<b>真的走動、改變位置</b>。由簡單到複雜學四種：<b>推拉 → 橫移 → 跟拍 → 環繞</b>。</p>
+<div class="table-wrap"><div class="gt g3"><div class="row"><div class="cell head">運鏡</div><div class="cell head">鏡頭怎麼走</div><div class="cell head">分鏡的橘色箭頭</div></div><div class="row"><div class="cell term">推 / 拉</div><div class="cell">往前靠近 / 往後退開</div><div class="cell">四個小箭頭朝中間（推）或朝外（拉）</div></div><div class="row"><div class="cell term">橫移</div><div class="cell">從旁邊平行移動</div><div class="cell">一條橫向橘色虛線</div></div><div class="row"><div class="cell term">跟拍</div><div class="cell">跟在人物後面（或前面）走</div><div class="cell">橫向橘色虛線，寫「跟拍」</div></div><div class="row"><div class="cell term">環繞</div><div class="cell">繞著人物轉一圈</div><div class="cell">一條弧形橘色虛線</div></div></div></div>
+<div class="tip"><b class="l">小技巧</b><b>搖攝是轉頭，推拉橫移是走路。</b>鏡頭有真的走，背景和人物的大小變化才會不一樣，畫面也更有「身歷其境」的感覺。</div>
+</section>
+
+<section id="pp">
+  <h2>推與拉：靠近或離開</h2>
+  <hr class="rule">
+<p>最簡單的鏡頭移動：<b>往前走叫「推」，往後退叫「拉」</b>。看看小安這一格，推近之前和之後：</p>
+<div class="mvpair"><figure class="shotfig "><svg viewBox="0 0 320 180" role="img" aria-label="離得遠，看得到環境" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><filter id="bAk16" filterUnits="userSpaceOnUse" x="-200" y="-200" width="720" height="600"><feGaussianBlur stdDeviation="0"/></filter><filter id="bBk16" filterUnits="userSpaceOnUse" x="-200" y="-200" width="720" height="600"><feGaussianBlur stdDeviation="0"/></filter><filter id="bCk16" filterUnits="userSpaceOnUse" x="-200" y="-200" width="720" height="600"><feGaussianBlur stdDeviation="0"/></filter><rect x="-200" y="-200" width="720" height="295.2" fill="#F0EEE6"/><rect x="-200" y="95.2" width="720" height="400" fill="#E3DACC"/><line x1="-200" y1="95.2" x2="520" y2="95.2" stroke="#87867F" stroke-width="0.8" stroke-linecap="round"/><g><rect x="-38" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="-28.7" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="-24.8" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="-15.5" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="-11.6" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="-2.3" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="1.6" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="10.9" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="14.8" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="24.1" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="28" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="37.3" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="41.2" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="50.5" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="54.4" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="63.7" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="67.6" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="76.9" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="80.8" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="90.1" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="94" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="103.3" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="107.2" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="116.5" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="120.4" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="129.7" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="133.6" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="142.9" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="146.8" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="156.1" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="160" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="169.3" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="173.2" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="182.5" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="186.4" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="195.7" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="199.6" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="208.9" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="212.8" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="222.1" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="226" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="235.3" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="239.2" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="248.5" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="252.4" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="261.7" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="265.6" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="274.9" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="278.8" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="288.1" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="292" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="301.3" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="305.2" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="314.5" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="318.4" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="327.7" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="331.6" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="340.9" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="344.8" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="354.1" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="358" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="367.3" cy="80.2" r="0.7" fill="#3D3D3A"/></g><g><line x1="186.7" y1="87.5" x2="184.8" y2="102" stroke="#3D3D3A" stroke-width="3.4" stroke-linecap="round"/><line x1="186.7" y1="87.5" x2="188.6" y2="102" stroke="#3D3D3A" stroke-width="3.4" stroke-linecap="round"/><rect x="181" y="73.8" width="11.4" height="15.2" rx="4.6" fill="#788C5D"/><line x1="186.7" y1="76.9" x2="181.3" y2="86" stroke="#788C5D" stroke-width="2.7" stroke-linecap="round"/><line x1="186.7" y1="76.9" x2="192" y2="86" stroke="#788C5D" stroke-width="2.7" stroke-linecap="round"/><circle cx="192" cy="86" r="1.4" fill="#E3DACC"/><circle cx="181.3" cy="86" r="1.4" fill="#E3DACC"/><circle cx="186.7" cy="70" r="4.2" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M182.2,70 A4.4 4.4 0 0 1 191.1,70 Z" fill="#3D3D3A"/><circle cx="185" cy="70.6" r="0.6" fill="#141413"/><circle cx="188.4" cy="70.6" r="0.6" fill="#141413"/><line x1="185.7" y1="72.5" x2="187.6" y2="72.5" stroke="#141413" stroke-width="1.3" stroke-linecap="round"/></g><line x1="160" y1="93" x2="157.5" y2="112" stroke="#3D3D3A" stroke-width="4.5" stroke-linecap="round"/><line x1="160" y1="93" x2="162.5" y2="112" stroke="#3D3D3A" stroke-width="4.5" stroke-linecap="round"/><rect x="152.5" y="75" width="15" height="20" rx="6" fill="#D97757"/><line x1="160" y1="79" x2="153" y2="91" stroke="#D97757" stroke-width="3.5" stroke-linecap="round"/><line x1="160" y1="79" x2="167" y2="91" stroke="#D97757" stroke-width="3.5" stroke-linecap="round"/><circle cx="167" cy="91" r="1.8" fill="#E3DACC"/><circle cx="153" cy="91" r="1.8" fill="#E3DACC"/><circle cx="160" cy="70" r="5.5" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M154.2,70 A5.8 5.8 0 0 1 165.8,70 Z" fill="#141413"/><circle cx="157.8" cy="70.8" r="0.8" fill="#141413"/><circle cx="162.3" cy="70.8" r="0.8" fill="#141413"/><line x1="158.8" y1="73.3" x2="161.3" y2="73.3" stroke="#141413" stroke-width="1.3" stroke-linecap="round"/><g><rect x="97.5" y="103.5" width="13.4" height="13.4" rx="1.7" fill="#3D3D3A"/><circle cx="104.2" cy="97.9" r="8.9" fill="#788C5D"/><circle cx="97.5" cy="101.3" r="5.6" fill="#788C5D"/><circle cx="110.9" cy="101.3" r="5.6" fill="#788C5D"/></g></svg><figcaption><b>起點</b> 離得遠，看得到環境</figcaption></figure><div class="mid">→<small>推近</small></div><figure class="shotfig "><svg viewBox="0 0 320 180" role="img" aria-label="靠近了，人物變大" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><filter id="bAk17" filterUnits="userSpaceOnUse" x="-200" y="-200" width="720" height="600"><feGaussianBlur stdDeviation="0"/></filter><filter id="bBk17" filterUnits="userSpaceOnUse" x="-200" y="-200" width="720" height="600"><feGaussianBlur stdDeviation="0"/></filter><filter id="bCk17" filterUnits="userSpaceOnUse" x="-200" y="-200" width="720" height="600"><feGaussianBlur stdDeviation="0"/></filter><rect x="-200" y="-200" width="720" height="306" fill="#F0EEE6"/><rect x="-200" y="106" width="720" height="400" fill="#E3DACC"/><line x1="-200" y1="106" x2="520" y2="106" stroke="#87867F" stroke-width="0.8" stroke-linecap="round"/><g><rect x="-28.6" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="-15.3" cy="84.6" r="1" fill="#3D3D3A"/><rect x="-9.7" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="3.6" cy="84.6" r="1" fill="#3D3D3A"/><rect x="9.1" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="22.4" cy="84.6" r="1" fill="#3D3D3A"/><rect x="28" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="41.3" cy="84.6" r="1" fill="#3D3D3A"/><rect x="46.9" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="60.1" cy="84.6" r="1" fill="#3D3D3A"/><rect x="65.7" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="79" cy="84.6" r="1" fill="#3D3D3A"/><rect x="84.6" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="97.9" cy="84.6" r="1" fill="#3D3D3A"/><rect x="103.4" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="116.7" cy="84.6" r="1" fill="#3D3D3A"/><rect x="122.3" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="135.6" cy="84.6" r="1" fill="#3D3D3A"/><rect x="141.1" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="154.4" cy="84.6" r="1" fill="#3D3D3A"/><rect x="160" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="173.3" cy="84.6" r="1" fill="#3D3D3A"/><rect x="178.9" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="192.1" cy="84.6" r="1" fill="#3D3D3A"/><rect x="197.7" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="211" cy="84.6" r="1" fill="#3D3D3A"/><rect x="216.6" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="229.9" cy="84.6" r="1" fill="#3D3D3A"/><rect x="235.4" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="248.7" cy="84.6" r="1" fill="#3D3D3A"/><rect x="254.3" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="267.6" cy="84.6" r="1" fill="#3D3D3A"/><rect x="273.1" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="286.4" cy="84.6" r="1" fill="#3D3D3A"/><rect x="292" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="305.3" cy="84.6" r="1" fill="#3D3D3A"/><rect x="310.9" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="324.1" cy="84.6" r="1" fill="#3D3D3A"/><rect x="329.7" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="343" cy="84.6" r="1" fill="#3D3D3A"/><rect x="348.6" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="361.9" cy="84.6" r="1" fill="#3D3D3A"/></g><g><line x1="203.1" y1="98.3" x2="200" y2="121.7" stroke="#3D3D3A" stroke-width="5.5" stroke-linecap="round"/><line x1="203.1" y1="98.3" x2="206.2" y2="121.7" stroke="#3D3D3A" stroke-width="5.5" stroke-linecap="round"/><rect x="193.8" y="76.2" width="18.5" height="24.6" rx="7.4" fill="#788C5D"/><line x1="203.1" y1="81.1" x2="194.5" y2="95.8" stroke="#788C5D" stroke-width="4.3" stroke-linecap="round"/><line x1="203.1" y1="81.1" x2="211.7" y2="95.8" stroke="#788C5D" stroke-width="4.3" stroke-linecap="round"/><circle cx="211.7" cy="95.8" r="2.2" fill="#E3DACC"/><circle cx="194.5" cy="95.8" r="2.2" fill="#E3DACC"/><circle cx="203.1" cy="70" r="6.8" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M195.9,70 A7.1 7.1 0 0 1 210.2,70 Z" fill="#3D3D3A"/><circle cx="200.3" cy="70.9" r="1" fill="#141413"/><circle cx="205.8" cy="70.9" r="1" fill="#141413"/><line x1="201.5" y1="74" x2="204.6" y2="74" stroke="#141413" stroke-width="1.3" stroke-linecap="round"/></g><line x1="160" y1="116" x2="155" y2="154" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><line x1="160" y1="116" x2="165" y2="154" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><rect x="145" y="80" width="30" height="40" rx="12" fill="#D97757"/><line x1="160" y1="88" x2="146" y2="112" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><line x1="160" y1="88" x2="174" y2="112" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><circle cx="174" cy="112" r="3.6" fill="#E3DACC"/><circle cx="146" cy="112" r="3.6" fill="#E3DACC"/><circle cx="160" cy="70" r="11" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M148.4,70 A11.6 11.6 0 0 1 171.6,70 Z" fill="#141413"/><circle cx="155.5" cy="71.5" r="1.6" fill="#141413"/><circle cx="164.5" cy="71.5" r="1.6" fill="#141413"/><line x1="157.5" y1="76.5" x2="162.5" y2="76.5" stroke="#141413" stroke-width="1.3" stroke-linecap="round"/><g><rect x="18.5" y="145.8" width="30.3" height="30.3" rx="3.8" fill="#3D3D3A"/><circle cx="33.7" cy="133.2" r="20.2" fill="#788C5D"/><circle cx="18.5" cy="140.7" r="12.6" fill="#788C5D"/><circle cx="48.8" cy="140.7" r="12.6" fill="#788C5D"/></g></svg><figcaption><b>終點</b> 靠近了，人物變大</figcaption></figure></div>
+<div class="panel anim" data-id="pp"><h3 style="margin-top:0">動畫：推與拉</h3><p style='margin:0 0 10px;color:var(--gray-700)'>左邊是推（靠近），右邊是拉（離開）。拖動滑桿看每個時間點的畫面。</p><div class="stagebox two"></div><div class="bar2"><button type="button" class="play">播放</button><input type="range" min="0" max="100" value="0" aria-label="動畫進度"></div><p class="note2">按「播放」看動畫，也可以拖動滑桿慢慢看。</p><p class="rm">你的系統設定為「減少動態效果」，所以不會自動播放；拖動滑桿就能手動看每一格。</p></div>
+<div class="feel"><div><b>推 · 觀眾的感受</b>越來越專注、被帶進角色的內心，或感覺到事情要發生了。</div><div><b>拉 · 觀眾的感受</b>跳出來看全貌，常有結束、孤單或「原來如此」的感覺。</div></div>
+<div class="tip"><b class="l">小技巧</b>推和拉都<b>要慢</b>。越慢越有情緒；太快會像在跑。</div>
+</section>
+
+<section id="tr">
+  <h2>橫移與跟拍：跟著人走</h2>
+  <hr class="rule">
+<p><span class="lv l2">Level 2 · 再多認識</span>人物在走，鏡頭也走，而且<b>速度和人物差不多</b>，人物就一直留在畫面裡，背景卻一直在變。</p>
+<div class="sbrow c2"><figure class="shotfig "><svg viewBox="410.6 12 248.9 140" role="img" aria-label="橫移：小安走，鏡頭在旁邊跟著平行移動" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><rect x="0" y="-420" width="1200" height="550" fill="#F0EEE6"/><rect x="0" y="130" width="1200" height="300" fill="#E3DACC"/><line x1="0" y1="130" x2="1200" y2="130" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="0" y1="152" x2="1200" y2="152" stroke="#D1CFC5" stroke-width="1" stroke-linecap="round"/><line x1="0" y1="168" x2="1200" y2="168" stroke="#D1CFC5" stroke-width="1" stroke-linecap="round"/><rect x="400" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="408" y1="38" x2="430" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="408" y1="44" x2="430" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="431" cy="84" r="2.4" fill="#3D3D3A"/><rect x="444" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="452" y1="38" x2="474" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="452" y1="44" x2="474" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="475" cy="84" r="2.4" fill="#3D3D3A"/><rect x="488" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="496" y1="38" x2="518" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="496" y1="44" x2="518" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="519" cy="84" r="2.4" fill="#3D3D3A"/><rect x="532" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="540" y1="38" x2="562" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="540" y1="44" x2="562" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="563" cy="84" r="2.4" fill="#3D3D3A"/><rect x="576" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="584" y1="38" x2="606" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="584" y1="44" x2="606" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="607" cy="84" r="2.4" fill="#3D3D3A"/><rect x="620" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="628" y1="38" x2="650" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="628" y1="44" x2="650" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="651" cy="84" r="2.4" fill="#3D3D3A"/><rect x="664" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="672" y1="38" x2="694" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="672" y1="44" x2="694" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="695" cy="84" r="2.4" fill="#3D3D3A"/><line x1="495" y1="92" x2="484" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><line x1="495" y1="92" x2="507" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><rect x="468" y="62" width="13" height="30" rx="5" fill="#B85C3E"/><rect x="480" y="56" width="30" height="40" rx="12" fill="#D97757"/><line x1="495" y1="64" x2="483" y2="86" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><line x1="495" y1="64" x2="508" y2="84" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><circle cx="508" cy="84" r="3.6" fill="#E3DACC"/><circle cx="483" cy="86" r="3.6" fill="#E3DACC"/><circle cx="497" cy="46" r="11" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M485.4,46 A11.6 11.6 0 0 1 508.6,46 Z" fill="#141413"/><circle cx="489" cy="47" r="5" fill="#141413"/><circle cx="502.5" cy="47.5" r="1.6" fill="#141413"/><line x1="499.5" y1="52.5" x2="504.5" y2="52.5" stroke="#141413" stroke-width="1.3" stroke-linecap="round"/><line x1="460.3" y1="138" x2="609.7" y2="138" stroke="#D97757" stroke-width="2.6" stroke-dasharray="5.4 3.9" stroke-linecap="round" marker-end="url(#cmk3)"/><text x="535" y="134.1" text-anchor="middle" font-size="7" font-weight="600" fill="#B85C3E" style="font-family:system-ui,sans-serif">橫移</text></svg><figcaption><b>橫移</b>：鏡頭在人物的側面，平行移動。看得到人物的側臉、背景一直滑過去。</figcaption></figure><figure class="shotfig "><svg viewBox="0 0 320 180" role="img" aria-label="跟拍：鏡頭在後面跟著小安走" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><filter id="bAk13" filterUnits="userSpaceOnUse" x="-200" y="-200" width="720" height="600"><feGaussianBlur stdDeviation="0"/></filter><filter id="bBk13" filterUnits="userSpaceOnUse" x="-200" y="-200" width="720" height="600"><feGaussianBlur stdDeviation="0"/></filter><filter id="bCk13" filterUnits="userSpaceOnUse" x="-200" y="-200" width="720" height="600"><feGaussianBlur stdDeviation="0"/></filter><rect x="-200" y="-200" width="720" height="296.2" fill="#F0EEE6"/><rect x="-200" y="96.2" width="720" height="400" fill="#E3DACC"/><line x1="-200" y1="96.2" x2="520" y2="96.2" stroke="#87867F" stroke-width="0.8" stroke-linecap="round"/><g><rect x="-32" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="-22.3" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="-18.3" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="-8.6" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="-4.6" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="5.1" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="9.1" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="18.8" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="22.9" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="32.5" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="36.6" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="46.2" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="50.3" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="59.9" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="64" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="73.7" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="77.7" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="87.4" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="91.4" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="101.1" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="105.1" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="114.8" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="118.9" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="128.5" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="132.6" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="142.2" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="146.3" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="155.9" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="160" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="169.7" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="173.7" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="183.4" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="187.4" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="197.1" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="201.1" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="210.8" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="214.9" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="224.5" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="228.6" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="238.2" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="242.3" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="251.9" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="256" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="265.7" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="269.7" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="279.4" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="283.4" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="293.1" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="297.1" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="306.8" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="310.9" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="320.5" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="324.6" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="334.2" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="338.3" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="347.9" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="352" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="361.7" cy="80.6" r="0.7" fill="#3D3D3A"/></g><line x1="160" y1="116" x2="149" y2="154" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><line x1="160" y1="116" x2="172" y2="154" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><rect x="148" y="84" width="24" height="30" rx="6" fill="#B85C3E"/><rect x="145" y="80" width="30" height="40" rx="12" fill="#D97757"/><line x1="160" y1="88" x2="146" y2="110" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><line x1="160" y1="88" x2="174" y2="108" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><circle cx="174" cy="108" r="3.6" fill="#E3DACC"/><circle cx="146" cy="110" r="3.6" fill="#E3DACC"/><circle cx="160" cy="70" r="11" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M148.4,70 A11.6 11.6 0 0 1 171.6,70 Z" fill="#141413"/><circle cx="160" cy="70" r="11.6" fill="#141413"/></svg><figcaption><b>跟拍</b>：鏡頭跟在人物後面，觀眾像在追著她走。</figcaption></figure></div>
+<div class="panel anim" data-id="tr"><h3 style="margin-top:0">動畫：橫移（左）與跟拍（右）</h3><p style='margin:0 0 10px;color:var(--gray-700)'>按播放，看看背景是怎麼變的。</p><div class="stagebox two"></div><div class="bar2"><button type="button" class="play">播放</button><input type="range" min="0" max="100" value="0" aria-label="動畫進度"></div><p class="note2">按「播放」看動畫，也可以拖動滑桿慢慢看。</p><p class="rm">你的系統設定為「減少動態效果」，所以不會自動播放；拖動滑桿就能手動看每一格。</p></div>
+<div class="table-wrap"><div class="gt g3"><div class="row"><div class="cell head"></div><div class="cell head">橫移</div><div class="cell head">跟拍</div></div><div class="row"><div class="cell term">鏡頭在哪</div><div class="cell">人物的側面</div><div class="cell">人物的後面（或前面）</div></div><div class="row"><div class="cell term">看到什麼</div><div class="cell">側臉、背景滑過去</div><div class="cell">背影（或正面），往前的空間</div></div><div class="row"><div class="cell term">適合</div><div class="cell">走路對話、展示環境</div><div class="cell">追逐、緊張、「跟著她」</div></div></div></div>
+</section>
+
+<section id="orb">
+  <h2>環繞：繞著人物轉一圈</h2>
+  <hr class="rule">
+<p><span class="lv l3">Level 3 · 挑戰</span>最複雜的一種。鏡頭<b>繞著人物轉</b>，人物留在中間，背景一直轉換。</p>
+<div class="mvpair"><figure class="shotfig "><svg viewBox="0 0 320 180" role="img" aria-label="先看到她的側臉" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><filter id="bAk18" filterUnits="userSpaceOnUse" x="-200" y="-200" width="720" height="600"><feGaussianBlur stdDeviation="0"/></filter><filter id="bBk18" filterUnits="userSpaceOnUse" x="-200" y="-200" width="720" height="600"><feGaussianBlur stdDeviation="0"/></filter><filter id="bCk18" filterUnits="userSpaceOnUse" x="-200" y="-200" width="720" height="600"><feGaussianBlur stdDeviation="0"/></filter><rect x="-200" y="-200" width="720" height="312" fill="#F0EEE6"/><rect x="-200" y="112" width="720" height="400" fill="#E3DACC"/><line x1="-200" y1="112" x2="520" y2="112" stroke="#87867F" stroke-width="0.8" stroke-linecap="round"/><g><rect x="-25" y="62" width="19" height="50" rx="1" fill="#D1CFC5" stroke="#87867F" stroke-width="0.75"/><circle cx="-9.5" cy="87" r="1.2" fill="#3D3D3A"/><rect x="-3" y="62" width="19" height="50" rx="1" fill="#D1CFC5" stroke="#87867F" stroke-width="0.75"/><circle cx="12.5" cy="87" r="1.2" fill="#3D3D3A"/><rect x="19" y="62" width="19" height="50" rx="1" fill="#D1CFC5" stroke="#87867F" stroke-width="0.75"/><circle cx="34.5" cy="87" r="1.2" fill="#3D3D3A"/><rect x="41" y="62" width="19" height="50" rx="1" fill="#D1CFC5" stroke="#87867F" stroke-width="0.75"/><circle cx="56.5" cy="87" r="1.2" fill="#3D3D3A"/><rect x="63" y="62" width="19" height="50" rx="1" fill="#D1CFC5" stroke="#87867F" stroke-width="0.75"/><circle cx="78.5" cy="87" r="1.2" fill="#3D3D3A"/><rect x="85" y="62" width="19" height="50" rx="1" fill="#D1CFC5" stroke="#87867F" stroke-width="0.75"/><circle cx="100.5" cy="87" r="1.2" fill="#3D3D3A"/><rect x="107" y="62" width="19" height="50" rx="1" fill="#D1CFC5" stroke="#87867F" stroke-width="0.75"/><circle cx="122.5" cy="87" r="1.2" fill="#3D3D3A"/><rect x="129" y="62" width="19" height="50" rx="1" fill="#D1CFC5" stroke="#87867F" stroke-width="0.75"/><circle cx="144.5" cy="87" r="1.2" fill="#3D3D3A"/><rect x="151" y="62" width="19" height="50" rx="1" fill="#D1CFC5" stroke="#87867F" stroke-width="0.75"/><circle cx="166.5" cy="87" r="1.2" fill="#3D3D3A"/><rect x="173" y="62" width="19" height="50" rx="1" fill="#D1CFC5" stroke="#87867F" stroke-width="0.75"/><circle cx="188.5" cy="87" r="1.2" fill="#3D3D3A"/><rect x="195" y="62" width="19" height="50" rx="1" fill="#D1CFC5" stroke="#87867F" stroke-width="0.75"/><circle cx="210.5" cy="87" r="1.2" fill="#3D3D3A"/><rect x="217" y="62" width="19" height="50" rx="1" fill="#D1CFC5" stroke="#87867F" stroke-width="0.75"/><circle cx="232.5" cy="87" r="1.2" fill="#3D3D3A"/><rect x="239" y="62" width="19" height="50" rx="1" fill="#D1CFC5" stroke="#87867F" stroke-width="0.75"/><circle cx="254.5" cy="87" r="1.2" fill="#3D3D3A"/><rect x="261" y="62" width="19" height="50" rx="1" fill="#D1CFC5" stroke="#87867F" stroke-width="0.75"/><circle cx="276.5" cy="87" r="1.2" fill="#3D3D3A"/><rect x="283" y="62" width="19" height="50" rx="1" fill="#D1CFC5" stroke="#87867F" stroke-width="0.75"/><circle cx="298.5" cy="87" r="1.2" fill="#3D3D3A"/><rect x="305" y="62" width="19" height="50" rx="1" fill="#D1CFC5" stroke="#87867F" stroke-width="0.75"/><circle cx="320.5" cy="87" r="1.2" fill="#3D3D3A"/><rect x="327" y="62" width="19" height="50" rx="1" fill="#D1CFC5" stroke="#87867F" stroke-width="0.75"/><circle cx="342.5" cy="87" r="1.2" fill="#3D3D3A"/><rect x="349" y="62" width="19" height="50" rx="1" fill="#D1CFC5" stroke="#87867F" stroke-width="0.75"/><circle cx="364.5" cy="87" r="1.2" fill="#3D3D3A"/></g><line x1="160" y1="116" x2="155" y2="154" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><line x1="160" y1="116" x2="165" y2="154" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><rect x="133" y="86" width="13" height="30" rx="5" fill="#B85C3E"/><rect x="145" y="80" width="30" height="40" rx="12" fill="#D97757"/><line x1="160" y1="88" x2="156" y2="112" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><line x1="160" y1="88" x2="164" y2="112" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><circle cx="164" cy="112" r="3.6" fill="#E3DACC"/><circle cx="156" cy="112" r="3.6" fill="#E3DACC"/><circle cx="162" cy="70" r="11" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M150.4,70 A11.6 11.6 0 0 1 173.6,70 Z" fill="#141413"/><circle cx="154" cy="71" r="5" fill="#141413"/><circle cx="167.5" cy="71.5" r="1.6" fill="#141413"/><line x1="164.5" y1="76.5" x2="169.5" y2="76.5" stroke="#141413" stroke-width="1.3" stroke-linecap="round"/></svg><figcaption><b>起點</b> 先看到她的側臉</figcaption></figure><div class="mid">→<small>繞半圈</small></div><figure class="shotfig "><svg viewBox="0 0 320 180" role="img" aria-label="繞到另一邊" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk6" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk6" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><filter id="bAk19" filterUnits="userSpaceOnUse" x="-200" y="-200" width="720" height="600"><feGaussianBlur stdDeviation="0"/></filter><filter id="bBk19" filterUnits="userSpaceOnUse" x="-200" y="-200" width="720" height="600"><feGaussianBlur stdDeviation="0"/></filter><filter id="bCk19" filterUnits="userSpaceOnUse" x="-200" y="-200" width="720" height="600"><feGaussianBlur stdDeviation="0"/></filter><rect x="-200" y="-200" width="720" height="312" fill="#F0EEE6"/><rect x="-200" y="112" width="720" height="400" fill="#E3DACC"/><line x1="-200" y1="112" x2="520" y2="112" stroke="#87867F" stroke-width="0.8" stroke-linecap="round"/><g><rect x="-29" y="62" width="19" height="50" rx="1" fill="#D1CFC5" stroke="#87867F" stroke-width="0.75"/><circle cx="-13.5" cy="87" r="1.2" fill="#3D3D3A"/><rect x="-7" y="62" width="19" height="50" rx="1" fill="#D1CFC5" stroke="#87867F" stroke-width="0.75"/><circle cx="8.5" cy="87" r="1.2" fill="#3D3D3A"/><rect x="15" y="62" width="19" height="50" rx="1" fill="#D1CFC5" stroke="#87867F" stroke-width="0.75"/><circle cx="30.5" cy="87" r="1.2" fill="#3D3D3A"/><rect x="37" y="62" width="19" height="50" rx="1" fill="#D1CFC5" stroke="#87867F" stroke-width="0.75"/><circle cx="52.5" cy="87" r="1.2" fill="#3D3D3A"/><rect x="59" y="62" width="19" height="50" rx="1" fill="#D1CFC5" stroke="#87867F" stroke-width="0.75"/><circle cx="74.5" cy="87" r="1.2" fill="#3D3D3A"/><rect x="81" y="62" width="19" height="50" rx="1" fill="#D1CFC5" stroke="#87867F" stroke-width="0.75"/><circle cx="96.5" cy="87" r="1.2" fill="#3D3D3A"/><rect x="103" y="62" width="19" height="50" rx="1" fill="#D1CFC5" stroke="#87867F" stroke-width="0.75"/><circle cx="118.5" cy="87" r="1.2" fill="#3D3D3A"/><rect x="125" y="62" width="19" height="50" rx="1" fill="#D1CFC5" stroke="#87867F" stroke-width="0.75"/><circle cx="140.5" cy="87" r="1.2" fill="#3D3D3A"/><rect x="147" y="62" width="19" height="50" rx="1" fill="#D1CFC5" stroke="#87867F" stroke-width="0.75"/><circle cx="162.5" cy="87" r="1.2" fill="#3D3D3A"/><rect x="169" y="62" width="19" height="50" rx="1" fill="#D1CFC5" stroke="#87867F" stroke-width="0.75"/><circle cx="184.5" cy="87" r="1.2" fill="#3D3D3A"/><rect x="191" y="62" width="19" height="50" rx="1" fill="#D1CFC5" stroke="#87867F" stroke-width="0.75"/><circle cx="206.5" cy="87" r="1.2" fill="#3D3D3A"/><rect x="213" y="62" width="19" height="50" rx="1" fill="#D1CFC5" stroke="#87867F" stroke-width="0.75"/><circle cx="228.5" cy="87" r="1.2" fill="#3D3D3A"/><rect x="235" y="62" width="19" height="50" rx="1" fill="#D1CFC5" stroke="#87867F" stroke-width="0.75"/><circle cx="250.5" cy="87" r="1.2" fill="#3D3D3A"/><rect x="257" y="62" width="19" height="50" rx="1" fill="#D1CFC5" stroke="#87867F" stroke-width="0.75"/><circle cx="272.5" cy="87" r="1.2" fill="#3D3D3A"/><rect x="279" y="62" width="19" height="50" rx="1" fill="#D1CFC5" stroke="#87867F" stroke-width="0.75"/><circle cx="294.5" cy="87" r="1.2" fill="#3D3D3A"/><rect x="301" y="62" width="19" height="50" rx="1" fill="#D1CFC5" stroke="#87867F" stroke-width="0.75"/><circle cx="316.5" cy="87" r="1.2" fill="#3D3D3A"/><rect x="323" y="62" width="19" height="50" rx="1" fill="#D1CFC5" stroke="#87867F" stroke-width="0.75"/><circle cx="338.5" cy="87" r="1.2" fill="#3D3D3A"/><rect x="345" y="62" width="19" height="50" rx="1" fill="#D1CFC5" stroke="#87867F" stroke-width="0.75"/><circle cx="360.5" cy="87" r="1.2" fill="#3D3D3A"/></g><g transform="translate(320 0) scale(-1 1)"><line x1="160" y1="116" x2="155" y2="154" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><line x1="160" y1="116" x2="165" y2="154" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><rect x="133" y="86" width="13" height="30" rx="5" fill="#B85C3E"/><rect x="145" y="80" width="30" height="40" rx="12" fill="#D97757"/><line x1="160" y1="88" x2="156" y2="112" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><line x1="160" y1="88" x2="164" y2="112" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><circle cx="164" cy="112" r="3.6" fill="#E3DACC"/><circle cx="156" cy="112" r="3.6" fill="#E3DACC"/><circle cx="160" cy="70" r="11" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M148.4,70 A11.6 11.6 0 0 1 171.6,70 Z" fill="#141413"/><circle cx="165.5" cy="71.5" r="1.6" fill="#141413"/><line x1="162.5" y1="76.5" x2="167.5" y2="76.5" stroke="#141413" stroke-width="1.3" stroke-linecap="round"/></g></svg><figcaption><b>終點</b> 繞到另一邊</figcaption></figure></div>
+<div class="panel anim" data-id="orb"><h3 style="margin-top:0">動畫：環繞（示意）</h3><p style='margin:0 0 10px;color:var(--gray-700)'>觀察：人物一直在畫面中間，背景一直換。</p><div class="stagebox"></div><div class="bar2"><button type="button" class="play">播放</button><input type="range" min="0" max="100" value="0" aria-label="動畫進度"></div><p class="note2">按「播放」看動畫，也可以拖動滑桿慢慢看。</p><p class="rm">你的系統設定為「減少動態效果」，所以不會自動播放；拖動滑桿就能手動看每一格。</p></div>
+<div class="warn"><b class="l">少用</b>環繞很吸睛，也很容易搶戲。通常留給<b>重要的一刻</b>：例如告白、重逢、角色下決定的瞬間。</div>
+<p class="note2" style="color:var(--gray-500);font-size:13px">上面的動畫是簡化示意，實際拍的時候，背景會隨著繞的角度自然改變。</p>
+</section>
+
+<section id="story">
+  <h2>《紙條》裡怎麼用</h2>
+  <hr class="rule">
+<p>同樣的故事，選對了運鏡，觀眾的感覺就不一樣。</p>
+<div class="sbrow c3"><figure class="sb"><div class="sb-pic"><span class="sb-n">1</span><svg viewBox="410.6 12 248.9 140" role="img" aria-label="橫移：小安走，鏡頭在旁邊跟著平行移動" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk7" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk7" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><rect x="0" y="-420" width="1200" height="550" fill="#F0EEE6"/><rect x="0" y="130" width="1200" height="300" fill="#E3DACC"/><line x1="0" y1="130" x2="1200" y2="130" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="0" y1="152" x2="1200" y2="152" stroke="#D1CFC5" stroke-width="1" stroke-linecap="round"/><line x1="0" y1="168" x2="1200" y2="168" stroke="#D1CFC5" stroke-width="1" stroke-linecap="round"/><rect x="400" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="408" y1="38" x2="430" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="408" y1="44" x2="430" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="431" cy="84" r="2.4" fill="#3D3D3A"/><rect x="444" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="452" y1="38" x2="474" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="452" y1="44" x2="474" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="475" cy="84" r="2.4" fill="#3D3D3A"/><rect x="488" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="496" y1="38" x2="518" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="496" y1="44" x2="518" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="519" cy="84" r="2.4" fill="#3D3D3A"/><rect x="532" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="540" y1="38" x2="562" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="540" y1="44" x2="562" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="563" cy="84" r="2.4" fill="#3D3D3A"/><rect x="576" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="584" y1="38" x2="606" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="584" y1="44" x2="606" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="607" cy="84" r="2.4" fill="#3D3D3A"/><rect x="620" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="628" y1="38" x2="650" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="628" y1="44" x2="650" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="651" cy="84" r="2.4" fill="#3D3D3A"/><rect x="664" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="672" y1="38" x2="694" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="672" y1="44" x2="694" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="695" cy="84" r="2.4" fill="#3D3D3A"/><line x1="495" y1="92" x2="484" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><line x1="495" y1="92" x2="507" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><rect x="468" y="62" width="13" height="30" rx="5" fill="#B85C3E"/><rect x="480" y="56" width="30" height="40" rx="12" fill="#D97757"/><line x1="495" y1="64" x2="483" y2="86" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><line x1="495" y1="64" x2="508" y2="84" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><circle cx="508" cy="84" r="3.6" fill="#E3DACC"/><circle cx="483" cy="86" r="3.6" fill="#E3DACC"/><circle cx="497" cy="46" r="11" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M485.4,46 A11.6 11.6 0 0 1 508.6,46 Z" fill="#141413"/><circle cx="489" cy="47" r="5" fill="#141413"/><circle cx="502.5" cy="47.5" r="1.6" fill="#141413"/><line x1="499.5" y1="52.5" x2="504.5" y2="52.5" stroke="#141413" stroke-width="1.3" stroke-linecap="round"/><line x1="460.3" y1="138" x2="609.7" y2="138" stroke="#D97757" stroke-width="2.6" stroke-dasharray="5.4 3.9" stroke-linecap="round" marker-end="url(#cmk7)"/><text x="535" y="134.1" text-anchor="middle" font-size="7" font-weight="600" fill="#B85C3E" style="font-family:system-ui,sans-serif">橫移</text></svg></div><figcaption><div><b>動作</b><span>放學後，小安快步走過走廊。</span></div><div><b>鏡頭</b><span>全景，<b>橫移</b>。鏡頭跟著她平行走。</span></div></figcaption></figure><figure class="sb"><div class="sb-pic"><span class="sb-n">2</span><svg viewBox="0 0 320 180" role="img" aria-label="推：慢慢靠近小安的臉" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk8" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk8" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><filter id="bAk14" filterUnits="userSpaceOnUse" x="-200" y="-200" width="720" height="600"><feGaussianBlur stdDeviation="0"/></filter><filter id="bBk14" filterUnits="userSpaceOnUse" x="-200" y="-200" width="720" height="600"><feGaussianBlur stdDeviation="0"/></filter><filter id="bCk14" filterUnits="userSpaceOnUse" x="-200" y="-200" width="720" height="600"><feGaussianBlur stdDeviation="0"/></filter><rect x="-200" y="-200" width="720" height="306" fill="#F0EEE6"/><rect x="-200" y="106" width="720" height="400" fill="#E3DACC"/><line x1="-200" y1="106" x2="520" y2="106" stroke="#87867F" stroke-width="0.8" stroke-linecap="round"/><g><rect x="-28.6" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="-15.3" cy="84.6" r="1" fill="#3D3D3A"/><rect x="-9.7" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="3.6" cy="84.6" r="1" fill="#3D3D3A"/><rect x="9.1" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="22.4" cy="84.6" r="1" fill="#3D3D3A"/><rect x="28" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="41.3" cy="84.6" r="1" fill="#3D3D3A"/><rect x="46.9" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="60.1" cy="84.6" r="1" fill="#3D3D3A"/><rect x="65.7" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="79" cy="84.6" r="1" fill="#3D3D3A"/><rect x="84.6" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="97.9" cy="84.6" r="1" fill="#3D3D3A"/><rect x="103.4" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="116.7" cy="84.6" r="1" fill="#3D3D3A"/><rect x="122.3" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="135.6" cy="84.6" r="1" fill="#3D3D3A"/><rect x="141.1" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="154.4" cy="84.6" r="1" fill="#3D3D3A"/><rect x="160" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="173.3" cy="84.6" r="1" fill="#3D3D3A"/><rect x="178.9" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="192.1" cy="84.6" r="1" fill="#3D3D3A"/><rect x="197.7" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="211" cy="84.6" r="1" fill="#3D3D3A"/><rect x="216.6" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="229.9" cy="84.6" r="1" fill="#3D3D3A"/><rect x="235.4" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="248.7" cy="84.6" r="1" fill="#3D3D3A"/><rect x="254.3" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="267.6" cy="84.6" r="1" fill="#3D3D3A"/><rect x="273.1" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="286.4" cy="84.6" r="1" fill="#3D3D3A"/><rect x="292" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="305.3" cy="84.6" r="1" fill="#3D3D3A"/><rect x="310.9" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="324.1" cy="84.6" r="1" fill="#3D3D3A"/><rect x="329.7" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="343" cy="84.6" r="1" fill="#3D3D3A"/><rect x="348.6" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="361.9" cy="84.6" r="1" fill="#3D3D3A"/></g><g><line x1="203.1" y1="98.3" x2="200" y2="121.7" stroke="#3D3D3A" stroke-width="5.5" stroke-linecap="round"/><line x1="203.1" y1="98.3" x2="206.2" y2="121.7" stroke="#3D3D3A" stroke-width="5.5" stroke-linecap="round"/><rect x="193.8" y="76.2" width="18.5" height="24.6" rx="7.4" fill="#788C5D"/><line x1="203.1" y1="81.1" x2="194.5" y2="95.8" stroke="#788C5D" stroke-width="4.3" stroke-linecap="round"/><line x1="203.1" y1="81.1" x2="211.7" y2="95.8" stroke="#788C5D" stroke-width="4.3" stroke-linecap="round"/><circle cx="211.7" cy="95.8" r="2.2" fill="#E3DACC"/><circle cx="194.5" cy="95.8" r="2.2" fill="#E3DACC"/><circle cx="203.1" cy="70" r="6.8" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M195.9,70 A7.1 7.1 0 0 1 210.2,70 Z" fill="#3D3D3A"/><circle cx="200.3" cy="70.9" r="1" fill="#141413"/><circle cx="205.8" cy="70.9" r="1" fill="#141413"/><line x1="201.5" y1="74" x2="204.6" y2="74" stroke="#141413" stroke-width="1.3" stroke-linecap="round"/></g><line x1="160" y1="116" x2="155" y2="154" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><line x1="160" y1="116" x2="165" y2="154" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><rect x="145" y="80" width="30" height="40" rx="12" fill="#D97757"/><line x1="160" y1="88" x2="146" y2="112" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><line x1="160" y1="88" x2="174" y2="112" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><circle cx="174" cy="112" r="3.6" fill="#E3DACC"/><circle cx="146" cy="112" r="3.6" fill="#E3DACC"/><circle cx="160" cy="70" r="11" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M148.4,70 A11.6 11.6 0 0 1 171.6,70 Z" fill="#141413"/><circle cx="155.5" cy="71.5" r="1.6" fill="#141413"/><circle cx="164.5" cy="71.5" r="1.6" fill="#141413"/><line x1="157.5" y1="76.5" x2="162.5" y2="76.5" stroke="#141413" stroke-width="1.3" stroke-linecap="round"/><g><rect x="18.5" y="145.8" width="30.3" height="30.3" rx="3.8" fill="#3D3D3A"/><circle cx="33.7" cy="133.2" r="20.2" fill="#788C5D"/><circle cx="18.5" cy="140.7" r="12.6" fill="#788C5D"/><circle cx="48.8" cy="140.7" r="12.6" fill="#788C5D"/></g></svg></div><figcaption><div><b>動作</b><span>她讀完紙條，表情從疑惑變驚訝。</span></div><div><b>鏡頭</b><span>近景，<b>推</b>。慢慢靠近，觀眾也一起屏息。</span></div></figcaption></figure><figure class="sb"><div class="sb-pic"><span class="sb-n">3</span><svg viewBox="0 0 320 180" role="img" aria-label="拉：慢慢退後，把兩個人和校門口都收進來" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk9" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk9" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><filter id="bAk15" filterUnits="userSpaceOnUse" x="-200" y="-200" width="720" height="600"><feGaussianBlur stdDeviation="0"/></filter><filter id="bBk15" filterUnits="userSpaceOnUse" x="-200" y="-200" width="720" height="600"><feGaussianBlur stdDeviation="0"/></filter><filter id="bCk15" filterUnits="userSpaceOnUse" x="-200" y="-200" width="720" height="600"><feGaussianBlur stdDeviation="0"/></filter><rect x="-200" y="-200" width="720" height="295.2" fill="#F0EEE6"/><rect x="-200" y="95.2" width="720" height="400" fill="#E3DACC"/><line x1="-200" y1="95.2" x2="520" y2="95.2" stroke="#87867F" stroke-width="0.8" stroke-linecap="round"/><g><rect x="-38" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="-28.7" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="-24.8" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="-15.5" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="-11.6" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="-2.3" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="1.6" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="10.9" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="14.8" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="24.1" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="28" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="37.3" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="41.2" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="50.5" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="54.4" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="63.7" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="67.6" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="76.9" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="80.8" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="90.1" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="94" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="103.3" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="107.2" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="116.5" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="120.4" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="129.7" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="133.6" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="142.9" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="146.8" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="156.1" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="160" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="169.3" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="173.2" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="182.5" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="186.4" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="195.7" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="199.6" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="208.9" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="212.8" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="222.1" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="226" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="235.3" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="239.2" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="248.5" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="252.4" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="261.7" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="265.6" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="274.9" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="278.8" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="288.1" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="292" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="301.3" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="305.2" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="314.5" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="318.4" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="327.7" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="331.6" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="340.9" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="344.8" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="354.1" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="358" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="367.3" cy="80.2" r="0.7" fill="#3D3D3A"/></g><g><line x1="186.7" y1="87.5" x2="184.8" y2="102" stroke="#3D3D3A" stroke-width="3.4" stroke-linecap="round"/><line x1="186.7" y1="87.5" x2="188.6" y2="102" stroke="#3D3D3A" stroke-width="3.4" stroke-linecap="round"/><rect x="181" y="73.8" width="11.4" height="15.2" rx="4.6" fill="#788C5D"/><line x1="186.7" y1="76.9" x2="181.3" y2="86" stroke="#788C5D" stroke-width="2.7" stroke-linecap="round"/><line x1="186.7" y1="76.9" x2="192" y2="86" stroke="#788C5D" stroke-width="2.7" stroke-linecap="round"/><circle cx="192" cy="86" r="1.4" fill="#E3DACC"/><circle cx="181.3" cy="86" r="1.4" fill="#E3DACC"/><circle cx="186.7" cy="70" r="4.2" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M182.2,70 A4.4 4.4 0 0 1 191.1,70 Z" fill="#3D3D3A"/><circle cx="185" cy="70.6" r="0.6" fill="#141413"/><circle cx="188.4" cy="70.6" r="0.6" fill="#141413"/><line x1="185.7" y1="72.5" x2="187.6" y2="72.5" stroke="#141413" stroke-width="1.3" stroke-linecap="round"/></g><line x1="160" y1="93" x2="157.5" y2="112" stroke="#3D3D3A" stroke-width="4.5" stroke-linecap="round"/><line x1="160" y1="93" x2="162.5" y2="112" stroke="#3D3D3A" stroke-width="4.5" stroke-linecap="round"/><rect x="152.5" y="75" width="15" height="20" rx="6" fill="#D97757"/><line x1="160" y1="79" x2="153" y2="91" stroke="#D97757" stroke-width="3.5" stroke-linecap="round"/><line x1="160" y1="79" x2="167" y2="91" stroke="#D97757" stroke-width="3.5" stroke-linecap="round"/><circle cx="167" cy="91" r="1.8" fill="#E3DACC"/><circle cx="153" cy="91" r="1.8" fill="#E3DACC"/><circle cx="160" cy="70" r="5.5" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M154.2,70 A5.8 5.8 0 0 1 165.8,70 Z" fill="#141413"/><circle cx="157.8" cy="70.8" r="0.8" fill="#141413"/><circle cx="162.3" cy="70.8" r="0.8" fill="#141413"/><line x1="158.8" y1="73.3" x2="161.3" y2="73.3" stroke="#141413" stroke-width="1.3" stroke-linecap="round"/><g><rect x="97.5" y="103.5" width="13.4" height="13.4" rx="1.7" fill="#3D3D3A"/><circle cx="104.2" cy="97.9" r="8.9" fill="#788C5D"/><circle cx="97.5" cy="101.3" r="5.6" fill="#788C5D"/><circle cx="110.9" cy="101.3" r="5.6" fill="#788C5D"/></g></svg></div><figcaption><div><b>動作</b><span>兩人在校門口笑了，故事結束。</span></div><div><b>鏡頭</b><span>全景，<b>拉</b>。慢慢退後，留下一個完整的畫面。</span></div></figcaption></figure></div>
+<div class="tip"><b class="l">小技巧</b>「鏡頭」欄這樣寫：<b>全景，橫移</b>、<b>近景，推</b>、<b>全景，拉</b>。景別寫「開始時」的大小，再寫運鏡。</div>
+</section>
+
+<section id="pick">
+  <h2>你來選運鏡</h2>
+  <hr class="rule">
+<p class="sub" style="margin-bottom:8px"><span class="lv l2">Level 2 · 自己改</span>讀情境，選最適合的運鏡。</p>
+<div class="panel ch" data-ans="1"><p style="margin:0 0 10px"><b>1.</b> 小安讀紙條，想讓觀眾越來越專注在她的表情上。</p><div class="opts"><button type="button" data-i="0">拉</button><button type="button" data-i="1">推</button><button type="button" data-i="2">橫移</button></div><div class="res" hidden><span class="vd"></span> 推近讓觀眾被帶進角色的內心。<figure class="shotfig "><svg viewBox="0 0 320 180" role="img" aria-label="推：慢慢靠近小安的臉" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk10" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk10" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><filter id="bAk14" filterUnits="userSpaceOnUse" x="-200" y="-200" width="720" height="600"><feGaussianBlur stdDeviation="0"/></filter><filter id="bBk14" filterUnits="userSpaceOnUse" x="-200" y="-200" width="720" height="600"><feGaussianBlur stdDeviation="0"/></filter><filter id="bCk14" filterUnits="userSpaceOnUse" x="-200" y="-200" width="720" height="600"><feGaussianBlur stdDeviation="0"/></filter><rect x="-200" y="-200" width="720" height="306" fill="#F0EEE6"/><rect x="-200" y="106" width="720" height="400" fill="#E3DACC"/><line x1="-200" y1="106" x2="520" y2="106" stroke="#87867F" stroke-width="0.8" stroke-linecap="round"/><g><rect x="-28.6" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="-15.3" cy="84.6" r="1" fill="#3D3D3A"/><rect x="-9.7" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="3.6" cy="84.6" r="1" fill="#3D3D3A"/><rect x="9.1" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="22.4" cy="84.6" r="1" fill="#3D3D3A"/><rect x="28" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="41.3" cy="84.6" r="1" fill="#3D3D3A"/><rect x="46.9" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="60.1" cy="84.6" r="1" fill="#3D3D3A"/><rect x="65.7" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="79" cy="84.6" r="1" fill="#3D3D3A"/><rect x="84.6" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="97.9" cy="84.6" r="1" fill="#3D3D3A"/><rect x="103.4" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="116.7" cy="84.6" r="1" fill="#3D3D3A"/><rect x="122.3" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="135.6" cy="84.6" r="1" fill="#3D3D3A"/><rect x="141.1" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="154.4" cy="84.6" r="1" fill="#3D3D3A"/><rect x="160" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="173.3" cy="84.6" r="1" fill="#3D3D3A"/><rect x="178.9" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="192.1" cy="84.6" r="1" fill="#3D3D3A"/><rect x="197.7" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="211" cy="84.6" r="1" fill="#3D3D3A"/><rect x="216.6" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="229.9" cy="84.6" r="1" fill="#3D3D3A"/><rect x="235.4" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="248.7" cy="84.6" r="1" fill="#3D3D3A"/><rect x="254.3" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="267.6" cy="84.6" r="1" fill="#3D3D3A"/><rect x="273.1" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="286.4" cy="84.6" r="1" fill="#3D3D3A"/><rect x="292" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="305.3" cy="84.6" r="1" fill="#3D3D3A"/><rect x="310.9" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="324.1" cy="84.6" r="1" fill="#3D3D3A"/><rect x="329.7" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="343" cy="84.6" r="1" fill="#3D3D3A"/><rect x="348.6" y="63.1" width="16.3" height="42.9" rx="0.9" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6428571428571429"/><circle cx="361.9" cy="84.6" r="1" fill="#3D3D3A"/></g><g><line x1="203.1" y1="98.3" x2="200" y2="121.7" stroke="#3D3D3A" stroke-width="5.5" stroke-linecap="round"/><line x1="203.1" y1="98.3" x2="206.2" y2="121.7" stroke="#3D3D3A" stroke-width="5.5" stroke-linecap="round"/><rect x="193.8" y="76.2" width="18.5" height="24.6" rx="7.4" fill="#788C5D"/><line x1="203.1" y1="81.1" x2="194.5" y2="95.8" stroke="#788C5D" stroke-width="4.3" stroke-linecap="round"/><line x1="203.1" y1="81.1" x2="211.7" y2="95.8" stroke="#788C5D" stroke-width="4.3" stroke-linecap="round"/><circle cx="211.7" cy="95.8" r="2.2" fill="#E3DACC"/><circle cx="194.5" cy="95.8" r="2.2" fill="#E3DACC"/><circle cx="203.1" cy="70" r="6.8" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M195.9,70 A7.1 7.1 0 0 1 210.2,70 Z" fill="#3D3D3A"/><circle cx="200.3" cy="70.9" r="1" fill="#141413"/><circle cx="205.8" cy="70.9" r="1" fill="#141413"/><line x1="201.5" y1="74" x2="204.6" y2="74" stroke="#141413" stroke-width="1.3" stroke-linecap="round"/></g><line x1="160" y1="116" x2="155" y2="154" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><line x1="160" y1="116" x2="165" y2="154" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><rect x="145" y="80" width="30" height="40" rx="12" fill="#D97757"/><line x1="160" y1="88" x2="146" y2="112" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><line x1="160" y1="88" x2="174" y2="112" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><circle cx="174" cy="112" r="3.6" fill="#E3DACC"/><circle cx="146" cy="112" r="3.6" fill="#E3DACC"/><circle cx="160" cy="70" r="11" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M148.4,70 A11.6 11.6 0 0 1 171.6,70 Z" fill="#141413"/><circle cx="155.5" cy="71.5" r="1.6" fill="#141413"/><circle cx="164.5" cy="71.5" r="1.6" fill="#141413"/><line x1="157.5" y1="76.5" x2="162.5" y2="76.5" stroke="#141413" stroke-width="1.3" stroke-linecap="round"/><g><rect x="18.5" y="145.8" width="30.3" height="30.3" rx="3.8" fill="#3D3D3A"/><circle cx="33.7" cy="133.2" r="20.2" fill="#788C5D"/><circle cx="18.5" cy="140.7" r="12.6" fill="#788C5D"/><circle cx="48.8" cy="140.7" r="12.6" fill="#788C5D"/></g></svg><figcaption>推</figcaption></figure></div></div><div class="panel ch" data-ans="1"><p style="margin:0 0 10px"><b>2.</b> 故事結束，想退後一點，留下一個完整的畫面。</p><div class="opts"><button type="button" data-i="0">推</button><button type="button" data-i="1">拉</button><button type="button" data-i="2">環繞</button></div><div class="res" hidden><span class="vd"></span> 拉開會有結束、全貌的感覺。<figure class="shotfig "><svg viewBox="0 0 320 180" role="img" aria-label="拉：慢慢退後，把兩個人和校門口都收進來" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk11" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk11" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><filter id="bAk15" filterUnits="userSpaceOnUse" x="-200" y="-200" width="720" height="600"><feGaussianBlur stdDeviation="0"/></filter><filter id="bBk15" filterUnits="userSpaceOnUse" x="-200" y="-200" width="720" height="600"><feGaussianBlur stdDeviation="0"/></filter><filter id="bCk15" filterUnits="userSpaceOnUse" x="-200" y="-200" width="720" height="600"><feGaussianBlur stdDeviation="0"/></filter><rect x="-200" y="-200" width="720" height="295.2" fill="#F0EEE6"/><rect x="-200" y="95.2" width="720" height="400" fill="#E3DACC"/><line x1="-200" y1="95.2" x2="520" y2="95.2" stroke="#87867F" stroke-width="0.8" stroke-linecap="round"/><g><rect x="-38" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="-28.7" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="-24.8" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="-15.5" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="-11.6" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="-2.3" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="1.6" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="10.9" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="14.8" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="24.1" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="28" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="37.3" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="41.2" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="50.5" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="54.4" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="63.7" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="67.6" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="76.9" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="80.8" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="90.1" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="94" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="103.3" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="107.2" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="116.5" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="120.4" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="129.7" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="133.6" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="142.9" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="146.8" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="156.1" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="160" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="169.3" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="173.2" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="182.5" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="186.4" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="195.7" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="199.6" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="208.9" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="212.8" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="222.1" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="226" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="235.3" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="239.2" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="248.5" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="252.4" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="261.7" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="265.6" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="274.9" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="278.8" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="288.1" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="292" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="301.3" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="305.2" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="314.5" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="318.4" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="327.7" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="331.6" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="340.9" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="344.8" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="354.1" cy="80.2" r="0.7" fill="#3D3D3A"/><rect x="358" y="65.2" width="11.4" height="30" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="367.3" cy="80.2" r="0.7" fill="#3D3D3A"/></g><g><line x1="186.7" y1="87.5" x2="184.8" y2="102" stroke="#3D3D3A" stroke-width="3.4" stroke-linecap="round"/><line x1="186.7" y1="87.5" x2="188.6" y2="102" stroke="#3D3D3A" stroke-width="3.4" stroke-linecap="round"/><rect x="181" y="73.8" width="11.4" height="15.2" rx="4.6" fill="#788C5D"/><line x1="186.7" y1="76.9" x2="181.3" y2="86" stroke="#788C5D" stroke-width="2.7" stroke-linecap="round"/><line x1="186.7" y1="76.9" x2="192" y2="86" stroke="#788C5D" stroke-width="2.7" stroke-linecap="round"/><circle cx="192" cy="86" r="1.4" fill="#E3DACC"/><circle cx="181.3" cy="86" r="1.4" fill="#E3DACC"/><circle cx="186.7" cy="70" r="4.2" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M182.2,70 A4.4 4.4 0 0 1 191.1,70 Z" fill="#3D3D3A"/><circle cx="185" cy="70.6" r="0.6" fill="#141413"/><circle cx="188.4" cy="70.6" r="0.6" fill="#141413"/><line x1="185.7" y1="72.5" x2="187.6" y2="72.5" stroke="#141413" stroke-width="1.3" stroke-linecap="round"/></g><line x1="160" y1="93" x2="157.5" y2="112" stroke="#3D3D3A" stroke-width="4.5" stroke-linecap="round"/><line x1="160" y1="93" x2="162.5" y2="112" stroke="#3D3D3A" stroke-width="4.5" stroke-linecap="round"/><rect x="152.5" y="75" width="15" height="20" rx="6" fill="#D97757"/><line x1="160" y1="79" x2="153" y2="91" stroke="#D97757" stroke-width="3.5" stroke-linecap="round"/><line x1="160" y1="79" x2="167" y2="91" stroke="#D97757" stroke-width="3.5" stroke-linecap="round"/><circle cx="167" cy="91" r="1.8" fill="#E3DACC"/><circle cx="153" cy="91" r="1.8" fill="#E3DACC"/><circle cx="160" cy="70" r="5.5" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M154.2,70 A5.8 5.8 0 0 1 165.8,70 Z" fill="#141413"/><circle cx="157.8" cy="70.8" r="0.8" fill="#141413"/><circle cx="162.3" cy="70.8" r="0.8" fill="#141413"/><line x1="158.8" y1="73.3" x2="161.3" y2="73.3" stroke="#141413" stroke-width="1.3" stroke-linecap="round"/><g><rect x="97.5" y="103.5" width="13.4" height="13.4" rx="1.7" fill="#3D3D3A"/><circle cx="104.2" cy="97.9" r="8.9" fill="#788C5D"/><circle cx="97.5" cy="101.3" r="5.6" fill="#788C5D"/><circle cx="110.9" cy="101.3" r="5.6" fill="#788C5D"/></g></svg><figcaption>拉</figcaption></figure></div></div><div class="panel ch" data-ans="0"><p style="margin:0 0 10px"><b>3.</b> 小安在走廊走，想讓背景一直滑過去、看到她的側臉。</p><div class="opts"><button type="button" data-i="0">橫移</button><button type="button" data-i="1">推</button><button type="button" data-i="2">固定</button></div><div class="res" hidden><span class="vd"></span> 鏡頭在側面平行移動，是橫移。<figure class="shotfig "><svg viewBox="410.6 12 248.9 140" role="img" aria-label="橫移：小安走，鏡頭在旁邊跟著平行移動" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk12" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk12" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><rect x="0" y="-420" width="1200" height="550" fill="#F0EEE6"/><rect x="0" y="130" width="1200" height="300" fill="#E3DACC"/><line x1="0" y1="130" x2="1200" y2="130" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="0" y1="152" x2="1200" y2="152" stroke="#D1CFC5" stroke-width="1" stroke-linecap="round"/><line x1="0" y1="168" x2="1200" y2="168" stroke="#D1CFC5" stroke-width="1" stroke-linecap="round"/><rect x="400" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="408" y1="38" x2="430" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="408" y1="44" x2="430" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="431" cy="84" r="2.4" fill="#3D3D3A"/><rect x="444" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="452" y1="38" x2="474" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="452" y1="44" x2="474" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="475" cy="84" r="2.4" fill="#3D3D3A"/><rect x="488" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="496" y1="38" x2="518" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="496" y1="44" x2="518" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="519" cy="84" r="2.4" fill="#3D3D3A"/><rect x="532" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="540" y1="38" x2="562" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="540" y1="44" x2="562" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="563" cy="84" r="2.4" fill="#3D3D3A"/><rect x="576" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="584" y1="38" x2="606" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="584" y1="44" x2="606" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="607" cy="84" r="2.4" fill="#3D3D3A"/><rect x="620" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="628" y1="38" x2="650" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="628" y1="44" x2="650" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="651" cy="84" r="2.4" fill="#3D3D3A"/><rect x="664" y="28" width="38" height="100" rx="2" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><line x1="672" y1="38" x2="694" y2="38" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><line x1="672" y1="44" x2="694" y2="44" stroke="#87867F" stroke-width="1.5" stroke-linecap="round"/><circle cx="695" cy="84" r="2.4" fill="#3D3D3A"/><line x1="495" y1="92" x2="484" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><line x1="495" y1="92" x2="507" y2="130" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><rect x="468" y="62" width="13" height="30" rx="5" fill="#B85C3E"/><rect x="480" y="56" width="30" height="40" rx="12" fill="#D97757"/><line x1="495" y1="64" x2="483" y2="86" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><line x1="495" y1="64" x2="508" y2="84" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><circle cx="508" cy="84" r="3.6" fill="#E3DACC"/><circle cx="483" cy="86" r="3.6" fill="#E3DACC"/><circle cx="497" cy="46" r="11" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M485.4,46 A11.6 11.6 0 0 1 508.6,46 Z" fill="#141413"/><circle cx="489" cy="47" r="5" fill="#141413"/><circle cx="502.5" cy="47.5" r="1.6" fill="#141413"/><line x1="499.5" y1="52.5" x2="504.5" y2="52.5" stroke="#141413" stroke-width="1.3" stroke-linecap="round"/><line x1="460.3" y1="138" x2="609.7" y2="138" stroke="#D97757" stroke-width="2.6" stroke-dasharray="5.4 3.9" stroke-linecap="round" marker-end="url(#cmk12)"/><text x="535" y="134.1" text-anchor="middle" font-size="7" font-weight="600" fill="#B85C3E" style="font-family:system-ui,sans-serif">橫移</text></svg><figcaption>橫移</figcaption></figure></div></div><div class="panel ch" data-ans="1"><p style="margin:0 0 10px"><b>4.</b> 想讓觀眾像在後面追著小安跑。</p><div class="opts"><button type="button" data-i="0">橫移</button><button type="button" data-i="1">跟拍</button><button type="button" data-i="2">拉</button></div><div class="res" hidden><span class="vd"></span> 跟在人物後面走，是跟拍。<figure class="shotfig "><svg viewBox="0 0 320 180" role="img" aria-label="跟拍：鏡頭在後面跟著小安走" preserveAspectRatio="xMidYMid slice"><defs><marker id="mvk13" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#3D3D3A"/></marker><marker id="cmk13" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#D97757"/></marker></defs><filter id="bAk13" filterUnits="userSpaceOnUse" x="-200" y="-200" width="720" height="600"><feGaussianBlur stdDeviation="0"/></filter><filter id="bBk13" filterUnits="userSpaceOnUse" x="-200" y="-200" width="720" height="600"><feGaussianBlur stdDeviation="0"/></filter><filter id="bCk13" filterUnits="userSpaceOnUse" x="-200" y="-200" width="720" height="600"><feGaussianBlur stdDeviation="0"/></filter><rect x="-200" y="-200" width="720" height="296.2" fill="#F0EEE6"/><rect x="-200" y="96.2" width="720" height="400" fill="#E3DACC"/><line x1="-200" y1="96.2" x2="520" y2="96.2" stroke="#87867F" stroke-width="0.8" stroke-linecap="round"/><g><rect x="-32" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="-22.3" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="-18.3" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="-8.6" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="-4.6" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="5.1" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="9.1" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="18.8" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="22.9" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="32.5" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="36.6" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="46.2" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="50.3" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="59.9" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="64" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="73.7" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="77.7" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="87.4" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="91.4" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="101.1" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="105.1" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="114.8" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="118.9" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="128.5" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="132.6" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="142.2" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="146.3" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="155.9" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="160" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="169.7" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="173.7" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="183.4" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="187.4" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="197.1" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="201.1" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="210.8" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="214.9" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="224.5" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="228.6" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="238.2" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="242.3" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="251.9" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="256" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="265.7" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="269.7" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="279.4" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="283.4" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="293.1" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="297.1" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="306.8" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="310.9" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="320.5" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="324.6" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="334.2" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="338.3" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="347.9" cy="80.6" r="0.7" fill="#3D3D3A"/><rect x="352" y="65" width="11.8" height="31.2" rx="0.6" fill="#D1CFC5" stroke="#87867F" stroke-width="0.6"/><circle cx="361.7" cy="80.6" r="0.7" fill="#3D3D3A"/></g><line x1="160" y1="116" x2="149" y2="154" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><line x1="160" y1="116" x2="172" y2="154" stroke="#3D3D3A" stroke-width="9" stroke-linecap="round"/><rect x="148" y="84" width="24" height="30" rx="6" fill="#B85C3E"/><rect x="145" y="80" width="30" height="40" rx="12" fill="#D97757"/><line x1="160" y1="88" x2="146" y2="110" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><line x1="160" y1="88" x2="174" y2="108" stroke="#D97757" stroke-width="7" stroke-linecap="round"/><circle cx="174" cy="108" r="3.6" fill="#E3DACC"/><circle cx="146" cy="110" r="3.6" fill="#E3DACC"/><circle cx="160" cy="70" r="11" fill="#E3DACC" stroke="#3D3D3A" stroke-width="1.5"/><path d="M148.4,70 A11.6 11.6 0 0 1 171.6,70 Z" fill="#141413"/><circle cx="160" cy="70" r="11.6" fill="#141413"/></svg><figcaption>跟拍</figcaption></figure></div></div>
+<div class="panel" style="margin-top:14px"><h3><span class="lv l3">Level 3 · 挑戰</span></h3><p style="margin:0">把《紙條》第 3 段畫成<b>兩格</b>：第一格遠一點，第二格<b>推近</b>到她的臉。想想看：推近的時候，「動作」欄要寫什麼才會讓第二格更有感覺？</p></div>
+</section>
+
+<section id="practice">
+  <h2>動手演練與檢查</h2>
+  <hr class="rule">
+<div class="panel sim" data-simgroup>
+<h3>情境：追逐戲，小安衝下樓，想讓觀眾覺得緊張、像被追著跑</h3>
+<p style="margin:6px 0 0;color:var(--gray-700)">你會選哪一種？</p>
+<div class="sim-buttons" role="group" aria-label="選擇做法"><button type="button" data-sim="a1">跟拍：鏡頭跟在她後面跑</button><button type="button" data-sim="a2">拉：慢慢退開</button><button type="button" data-sim="a3">固定：全景不動</button></div>
+<div class="sim-result" aria-live="polite">選一個做法，看看對不對。</div>
+</div>
+<div class="panel" id="quiz">
+    <div class="quiz-top"><h3 style="margin:0">快速測驗</h3><span class="count" id="quizCount">1 / 1</span></div>
+    <div class="question" id="quizQ"></div>
+    <div class="answers" id="quizAns"></div>
+    <div class="feedback" id="quizFb" aria-live="polite"></div>
+    <div class="quiz-foot"><span id="quizScore">答對 0 題</span><button type="button" class="primary" id="quizNext" disabled>下一題 →</button></div>
+  </div>
+<h3 style="margin-top:30px">開做之前，對照這張清單</h3>
+<div class="panel">
+<div class="checks" id="checks"><label class="check-item"><input type="checkbox"><span>我知道推拉橫移是鏡頭真的「走」，和搖攝（轉頭）不同。</span></label><label class="check-item"><input type="checkbox"><span>我能分出推和拉，並說出各自給觀眾的感覺。</span></label><label class="check-item"><input type="checkbox"><span>我知道橫移是從側面平行移動，跟拍是跟在後面。</span></label><label class="check-item"><input type="checkbox"><span>我知道環繞很吸睛，所以要少用。</span></label><label class="check-item"><input type="checkbox"><span>我知道推拉要慢，越慢越有情緒。</span></label><label class="check-item"><input type="checkbox"><span>我已把《紙條》第 3 段畫成推近的兩格。</span></label></div>
+<div class="check-progress" id="checkProgress">已完成 0 / 6 項</div>
+<div class="bar"><span id="checkBar"></span></div>
+</div>
+<h3 style="margin-top:30px">可自查的延伸閱讀</h3>
+<div class="panel"><ul style="margin:0;padding-left:20px"><li>看一支短片，找出一個「推」和一個「拉」，想想導演為什麼選在那個時候。</li><li>用「推軌 橫移 跟拍 環繞」當關鍵字，看不同來源怎麼說明。</li></ul></div>
+</section>
+</main>
+</div>
+
+<p class="foot" style="margin-top:28px">本頁是觀念與練習教學，不依賴特定器材：用手機、相機、平板都能照著做。不同學校或書籍對鏡頭名稱的叫法可能略有不同。內容整理日期：2026-11-10。</p>
+
+<nav class="pager" aria-label="上一篇與下一篇">
+  <a class="prev" href="microfilm-pan-tilt-guide.html"><small>上一篇</small><b>固定與搖攝</b></a>
+  <a class="next" href="microfilm-rise-handheld-guide.html"><small>下一篇</small><b>升降、手持、穩定器、空拍</b></a>
+</nav>
+</div>
+
+<script>window.PAGE = {"sim": {"a1": "<b>正確！</b>跟拍讓觀眾像追著她一起跑，緊張感最強。", "a2": "<b>不太對。</b>拉有「退開、結束」的感覺，不像追逐的緊張。", "a3": "<b>可以，但比較平淡。</b>固定全景看得到動作，但少了追著跑的感覺。"}, "quiz": [{"q": "往前走、靠近人物，叫？", "a": ["推", "拉", "搖攝"], "c": 0, "why": "往前靠近是推。"}, {"q": "推和搖攝最大的差別？", "a": ["推是鏡頭真的走，搖攝是鏡頭原地轉", "推比較快", "搖攝比較貴"], "c": 0, "why": "位置有沒有改變是關鍵。"}, {"q": "橫移和跟拍的差別？", "a": ["橫移在側面平行走，跟拍在後面跟著走", "兩者完全一樣", "橫移不能用在人物上"], "c": 0, "why": "鏡頭相對人物的位置不同。"}, {"q": "在分鏡上，環繞用什麼箭頭？", "a": ["弧形橘色虛線", "直的黑色實線", "兩個黑點"], "c": 0, "why": "鏡頭移動用橘色虛線，繞圈就畫成弧形。"}, {"q": "推和拉要慢，是因為？", "a": ["越慢越有情緒、越好看", "越快越有力", "沒有原因"], "c": 0, "why": "太快會像跑步，觀眾反而看不清楚。"}]};</script>
+<script>
+(function () {
+  "use strict";
+  var CFG = window.PAGE || {};
+  function $(id){ return document.getElementById(id); }
+  function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+  function copyText(text, btn){
+    var orig = btn.textContent;
+    function flash(){
+      btn.textContent = "Copied ✓"; btn.classList.add("copied");
+      setTimeout(function(){ btn.textContent = orig; btn.classList.remove("copied"); }, 1200);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(flash, flash);
+    } else {
+      var ta = document.createElement("textarea"); ta.value = text;
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); } catch(e){}
+      document.body.removeChild(ta); flash();
+    }
+  }
+
+  /* ---------- fill-in template values ---------- */
+  var DEF = CFG.fill || {};
+  var vals = {};
+  var RE = /\{([A-Za-z0-9_]+)\}/g;
+  function val(k){ return vals[k] || DEF[k]; }
+  function resolvePlain(t){ return t.replace(RE, function(m, k){ return (k in DEF) ? val(k) : m; }); }
+  function resolveHtml(t){
+    var out = "", last = 0, m;
+    RE.lastIndex = 0;
+    while ((m = RE.exec(t))){
+      if (!(m[1] in DEF)) continue;
+      out += esc(t.slice(last, m.index)) + '<span class="slot">' + esc(val(m[1])) + "</span>";
+      last = RE.lastIndex;
+    }
+    return out + esc(t.slice(last));
+  }
+  function lineHtml(line){
+    if (line.trim().indexOf("# ") === 0) return '<span class="cm">' + resolveHtml(line) + "</span>";
+    var i = line.indexOf("  # ");
+    if (i > -1) return resolveHtml(line.slice(0, i)) + '<span class="cm">' + resolveHtml(line.slice(i)) + "</span>";
+    return resolveHtml(line);
+  }
+  var tplEls = Array.prototype.slice.call(document.querySelectorAll("[data-tpl]"));
+  tplEls.forEach(function(el){ el._tpl = el.textContent; });
+  function renderTpl(){
+    tplEls.forEach(function(el){
+      if (el.tagName === "PRE") el.innerHTML = el._tpl.split("\n").map(lineHtml).join("\n");
+      else el.innerHTML = resolveHtml(el._tpl);
+    });
+  }
+  var inputs = Array.prototype.slice.call(document.querySelectorAll(".fill input"));
+  inputs.forEach(function(inp){
+    inp.placeholder = DEF[inp.dataset.k] || "";
+    inp.addEventListener("input", function(){
+      var v = inp.value;
+      if (!inp.dataset.ns){ v = v.replace(/\s+/g, "-"); if (v !== inp.value) inp.value = v; }
+      vals[inp.dataset.k] = v;
+      renderTpl();
+    });
+  });
+  var rb = $("resetBtn");
+  if (rb) rb.addEventListener("click", function(){
+    inputs.forEach(function(inp){ inp.value = ""; vals[inp.dataset.k] = ""; });
+    renderTpl();
+  });
+  document.querySelectorAll(".cmd .copy").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var pre = btn.parentNode.querySelector("pre");
+      copyText(pre._tpl !== undefined ? resolvePlain(pre._tpl) : pre.textContent, btn);
+    });
+  });
+
+  /* ---------- reading progress + toc spy ---------- */
+  var readBar = $("readBar");
+  function updateBar(){
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    readBar.style.width = (max > 0 ? Math.min(100, window.scrollY / max * 100) : 0) + "%";
+  }
+  window.addEventListener("scroll", updateBar, { passive: true });
+  window.addEventListener("resize", updateBar);
+  updateBar();
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll("nav.toc a"));
+  if ("IntersectionObserver" in window){
+    var spy = new IntersectionObserver(function(es){
+      es.forEach(function(en){
+        if (en.isIntersecting) tocLinks.forEach(function(a){ a.classList.toggle("active", a.getAttribute("href") === "#" + en.target.id); });
+      });
+    }, { rootMargin: "-15% 0px -70% 0px" });
+    tocLinks.forEach(function(a){ var sec = document.querySelector(a.getAttribute("href")); if (sec) spy.observe(sec); });
+  }
+
+  /* ---------- scenario simulators ---------- */
+  var SIM = CFG.sim || {};
+  document.querySelectorAll("[data-simgroup]").forEach(function(group){
+    var btns = Array.prototype.slice.call(group.querySelectorAll("[data-sim]"));
+    var out = group.querySelector(".sim-result");
+    btns.forEach(function(btn){
+      btn.addEventListener("click", function(){
+        btns.forEach(function(b){ b.classList.toggle("selected", b === btn); });
+        out.innerHTML = SIM[btn.dataset.sim] || "";
+      });
+    });
+  });
+
+  /* ---------- quiz ---------- */
+  var QUIZ = CFG.quiz || [];
+  if (QUIZ.length && $("quiz")){
+    var qi = 0, qScore = 0, qDone = false;
+    var qCount = $("quizCount"), qQ = $("quizQ"), qAns = $("quizAns"), qFb = $("quizFb"), qNext = $("quizNext"), qScoreEl = $("quizScore");
+    var renderQuiz = function(){
+      var item = QUIZ[qi]; qDone = false;
+      qCount.textContent = (qi + 1) + " / " + QUIZ.length;
+      qQ.innerHTML = item.q;
+      qAns.innerHTML = "";
+      qFb.className = "feedback"; qFb.textContent = "";
+      qNext.disabled = true;
+      qNext.textContent = qi === QUIZ.length - 1 ? "重新測驗 ↻" : "下一題 →";
+      item.a.forEach(function(text, i){
+        var b = document.createElement("button");
+        b.type = "button"; b.className = "answer";
+        b.innerHTML = '<span class="letter">' + String.fromCharCode(65 + i) + "</span><span>" + esc(text) + "</span>";
+        b.addEventListener("click", function(){ pick(i); });
+        qAns.appendChild(b);
+      });
+    };
+    var pick = function(i){
+      if (qDone) return; qDone = true;
+      var item = QUIZ[qi], good = i === item.c;
+      Array.prototype.forEach.call(qAns.querySelectorAll("button"), function(b, n){
+        b.disabled = true;
+        if (n === item.c) b.classList.add("correct");
+        if (n === i && !good) b.classList.add("wrong");
+      });
+      if (good) qScore++;
+      qFb.className = "feedback show " + (good ? "good" : "bad");
+      qFb.innerHTML = "<b>" + (good ? "答對了！" : "再記一下這個觀念。") + "</b> " + esc(item.why);
+      qScoreEl.textContent = "答對 " + qScore + " / " + (qi + 1) + " 題";
+      qNext.disabled = false;
+    };
+    qNext.addEventListener("click", function(){
+      if (qi === QUIZ.length - 1){ qi = 0; qScore = 0; } else { qi++; }
+      renderQuiz();
+      qScoreEl.textContent = "答對 " + qScore + " 題";
+    });
+    renderQuiz();
+  }
+
+  /* ---------- checklist ---------- */
+  var checks = Array.prototype.slice.call(document.querySelectorAll("#checks input"));
+  function updateChecks(){
+    var n = checks.filter(function(c){ return c.checked; }).length;
+    $("checkProgress").textContent = "已完成 " + n + " / " + checks.length + " 項";
+    $("checkBar").style.width = (n / checks.length * 100) + "%";
+    checks.forEach(function(c){ c.closest(".check-item").classList.toggle("done", c.checked); });
+  }
+  checks.forEach(function(c){ c.addEventListener("change", updateChecks); });
+
+  /* ---------- role tabs (dual-view pages) ---------- */
+  var roleBtns = Array.prototype.slice.call(document.querySelectorAll("[data-role]"));
+  var rolePanels = Array.prototype.slice.call(document.querySelectorAll("[data-panel]"));
+  function setRole(r, focus){
+    roleBtns.forEach(function(b){
+      var on = b.dataset.role === r;
+      b.classList.toggle("on", on);
+      b.setAttribute("aria-selected", on ? "true" : "false");
+      b.tabIndex = on ? 0 : -1;
+      if (on && focus) b.focus();
+    });
+    rolePanels.forEach(function(p){ p.hidden = p.dataset.panel !== r; });
+  }
+  roleBtns.forEach(function(b){
+    b.addEventListener("click", function(){ setRole(b.dataset.role); });
+    b.addEventListener("keydown", function(e){
+      if (e.key === "ArrowLeft" || e.key === "ArrowRight"){
+        e.preventDefault(); setRole(b.dataset.role === "c" ? "o" : "c", true);
+      }
+    });
+  });
+  if (roleBtns.length) setRole("c");
+
+  /* ---------- stage stepper (two columns) ---------- */
+  var STAGES = CFG.stages || [];
+  if (STAGES.length && $("stages")){
+    var stage = 0;
+    var stagesEl = $("stages");
+    var renderStages = function(){
+      stagesEl.innerHTML = STAGES.map(function(s, i){
+        return '<button type="button" data-i="' + i + '" class="' + (i === stage ? "on" : "") + '" aria-pressed="' + (i === stage) + '">' +
+          '<span class="si">階段 ' + (i + 1) + "</span><span>" + s.label + '</span><span class="badge ' + s.tone + '">' + s.badge + "</span></button>";
+      }).join("");
+      var s = STAGES[stage];
+      $("c-h").textContent = s.c.h; $("o-h").textContent = s.o.h;
+      $("c-list").innerHTML = s.c.items.map(function(t){ return "<li>" + t + "</li>"; }).join("");
+      $("o-list").innerHTML = s.o.items.map(function(t){ return "<li>" + t + "</li>"; }).join("");
+      $("prevStage").disabled = stage === 0;
+      $("nextStage").disabled = stage === STAGES.length - 1;
+    };
+    stagesEl.addEventListener("click", function(e){
+      var b = e.target.closest("button[data-i]"); if (!b) return;
+      stage = +b.dataset.i; renderStages();
+    });
+    $("prevStage").addEventListener("click", function(){ if (stage > 0){ stage--; renderStages(); } });
+    $("nextStage").addEventListener("click", function(){ if (stage < STAGES.length - 1){ stage++; renderStages(); } });
+    renderStages();
+  }
+
+  /* ---------- decision picker ---------- */
+  var DECIDE = CFG.decide || [];
+  if (DECIDE.length && $("decideBtns")){
+    var decBtns = $("decideBtns"), decOut = $("decideOut");
+    decBtns.innerHTML = DECIDE.map(function(d, i){
+      return '<button type="button" data-d="' + i + '">' + d.label + "</button>";
+    }).join("");
+    decBtns.addEventListener("click", function(e){
+      var b = e.target.closest("button[data-d]"); if (!b) return;
+      var d = DECIDE[+b.dataset.d];
+      Array.prototype.forEach.call(decBtns.querySelectorAll("button"), function(x){ x.classList.toggle("selected", x === b); });
+      var tone = d.risk === "高" ? "bad" : (d.risk === "中" ? "warn" : "ok");
+      decOut.innerHTML = '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px"><b>建議做法</b><span class="badge ' + tone + '">風險：' + d.risk + "</span></div>" +
+        '<div class="cmd" style="margin:8px 0"><pre></pre><button type="button" class="copy">Copy</button></div><div>' + d.why + "</div>";
+      decOut.querySelector("pre").textContent = d.cmd;
+      decOut.querySelector(".copy").addEventListener("click", function(ev){ copyText(d.cmd, ev.currentTarget); });
+    });
+  }
+
+  renderTpl();
+  if (checks.length) updateChecks();
+})();
+
+</script>
+<script>
+/* 微電影分鏡主題 · 共用繪圖積木(幾何剪影風)
+ * 單一來源:瀏覽器(互動頁內嵌)與 Node(svgkit.py 組頁時預先產生靜態 SVG)共用同一份,保證兩邊畫出來一樣。
+ * 世界座標:預設 320×180(16:9)。地平線 y=130。所有函式回傳 SVG 字串。 */
+var Kit = (function () {
+  "use strict";
+  var C = { ivory:"#FAF9F5", white:"#FFFFFF", slate:"#141413", clay:"#D97757", clayD:"#B85C3E", oat:"#E3DACC",
+            olive:"#788C5D", rust:"#B04A3F", g100:"#F0EEE6", g300:"#D1CFC5", g500:"#87867F", g700:"#3D3D3A" };
+  var WHO = { an:{ body:C.clay, bag:C.clayD, hair:C.slate }, yu:{ body:C.olive, bag:null, hair:C.g700 }, x:{ body:C.g500, bag:null, hair:C.slate } };
+  var seq = 0;
+  function n1(v){ return Math.round(v * 10) / 10; }
+  function esc(s){ return String(s == null ? "" : s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+  function rect(x,y,w,h,fill,stroke,rx,sw){
+    return '<rect x="'+n1(x)+'" y="'+n1(y)+'" width="'+n1(w)+'" height="'+n1(h)+'"'+(rx?' rx="'+n1(rx)+'"':"")+' fill="'+fill+'"'+(stroke?' stroke="'+stroke+'" stroke-width="'+(sw||1.5)+'"':"")+"/>";
+  }
+  function line(x1,y1,x2,y2,w,col,extra){
+    return '<line x1="'+n1(x1)+'" y1="'+n1(y1)+'" x2="'+n1(x2)+'" y2="'+n1(y2)+'" stroke="'+col+'" stroke-width="'+n1(w)+'" stroke-linecap="round"'+(extra||"")+"/>";
+  }
+  function circ(x,y,r,fill,stroke,sw){
+    return '<circle cx="'+n1(x)+'" cy="'+n1(y)+'" r="'+n1(r)+'" fill="'+fill+'"'+(stroke?' stroke="'+stroke+'" stroke-width="'+(sw||1.5)+'"':"")+"/>";
+  }
+
+  /* ---------- 場景 ---------- */
+  function scene(name, W, vb){
+    W = W || 320; var s = "", x, i, vis = function(a, b){ return !vb || (b >= vb[0] - 4 && a <= vb[0] + vb[2] + 4); };
+    if (name === "none"){ return ""; }
+    if (name === "blank"){ return rect(0,0,W,180,C.g100) + rect(0,130,W,300,C.oat); }
+    if (name === "gate"){
+      s += rect(-900,-420,W+1800,550,C.g100) + rect(-900,130,W+1800,500,C.oat) + line(-900,130,W+900,130,1.5,C.g500);
+      s += rect(16,26,170,104,C.g300,C.g500,0);
+      for (i = 0; i < 4; i++) for (x = 0; x < 2; x++) s += rect(34+i*38,40+x*40,24,26,C.white,C.g500,0,1);
+      s += rect(86,100,26,30,C.g500,C.g700,0,1);
+      s += rect(W-118,70,14,60,C.g700) + rect(W-44,70,14,60,C.g700) + rect(W-118,76,88,6,C.g700);
+      s += rect(W-86,44,10,86,C.g500) + circ(W-81,40,24,C.olive);
+      return s;
+    }
+    /* hallway */
+    s += rect(0,-420,W,550,C.g100) + rect(0,130,W,300,C.oat) + line(0,130,W,130,1.5,C.g500);
+    s += line(0,152,W,152,1,C.g300) + line(0,168,W,168,1,C.g300);
+    for (x = 0; x + 44 <= W - 92; x += 44){
+      if (!vis(x, x + 44)) continue;
+      s += rect(x+4,28,38,100,C.g300,C.g500,2);
+      s += line(x+12,38,x+34,38,1.5,C.g500) + line(x+12,44,x+34,44,1.5,C.g500) + circ(x+35,84,2.4,C.g700);
+    }
+    if (vis(W-92, W-12)){
+      s += rect(W-92,24,80,82,C.white,C.g500,2) + line(W-52,24,W-52,106,1.5,C.g500) + line(W-92,65,W-12,65,1.5,C.g500);
+      s += circ(W-30,48,12,C.olive).replace('fill="'+C.olive+'"','fill="'+C.olive+'" opacity=".45"');
+    }
+    return s;
+  }
+
+  /* ---------- 角色 ---------- */
+  function person(o){
+    var x = o.x, y = o.y, h = o.h || 100, u = h / 100, face = o.facing || "r", pose = o.pose || "stand";
+    var who = WHO[o.who || "an"] || WHO.an, expr = o.expr || "neutral", g = "";
+    var hip = y - 38*u, sh = y - 68*u, hx = x + (face === "r" ? 2*u : 0), hy = y - 84*u;
+    var lf = -5, rf = 5, a1 = [4,-42], a2 = [-4,-42];
+    if (pose === "walk"){ lf = -11; rf = 12; a1 = [13,-46]; a2 = [-12,-44]; }
+    if (pose === "run"){ lf = -18; rf = 20; a1 = [16,-62]; a2 = [-14,-54]; }
+    if (pose === "read"){ a1 = [14,-58]; a2 = [14,-56]; }
+    if (pose === "phone"){ a1 = [12,-62]; a2 = [-4,-42]; }
+    if (pose === "wave"){ a1 = [14,-92]; a2 = [-4,-42]; }
+    if (face === "f" || face === "b"){ a1[0] = 14; a2[0] = -14; if (pose === "read"){ a1 = [8,-56]; a2 = [-8,-56]; } }
+    g += line(x,hip,x+lf*u,y,9*u,C.g700) + line(x,hip,x+rf*u,y,9*u,C.g700);
+    if (who.bag && face !== "f") g += face === "b" ? rect(x-12*u,y-70*u,24*u,30*u,who.bag,null,6*u) : rect(x-27*u,y-68*u,13*u,30*u,who.bag,null,5*u);
+    g += rect(x-15*u,y-74*u,30*u,40*u,who.body,null,12*u);
+    g += line(x,sh+2*u,x+a2[0]*u,y+a2[1]*u,7*u,who.body) + line(x,sh+2*u,x+a1[0]*u,y+a1[1]*u,7*u,who.body);
+    g += circ(x+a1[0]*u,y+a1[1]*u,3.6*u,C.oat) + circ(x+a2[0]*u,y+a2[1]*u,3.6*u,C.oat);
+    if (pose === "read") g += rect(x+(face === "r" ? 8 : face === "l" ? 8 : -8)*u,y-70*u,15*u,19*u,C.white,C.g500,1*u,1);
+    if (pose === "phone") g += rect(x+10*u,y-76*u,8*u,14*u,C.slate,null,1.5*u);
+    g += circ(hx,hy,11*u,C.oat,C.g700,1.5);
+    g += '<path d="M'+n1(hx-11.6*u)+","+n1(hy)+" A"+n1(11.6*u)+" "+n1(11.6*u)+" 0 0 1 "+n1(hx+11.6*u)+","+n1(hy)+" Z"+'" fill="'+who.hair+'"/>';
+    if (face === "r") g += circ(hx-8*u,hy+1*u,5*u,who.hair);
+    if (face === "b") g += circ(hx,hy,11.6*u,who.hair);
+    if (face !== "b"){
+      var ex = face === "f" ? [-4.5,4.5] : [5.5], k;
+      for (k = 0; k < ex.length; k++) g += circ(hx+ex[k]*u,hy+1.5*u,1.6*u,C.slate);
+      var mx = hx + (face === "f" ? 0 : 5*u), my = hy + 6.5*u;
+      if (expr === "surprise"){
+        g += circ(mx,my+1*u,2*u,C.white,C.slate,1);
+        for (k = 0; k < ex.length; k++) g += line(hx+ex[k]*u-2*u,hy-3*u,hx+ex[k]*u+2*u,hy-3.6*u,1.2,C.slate);
+      } else if (expr === "smile"){
+        g += '<path d="M'+n1(mx-3*u)+","+n1(my-.5*u)+" Q"+n1(mx)+","+n1(my+3.5*u)+" "+n1(mx+3*u)+","+n1(my-.5*u)+'" fill="none" stroke="'+C.slate+'" stroke-width="1.3" stroke-linecap="round"/>';
+      } else if (expr === "sad"){
+        g += '<path d="M'+n1(mx-3*u)+","+n1(my+1.6*u)+" Q"+n1(mx)+","+n1(my-2*u)+" "+n1(mx+3*u)+","+n1(my+1.6*u)+'" fill="none" stroke="'+C.slate+'" stroke-width="1.3" stroke-linecap="round"/>';
+        for (k = 0; k < ex.length; k++) g += line(hx+ex[k]*u-2*u,hy-3.6*u,hx+ex[k]*u+2*u,hy-2.2*u,1.2,C.slate);
+      } else if (expr === "angry"){
+        g += line(mx-2.5*u,my+.5*u,mx+2.5*u,my+.5*u,1.5,C.slate);
+        for (k = 0; k < ex.length; k++) g += line(hx+ex[k]*u-2.2*u,hy-4*u,hx+ex[k]*u+2.2*u,hy-2*u,1.5,C.slate);
+      } else if (expr === "fear"){
+        g += '<path d="M'+n1(mx-3*u)+","+n1(my+.6*u)+" l"+n1(1.5*u)+",-"+n1(1.6*u)+" l"+n1(1.5*u)+","+n1(1.6*u)+" l"+n1(1.5*u)+",-"+n1(1.6*u)+'" fill="none" stroke="'+C.slate+'" stroke-width="1.2" stroke-linejoin="round"/>';
+        for (k = 0; k < ex.length; k++){ g += circ(hx+ex[k]*u,hy+1.5*u,2.9*u,C.white,C.slate,1) + circ(hx+ex[k]*u,hy+1.5*u,1.2*u,C.slate); g += line(hx+ex[k]*u-2.2*u,hy-4.2*u,hx+ex[k]*u+2.2*u,hy-5*u,1.2,C.slate); }
+      } else if (expr === "puzzled"){
+        g += line(mx-2.5*u,my+1*u,mx+2.5*u,my,1.3,C.slate);
+        for (k = 0; k < ex.length; k++) g += line(hx+ex[k]*u-2*u,hy-2.4*u,hx+ex[k]*u+2*u,hy-4*u,1.2,C.slate);
+      } else {
+        g += line(mx-2.5*u,my,mx+2.5*u,my,1.3,C.slate);
+      }
+    }
+    if (face === "l") g = '<g transform="translate('+n1(2*x)+' 0) scale(-1 1)">' + g + "</g>";
+    return g;
+  }
+
+  /* ---------- 道具、箭頭、格線 ---------- */
+  function prop(o){
+    var s = o.s || 1, x = o.x, y = o.y;
+    if (o.name === "phone") return rect(x,y,9*s,16*s,C.slate,null,2*s) + rect(x+1.2*s,y+1.8*s,6.6*s,11*s,C.g100,null,1*s);
+    var r = rect(x,y,22*s,28*s,C.white,C.g500,1.5*s,1.2);
+    r += line(x+4*s,y+7*s,x+18*s,y+7*s,1.1,C.g300) + line(x+4*s,y+12*s,x+18*s,y+12*s,1.1,C.g300) + line(x+4*s,y+17*s,x+13*s,y+17*s,1.1,C.g300);
+    return r;
+  }
+  /* kind: move=人物移動(實線、深灰);cam=鏡頭移動(橘色粗虛線) */
+  function arrow(o){
+    var k = o.k || 1, cam = o.kind === "cam", col = cam ? C.clay : C.g700, sw = (cam ? 3.4 : 2.4) * k;
+    var s = '<line x1="'+n1(o.x1)+'" y1="'+n1(o.y1)+'" x2="'+n1(o.x2)+'" y2="'+n1(o.y2)+'" stroke="'+col+'" stroke-width="'+n1(sw)+'"'
+          + (cam ? ' stroke-dasharray="'+n1(7*k)+" "+n1(5*k)+'"' : "") + ' stroke-linecap="round" marker-end="url(#'+(cam ? "cm" : "mv")+'@U)"/>';
+    if (o.label) s += '<text x="'+n1((o.x1+o.x2)/2)+'" y="'+n1((o.y1+o.y2)/2-5*k)+'" text-anchor="middle" font-size="'+n1(9*k)+'" font-weight="600" fill="'+(cam ? C.clayD : C.g700)+'" style="font-family:system-ui,sans-serif">'+esc(o.label)+"</text>";
+    return s;
+  }
+  function thirds(vb, k){
+    var x0 = vb[0], y0 = vb[1], w = vb[2], h = vb[3], s = "", i, j, st = ' stroke="'+C.clay+'" stroke-width="'+n1(1.4*k)+'" stroke-dasharray="'+n1(5*k)+" "+n1(4*k)+'"';
+    for (i = 1; i < 3; i++){
+      s += '<line x1="'+n1(x0+w*i/3)+'" y1="'+n1(y0)+'" x2="'+n1(x0+w*i/3)+'" y2="'+n1(y0+h)+'"'+st+"/>";
+      s += '<line x1="'+n1(x0)+'" y1="'+n1(y0+h*i/3)+'" x2="'+n1(x0+w)+'" y2="'+n1(y0+h*i/3)+'"'+st+"/>";
+    }
+    for (i = 1; i < 3; i++) for (j = 1; j < 3; j++) s += circ(x0+w*i/3,y0+h*j/3,3.2*k,C.clay);
+    return s;
+  }
+
+  /* ---------- 構圖輔助層:頭上空間、視線空間 ---------- */
+  function headTop(p){ return p.y - 95.6 * (p.h || 100) / 100; }
+  function faceX(p){ var u = (p.h || 100) / 100, f = p.facing || "r"; return p.x + (f === "r" ? 2 * u : f === "l" ? -2 * u : 0); }
+  function txt(x, y, t, k, col){
+    return '<text x="'+n1(x)+'" y="'+n1(y)+'" text-anchor="middle" font-size="'+n1(10*k)+'" font-weight="700" fill="'+col+'" style="font-family:system-ui,sans-serif">'+esc(t)+"</text>";
+  }
+  function headroom(p, vb, k){
+    var top = headTop(p), h = top - vb[1], x = p.x, s = "";
+    if (h < 1) return "";
+    s += '<rect x="'+n1(x-26*(p.h||100)/100)+'" y="'+n1(vb[1])+'" width="'+n1(52*(p.h||100)/100)+'" height="'+n1(h)+'" fill="'+C.clay+'" opacity=".22"/>';
+    s += '<line x1="'+n1(x)+'" y1="'+n1(vb[1]+1)+'" x2="'+n1(x)+'" y2="'+n1(top)+'" stroke="'+C.clayD+'" stroke-width="'+n1(1.6*k)+'"/>';
+    s += txt(x + 56 * (p.h||100) / 100 * (x > vb[0] + vb[2] * 0.6 ? -1 : 1), vb[1] + Math.max(h / 2, 8 * k) + 3 * k, "頭上空間", k, C.clayD);
+    return s;
+  }
+  function lookroom(p, vb, k){
+    var fx = faceX(p), r = (p.facing || "r") === "r", edge = r ? vb[0] + vb[2] : vb[0], y = p.y - 84 * (p.h || 100) / 100;
+    var x0 = Math.min(fx, edge), w = Math.abs(edge - fx);
+    if (w < 2) return "";
+    return '<rect x="'+n1(x0)+'" y="'+n1(y-7*k)+'" width="'+n1(w)+'" height="'+n1(14*k)+'" fill="'+C.olive+'" opacity=".28"/>'
+         + txt((x0 + x0 + w) / 2, y + 3.4 * k, "視線空間", k, "#5C6E45");
+  }
+
+  /* ---------- 組合 ---------- */
+  function svg(inner, o){
+    o = o || {}; var vb = o.vb || [0,0,320,180], u = o.uid || ("r" + (++seq));
+    var defs = '<defs><marker id="mv'+u+'" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="'+C.g700+'"/></marker>'
+             + '<marker id="cm'+u+'" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="'+C.clay+'"/></marker></defs>';
+    return '<svg viewBox="'+vb.map(n1).join(" ")+'" role="img" aria-label="'+esc(o.label || "")+'" preserveAspectRatio="xMidYMid slice">'
+         + defs + inner.split("@U").join(u) + "</svg>";
+  }
+  /* shot({scene, worldW, people:[{x,y,h,facing,pose,who,expr}], props:[{name,x,y,s}], arrows:[{x1,y1,x2,y2,kind,label}],
+   *       zoom, cx, cy | vb, grid, label, uid, extra}) → 完整 <svg> */
+  function shot(o){
+    var W = o.worldW || 320, z = o.zoom || 1, cx = o.cx == null ? 160 : o.cx, cy = o.cy == null ? 90 : o.cy;
+    var vb = o.vb || [cx - 160 / z, cy - 90 / z, 320 / z, 180 / z], k = vb[2] / 320, s = scene(o.scene || "hallway", W, o.worldW ? vb : null), i;
+    (o.props || []).forEach(function(p){ s += prop(p); });
+    (o.people || []).forEach(function(p){ s += person(p); });
+    (o.arrows || []).forEach(function(a){ a.k = k; s += arrow(a); });
+    if (o.extra) s += o.extra;
+    var p0 = (o.people || [])[0];
+    if (p0 && o.headroom) s += headroom(p0, vb, k);
+    if (p0 && o.lookroom) s += lookroom(p0, vb, k);
+    if (o.grid) s += thirds(vb, k);
+    if (o.cam) s += camarrow(o.cam.kind, vb, k, o.cam.dir);
+    return svg(s, { vb: vb, label: o.label, uid: o.uid });
+  }
+
+  /* ---------- 攝影機動作箭頭(橘色虛線,畫在取景框內) ---------- */
+  function camarrow(kind, vb, k, dir){
+    var x = vb[0], y = vb[1], w = vb[2], h = vb[3], mx = x + w / 2, my = y + h / 2, d = dir === "l" ? -1 : 1, u = dir === "d" ? 1 : -1, s = "";
+    function A(x1,y1,x2,y2,l){ return arrow({ x1:x1, y1:y1, x2:x2, y2:y2, kind:"cam", label:l, k:k }); }
+    if (kind === "pan") s = A(mx - d*w*.3, y + h*.07, mx + d*w*.3, y + h*.07, "搖攝");
+    else if (kind === "tilt") s = A(x + w*.9, my - u*h*.28, x + w*.9, my + u*h*.28, "");
+    else if (kind === "track" || kind === "follow") s = A(mx - d*w*.3, y + h*.9, mx + d*w*.3, y + h*.9, kind === "track" ? "橫移" : "跟拍");
+    else if (kind === "rise") s = A(x + w*.1, my - u*h*.28, x + w*.1, my + u*h*.28, "");
+    else if (kind === "push" || kind === "pull"){
+      var a = kind === "push" ? 1 : 0, P4 = [[.1,.12,.28,.3],[.9,.12,.72,.3],[.1,.88,.28,.7],[.9,.88,.72,.7]];
+      P4.forEach(function(q){ s += a ? A(x+w*q[0],y+h*q[1],x+w*q[2],y+h*q[3]) : A(x+w*q[2],y+h*q[3],x+w*q[0],y+h*q[1]); });
+      s += txt(mx, y + h*.1, kind === "push" ? "推" : "拉", k, C.clayD);
+    } else if (kind === "orbit"){
+      s = '<path d="M'+n1(mx-w*.3)+","+n1(y+h*.86)+" A"+n1(w*.3)+" "+n1(h*.1)+" 0 0 0 "+n1(mx+w*.3)+","+n1(y+h*.86)+'" fill="none" stroke="'+C.clay+'" stroke-width="'+n1(3.4*k)+'" stroke-dasharray="'+n1(7*k)+" "+n1(5*k)+'" stroke-linecap="round" marker-end="url(#cm@U)"/>' + txt(mx, y + h*.97, "環繞", k, C.clayD);
+    }
+    return s;
+  }
+
+  /* ---------- 拍攝角度:平視 / 俯拍 / 仰拍 / 荷蘭角 ---------- */
+  function angleShot(o){
+    var a = o.angle || "eye", who = o.who || "an", s = "", i, hz, ph, py, yw, hL, X0 = -90, X1 = 410;
+    if (a === "high"){ hz = 20; ph = 62; py = 142; yw = 92; hL = 40; }
+    else if (a === "low"){ hz = 152; ph = 150; py = 162; yw = 160; hL = 135; }
+    else { hz = 86; ph = 110; py = 178; yw = 124; hL = 84; }
+    s += rect(X0,-120,X1-X0,yw+120,C.g100) + rect(X0,yw,X1-X0,300,C.oat) + line(X0,yw,X1,yw,1.5,C.g500);
+    for (i = -2; i < 9; i++){
+      s += rect(i*54+8,yw-hL,46,hL,C.g300,C.g500,2) + circ(i*54+46,yw-hL*.45,2.4,C.g700) + line(i*54+16,yw-hL+8,i*54+38,yw-hL+8,1.5,C.g500);
+    }
+    if (o.hzline) s += '<line x1="'+X0+'" y1="'+hz+'" x2="'+X1+'" y2="'+hz+'" stroke="'+C.clayD+'" stroke-width="1.4" stroke-dasharray="6 4"/>' + '<text x="8" y="'+(hz-4)+'" font-size="9" font-weight="700" fill="'+C.clayD+'" style="font-family:system-ui,sans-serif">地平線 = 鏡頭的高度</text>';
+    s += person({ x:160, y:py, h:ph, facing:"f", who:who, expr:o.expr || "neutral", pose:o.pose || "stand" });
+    if (a === "dutch") s = '<g transform="rotate(-14 160 90)">' + s + "</g>";
+    return svg(s, { vb:[0,0,320,180], label:o.label, uid:o.uid });
+  }
+
+  /* ---------- 焦段 / 推拉 / 變焦:用「景深物件」重算透視 ----------
+   * D = 鏡頭離主角的距離,F = 焦距倍率。主角螢幕身高 = 100*F/D,其他物件 = 100*F/(D+z)。
+   * 廣角:D小、F小;望遠:D大、F大。blur>0 時,離主角越遠的物件越模糊。 */
+  function lens(o){
+    var D = o.D, F = o.F, hz = o.hz == null ? 70 : o.hz, camH = o.camH == null ? 84 : o.camH, sh = o.shift || 0, zw = o.zw == null ? 3.2 : o.zw;
+    var bl = o.blur || 0, u = o.uid || ("r" + (++seq)), s = "", k, sc = function(z){ return F / (D + z); }, ft = function(v){ return hz + camH * v; };
+    var sw = sc(zw), fw = ft(sw), b3 = bl * 3.2, b2 = bl * 1.6, b1 = bl * 1.4, sv, x, y;
+    s += '<filter id="bA'+u+'" filterUnits="userSpaceOnUse" x="-200" y="-200" width="720" height="600"><feGaussianBlur stdDeviation="'+n1(b3)+'"/></filter>'
+       + '<filter id="bB'+u+'" filterUnits="userSpaceOnUse" x="-200" y="-200" width="720" height="600"><feGaussianBlur stdDeviation="'+n1(b2)+'"/></filter>'
+       + '<filter id="bC'+u+'" filterUnits="userSpaceOnUse" x="-200" y="-200" width="720" height="600"><feGaussianBlur stdDeviation="'+n1(b1)+'"/></filter>';
+    s += rect(-200,-200,720,fw+200,C.g100) + rect(-200,fw,720,400,C.oat) + line(-200,fw,520,fw,Math.max(.8,1.5*sw),C.g500);
+    var wall = "";
+    for (k = -60; k <= 60; k++){
+      x = 160 + (k * 44 + sh) * sw;
+      if (x < -40 || x > 360) continue;
+      wall += rect(x,fw-100*sw,38*sw,100*sw,C.g300,C.g500,2*sw,Math.max(.6,1.5*sw)) + circ(x+31*sw,fw-50*sw,2.4*sw,C.g700);
+    }
+    s += '<g'+(b3 ? ' filter="url(#bA'+u+')"' : "")+">" + wall + "</g>";
+    if (o.yu !== false){
+      sv = sc(1.5); x = 160 + (70 + sh * .6) * sv; y = ft(sv);
+      s += '<g'+(b2 ? ' filter="url(#bB'+u+')"' : "")+">" + person({ x:x, y:y, h:100*sv, facing:"f", who:"yu", pose:"stand" }) + "</g>";
+    }
+    sv = F / D; s += person({ x:160, y:ft(sv), h:100*sv, facing:o.face || "f", who:o.who || "an", pose:o.pose || "stand", expr:o.expr || "neutral" });
+    if (o.near !== false){
+      sv = sc(-.5); x = 160 + (-100 + sh * 1.2) * sv; y = ft(sv);
+      s += '<g'+(b1 ? ' filter="url(#bC'+u+')"' : "")+">" + rect(x-12*sv,y-24*sv,24*sv,24*sv,C.g700,null,3*sv) + circ(x,y-34*sv,16*sv,C.olive) + circ(x-12*sv,y-28*sv,10*sv,C.olive) + circ(x+12*sv,y-28*sv,10*sv,C.olive) + "</g>";
+    }
+    return svg(s, { vb:[0,0,320,180], label:o.label, uid:u });
+  }
+
+  /* ---------- 俯視示意圖(軸線與機位) ----------
+   * people:[{x,y,dir(度,0=朝右,90=朝下),who,name}] cams:[{x,y,tx,ty,ok,name}] axis:y(水平軸線) zone:"top"|"bottom" */
+  function topdown(o){
+    var s = rect(0,0,320,180,C.g100), i, ay = o.axis;
+    if (ay != null){
+      if (o.zone === "top") s += rect(0,0,320,ay,C.olive).replace('fill="'+C.olive+'"','fill="'+C.olive+'" opacity=".16"');
+      if (o.zone === "bottom") s += rect(0,ay,320,180-ay,C.olive).replace('fill="'+C.olive+'"','fill="'+C.olive+'" opacity=".16"');
+      s += '<line x1="0" y1="'+ay+'" x2="320" y2="'+ay+'" stroke="'+C.rust+'" stroke-width="1.8" stroke-dasharray="7 5"/>' + '<text x="312" y="'+(ay-5)+'" text-anchor="end" font-size="9" font-weight="700" fill="'+C.rust+'" style="font-family:system-ui,sans-serif">軸線</text>';
+    }
+    (o.cams || []).forEach(function(c){
+      var col = c.ok === false ? C.rust : C.clay, a = Math.atan2(c.ty - c.y, c.tx - c.x), L = 52;
+      s += '<path d="M'+n1(c.x)+","+n1(c.y)+" L"+n1(c.x+L*Math.cos(a-.4))+","+n1(c.y+L*Math.sin(a-.4))+" L"+n1(c.x+L*Math.cos(a+.4))+","+n1(c.y+L*Math.sin(a+.4))+' Z" fill="'+col+'" opacity=".2" stroke="'+col+'" stroke-width="1"/>';
+      s += rect(c.x-6,c.y-5,12,10,col,null,2) + (c.name ? '<text x="'+n1(c.x)+'" y="'+n1(c.y + (c.y > 90 ? 19 : -9))+'" text-anchor="middle" font-size="9.5" font-weight="700" fill="'+(c.ok === false ? C.rust : C.clayD)+'" style="font-family:system-ui,sans-serif">'+esc(c.name)+"</text>" : "");
+    });
+    (o.people || []).forEach(function(p){
+      var w = WHO[p.who || "an"] || WHO.an, d = (p.dir || 0) * Math.PI / 180;
+      s += circ(p.x,p.y,11,w.body,C.g700,1.5);
+      s += '<path d="M'+n1(p.x+15*Math.cos(d))+","+n1(p.y+15*Math.sin(d))+" L"+n1(p.x+8*Math.cos(d+1.1))+","+n1(p.y+8*Math.sin(d+1.1))+" L"+n1(p.x+8*Math.cos(d-1.1))+","+n1(p.y+8*Math.sin(d-1.1))+' Z" fill="'+C.slate+'"/>';
+      if (p.name) s += '<text x="'+n1(p.x)+'" y="'+n1(p.y+(p.y > 90 ? -17 : 25))+'" text-anchor="middle" font-size="10" font-weight="700" fill="'+C.g700+'" style="font-family:system-ui,sans-serif">'+esc(p.name)+"</text>";
+    });
+    return svg(s, { vb:[0,0,320,180], label:o.label, uid:o.uid });
+  }
+
+  /* ---------- 運鏡動畫的某一格(t = 0..1)。靜態起訖格與互動動畫共用 ---------- */
+  function ease(t){ return t < .5 ? 2*t*t : 1 - Math.pow(-2*t + 2, 2) / 2; }
+  function vbf(H, cy, cx){ var w = H * 16 / 9; return [cx - w / 2, cy - H / 2, w, H]; }
+  function moveFrame(o){
+    var n = o.name, t = Math.max(0, Math.min(1, o.t || 0)), e = ease(t), L = o.label || "", cam = o.cam, me = {};
+    function S(people, vb, extra){ var q = { worldW:1200, people:people, vb:vb, label:L, uid:o.uid, props:(extra && extra.props) || [] }; if (cam) q.cam = cam; return shot(q); }
+    function P1(x, f, pose, who, expr){ return { x:x, y:130, h:100, facing:f || "r", pose:pose || "stand", who:who || "an", expr:expr || "neutral" }; }
+    if (n === "pan") return S([P1(260,"r","stand","an"), P1(940,"l","phone","yu")], vbf(140,82,260+680*e));
+    if (n === "tilt") return S([P1(600,"r","stand")], vbf(70,100-40*e,600));
+    if (n === "track"){ var px = 250 + 700 * t; return S([P1(px,"r","walk")], vbf(140,82,px+40)); }
+    if (n === "follow") return lens({ D:2.4, F:2.4, zw:8-5.4*e, face:"b", pose:"walk", yu:false, near:false, label:L, uid:o.uid });
+    if (n === "orbit") return lens({ D:2.4, F:2.4, zw:2.4, shift:70-140*t, face:t < .34 ? "r" : t < .67 ? "f" : "l", yu:false, near:false, label:L, uid:o.uid });
+    if (n === "push" || n === "pull"){ var q = n === "push" ? e : 1 - e; return lens({ D:4.8-2.4*q, F:2.4, label:L, uid:o.uid, blur:o.blur || 0 }); }
+    if (n === "rise") return lens({ D:2.4+1*e, F:2.4, camH:84+116*e, hz:70-50*e, yu:false, near:false, label:L, uid:o.uid });
+    if (n === "zoom") return lens({ D:4.8, F:2.4+2.4*e, label:L, uid:o.uid });
+    if (n === "vertigo") return lens({ D:5.6-3.9*e, F:5.6-3.9*e, label:L, uid:o.uid });
+    if (n === "handheld"){ var A = o.amp == null ? 5 : o.amp, tt = (o.tt == null ? t : o.tt) * 40; return S([P1(600,"f","stand","an")], vbf(110,72+A*.7*(Math.sin(tt*2.3)+.6*Math.sin(tt*5.1+1)),600+A*(Math.sin(tt*1.7)+.7*Math.sin(tt*4.3+2)))); }
+    if (n === "drone") return shot({ scene:"gate", people:[{ x:200, y:130, h:100, facing:"f", who:"yu", pose:"phone" }], vb:vbf(110+330*e, 78-10*e, 200-40*e), label:L, uid:o.uid, cam:cam });
+    if (n === "slow"){ var sx = 140 + 920 * t; return S([P1(sx, "r", (Math.floor(t * (o.steps || 10)) % 2) ? "run" : "walk")], vbf(240,70,600)); }
+    if (n === "longtake"){
+      var px2 = t < .5 ? 150 + 610 * (t / .5) : 760, H = t < .5 ? 140 : t < .8 ? 140 - 60 * ease((t - .5) / .3) : 80, cx = t < .8 ? px2 + 40 : (px2 + 40) + 340 * ease((t - .8) / .2);
+      var pose = t < .5 ? "walk" : "read", ex = t < .62 ? "neutral" : t < .72 ? "puzzled" : "surprise";
+      return S([P1(px2, "r", pose, "an", ex)], vbf(H, t < .8 ? 82 - (140 - H) * .2 : 70, cx));
+    }
+    return "";
+  }
+
+  return { camarrow:camarrow, angleShot:angleShot, lens:lens, topdown:topdown, moveFrame:moveFrame, ease:ease, vbf:vbf, C:C, scene:scene, person:person, prop:prop, arrow:arrow, thirds:thirds, headTop:headTop, faceX:faceX, svg:svg, shot:shot, esc:esc };
+})();
+if (typeof module !== "undefined") module.exports = Kit;
+
+window.ANIMS = window.ANIMS || {};
+ANIMS.pp = {dur:3600, names:["推（靠近）", "拉（離開）"], frames:[function(t){ return Kit.moveFrame(Object.assign({name:"push", t:t}, {})); }, function(t){ return Kit.moveFrame(Object.assign({name:"pull", t:t}, {})); }]};
+ANIMS.tr = {dur:4200, names:["橫移", "跟拍"], frames:[function(t){ return Kit.moveFrame(Object.assign({name:"track", t:t}, {})); }, function(t){ return Kit.moveFrame(Object.assign({name:"follow", t:t}, {})); }]};
+ANIMS.orb = {dur:4200, names:["環繞"], frames:[function(t){ return Kit.moveFrame(Object.assign({name:"orbit", t:t}, {})); }]};
+
+</script><script>
+window.ANIMS = window.ANIMS || {};
+(function () {
+  var reduced = !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+  Array.prototype.forEach.call(document.querySelectorAll(".anim"), function (box) {
+    var def = window.ANIMS[box.dataset.id]; if (!def) return;
+    var sb = box.querySelector(".stagebox"), btn = box.querySelector(".play"), rng = box.querySelector("input[type=range]");
+    var t = 0, playing = false, last = 0, hold = 0, stages = [];
+    if (reduced) box.classList.add("reduced");
+    def.frames.forEach(function (f, i) {
+      var d = document.createElement("div"); d.className = "stage";
+      d.innerHTML = (def.names && def.names[i] ? "<b>" + def.names[i] + "</b>" : "") + '<div class="v"></div>';
+      sb.appendChild(d); stages.push(d.querySelector(".v"));
+    });
+    function draw() { def.frames.forEach(function (f, i) { stages[i].innerHTML = f(Math.min(1, t), box); }); rng.value = Math.round(Math.min(1, t) * 100); if (def.onframe) def.onframe(box, Math.min(1, t)); }
+    function tick(ts) {
+      if (!playing) return;
+      if (!last) last = ts;
+      var dt = ts - last; last = ts;
+      if (t >= 1) { hold += dt; if (hold > 700) { t = 0; hold = 0; } }
+      else t += dt / (def.dur || 3000);
+      draw(); requestAnimationFrame(tick);
+    }
+    function set(p) { playing = p; btn.textContent = p ? "暫停" : "播放"; if (p) { last = 0; if (t >= 1) t = 0; requestAnimationFrame(tick); } }
+    btn.addEventListener("click", function () { set(!playing); });
+    rng.addEventListener("input", function () { set(false); t = rng.value / 100; draw(); });
+    draw();
+  });
+})();
+</script><script>
+Array.prototype.forEach.call(document.querySelectorAll(".ch"), function (c) {
+  c.querySelector(".opts").addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    var a = +c.dataset.ans, i = +b.dataset.i, bs = c.querySelectorAll(".opts button");
+    Array.prototype.forEach.call(bs, function (x, j) { x.classList.toggle("ok", j === a); x.classList.toggle("no", j === i && i !== a); x.setAttribute("aria-pressed", j === i); });
+    c.querySelector(".vd").innerHTML = i === a ? "<b>答對了！</b>" : "<b>再想想。</b>比較適合的是「" + bs[a].textContent + "」。";
+    c.querySelector(".res").hidden = false;
+  });
+});
+</script>
+</body>
+</html>
