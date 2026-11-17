@@ -206,7 +206,7 @@ practice = section("practice", "動手演練與延伸閱讀",
           "我知道門檻附近會閃爍,並懂得用兩個門檻(遲滯)解決。",
           "我會用 <code>&amp;&amp;</code> 組合兩個條件。"], "做完之後,對照這張清單"),
   resources([
-    ("https://docs.arduino.cc/language-reference/en/functions/analog-io/analogread/", "analogRead()", "Arduino language reference"),
+    ("https://docs.arduino.cc/language-reference/en/functions/analog-io/analogRead/", "analogRead()", "Arduino language reference"),
     ("https://docs.arduino.cc/language-reference/en/structure/boolean-operators/logicalAnd/", "&amp;&amp;(邏輯 AND)", "Arduino language reference"),
   ], "Arduino 官方文件"))
 

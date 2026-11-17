@@ -147,7 +147,7 @@ practice = section("practice", "動手演練:確認你真的懂了",
           "解決衝突後我會把三種標記整行刪乾淨。",
           "我知道合併到一半可以用 <code>git merge --abort</code> 放棄。"]),
   resources([
-    ("https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/resolving-a-merge-conflict-using-the-command-line", "用指令列解決合併衝突", "Resolving a merge conflict using the command line"),
+    ("https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/resolving-a-merge-conflict-using-the-command-line", "用指令列解決合併衝突", "Resolving a merge conflict using the command line"),
     ("https://docs.github.com/en/get-started/using-git/about-git", "關於 Git", "About Git"),
   ]))
 

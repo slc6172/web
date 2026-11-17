@@ -7,13 +7,13 @@
 <meta name="description" content="不想進 repo 的檔案寫進 .gitignore；但它只管「還沒被追蹤」的檔案。已經 commit 過的密碼，擋不回來，要當作外洩處理。">
 <meta name="theme-color" content="#FAF9F5">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='8'%20fill='%23FAF9F5'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='8'%20fill='%23D97757'/%3E%3C/svg%3E">
-<link rel="canonical" href="https://www.slc6172.workers.dev/github/github-gitignore-guide.html">
+<link rel="canonical" href="https://www.slc6172.workers.dev/github/github-gitignore-guide">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="zh_TW">
 <meta property="og:site_name" content="自學教學站">
 <meta property="og:title" content=".gitignore 與檢視歷史：先寫 .gitignore，再第一次 commit">
 <meta property="og:description" content="不想進 repo 的檔案寫進 .gitignore；但它只管「還沒被追蹤」的檔案。已經 commit 過的密碼，擋不回來，要當作外洩處理。">
-<meta property="og:url" content="https://www.slc6172.workers.dev/github/github-gitignore-guide.html">
+<meta property="og:url" content="https://www.slc6172.workers.dev/github/github-gitignore-guide">
 <meta name="twitter:card" content="summary">
 <style>
   :root {
@@ -299,7 +299,7 @@
   <div class="eyebrow">GitHub 入門 · 第 2 篇 · .gitignore 與歷史</div>
   <h1>先寫 .gitignore，再第一次 commit</h1>
   <p class="sub">新手最早踩到的坑，是把 <code>node_modules</code> 或 <code>.env</code> 一起 commit 上去。這一篇教你用 <code>.gitignore</code> 擋住不該進 repo 的檔案，並用 <code>status</code>、<code>diff</code>、<code>log</code> 看清楚 repo 裡發生了什麼。</p>
-  <div class="tldr"><b>TL;DR</b> 不想進 repo 的檔案寫進 <code>.gitignore</code>;但它只管「還沒被追蹤」的檔案。<strong>已經 commit 過的密碼，擋不回來</strong>，要當作外洩處理。commit 前養成 <code>status</code> 與 <code>diff</code> 看一遍的習慣。</div>
+  <div class="tldr"><b>TL;DR</b> 不想進 repo 的檔案寫進 <code>.gitignore</code>；但它只管「還沒被追蹤」的檔案。<strong>已經 commit 過的密碼，擋不回來</strong>，要當作外洩處理。commit 前養成 <code>status</code> 與 <code>diff</code> 看一遍的習慣。</div>
 </header>
 
 <div class="layout">
@@ -335,7 +335,7 @@
       <text x="85" y="147" text-anchor="middle" class="s" fill="#141413">新檔案</text>
       <rect x="195" y="110" width="170" height="64" rx="10" fill="#E3DACC" stroke="#3D3D3A" stroke-width="2"/>
       <text x="280" y="138" text-anchor="middle" class="m" fill="#141413">.gitignore</text>
-      <text x="280" y="158" text-anchor="middle" class="s" fill="#3D3D3A">名字符合規則嗎?</text>
+      <text x="280" y="158" text-anchor="middle" class="s" fill="#3D3D3A">名字符合規則嗎？</text>
       <rect x="415" y="18" width="150" height="64" rx="10" fill="#F0EEE6" stroke="#B04A3F" stroke-width="1.5"/>
       <text x="490" y="46" text-anchor="middle" class="s" fill="#141413">被忽略</text>
       <text x="490" y="66" text-anchor="middle" class="s" fill="#3D3D3A">status 不會列出</text>
@@ -361,7 +361,7 @@
       <circle cx="790" cy="124" r="11" fill="#D97757"/><text x="790" y="128.5" text-anchor="middle" class="nn" fill="#fff">3</text>
       <text x="768" y="196" class="m" fill="#3D3D3A">commit</text>
     </svg></div>
-<ol class="legend" style="list-style:none"><li><span class="n">1</span><span><b>比對規則</b>：新檔案先過 <code>.gitignore</code> 這一關。</span></li><li><span class="n">2</span><span><b>add</b>:未追蹤的檔案放進暫存區。</span></li><li><span class="n">3</span><span><b>commit</b>:暫存的內容寫進歷史，成為已追蹤。</span></li><li><span class="n">！</span><span><b>被忽略</b>的檔案不在這條路上，<code>git status</code> 看不到它。</span></li></ol>
+<ol class="legend" style="list-style:none"><li><span class="n">1</span><span><b>比對規則</b>：新檔案先過 <code>.gitignore</code> 這一關。</span></li><li><span class="n">2</span><span><b>add</b>：未追蹤的檔案放進暫存區。</span></li><li><span class="n">3</span><span><b>commit</b>：暫存的內容寫進歷史，成為已追蹤。</span></li><li><span class="n">！</span><span><b>被忽略</b>的檔案不在這條路上，<code>git status</code> 看不到它。</span></li></ol>
 </section>
 
 <section id="steps">
@@ -377,12 +377,12 @@ mkdir node_modules
 echo "x" &gt; node_modules/a.js
 echo "我的筆記" &gt; notes.txt
 git status</pre><button type="button" class="copy">Copy</button></div>
-<div class="see"><b class="l">你會看到</b><code>Untracked files:</code> 底下列出 <code>.env</code>、<code>debug.log</code>、<code>node_modules/</code>、<code>notes.txt</code> 四項。這時如果隨手 <code>git add .</code>,密碼檔也會被加進去。</div>
+<div class="see"><b class="l">你會看到</b><code>Untracked files:</code> 底下列出 <code>.env</code>、<code>debug.log</code>、<code>node_modules/</code>、<code>notes.txt</code> 四項。這時如果隨手 <code>git add .</code>，密碼檔也會被加進去。</div>
 </div></div>
 <div class="step"><div class="num">2</div><div>
 <h3>建立 .gitignore</h3>
 <p class="why">把不要的檔案寫成規則。<code>.gitignore</code> 是一個沒有副檔名的純文字檔，放在 repo 最外層，檔名開頭有一個點。</p>
-<ol class="ops"><li>用任何文字編輯器新增檔案，存成 <code>.gitignore</code>(不是 <code>.gitignore.txt</code>)。</li><li>貼上下面的內容並存檔。</li><li>回到終端機再看一次 <code>git status</code>。</li></ol>
+<ol class="ops"><li>用任何文字編輯器新增檔案，存成 <code>.gitignore</code>（不是 <code>.gitignore.txt</code>）。</li><li>貼上下面的內容並存檔。</li><li>回到終端機再看一次 <code>git status</code>。</li></ol>
 <div class="cmd"><div class="cap">.gitignore 內容</div><pre data-tpl># 密碼與環境設定
 .env
 # 記錄檔
@@ -399,14 +399,14 @@ Thumbs.db</pre><button type="button" class="copy">Copy</button></div>
 <div class="step"><div class="num">3</div><div>
 <h3>看懂規則寫法</h3>
 <p class="why">規則不多，記住下面這幾種就能應付大部分情況。</p>
-<div class="table-wrap"><div class="gt g2"><div class="row"><div class="cell head">寫法</div><div class="cell head">意思</div></div><div class="row"><div class="cell term"><code>*.log</code></div><div class="cell">所有 <code>.log</code> 檔，不管在哪個資料夾。<code>*</code> 代表任意字元。</div></div><div class="row"><div class="cell term"><code>node_modules/</code></div><div class="cell">名叫這個名字的資料夾(結尾的 <code>/</code> 表示它是資料夾)。</div></div><div class="row"><div class="cell term"><code>/build</code></div><div class="cell">只限 repo 最外層的 <code>build</code>(開頭的 <code>/</code> 表示從根目錄算起)。</div></div><div class="row"><div class="cell term"><code>docs/*.tmp</code></div><div class="cell">只限 <code>docs</code> 資料夾底下的 <code>.tmp</code> 檔。</div></div><div class="row"><div class="cell term"><code>**/cache</code></div><div class="cell">任何深度的 <code>cache</code>。</div></div><div class="row"><div class="cell term"><code>!keep.log</code></div><div class="cell">例外：即使前面的規則擋住，這個仍要追蹤(<code>!</code> 代表反向)。</div></div><div class="row"><div class="cell term"><code># 註解</code></div><div class="cell">以 <code>#</code> 開頭的行是註解，git 會略過。</div></div></div></div>
+<div class="table-wrap"><div class="gt g2"><div class="row"><div class="cell head">寫法</div><div class="cell head">意思</div></div><div class="row"><div class="cell term"><code>*.log</code></div><div class="cell">所有 <code>.log</code> 檔，不管在哪個資料夾。<code>*</code> 代表任意字元。</div></div><div class="row"><div class="cell term"><code>node_modules/</code></div><div class="cell">名叫這個名字的資料夾（結尾的 <code>/</code> 表示它是資料夾）。</div></div><div class="row"><div class="cell term"><code>/build</code></div><div class="cell">只限 repo 最外層的 <code>build</code>（開頭的 <code>/</code> 表示從根目錄算起）。</div></div><div class="row"><div class="cell term"><code>docs/*.tmp</code></div><div class="cell">只限 <code>docs</code> 資料夾底下的 <code>.tmp</code> 檔。</div></div><div class="row"><div class="cell term"><code>**/cache</code></div><div class="cell">任何深度的 <code>cache</code>。</div></div><div class="row"><div class="cell term"><code>!keep.log</code></div><div class="cell">例外：即使前面的規則擋住，這個仍要追蹤（<code>!</code> 代表反向）。</div></div><div class="row"><div class="cell term"><code># 註解</code></div><div class="cell">以 <code>#</code> 開頭的行是註解，git 會略過。</div></div></div></div>
 <div class="warn"><b class="l">注意</b>反向規則 <code>!</code> 有一個限制：如果上層資料夾已經被忽略，資料夾裡的檔案就無法再用 <code>!</code> 放行。放行要連資料夾一起寫。</div>
 </div></div>
 <div class="step"><div class="num">4</div><div>
 <h3>查「為什麼這個檔案被忽略」</h3>
 <p class="why">規則一多，你會想知道某個檔案到底是被哪一行擋住的。</p>
 <div class="cmd"><pre data-tpl>git check-ignore -v debug.log</pre><button type="button" class="copy">Copy</button></div>
-<div class="see"><b class="l">你會看到</b>輸出 <code>.gitignore:3:*.log    debug.log</code>:意思是檔案 <code>.gitignore</code> 的第 3 行規則 <code>*.log</code> 擋住了它。</div>
+<div class="see"><b class="l">你會看到</b>輸出 <code>.gitignore:3:*.log    debug.log</code>：意思是檔案 <code>.gitignore</code> 的第 3 行規則 <code>*.log</code> 擋住了它。</div>
 </div></div>
 <div class="step"><div class="num">5</div><div>
 <h3>檔案已經 commit 過，再寫規則「沒有用」怎麼辦</h3>
@@ -415,7 +415,7 @@ Thumbs.db</pre><button type="button" class="copy">Copy</button></div>
 git commit -m "停止追蹤 .env"
 # 整個資料夾要加 -r:
 # git rm -r --cached node_modules</pre><button type="button" class="copy">Copy</button></div>
-<div class="see"><b class="l">你會看到</b><code>git rm --cached</code> 顯示 <code>rm '.env'</code>;你的資料夾裡 <code>.env</code> 仍然存在。</div>
+<div class="see"><b class="l">你會看到</b><code>git rm --cached</code> 顯示 <code>rm '.env'</code>；你的資料夾裡 <code>.env</code> 仍然存在。</div>
 <div class="warn"><b class="l">重要</b>這只是「從現在起不再追蹤」。<b>它在過去的 commit 裡仍然存在。</b>如果那是真的密碼或金鑰，請當作已外洩，立刻去服務端更換，並看第 10 篇。</div>
 </div></div>
 <div class="step"><div class="num">6</div><div>
@@ -437,7 +437,7 @@ git diff --staged</pre><button type="button" class="copy">Copy</button></div>
 git log --oneline -n 5
 git show --stat HEAD
 git log --oneline -- notes.txt</pre><button type="button" class="copy">Copy</button></div>
-<ol class="ops"><li><code>git log --oneline -n 5</code>:最近 5 筆，每筆一行。</li><li><code>git show --stat HEAD</code>:最新那筆 commit 改了哪些檔案。</li><li><code>git log --oneline -- notes.txt</code>:只看動過這個檔案的 commit。</li></ol>
+<ol class="ops"><li><code>git log --oneline -n 5</code>：最近 5 筆，每筆一行。</li><li><code>git show --stat HEAD</code>：最新那筆 commit 改了哪些檔案。</li><li><code>git log --oneline -- notes.txt</code>：只看動過這個檔案的 commit。</li></ol>
 <div class="see"><b class="l">你會看到</b>每行開頭是 7 個字元的代號（commit 的名字），後面是你寫的說明。最新的在最上面。</div>
 <div class="tip"><b class="l">小技巧</b><code>git log</code> 太長會進入分頁模式，按 <code>q</code> 離開。</div>
 </div></div>
@@ -448,9 +448,9 @@ git log --oneline -- notes.txt</pre><button type="button" class="copy">Copy</but
   <h2>初學者最常卡住的四個地方</h2>
   <hr class="rule">
 <details><summary>我加了規則，檔案還是出現在 <code>git status</code></summary><div class="body"><p>依序檢查三件事：</p><ol class='ops'><li>檔案是不是<b>已經被追蹤過</b>？是的話照步驟 5 先 <code>git rm --cached</code>。</li><li>檔名是不是 <code>.gitignore.txt</code>?Windows 預設會隱藏副檔名，打開「顯示副檔名」確認。</li><li>用 <code>git check-ignore -v 檔名</code> 看有沒有任何規則命中。沒有命中就是規則寫錯了。</li></ol></div></details>
-<details><summary>我想讓全部專案都忽略 <code>.DS_Store</code>,不想每個 repo 都寫</summary><div class="body"><p>設一份全域忽略清單，只對你自己的電腦有效：</p><div class="cmd"><pre data-tpl>echo ".DS_Store" &gt;&gt; ~/.gitignore_global
+<details><summary>我想讓全部專案都忽略 <code>.DS_Store</code>，不想每個 repo 都寫</summary><div class="body"><p>設一份全域忽略清單，只對你自己的電腦有效：</p><div class="cmd"><pre data-tpl>echo ".DS_Store" &gt;&gt; ~/.gitignore_global
 git config --global core.excludesfile ~/.gitignore_global</pre><button type="button" class="copy">Copy</button></div><p>團隊共用的規則仍然寫在專案裡的 <code>.gitignore</code>。</p></div></details>
-<details><summary><code>.env</code> 要忽略，但別人需要知道有哪些設定項目</summary><div class="body"><p>慣例是另外提交一份<b>只有欄位名稱、沒有真實值</b>的範例檔 <code>.env.example</code>,並在 <code>.gitignore</code> 裡放行它：</p><div class="cmd"><pre data-tpl>.env
+<details><summary><code>.env</code> 要忽略，但別人需要知道有哪些設定項目</summary><div class="body"><p>慣例是另外提交一份<b>只有欄位名稱、沒有真實值</b>的範例檔 <code>.env.example</code>，並在 <code>.gitignore</code> 裡放行它：</p><div class="cmd"><pre data-tpl>.env
 !.env.example</pre><button type="button" class="copy">Copy</button></div></div></details>
 <details><summary>空資料夾沒有出現在 <code>git status</code></summary><div class="body"><p>git 只追蹤檔案，不追蹤空資料夾。想保留空資料夾，慣例是在裡面放一個空檔案，常見取名 <code>.gitkeep</code>。</p><div class="cmd"><pre data-tpl>mkdir logs
 echo "" &gt; logs/.gitkeep</pre><button type="button" class="copy">Copy</button></div></div></details>
@@ -493,7 +493,7 @@ echo "" &gt; logs/.gitkeep</pre><button type="button" class="copy">Copy</button>
 </nav>
 </div>
 
-<script>window.PAGE = {"fill": {}, "sim": {"s1": "<b>要忽略。</b>套件資料夾體積大，而且可以由設定檔重新安裝。放進 <code>.gitignore</code>:<code>node_modules/</code>。", "s2": "<b>不要忽略。</b>README 是專案說明，正是要讓別人看到的內容。", "s3": "<b>要忽略，並且還要多做一件事。</b>真實的 <code>.env</code> 放進 <code>.gitignore</code>;另外提交一份只有欄位名稱的 <code>.env.example</code> 讓別人知道要設定什麼。", "s4": "<b>要忽略。</b>建置產物可以由原始碼重新產生，放進去只會讓 diff 變得很吵。通常寫成 <code>dist/</code> 或 <code>build/</code>。"}, "quiz": [{"q": "<code>.gitignore</code> 能讓「已經 commit 過」的檔案自動變成不追蹤嗎？", "a": ["能，加了規則就會自動消失", "不能，要先用 git rm --cached 停止追蹤", "只有重新 clone 才會生效"], "c": 1, "why": "規則只對尚未被追蹤的檔案有效。已追蹤的要先 git rm --cached，而且它仍留在過去的歷史裡。"}, {"q": "規則 <code>*.log</code> 的意思是？", "a": ["只忽略名叫 log 的資料夾", "忽略所有副檔名為 .log 的檔案", "忽略所有檔案"], "c": 1, "why": "* 代表任意字元，所以 *.log 會擋住任何資料夾裡的 .log 檔。"}, {"q": "想查某個檔案是被 <code>.gitignore</code> 的哪一行擋住，用哪個指令？", "a": ["git log", "git check-ignore -v 檔名", "git diff"], "c": 1, "why": "check-ignore -v 會顯示命中的檔案、行號與規則。"}, {"q": "<code>git diff</code>（不加參數）比較的是什麼？", "a": ["已修改但尚未 add 的變更", "最近一次 push 的內容", "暫存區與歷史的差異"], "c": 0, "why": "沒加參數時看的是尚未 add 的變更；暫存區的差異要加 --staged。"}]};</script>
+<script>window.PAGE = {"fill": {}, "sim": {"s1": "<b>要忽略。</b>套件資料夾體積大，而且可以由設定檔重新安裝。放進 <code>.gitignore</code>：<code>node_modules/</code>。", "s2": "<b>不要忽略。</b>README 是專案說明，正是要讓別人看到的內容。", "s3": "<b>要忽略，並且還要多做一件事。</b>真實的 <code>.env</code> 放進 <code>.gitignore</code>；另外提交一份只有欄位名稱的 <code>.env.example</code> 讓別人知道要設定什麼。", "s4": "<b>要忽略。</b>建置產物可以由原始碼重新產生，放進去只會讓 diff 變得很吵。通常寫成 <code>dist/</code> 或 <code>build/</code>。"}, "quiz": [{"q": "<code>.gitignore</code> 能讓「已經 commit 過」的檔案自動變成不追蹤嗎？", "a": ["能，加了規則就會自動消失", "不能，要先用 git rm --cached 停止追蹤", "只有重新 clone 才會生效"], "c": 1, "why": "規則只對尚未被追蹤的檔案有效。已追蹤的要先 git rm --cached，而且它仍留在過去的歷史裡。"}, {"q": "規則 <code>*.log</code> 的意思是？", "a": ["只忽略名叫 log 的資料夾", "忽略所有副檔名為 .log 的檔案", "忽略所有檔案"], "c": 1, "why": "* 代表任意字元，所以 *.log 會擋住任何資料夾裡的 .log 檔。"}, {"q": "想查某個檔案是被 <code>.gitignore</code> 的哪一行擋住，用哪個指令？", "a": ["git log", "git check-ignore -v 檔名", "git diff"], "c": 1, "why": "check-ignore -v 會顯示命中的檔案、行號與規則。"}, {"q": "<code>git diff</code>（不加參數）比較的是什麼？", "a": ["已修改但尚未 add 的變更", "最近一次 push 的內容", "暫存區與歷史的差異"], "c": 0, "why": "沒加參數時看的是尚未 add 的變更；暫存區的差異要加 --staged。"}]};</script>
 <script>
 (function () {
   "use strict";

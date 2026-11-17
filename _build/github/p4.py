@@ -146,7 +146,7 @@ practice = section("practice", "動手演練:確認你真的懂了",
     ("https://docs.github.com/en/get-started/git-basics/about-remote-repositories", "關於遠端 repo", "About remote repositories"),
     ("https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent", "產生 SSH 金鑰並加入 ssh-agent", "Generating a new SSH key"),
     ("https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens", "管理 Personal Access Token", "Managing your personal access tokens"),
-    ("https://docs.github.com/en/get-started/git-basics/getting-changes-from-a-remote-repository", "從遠端取得變更", "Getting changes from a remote repository"),
+    ("https://docs.github.com/en/get-started/using-git/getting-changes-from-a-remote-repository", "從遠端取得變更", "Getting changes from a remote repository"),
   ]))
 
 SPEC = dict(

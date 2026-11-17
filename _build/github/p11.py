@@ -168,7 +168,7 @@ practice = section("practice", "動手演練:確認你真的懂了",
           "我了解免費額度會調整,會到帳號的 Billing 頁確認。"]),
   resources([
     ("https://docs.github.com/en/actions/get-started/quickstart", "Actions 快速入門", "Quickstart for GitHub Actions"),
-    ("https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions", "在 Actions 使用 secrets", "Using secrets in GitHub Actions"),
+    ("https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-secrets", "在 Actions 使用 secrets", "Using secrets in GitHub Actions"),
     ("https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site", "設定 Pages 的發佈來源", "Configuring a publishing source for your GitHub Pages site"),
     ("https://docs.github.com/en/billing/concepts/product-billing/github-actions", "Actions 計費", "GitHub Actions billing"),
   ]))

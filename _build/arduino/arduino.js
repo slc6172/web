@@ -79,7 +79,7 @@
         txt = "你點的是 <code>" + h + "</code>,它屬於電源軌。<b>同一條軌上共 " + (mates.length + 1) + " 個孔彼此相通</b>" +
               (split && split.checked ? "(這片麵包板的電源軌在中間斷開,左半與右半不相通)。" : "。") + "把 5V 接到 + 軌、GND 接到 − 軌,之後整排孔都能取用。";
       } else {
-        txt = "你點的是 <code>" + h + "</code>,它和 <code>" + mates.join("、") + "</code> 在內部相通(同一欄的 " + (/[a-e]/.test(h[0]) ? "a–e" : "f–j") + ")。" +
+        txt = "你點的是 <code>" + h + "</code>,它和 <code>" + mates.join("、") + "</code> 在內部相通（同一欄的 " + (/[a-e]/.test(h[0]) ? "a–e" : "f–j") + "）。" +
               "把兩個零件的腳插在這 " + (mates.length + 1) + " 個孔裡,它們就接在一起了。";
       }
       info.innerHTML = txt;
@@ -273,7 +273,7 @@
     function render() {
       var d = +rng.value, t = d * 2 / 0.0343;
       bar.style.width = (d / 400 * 100) + "%";
-      out.innerHTML = "物體在 <b>" + d + " cm</b> 外:聲音來回 <b>" + (d * 2) + " cm</b>,<br>花的時間 = " + (d * 2) + " ÷ 0.0343 ≈ <b>" + Math.round(t) + " 微秒</b>(約 " + (t / 1000).toFixed(2) + " 毫秒)<br>" +
+      out.innerHTML = "物體在 <b>" + d + " cm</b> 外:聲音來回 <b>" + (d * 2) + " cm</b>,<br>花的時間 = " + (d * 2) + " ÷ 0.0343 ≈ <b>" + Math.round(t) + " 微秒</b>（約 " + (t / 1000).toFixed(2) + " 毫秒）<br>" +
         "所以 Echo 腳會維持 HIGH 約 <b>" + Math.round(t) + " 微秒</b>;程式用 <code>duration * 0.0343 / 2</code> 換回 " + d + " cm。" +
         (d < 2 || d > 400 ? "<br><span class=\"calc-bad\">HC-SR04 的有效範圍約 2–400 cm,超出可能不準。</span>" : "");
     }
@@ -289,7 +289,7 @@
       var px = 50 + w / 20000 * 400;   // 20 ms 對應 400 px
       wave.setAttribute("points", "50,110 50,40 " + px + ",40 " + px + ",110 450,110");
       arm.setAttribute("transform", "rotate(" + (-a) + " 400 130)");
-      out.innerHTML = "<code>myServo.write(" + a + ");</code> → 每 20 毫秒送一次脈衝,<b>HIGH 長度約 " + w + " 微秒(" + (w / 1000).toFixed(2) + " 毫秒)</b>。伺服馬達依脈衝寬度轉到對應角度。";
+      out.innerHTML = "<code>myServo.write(" + a + ");</code> → 每 20 毫秒送一次脈衝,<b>HIGH 長度約 " + w + " 微秒（" + (w / 1000).toFixed(2) + " 毫秒）</b>。伺服馬達依脈衝寬度轉到對應角度。";
     }
     rng.addEventListener("input", render); render();
   });

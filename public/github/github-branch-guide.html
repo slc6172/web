@@ -7,13 +7,13 @@
 <meta name="description" content="用 git switch -c 開分支、在上面 commit、切回 main 用 git merge 合進來。">
 <meta name="theme-color" content="#FAF9F5">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='8'%20fill='%23FAF9F5'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='8'%20fill='%23D97757'/%3E%3C/svg%3E">
-<link rel="canonical" href="https://www.slc6172.workers.dev/github/github-branch-guide.html">
+<link rel="canonical" href="https://www.slc6172.workers.dev/github/github-branch-guide">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="zh_TW">
 <meta property="og:site_name" content="自學教學站">
 <meta property="og:title" content="分支、合併與衝突解決：一件事一個分支">
 <meta property="og:description" content="用 git switch -c 開分支、在上面 commit、切回 main 用 git merge 合進來。">
-<meta property="og:url" content="https://www.slc6172.workers.dev/github/github-branch-guide.html">
+<meta property="og:url" content="https://www.slc6172.workers.dev/github/github-branch-guide">
 <meta name="twitter:card" content="summary">
 <style>
   :root {
@@ -326,7 +326,7 @@
 <section id="map">
   <h2>全貌：分出去、做事、合回來</h2>
   <hr class="rule">
-<p class="sub" style="margin-bottom:16px">圖中每個圓是一個 commit。上方是 <code>main</code>,下方是從 C2 分出去的 <code>feature</code>。</p>
+<p class="sub" style="margin-bottom:16px">圖中每個圓是一個 commit。上方是 <code>main</code>，下方是從 C2 分出去的 <code>feature</code>。</p>
 <div class="canvas"><svg viewBox="0 0 900 250" role="img" aria-label="分支與合併：main 上有 C1、C2、C3，從 C2 分出 feature 分支提交 F1、F2，最後合併回 main 成為 M">
       <defs>
         <marker id="ag" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#87867F"/></marker>
@@ -346,7 +346,7 @@
       <circle cx="382" cy="150" r="11" fill="#D97757"/><text x="382" y="154.5" text-anchor="middle" class="nn" fill="#fff">2</text>
       <circle cx="380" cy="60" r="11" fill="#D97757"/><text x="380" y="64.5" text-anchor="middle" class="nn" fill="#fff">3</text>
       <circle cx="600" cy="140" r="11" fill="#788C5D"/><text x="600" y="144.5" text-anchor="middle" class="nn" fill="#fff">4</text>
-      <text x="470" y="226" class="s" fill="#4B5C39">merge:把 feature 的成果合進 main,產生合併 commit M</text>
+      <text x="470" y="226" class="s" fill="#4B5C39">merge：把 feature 的成果合進 main，產生合併 commit M</text>
     </svg></div>
 <ol class="legend" style="list-style:none"><li><span class="n">1</span><span><b>開分支</b>：從 C2 分出一條新線。</span></li><li><span class="n">2</span><span><b>在分支上 commit</b>:F1、F2 只存在 feature 上。</span></li><li><span class="n">3</span><span><b>main 也往前走</b>：別人（或你）在 main 又加了 C3。</span></li><li><span class="n">4</span><span><b>merge</b>:feature 合進 main，產生合併 commit M。</span></li></ol>
 </section>
@@ -366,14 +366,14 @@
 <p class="why">動手前先看位置，是避免「改錯地方」的第一個習慣。以下在你練習用的 repo 資料夾裡執行。</p>
 <div class="cmd"><pre data-tpl>git status
 git branch</pre><button type="button" class="copy">Copy</button></div>
-<div class="see"><b class="l">你會看到</b><code>On branch main</code>;<code>git branch</code> 列出所有本機分支，目前所在的前面有 <code>*</code>。</div>
+<div class="see"><b class="l">你會看到</b><code>On branch main</code>；<code>git branch</code> 列出所有本機分支，目前所在的前面有 <code>*</code>。</div>
 </div></div>
 <div class="step"><div class="num">2</div><div>
 <h3>建立並切換到新分支</h3>
 <p class="why">取一個看得出在做什麼的短名字，不要有空白，用 <code>-</code> 連接。</p>
 <div class="cmd"><pre data-tpl>git switch -c {branch}
 git branch</pre><button type="button" class="copy">Copy</button></div>
-<div class="see"><b class="l">你會看到</b><code>Switched to a new branch '{branch}'</code>;<code>git branch</code> 的 <code>*</code> 移到了新分支上。</div>
+<div class="see"><b class="l">你會看到</b><code>Switched to a new branch '{branch}'</code>；<code>git branch</code> 的 <code>*</code> 移到了新分支上。</div>
 <div class="tip"><b class="l">小技巧</b><code>switch -c</code> 的 <code>c</code> 是 create：建立並切過去。只想切換既有分支時不加 <code>-c</code>。舊版 git（低於 2.23）請用 <code>git checkout -b {branch}</code>。</div>
 </div></div>
 <div class="step"><div class="num">3</div><div>
@@ -390,7 +390,7 @@ git log --oneline -n 3</pre><button type="button" class="copy">Copy</button></di
 <p class="why">切換分支時，資料夾裡的檔案會跟著換成那條分支的樣子。這是理解分支最直觀的一步。</p>
 <div class="cmd"><pre data-tpl>git switch main
 ls</pre><button type="button" class="copy">Copy</button></div>
-<div class="see"><b class="l">你會看到</b>資料夾裡沒有 <code>feature.txt</code>(Windows 的 Git Bash 用 <code>ls</code>,PowerShell 用 <code>dir</code>)。它沒有消失，只是存在另一條分支上。再切回去就會出現。</div>
+<div class="see"><b class="l">你會看到</b>資料夾裡沒有 <code>feature.txt</code>（Windows 的 Git Bash 用 <code>ls</code>,PowerShell 用 <code>dir</code>）。它沒有消失，只是存在另一條分支上。再切回去就會出現。</div>
 </div></div>
 <div class="step"><div class="num">5</div><div>
 <h3>merge：把分支合進 main</h3>
@@ -398,7 +398,7 @@ ls</pre><button type="button" class="copy">Copy</button></div>
 <div class="cmd"><pre data-tpl>git switch main
 git merge {branch}
 git log --oneline -n 3</pre><button type="button" class="copy">Copy</button></div>
-<div class="see"><b class="l">你會看到</b>因為 main 在分出去之後沒有新進度，出現 <code>Fast-forward</code>,<code>feature.txt</code> 出現在 main。log 裡看不到額外的合併 commit。</div>
+<div class="see"><b class="l">你會看到</b>因為 main 在分出去之後沒有新進度，出現 <code>Fast-forward</code>，<code>feature.txt</code> 出現在 main。log 裡看不到額外的合併 commit。</div>
 <div class="tip"><b class="l">小技巧</b>如果 main 之後也有新 commit（像全貌圖那樣），merge 會產生一個新的合併 commit，並請你確認訊息：直接存檔離開即可。</div>
 </div></div>
 <div class="step"><div class="num">6</div><div>
@@ -417,7 +417,7 @@ echo "標題:主線再改一次" &gt; title.txt
 git add title.txt
 git commit -m "main: 再改標題"
 git merge feature-title</pre><button type="button" class="copy">Copy</button></div>
-<div class="see"><b class="l">你會看到</b><code>CONFLICT (content): Merge conflict in title.txt</code>,並顯示 <code>Automatic merge failed; fix conflicts and then commit the result.</code>。<code>git status</code> 會列出 <code>both modified: title.txt</code>。</div>
+<div class="see"><b class="l">你會看到</b><code>CONFLICT (content): Merge conflict in title.txt</code>，並顯示 <code>Automatic merge failed; fix conflicts and then commit the result.</code>。<code>git status</code> 會列出 <code>both modified: title.txt</code>。</div>
 <div class="tip"><b class="l">小技巧</b>這不是壞掉，是 git 在問你：「兩邊都改了這行，你要哪個？」</div>
 </div></div>
 <div class="step"><div class="num">7</div><div>
@@ -429,7 +429,7 @@ git merge feature-title</pre><button type="button" class="copy">Copy</button></d
 標題:分支版本
 &gt;&gt;&gt;&gt;&gt;&gt;&gt; feature-title</pre><button type="button" class="copy">Copy</button></div>
 <div class="table-wrap"><div class="gt g2"><div class="row"><div class="cell head">標記</div><div class="cell head">意思</div></div><div class="row"><div class="cell term"><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code></div><div class="cell">從這行到 <code>=======</code> 是「你現在所在分支」（這裡是 main）的內容。</div></div><div class="row"><div class="cell term"><code>=======</code></div><div class="cell">分隔線。</div></div><div class="row"><div class="cell term"><code>&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature-title</code></div><div class="cell">從分隔線到這行是「要合進來的分支」的內容。</div></div></div></div>
-<ol class="ops"><li>用編輯器打開 <code>title.txt</code>,改成你要的最終內容，例如只留一行 <code>標題:合併後的版本</code>。確認沒有任何 <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>、<code>=======</code>、<code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code> 殘留。</li><li>存檔後，告訴 git 這個檔案解決了，並完成合併。</li></ol>
+<ol class="ops"><li>用編輯器打開 <code>title.txt</code>，改成你要的最終內容，例如只留一行 <code>標題:合併後的版本</code>。確認沒有任何 <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>、<code>=======</code>、<code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code> 殘留。</li><li>存檔後，告訴 git 這個檔案解決了，並完成合併。</li></ol>
 <div class="cmd"><pre data-tpl>git add title.txt
 git commit -m "解決 title.txt 的衝突"
 git log --oneline --graph -n 6</pre><button type="button" class="copy">Copy</button></div>
@@ -442,7 +442,7 @@ git log --oneline --graph -n 6</pre><button type="button" class="copy">Copy</but
 <div class="cmd"><pre data-tpl>git branch -d {branch}
 git branch -d feature-title
 git branch</pre><button type="button" class="copy">Copy</button></div>
-<div class="see"><b class="l">你會看到</b><code>Deleted branch {branch}</code>;<code>git branch</code> 只剩 <code>main</code>。</div>
+<div class="see"><b class="l">你會看到</b><code>Deleted branch {branch}</code>；<code>git branch</code> 只剩 <code>main</code>。</div>
 </div></div>
 </div>
 </section>
@@ -456,7 +456,7 @@ git switch 目標分支
 git stash pop</pre><button type="button" class="copy">Copy</button></div></div></details>
 <details><summary>衝突解到一半，想全部放棄</summary><div class="body"><p>合併還沒完成時，可以整個退回合併前的狀態，什麼都不會損失：</p><div class="cmd"><pre data-tpl>git merge --abort</pre><button type="button" class="copy">Copy</button></div></div></details>
 <details><summary><code>git branch -d</code> 說 “not fully merged”</summary><div class="body"><p>git 認為這條分支還有 commit 沒進到目前分支。如果你確認內容已經合併（例如在 GitHub 上用 Squash and merge,commit 被壓成新的一個，git 認不出來），可以強制刪除：</p><div class="cmd"><pre data-tpl>git branch -D {branch}</pre><button type="button" class="copy">Copy</button></div></div></details>
-<details><summary>我不知道自己現在在哪條分支</summary><div class="body"><p>打 <code>git status</code>,第一行就是答案。也可以用 <code>git branch</code>,有 <code>*</code> 的那條。</p></div></details>
+<details><summary>我不知道自己現在在哪條分支</summary><div class="body"><p>打 <code>git status</code>，第一行就是答案。也可以用 <code>git branch</code>，有 <code>*</code> 的那條。</p></div></details>
 <details><summary>我在 main 上 commit 了本來該在分支做的事</summary><div class="body"><p>commit 還在，先在目前位置開一個分支把它存起來。把 main 拉回與遠端一致的做法，在第 6 篇 Pull Request 的常見卡關有完整步驟。</p><div class="cmd"><pre data-tpl>git branch {branch}</pre><button type="button" class="copy">Copy</button></div></div></details>
 </section>
 
@@ -465,7 +465,7 @@ git stash pop</pre><button type="button" class="copy">Copy</button></div></div><
   <hr class="rule">
 <p class="sub" style="margin-bottom:18px">先選答案再看原因。目的是看懂衝突標記，而不是背指令。</p>
 <div class="panel sim" data-simgroup>
-<h3>情境：你在 main 上執行 <code>git merge feature-title</code>,出現衝突</h3>
+<h3>情境：你在 main 上執行 <code>git merge feature-title</code>，出現衝突</h3>
 <p style="margin:6px 0 0;color:var(--gray-700)">檔案裡 <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code> 與 <code>=======</code> 之間的內容，是誰的？</p>
 <div class="sim-buttons" role="group" aria-label="選擇做法"><button type="button" data-sim="a1">我現在所在分支（main）的版本</button><button type="button" data-sim="a2">feature-title 的版本</button><button type="button" data-sim="a3">兩邊都是我的</button></div>
 <div class="sim-result" aria-live="polite">選一個做法，看看對不對。</div>
@@ -484,7 +484,7 @@ git stash pop</pre><button type="button" class="copy">Copy</button></div></div><
 <div class="bar"><span id="checkBar"></span></div>
 </div>
 <h3 style="margin-top:30px">GitHub 官方文件</h3>
-<div class="resources"><a class="resource" href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/addressing-merge-conflicts/resolving-a-merge-conflict-using-the-command-line" target="_blank" rel="noopener"><b>用指令列解決合併衝突</b><small>Resolving a merge conflict using the command line</small></a><a class="resource" href="https://docs.github.com/en/get-started/using-git/about-git" target="_blank" rel="noopener"><b>關於 Git</b><small>About Git</small></a></div>
+<div class="resources"><a class="resource" href="https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/resolving-a-merge-conflict-using-the-command-line" target="_blank" rel="noopener"><b>用指令列解決合併衝突</b><small>Resolving a merge conflict using the command line</small></a><a class="resource" href="https://docs.github.com/en/get-started/using-git/about-git" target="_blank" rel="noopener"><b>關於 Git</b><small>About Git</small></a></div>
 </section>
 </main>
 </div>

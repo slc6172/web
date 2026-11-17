@@ -7,13 +7,13 @@
 <meta name="description" content="fetch 只更新 origin/main（安全），pull = fetch + merge,push 送你的進度。">
 <meta name="theme-color" content="#FAF9F5">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='8'%20fill='%23FAF9F5'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='8'%20fill='%23D97757'/%3E%3C/svg%3E">
-<link rel="canonical" href="https://www.slc6172.workers.dev/github/github-remote-guide.html">
+<link rel="canonical" href="https://www.slc6172.workers.dev/github/github-remote-guide">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="zh_TW">
 <meta property="og:site_name" content="自學教學站">
 <meta property="og:title" content="遠端與同步：fetch、pull、push 與登入驗證">
 <meta property="og:description" content="fetch 只更新 origin/main（安全），pull = fetch + merge,push 送你的進度。">
-<meta property="og:url" content="https://www.slc6172.workers.dev/github/github-remote-guide.html">
+<meta property="og:url" content="https://www.slc6172.workers.dev/github/github-remote-guide">
 <meta name="twitter:card" content="summary">
 <style>
   :root {
@@ -299,7 +299,7 @@
   <div class="eyebrow">GitHub 入門 · 第 4 篇 · 遠端與同步</div>
   <h1>origin 是你的雲端副本，fetch 看、pull 拿、push 送</h1>
   <p class="sub">push 被拒絕、要求密碼、403、Permission denied，幾乎都出在「同步」或「登入」。這一篇把兩件事一次講清楚：怎麼和雲端保持一致，以及怎麼用瀏覽器授權、token 或 SSH 證明你是你。</p>
-  <div class="tldr"><b>TL;DR</b> <code>fetch</code> 只更新 <code>origin/main</code>（安全），<code>pull</code> = fetch + merge,<code>push</code> 送你的進度。登入不能用密碼：用<strong>瀏覽器授權、Personal Access Token 或 SSH 金鑰</strong>。被拒絕時先 <code>pull</code>,不要 <code>--force</code>。</div>
+  <div class="tldr"><b>TL;DR</b> <code>fetch</code> 只更新 <code>origin/main</code>（安全），<code>pull</code> = fetch + merge,<code>push</code> 送你的進度。登入不能用密碼：用<strong>瀏覽器授權、Personal Access Token 或 SSH 金鑰</strong>。被拒絕時先 <code>pull</code>，不要 <code>--force</code>。</div>
 </header>
 
 <div class="layout">
@@ -319,7 +319,7 @@
   <hr class="rule">
 <div class="panel"><h3>用「雲端共用文件」來想</h3><p>你的電腦上有一份工作副本，GitHub 上有一份雲端版本。兩份要靠三個動作保持一致：<b>fetch</b>（只是看看雲端有什麼新東西）、<b>pull</b>（看，而且直接併進來）、<b>push</b>（把你的新進度送上去）。</p><p style="margin-bottom:0">另一個重點是<b>登入</b>：GitHub 不收帳號密碼，要用瀏覽器授權、Personal Access Token(PAT)或 SSH 金鑰三者之一。</p></div>
 <h3 style="margin-top:26px">五個名詞</h3>
-<div class="table-wrap"><div class="gt g2"><div class="row"><div class="cell head">名詞</div><div class="cell head">白話說明</div></div><div class="row"><div class="cell term">remote</div><div class="cell">遠端：別的地方的那份 repo。<code>git remote -v</code> 可以列出來。</div></div><div class="row"><div class="cell term">origin</div><div class="cell">你 clone 時，git 替來源取的預設名字。</div></div><div class="row"><div class="cell term">origin/main</div><div class="cell">你的電腦記下來的「上次看雲端時，它的 main 長怎樣」。要 fetch 才會更新。</div></div><div class="row"><div class="cell term">fetch / pull</div><div class="cell">fetch 只更新 <code>origin/main</code>,不動你的檔案；pull 是 fetch 再加 merge，會動你的檔案。</div></div><div class="row"><div class="cell term">PAT / SSH</div><div class="cell">兩種證明身分的方式：一串像密碼的 token，或一對金鑰（私鑰留在你電腦，公鑰交給 GitHub）。</div></div></div></div>
+<div class="table-wrap"><div class="gt g2"><div class="row"><div class="cell head">名詞</div><div class="cell head">白話說明</div></div><div class="row"><div class="cell term">remote</div><div class="cell">遠端：別的地方的那份 repo。<code>git remote -v</code> 可以列出來。</div></div><div class="row"><div class="cell term">origin</div><div class="cell">你 clone 時，git 替來源取的預設名字。</div></div><div class="row"><div class="cell term">origin/main</div><div class="cell">你的電腦記下來的「上次看雲端時，它的 main 長怎樣」。要 fetch 才會更新。</div></div><div class="row"><div class="cell term">fetch / pull</div><div class="cell">fetch 只更新 <code>origin/main</code>，不動你的檔案；pull 是 fetch 再加 merge，會動你的檔案。</div></div><div class="row"><div class="cell term">PAT / SSH</div><div class="cell">兩種證明身分的方式：一串像密碼的 token，或一對金鑰（私鑰留在你電腦，公鑰交給 GitHub）。</div></div></div></div>
 </section>
 
 <section id="map">
@@ -352,11 +352,11 @@
       <text x="580" y="102" class="m" fill="#3D3D3A">merge</text>
       <path d="M765,124 C765,205 135,205 135,124" fill="none" stroke="#D97757" stroke-width="2.5" marker-end="url(#ac)"/>
       <circle cx="450" cy="190" r="12" fill="#D97757"/><text x="450" y="194.5" text-anchor="middle" class="nn" fill="#fff">3</text>
-      <text x="470" y="216" class="s" fill="#B85C3E">push:把你的 main 送回雲端</text>
+      <text x="470" y="216" class="s" fill="#B85C3E">push：把你的 main 送回雲端</text>
       <rect x="335" y="140" width="230" height="26" rx="13" fill="#FBF1EC" stroke="#D97757" stroke-width="1"/>
       <text x="450" y="157" text-anchor="middle" class="s" fill="#B85C3E">pull = ① fetch + ② merge</text>
     </svg></div>
-<ol class="legend" style="list-style:none"><li><span class="n">1</span><span><b>fetch</b>:把雲端的新進度抓到 <code>origin/main</code>（不動你的檔案）。</span></li><li><span class="n">2</span><span><b>merge</b>:把 <code>origin/main</code> 併進你的 <code>main</code>。</span></li><li><span class="n">3</span><span><b>push</b>:把你的 <code>main</code> 送到雲端。</span></li><li><span class="n">=</span><span><b>pull</b> 就是 1 加 2 一次做完。</span></li></ol>
+<ol class="legend" style="list-style:none"><li><span class="n">1</span><span><b>fetch</b>：把雲端的新進度抓到 <code>origin/main</code>（不動你的檔案）。</span></li><li><span class="n">2</span><span><b>merge</b>：把 <code>origin/main</code> 併進你的 <code>main</code>。</span></li><li><span class="n">3</span><span><b>push</b>：把你的 <code>main</code> 送到雲端。</span></li><li><span class="n">=</span><span><b>pull</b> 就是 1 加 2 一次做完。</span></li></ol>
 </section>
 
 <section id="fill">
@@ -377,11 +377,11 @@
 </div></div>
 <div class="step"><div class="num">2</div><div>
 <h3>fetch：先看雲端有什麼新東西</h3>
-<p class="why">fetch 很安全，它只是把雲端的新進度抓下來放在 <code>origin/main</code>,不會改動你正在編輯的檔案。</p>
+<p class="why">fetch 很安全，它只是把雲端的新進度抓下來放在 <code>origin/main</code>，不會改動你正在編輯的檔案。</p>
 <div class="cmd"><pre data-tpl>git fetch
 git status
 git log --oneline main..origin/main</pre><button type="button" class="copy">Copy</button></div>
-<div class="see"><b class="l">你會看到</b><code>git status</code> 可能顯示 <code>Your branch is behind 'origin/main' by 2 commits</code>;最後一個指令列出「雲端有、你還沒有」的 commit。沒有新東西時什麼都不會顯示。</div>
+<div class="see"><b class="l">你會看到</b><code>git status</code> 可能顯示 <code>Your branch is behind 'origin/main' by 2 commits</code>；最後一個指令列出「雲端有、你還沒有」的 commit。沒有新東西時什麼都不會顯示。</div>
 </div></div>
 <div class="step"><div class="num">3</div><div>
 <h3>pull：把雲端的新進度併進來</h3>
@@ -393,7 +393,7 @@ git pull</pre><button type="button" class="copy">Copy</button></div>
 </div></div>
 <div class="step"><div class="num">4</div><div>
 <h3>push：把你的 commit 送上去</h3>
-<p class="why">新分支第一次 push 要加 <code>-u</code>,讓 git 記住它對應雲端哪個分支，以後只要打 <code>git push</code>。</p>
+<p class="why">新分支第一次 push 要加 <code>-u</code>，讓 git 記住它對應雲端哪個分支，以後只要打 <code>git push</code>。</p>
 <div class="cmd"><pre data-tpl>git push
 # 新分支的第一次:
 # git push -u origin 分支名稱</pre><button type="button" class="copy">Copy</button></div>
@@ -402,7 +402,7 @@ git pull</pre><button type="button" class="copy">Copy</button></div>
 <div class="step"><div class="num">5</div><div>
 <h3>登入方式 A：瀏覽器授權或 Personal Access Token(HTTPS)</h3>
 <p class="why">網址是 <code>https://</code> 開頭時用這一條。多數新版 Git（Windows、macOS 的標準安裝）附帶 Git Credential Manager，第一次 push 會跳出瀏覽器請你登入並授權，完成後自動記住，這是最省事的做法。</p>
-<ol class="ops"><li>若沒有跳出瀏覽器、而是要求輸入密碼，就要改用 token：到 GitHub 右上角頭像 → <b>Settings</b> → 最底下 <b>Developer settings</b> → <b>Personal access tokens</b>。</li><li>建立一個 <b>Fine-grained token</b>:只選你要用的 repo，權限 <b>Contents</b> 設為 <b>Read and write</b>,設定到期日，按 <b>Generate token</b>。</li><li>把 token 複製起來（只會顯示一次）。下次終端機問 <b>Password</b> 時，貼上 token 當密碼；<b>Username</b> 填你的帳號。</li></ol>
+<ol class="ops"><li>若沒有跳出瀏覽器、而是要求輸入密碼，就要改用 token：到 GitHub 右上角頭像 → <b>Settings</b> → 最底下 <b>Developer settings</b> → <b>Personal access tokens</b>。</li><li>建立一個 <b>Fine-grained token</b>：只選你要用的 repo，權限 <b>Contents</b> 設為 <b>Read and write</b>，設定到期日，按 <b>Generate token</b>。</li><li>把 token 複製起來（只會顯示一次）。下次終端機問 <b>Password</b> 時，貼上 token 當密碼；<b>Username</b> 填你的帳號。</li></ol>
 <div class="warn"><b class="l">安全</b>token 等於密碼。不要貼在聊天、不要寫進程式碼、不要 commit 進 repo（見第 10 篇）。設到期日，不用時就到同一頁撤銷。</div>
 </div></div>
 <div class="step"><div class="num">6</div><div>
@@ -413,7 +413,7 @@ git pull</pre><button type="button" class="copy">Copy</button></div>
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_ed25519
 cat ~/.ssh/id_ed25519.pub</pre><button type="button" class="copy">Copy</button></div>
-<ol class="ops"><li>複製最後一個指令印出的整行內容(<code>ssh-ed25519 …</code> 開頭)。</li><li>GitHub 右上角頭像 → <b>Settings</b> → <b>SSH and GPG keys</b> → <b>New SSH key</b>。</li><li>Title 取個辨識用的名字（例如 my-laptop），Key 貼上剛才複製的內容，按 <b>Add SSH key</b>。</li><li>回終端機測試連線。</li></ol>
+<ol class="ops"><li>複製最後一個指令印出的整行內容（<code>ssh-ed25519 …</code> 開頭）。</li><li>GitHub 右上角頭像 → <b>Settings</b> → <b>SSH and GPG keys</b> → <b>New SSH key</b>。</li><li>Title 取個辨識用的名字（例如 my-laptop），Key 貼上剛才複製的內容，按 <b>Add SSH key</b>。</li><li>回終端機測試連線。</li></ol>
 <div class="cmd"><pre data-tpl>ssh -T git@github.com</pre><button type="button" class="copy">Copy</button></div>
 <div class="see"><b class="l">你會看到</b>第一次會問是否信任主機，輸入 <code>yes</code>。成功時顯示 <code>Hi 你的帳號! You've successfully authenticated, but GitHub does not provide shell access.</code>。這就是成功，不是錯誤。</div>
 <div class="warn"><b class="l">重要</b>只能貼 <code>.pub</code> 結尾的<b>公鑰</b>。沒有 <code>.pub</code> 的那個檔案是私鑰，絕對不能分享、貼上或 commit。</div>
@@ -439,7 +439,7 @@ git push</pre><button type="button" class="copy">Copy</button></div><p>如果 pu
 <details><summary><code>Permission denied (publickey)</code></summary><div class="body"><p>SSH 沒有認出你的金鑰。依序檢查：</p><ol class='ops'><li>公鑰有沒有貼到 GitHub 的 SSH and GPG keys。</li><li><code>ssh-add -l</code> 有沒有列出你的金鑰；沒有就重做步驟 6 的 <code>ssh-add</code>。</li><li>用 <code>ssh -T git@github.com</code> 單獨測試。</li></ol></div></details>
 <details><summary><code>Authentication failed</code> 或一直要求密碼</summary><div class="body"><p>GitHub 不再接受帳號密碼登入 Git。改用步驟 5（瀏覽器授權或 token）或步驟 6(SSH)。貼上 token 時畫面不會顯示字元，這是正常的。</p></div></details>
 <details><summary><code>fatal: refusing to merge unrelated histories</code></summary><div class="body"><p>兩邊的歷史完全沒有共同祖先，常見於「本機 <code>git init</code>、GitHub 上又勾了 README」的情況。確定要把兩邊接起來才加參數：</p><div class="cmd"><pre data-tpl>git pull origin main --allow-unrelated-histories</pre><button type="button" class="copy">Copy</button></div></div></details>
-<details><summary>第一次 pull 出現 <code>hint: You have divergent branches</code></summary><div class="body"><p>git 要你選一種整合方式。依步驟 3 設定 <code>pull.rebase false</code>,再重打 <code>git pull</code>。</p></div></details>
+<details><summary>第一次 pull 出現 <code>hint: You have divergent branches</code></summary><div class="body"><p>git 要你選一種整合方式。依步驟 3 設定 <code>pull.rebase false</code>，再重打 <code>git pull</code>。</p></div></details>
 </section>
 
 <section id="practice">
@@ -466,7 +466,7 @@ git push</pre><button type="button" class="copy">Copy</button></div><p>如果 pu
 <div class="bar"><span id="checkBar"></span></div>
 </div>
 <h3 style="margin-top:30px">GitHub 官方文件</h3>
-<div class="resources"><a class="resource" href="https://docs.github.com/en/get-started/git-basics/about-remote-repositories" target="_blank" rel="noopener"><b>關於遠端 repo</b><small>About remote repositories</small></a><a class="resource" href="https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent" target="_blank" rel="noopener"><b>產生 SSH 金鑰並加入 ssh-agent</b><small>Generating a new SSH key</small></a><a class="resource" href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens" target="_blank" rel="noopener"><b>管理 Personal Access Token</b><small>Managing your personal access tokens</small></a><a class="resource" href="https://docs.github.com/en/get-started/git-basics/getting-changes-from-a-remote-repository" target="_blank" rel="noopener"><b>從遠端取得變更</b><small>Getting changes from a remote repository</small></a></div>
+<div class="resources"><a class="resource" href="https://docs.github.com/en/get-started/git-basics/about-remote-repositories" target="_blank" rel="noopener"><b>關於遠端 repo</b><small>About remote repositories</small></a><a class="resource" href="https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent" target="_blank" rel="noopener"><b>產生 SSH 金鑰並加入 ssh-agent</b><small>Generating a new SSH key</small></a><a class="resource" href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens" target="_blank" rel="noopener"><b>管理 Personal Access Token</b><small>Managing your personal access tokens</small></a><a class="resource" href="https://docs.github.com/en/get-started/using-git/getting-changes-from-a-remote-repository" target="_blank" rel="noopener"><b>從遠端取得變更</b><small>Getting changes from a remote repository</small></a></div>
 </section>
 </main>
 </div>
@@ -479,7 +479,7 @@ git push</pre><button type="button" class="copy">Copy</button></div><p>如果 pu
 </nav>
 </div>
 
-<script>window.PAGE = {"fill": {"me": "your-name", "repo": "hello-world", "email": "you@example.com"}, "sim": {"r1": "<b>先 <code>git pull</code> 再 <code>git push</code>。</b>雲端有你還沒有的 commit，把它併進來之後才能送上去。不要用 <code>--force</code>。", "r2": "<b>先檢查身分與網址。</b>看 <code>git remote -v</code> 是不是你自己的 repo；再看目前登入的是不是正確帳號，必要時清掉舊憑證重新登入。如果是別人的專案，要走 fork。", "r3": "<b>檢查 SSH 金鑰。</b>確認公鑰已加到 GitHub、用 <code>ssh-add</code> 載入了私鑰，再用 <code>ssh -T git@github.com</code> 測試。", "r4": "<b>改用瀏覽器授權或 token，或換成 SSH。</b>GitHub 不接受用帳號密碼登入 Git。"}, "quiz": [{"q": "<code>git fetch</code> 與 <code>git pull</code> 最大的差別是？", "a": ["沒有差別", "fetch 只更新 origin/main，不動你的檔案；pull 還會把它併進你的分支", "fetch 會上傳，pull 會下載"], "c": 1, "why": "pull = fetch + merge。想先看看雲端有什麼，用 fetch 最安全。"}, {"q": "<code>git push</code> 顯示 <code>rejected (fetch first)</code>,正確做法是？", "a": ["加 --force 強制蓋過", "先 git pull 把雲端新進度併進來，再 push", "刪掉 repo 重新 clone"], "c": 1, "why": "強推會洗掉別人的 commit；先整合再送是標準做法。"}, {"q": "SSH 金鑰要貼到 GitHub 的是哪一把？", "a": ["私鑰（沒有 .pub 的那個）", "公鑰（.pub 結尾）", "兩把都要貼"], "c": 1, "why": "私鑰永遠留在你電腦；只有公鑰交給 GitHub。"}, {"q": "<code>git remote -v</code> 看到 <code>git@github.com:…</code> 開頭的網址，代表？", "a": ["這個 remote 用 SSH 連線", "這個 remote 用 HTTPS 連線", "這個 repo 是私人的"], "c": 0, "why": "git@github.com: 開頭是 SSH;https:// 開頭是 HTTPS。"}, {"q": "<code>ssh -T git@github.com</code> 顯示 “successfully authenticated, but GitHub does not provide shell access”,代表？", "a": ["連線成功，身分驗證通過", "連線失敗", "你的金鑰過期了"], "c": 0, "why": "這句話就是成功訊息：GitHub 認得你，只是不提供終端機登入。"}]};</script>
+<script>window.PAGE = {"fill": {"me": "your-name", "repo": "hello-world", "email": "you@example.com"}, "sim": {"r1": "<b>先 <code>git pull</code> 再 <code>git push</code>。</b>雲端有你還沒有的 commit，把它併進來之後才能送上去。不要用 <code>--force</code>。", "r2": "<b>先檢查身分與網址。</b>看 <code>git remote -v</code> 是不是你自己的 repo；再看目前登入的是不是正確帳號，必要時清掉舊憑證重新登入。如果是別人的專案，要走 fork。", "r3": "<b>檢查 SSH 金鑰。</b>確認公鑰已加到 GitHub、用 <code>ssh-add</code> 載入了私鑰，再用 <code>ssh -T git@github.com</code> 測試。", "r4": "<b>改用瀏覽器授權或 token，或換成 SSH。</b>GitHub 不接受用帳號密碼登入 Git。"}, "quiz": [{"q": "<code>git fetch</code> 與 <code>git pull</code> 最大的差別是？", "a": ["沒有差別", "fetch 只更新 origin/main，不動你的檔案；pull 還會把它併進你的分支", "fetch 會上傳，pull 會下載"], "c": 1, "why": "pull = fetch + merge。想先看看雲端有什麼，用 fetch 最安全。"}, {"q": "<code>git push</code> 顯示 <code>rejected (fetch first)</code>，正確做法是？", "a": ["加 --force 強制蓋過", "先 git pull 把雲端新進度併進來，再 push", "刪掉 repo 重新 clone"], "c": 1, "why": "強推會洗掉別人的 commit；先整合再送是標準做法。"}, {"q": "SSH 金鑰要貼到 GitHub 的是哪一把？", "a": ["私鑰（沒有 .pub 的那個）", "公鑰（.pub 結尾）", "兩把都要貼"], "c": 1, "why": "私鑰永遠留在你電腦；只有公鑰交給 GitHub。"}, {"q": "<code>git remote -v</code> 看到 <code>git@github.com:…</code> 開頭的網址，代表？", "a": ["這個 remote 用 SSH 連線", "這個 remote 用 HTTPS 連線", "這個 repo 是私人的"], "c": 0, "why": "git@github.com: 開頭是 SSH;https:// 開頭是 HTTPS。"}, {"q": "<code>ssh -T git@github.com</code> 顯示 “successfully authenticated, but GitHub does not provide shell access”，代表？", "a": ["連線成功，身分驗證通過", "連線失敗", "你的金鑰過期了"], "c": 0, "why": "這句話就是成功訊息：GitHub 認得你，只是不提供終端機登入。"}]};</script>
 <script>
 (function () {
   "use strict";

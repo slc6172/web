@@ -7,7 +7,7 @@ build.py 組頁後呼叫 apply();手寫頁(首頁、github-pr-guide.html)由 _bu
 import re, html as _h, urllib.parse
 
 SITE_URL = "https://www.slc6172.workers.dev"   # 不含結尾斜線;留空 = 略過 canonical / og:url / sitemap
-CLEAN_URLS = False                              # Cloudflare 若把 /x.html 轉成 /x,改成 True(canonical 會去掉 .html)
+CLEAN_URLS = True                               # Cloudflare 會把 /x.html 轉成 /x(已實測),canonical 與 sitemap 用無 .html 版本
 SITE_NAME = "自學教學站"
 THEME_COLOR = "#FAF9F5"
 INDEX_DESC = "繁體中文的單頁自學教學站：GitHub、Arduino、微電影分鏡。每篇都有演練、測驗與檢查表，可離線開啟。"

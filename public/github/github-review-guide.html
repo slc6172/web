@@ -7,13 +7,13 @@
 <meta name="description" content="作者：PR 要小、先自審、說明寫清楚、每則意見都回應。審查者：先讀說明與 Checks、按順序看 diff、意見分必改與建議。">
 <meta name="theme-color" content="#FAF9F5">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='8'%20fill='%23FAF9F5'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='8'%20fill='%23D97757'/%3E%3C/svg%3E">
-<link rel="canonical" href="https://www.slc6172.workers.dev/github/github-review-guide.html">
+<link rel="canonical" href="https://www.slc6172.workers.dev/github/github-review-guide">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="zh_TW">
 <meta property="og:site_name" content="自學教學站">
 <meta property="og:title" content="Code Review 與團隊規範：讓合併進 main 的東西更可靠">
 <meta property="og:description" content="作者：PR 要小、先自審、說明寫清楚、每則意見都回應。審查者：先讀說明與 Checks、按順序看 diff、意見分必改與建議。">
-<meta property="og:url" content="https://www.slc6172.workers.dev/github/github-review-guide.html">
+<meta property="og:url" content="https://www.slc6172.workers.dev/github/github-review-guide">
 <meta name="twitter:card" content="summary">
 <style>
   :root {
@@ -319,7 +319,7 @@
 <section id="what">
   <h2>Code Review：讓第二雙眼睛看過再合併</h2>
   <hr class="rule">
-<div class="panel"><h3>用「出書前的校對」來想</h3><p>作者再仔細也會有盲點。Code Review 就是請另一個人在合併前看一遍：找 bug、問疑問、提改善，也讓專案知識不被單一個人壟斷。它的目的不是挑錯，而是<b>讓合併進 main 的東西更可靠</b>。</p><p style="margin-bottom:0">好的 review 靠兩件事：<b>小而專一的 PR</b>,與<b>具體而友善的意見</b>。團隊規範（規則集、Code Owner、PR 範本）則讓這件事不靠自覺也能執行。</p></div>
+<div class="panel"><h3>用「出書前的校對」來想</h3><p>作者再仔細也會有盲點。Code Review 就是請另一個人在合併前看一遍：找 bug、問疑問、提改善，也讓專案知識不被單一個人壟斷。它的目的不是挑錯，而是<b>讓合併進 main 的東西更可靠</b>。</p><p style="margin-bottom:0">好的 review 靠兩件事：<b>小而專一的 PR</b>，與<b>具體而友善的意見</b>。團隊規範（規則集、Code Owner、PR 範本）則讓這件事不靠自覺也能執行。</p></div>
 <h3 style="margin-top:26px">七個名詞</h3>
 <div class="table-wrap"><div class="gt g2"><div class="row"><div class="cell head">名詞</div><div class="cell head">白話說明</div></div><div class="row"><div class="cell term">Review</div><div class="cell">對一個 PR 送出的整體評語，結論有 Comment / Approve / Request changes 三種。</div></div><div class="row"><div class="cell term">Suggestion</div><div class="cell">留言時直接寫出建議的新內容，作者按一下就能採用。</div></div><div class="row"><div class="cell term">Resolve conversation</div><div class="cell">某則討論處理完畢後標記為已解決。</div></div><div class="row"><div class="cell term">Required approvals</div><div class="cell">規則要求的最少核准人數。沒達到，Merge 按鈕不會放行。</div></div><div class="row"><div class="cell term">Code Owner</div><div class="cell">某些檔案的指定負責人。這些檔案被改動時，會自動請他審查。</div></div><div class="row"><div class="cell term">Ruleset / Branch protection</div><div class="cell">保護重要分支的規則，例如必須經過 PR、必須通過檢查、禁止強制推送。</div></div><div class="row"><div class="cell term">PR template</div><div class="cell">開 PR 時自動預填的說明範本。</div></div></div></div>
 </section>
@@ -352,8 +352,8 @@
       <circle cx="577" cy="20" r="11" fill="#D97757"/><text x="577" y="24.5" text-anchor="middle" class="nn" fill="#fff">1</text>
       <path d="M485,124 C485,185 825,185 825,124" fill="none" stroke="#788C5D" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#ag)"/>
       <circle cx="655" cy="170" r="11" fill="#788C5D"/><text x="655" y="174.5" text-anchor="middle" class="nn" fill="#fff">2</text>
-      <text x="40" y="212" class="s" fill="#B85C3E">① 需要修改就在「審查 ↔ 修改」之間來回,直到沒有未解決的意見</text>
-      <text x="40" y="234" class="s" fill="#4B5C39">② 通過後,還要符合規則(必要核准數、Checks、Code Owner)才能按 Merge</text>
+      <text x="40" y="212" class="s" fill="#B85C3E">① 需要修改就在「審查 ↔ 修改」之間來回，直到沒有未解決的意見</text>
+      <text x="40" y="234" class="s" fill="#4B5C39">② 通過後，還要符合規則（必要核准數、Checks、Code Owner）才能按 Merge</text>
     </svg></div>
 <ol class="legend" style="list-style:none"><li><span class="n">1</span><span><b>審查 ↔ 修改</b>：審查者留意見，作者改完 push,PR 自動更新。<span class="role c">作者</span><span class="role o">審查者</span></span></li><li><span class="n">2</span><span><b>規則放行</b>：核准數、Checks、Code Owner 都滿足，才能 Merge。<span class="role o">審查者</span></span></li></ol>
 </section>
@@ -381,7 +381,7 @@
 <div class="step"><div class="num">2</div><div>
 <h3>送審之前先自己審一遍</h3>
 <p class="why">多數低級問題，作者自己看 Files changed 就能發現。這能大幅減少來回次數。</p>
-<ol class="ops"><li>開 PR 後先點 <b>Files changed</b>,像審查者一樣從頭看。</li><li>找：誤加的檔案、遺留的除錯輸出、註解掉的程式碼、密碼或 token。</li><li>在你覺得不直覺的地方，自己先留一則註解說明為什麼。</li></ol>
+<ol class="ops"><li>開 PR 後先點 <b>Files changed</b>，像審查者一樣從頭看。</li><li>找：誤加的檔案、遺留的除錯輸出、註解掉的程式碼、密碼或 token。</li><li>在你覺得不直覺的地方，自己先留一則註解說明為什麼。</li></ol>
 <div class="warn"><b class="l">重要</b>發現密碼或 token 被 commit 進去，請看第 10 篇，不要只是刪掉再 push。</div>
 </div></div>
 <div class="step"><div class="num">3</div><div>
@@ -398,13 +398,13 @@
 
 ## 想請你特別看
 (例如:第 40 行的邊界條件是否合理)</pre><button type="button" class="copy">Copy</button></div>
-<ol class="ops"><li>還沒做完就先開 <b>Draft pull request</b>,草稿不會被當成可以合併。</li><li>準備好了，在 PR 頁面按 <b>Ready for review</b>。</li></ol>
+<ol class="ops"><li>還沒做完就先開 <b>Draft pull request</b>，草稿不會被當成可以合併。</li><li>準備好了，在 PR 頁面按 <b>Ready for review</b>。</li></ol>
 <div class="see"><b class="l">你會看到</b>PR 頁面狀態從灰色的 Draft 變成 Open，審查者會收到通知。</div>
 </div></div>
 <div class="step"><div class="num">4</div><div>
 <h3>收到意見：回覆、修改、標記解決</h3>
 <p class="why">每一則意見都需要一個回應。同意就改，不同意就禮貌地說明理由。</p>
-<ol class="ops"><li>對方用了 suggestion：在該則留言按 <b>Commit suggestion</b> 一鍵採用。</li><li>需要自己改：在同一個分支修改、commit、<code>git push</code>,PR 會自動更新。</li><li>處理完那則討論，按 <b>Resolve conversation</b>;不同意就留言說明，讓對方決定是否解決。</li></ol>
+<ol class="ops"><li>對方用了 suggestion：在該則留言按 <b>Commit suggestion</b> 一鍵採用。</li><li>需要自己改：在同一個分支修改、commit、<code>git push</code>，PR 會自動更新。</li><li>處理完那則討論，按 <b>Resolve conversation</b>；不同意就留言說明，讓對方決定是否解決。</li></ol>
 <div class="cmd"><pre data-tpl>git add .
 git commit -m "依 review 調整命名"
 git push</pre><button type="button" class="copy">Copy</button></div>
@@ -433,7 +433,7 @@ git push</pre><button type="button" class="copy">Copy</button></div>
 <div class="step"><div class="num">1</div><div>
 <h3>先讀說明和 Checks，再看程式碼</h3>
 <p class="why">知道作者想解決什麼，才能判斷做法對不對。Checks 紅叉時，先請作者處理，不必急著逐行看。</p>
-<ol class="ops"><li>讀標題、說明與連結的 Issue。</li><li>往下看 <b>Checks</b>:綠勾通過、紅叉失敗。</li><li>想不通目的時，先留言問，而不是自己猜。</li></ol>
+<ol class="ops"><li>讀標題、說明與連結的 Issue。</li><li>往下看 <b>Checks</b>：綠勾通過、紅叉失敗。</li><li>想不通目的時，先留言問，而不是自己猜。</li></ol>
 </div></div>
 <div class="step"><div class="num">2</div><div>
 <h3>按好的順序讀 diff</h3>
@@ -444,19 +444,19 @@ git push</pre><button type="button" class="copy">Copy</button></div>
 <div class="step"><div class="num">3</div><div>
 <h3>留言要具體，而且分輕重</h3>
 <p class="why">讓作者一眼看出「哪些非改不可」。把行號、原因和建議寫在同一則留言裡。</p>
-<div class="table-wrap"><div class="gt g3b"><div class="row"><div class="cell head">類型</div><div class="cell head">怎麼寫</div><div class="cell head">範例</div></div><div class="row"><div class="cell term">必改</div><div class="cell">說明問題與原因</div><div class="cell">這裡沒處理 <code>null</code>,使用者沒填時會當掉。</div></div><div class="row"><div class="cell term">建議</div><div class="cell">加上 nit: 前綴，表示可改可不改</div><div class="cell">nit: <code>d</code> 可以改叫 <code>days</code>,比較好讀。</div></div><div class="row"><div class="cell term">疑問</div><div class="cell">用問句，不要預設對方錯</div><div class="cell">這個延遲設 500ms 是有什麼考量嗎？</div></div><div class="row"><div class="cell term">稱讚</div><div class="cell">具體說好在哪</div><div class="cell">這個拆法很清楚，測試也好讀。</div></div></div></div>
+<div class="table-wrap"><div class="gt g3b"><div class="row"><div class="cell head">類型</div><div class="cell head">怎麼寫</div><div class="cell head">範例</div></div><div class="row"><div class="cell term">必改</div><div class="cell">說明問題與原因</div><div class="cell">這裡沒處理 <code>null</code>，使用者沒填時會當掉。</div></div><div class="row"><div class="cell term">建議</div><div class="cell">加上 nit: 前綴，表示可改可不改</div><div class="cell">nit: <code>d</code> 可以改叫 <code>days</code>，比較好讀。</div></div><div class="row"><div class="cell term">疑問</div><div class="cell">用問句，不要預設對方錯</div><div class="cell">這個延遲設 500ms 是有什麼考量嗎？</div></div><div class="row"><div class="cell term">稱讚</div><div class="cell">具體說好在哪</div><div class="cell">這個拆法很清楚，測試也好讀。</div></div></div></div>
 <ol class="ops"><li>在行號旁的 <b>+</b> 留言；簡單修改用 <b>Add a suggestion</b>(±)直接寫出新內容。</li><li>多則意見先用 <b>Start a review</b> / <b>Add review comment</b> 累積，最後一次送出，避免作者被一則一則通知轟炸。</li></ol>
 </div></div>
 <div class="step"><div class="num">4</div><div>
 <h3>送出你的結論</h3>
 <p class="why">看完後，正式告訴作者你的結論。</p>
-<ol class="ops"><li>Files changed 頁右上角按 <b>Review changes</b>,寫一段總結。</li><li>三選一：<b>Comment</b>（只是留言）、<b>Approve</b>（我同意）、<b>Request changes</b>（有必改的問題），按 <b>Submit review</b>。</li></ol>
+<ol class="ops"><li>Files changed 頁右上角按 <b>Review changes</b>，寫一段總結。</li><li>三選一：<b>Comment</b>（只是留言）、<b>Approve</b>（我同意）、<b>Request changes</b>（有必改的問題），按 <b>Submit review</b>。</li></ol>
 <div class="warn"><b class="l">注意</b>只有真的有「必改」的問題才用 Request changes。只是偏好或 nit，用 Comment 或直接 Approve 並附註。</div>
 </div></div>
 <div class="step"><div class="num">5</div><div>
 <h3>作者更新後，再看一次</h3>
 <p class="why">不必重讀全部，看「上次之後改了什麼」就好。</p>
-<ol class="ops"><li>收到更新通知後，點 PR 的 <b>Commits</b> 或 <b>Files changed</b>,只看新的 commit。</li><li>意見處理好了，幫忙或請作者按 <b>Resolve conversation</b>,並改成 <b>Approve</b>。</li></ol>
+<ol class="ops"><li>收到更新通知後，點 PR 的 <b>Commits</b> 或 <b>Files changed</b>，只看新的 commit。</li><li>意見處理好了，幫忙或請作者按 <b>Resolve conversation</b>，並改成 <b>Approve</b>。</li></ol>
 <div class="see"><b class="l">你會看到</b>審查狀態從 <b>Changes requested</b> 變成綠色的 <b>Approved</b>。</div>
 </div></div>
 <div class="step"><div class="num">6</div><div>
@@ -477,7 +477,7 @@ git push</pre><button type="button" class="copy">Copy</button></div>
 <div class="step"><div class="num">1</div><div>
 <h3>放一份 PR 範本</h3>
 <p class="why">每個 PR 一開始就有說明的骨架，作者不用每次自己想要寫什麼。</p>
-<ol class="ops"><li>在 repo 建立檔案 <code>.github/pull_request_template.md</code>,內容用步驟 3 的範本。</li><li>commit 並 push 到預設分支。</li></ol>
+<ol class="ops"><li>在 repo 建立檔案 <code>.github/pull_request_template.md</code>，內容用步驟 3 的範本。</li><li>commit 並 push 到預設分支。</li></ol>
 <div class="see"><b class="l">你會看到</b>之後有人開 PR，說明欄自動出現你的範本。</div>
 </div></div>
 <div class="step"><div class="num">2</div><div>
@@ -494,14 +494,14 @@ git push</pre><button type="button" class="copy">Copy</button></div>
 <div class="step"><div class="num">3</div><div>
 <h3>建立 Ruleset 保護 main</h3>
 <p class="why">把「必須經過審查才能合併」寫成規則，而不是靠大家自覺。Ruleset 是較新的做法，同一個分支可以同時套用多組規則；舊的 Branch protection rule 仍可使用，但官方文件把 ruleset 當作替代方案。</p>
-<ol class="ops"><li>在 repo 頁面進 <b>Settings</b>,左側找到 <b>Rules → Rulesets</b>。</li><li>按 <b>New ruleset → New branch ruleset</b>,取個名字，例如 <code>protect-main</code>。</li><li><b>Enforcement status</b> 選 <b>Active</b>（啟用）。</li><li>目標分支選預設分支（<b>Include default branch</b>）。</li><li>勾選要的規則，常見四項：要求經過 PR 才能合併、設定必要的核准人數、要求 Code Owner 核准、要求狀態檢查（Checks）通過；另外建議勾禁止強制推送。</li><li>按 <b>Create</b>。</li></ol>
+<ol class="ops"><li>在 repo 頁面進 <b>Settings</b>，左側找到 <b>Rules → Rulesets</b>。</li><li>按 <b>New ruleset → New branch ruleset</b>，取個名字，例如 <code>protect-main</code>。</li><li><b>Enforcement status</b> 選 <b>Active</b>（啟用）。</li><li>目標分支選預設分支（<b>Include default branch</b>）。</li><li>勾選要的規則，常見四項：要求經過 PR 才能合併、設定必要的核准人數、要求 Code Owner 核准、要求狀態檢查（Checks）通過；另外建議勾禁止強制推送。</li><li>按 <b>Create</b>。</li></ol>
 <div class="see"><b class="l">你會看到</b>規則集出現在 Rulesets 清單，狀態是 Active。</div>
 <div class="warn"><b class="l">注意</b>規則的確切名稱與選項順序會隨 GitHub 更新而調整，請以畫面上的字為準；設定前建議先在練習用的 repo 試一次。</div>
 </div></div>
 <div class="step"><div class="num">4</div><div>
 <h3>驗證：開一個測試 PR</h3>
 <p class="why">規則有沒有生效，實際試一次最準。</p>
-<ol class="ops"><li>開一個測試 PR，在還沒有核准時看 <b>Merge</b> 按鈕。</li><li>規則生效時，按鈕被擋住，並列出還缺什麼（核准、Checks、Code Owner）。</li><li>也試試直接 <code>git push origin main</code>,應該被拒絕。</li></ol>
+<ol class="ops"><li>開一個測試 PR，在還沒有核准時看 <b>Merge</b> 按鈕。</li><li>規則生效時，按鈕被擋住，並列出還缺什麼（核准、Checks、Code Owner）。</li><li>也試試直接 <code>git push origin main</code>，應該被拒絕。</li></ol>
 <div class="see"><b class="l">你會看到</b>按鈕灰色，畫面寫著需要至少一位核准；直接 push 到 main 顯示被規則拒絕。</div>
 </div></div>
 </div>
@@ -553,7 +553,7 @@ git push</pre><button type="button" class="copy">Copy</button></div>
 <div class="bar"><span id="checkBar"></span></div>
 </div>
 <h3 style="margin-top:30px">GitHub 官方文件</h3>
-<div class="resources"><a class="resource" href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/reviewing-changes-in-pull-requests/reviewing-proposed-changes-in-a-pull-request" target="_blank" rel="noopener"><b>審查 PR 的修改</b><small>Reviewing proposed changes in a pull request</small></a><a class="resource" href="https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/creating-rulesets-for-a-repository" target="_blank" rel="noopener"><b>建立 Ruleset</b><small>Creating rulesets for a repository</small></a><a class="resource" href="https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches" target="_blank" rel="noopener"><b>關於受保護分支</b><small>About protected branches</small></a><a class="resource" href="https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners" target="_blank" rel="noopener"><b>關於 Code Owners</b><small>About code owners</small></a></div>
+<div class="resources"><a class="resource" href="https://docs.github.com/en/pull-requests/how-tos/review-pull-requests/reviewing-proposed-changes-in-a-pull-request" target="_blank" rel="noopener"><b>審查 PR 的修改</b><small>Reviewing proposed changes in a pull request</small></a><a class="resource" href="https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/creating-rulesets-for-a-repository" target="_blank" rel="noopener"><b>建立 Ruleset</b><small>Creating rulesets for a repository</small></a><a class="resource" href="https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches" target="_blank" rel="noopener"><b>關於受保護分支</b><small>About protected branches</small></a><a class="resource" href="https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners" target="_blank" rel="noopener"><b>關於 Code Owners</b><small>About code owners</small></a></div>
 </section>
 </main>
 </div>

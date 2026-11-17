@@ -269,7 +269,7 @@ practice = section("practice", "動手演練:確認你真的懂了",
           '<span class="role o">審查者</span>只有真的看過才 Approve。',
           '團隊已用規則集保護 main,並設定 CODEOWNERS 與 PR 範本。']),
   resources([
-    ("https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/reviewing-changes-in-pull-requests/reviewing-proposed-changes-in-a-pull-request", "審查 PR 的修改", "Reviewing proposed changes in a pull request"),
+    ("https://docs.github.com/en/pull-requests/how-tos/review-pull-requests/reviewing-proposed-changes-in-a-pull-request", "審查 PR 的修改", "Reviewing proposed changes in a pull request"),
     ("https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/creating-rulesets-for-a-repository", "建立 Ruleset", "Creating rulesets for a repository"),
     ("https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches", "關於受保護分支", "About protected branches"),
     ("https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners", "關於 Code Owners", "About code owners"),

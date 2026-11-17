@@ -143,10 +143,10 @@ practice = section("practice", "動手演練:確認你真的懂了",
           "CI 用的金鑰放在 Actions secrets,而不是寫在 workflow 檔。"]),
   resources([
     ("https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository", "移除 repo 中的敏感資料", "Removing sensitive data from a repository"),
-    ("https://docs.github.com/en/code-security/secret-scanning/introduction/about-push-protection", "關於 push protection", "About push protection"),
-    ("https://docs.github.com/en/code-security/dependabot/dependabot-alerts/configuring-dependabot-alerts", "設定 Dependabot alerts", "Configuring Dependabot alerts"),
-    ("https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuring-dependabot-version-updates", "設定 Dependabot 版本更新", "Configuring Dependabot version updates"),
-    ("https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions", "在 Actions 使用 secrets", "Using secrets in GitHub Actions"),
+    ("https://docs.github.com/en/code-security/concepts/secret-security/push-protection", "關於 push protection", "About push protection"),
+    ("https://docs.github.com/en/code-security/how-tos/secure-your-supply-chain/secure-your-dependencies/configure-dependabot-alerts", "設定 Dependabot alerts", "Configuring Dependabot alerts"),
+    ("https://docs.github.com/en/code-security/how-tos/secure-your-supply-chain/secure-your-dependencies/configure-version-updates", "設定 Dependabot 版本更新", "Configuring Dependabot version updates"),
+    ("https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-secrets", "在 Actions 使用 secrets", "Using secrets in GitHub Actions"),
   ]))
 
 SPEC = dict(

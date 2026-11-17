@@ -195,7 +195,7 @@ practice = section("practice", "測驗、檢查表與延伸閱讀",
           "我能在三張接線圖裡找出和原理圖相符的那一張。",
           "我知道原理圖不代表零件在麵包板上的位置。"], "做完之後,對照這張清單"),
   resources([
-    ("https://www.arduino.cc/en/Tutorial/Blink", "Blink 教學(附電路圖與原理圖)", "Blink · circuit and schematic"),
+    ("https://docs.arduino.cc/built-in-examples/basics/Blink/", "Blink 教學(附電路圖與原理圖)", "Blink · circuit and schematic"),
     ("https://docs.arduino.cc/built-in-examples/basics/Blink/", "Blink 內建範例", "Blink (built-in example)"),
   ], "Arduino 官方文件"))
 

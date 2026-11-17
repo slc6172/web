@@ -106,11 +106,11 @@ python3 _build/arduino/arduino_verify.py a03 # Arduino 電路與程式驗證（�
 
 語意色：clay＝焦點／注意／選中；olive＝成功／完成；rust＝危險／失敗；oat＝中性強調；slate＝墨色。字型：h1/h2/h3 與大數字用 serif（weight 500），內文 sans 15px／行高 1.65，eyebrow、標籤、chip、程式碼用 mono。圓角：面板 12、內層 8–10、膠囊 999；邊框 1.5px；不用漸層；陰影只用在「浮起」狀態。容器 `.page` 最大 1100px，`.layout` 為 190px 目錄＋內容，≤920px 折成單欄；斷點 920、720。
 
-**站台層（由 `shared/seo.py` 統一輸出，規格檔不要手寫）**：每頁 `<head>` 有 description、canonical、`og:*`、`twitter:card`、內嵌 SVG favicon（data URI，零外部資源）、`theme-color`；`<body>` 第一個元素是 skip link（`.skip` → `#main`），`<main id="main" tabindex="-1">`。站台網址 `SITE_URL` 只在 `seo.py` 設定一處（目前 `https://www.slc6172.workers.dev`）；留空時略過 canonical、`og:url` 與 sitemap。若發現 Cloudflare 把 `/x.html` 轉成 `/x`，把 `CLEAN_URLS` 改為 `True` 並重跑 `site_files.py`。目前不放 og:image（維持零外部資源）。手寫頁（首頁、`github-pr-guide.html`）由 `site_files.py` 就地套用。
+**站台層（由 `shared/seo.py` 統一輸出，規格檔不要手寫）**：每頁 `<head>` 有 description、canonical、`og:*`、`twitter:card`、內嵌 SVG favicon（data URI，零外部資源）、`theme-color`；`<body>` 第一個元素是 skip link（`.skip` → `#main`），`<main id="main" tabindex="-1">`。站台網址 `SITE_URL` 只在 `seo.py` 設定一處（目前 `https://www.slc6172.workers.dev`）；留空時略過 canonical、`og:url` 與 sitemap。Cloudflare 會把 `/x.html` 轉成 `/x`（已實測），所以 `CLEAN_URLS = True`：canonical、`og:url` 與 sitemap 都用沒有 `.html` 的網址，站內相對連結仍寫 `.html`（兩種都能開）。目前不放 og:image（維持零外部資源）。手寫頁（首頁、`github-pr-guide.html`）由 `site_files.py` 就地套用。
 
 **固定元件與導覽**：頁首 `crumb`（← 回教學首頁，連到 `../index.html#<主題>`）→ eyebrow → h1（標題就是結論）→ `.sub` → `.tldr`；左欄 `nav.toc`；每頁必備複製按鈕、閱讀進度條、TOC 高亮、`details` 常見卡關、測驗（3–6 題）、檢查表；頁尾 `.foot` → `.pager`（上一篇／下一篇，第一頁沒有上一篇、最後一頁沒有下一篇）。**所有共用 CSS 都是從 `public/github/github-pr-guide.html` 的 `<style>` 讀來的**（`build.py` 啟動時讀取），要改共用樣式就改那一頁，再重組各頁；後來補的小型樣式放在 `build.py` 的 `EXTRA`。
 
-**標點**：全站一律全形標點（，。；：（）！？）。三個主題在 `build.py` 的 `THEMES` 都設 `fw=True`，組頁時自動呼叫 `shared/fw.py` 轉換：只轉頁面文字、aria-label 與含中文的 JS 字串，不動 CSS、`<pre>`、`<code>`、程式碼與 SVG；中文後面的 `, : ; ? !`、包著中文的 `( )`、以及「英文／數字／`)` 後面接中文」的 `, : ;` 都會轉。首頁用 `update_index.py` 維護（會自動套用）。寫規格檔時直接寫全形也可以；JS 字串裡含反斜線的不會被轉，請直接寫全形。
+**標點**：全站一律全形標點（，。；：（）！？）。三個主題在 `build.py` 的 `THEMES` 都設 `fw=True`，組頁時自動呼叫 `shared/fw.py` 轉換：只轉頁面文字、aria-label 與含中文的 JS 字串，不動 CSS、`<pre>`、`<code>`、程式碼與 SVG；中文後面的 `, : ; ? !`、包著中文的 `( )`、以及「英文／數字／`)` 後面接中文」的 `, : ;` 都會轉。首頁用 `update_index.py` 維護（會自動套用）。寫規格檔時直接寫全形也可以。補充規則（`fw.py`）：標籤（`</code>`、`</b>`…）後面緊接的 `, : ; ? !`、任何非中文字元後面接中文的 `, : ; ? !`、JS 字串（含 `\n` 跳脫）與 SVG 的 `<title>`／`<text>` 都會轉。**例外（刻意保留）**：只含英文的括號，例如 `(Windows)`、`R1(220Ω)`；程式碼（`<pre>`、`<code>`）內部；範例文字故意寫的半形。`site_files.py` 會對全站再套一次，所以手寫頁也會一致。**跨 JS 字串拆開的括號**（一個字串放 `(`、下一個放 `)`）轉不到，請在原始碼直接寫全形。
 
 ## 7. 重組頁面時要知道的事
 
@@ -133,7 +133,7 @@ python3 _build/arduino/arduino_verify.py a03 # Arduino 電路與程式驗證（�
 
 - `python3 _build/verify.py`：每頁 1280 與 390 寬 `overflow: 0`、`ERRORS: []`。
 - 沒有重複 id、沒有失效的相對連結或 `#錨點`（`verify.py` 會檢查）。
-- 搜尋 `http://`、`https://`：只應出現在官方文件連結與 SVG `xmlns`。
+- 搜尋 `http://`、`https://`：只應出現在官方文件連結、SVG `xmlns`，以及 `<head>` 的 canonical／`og:url`。
 - 子頁沒有 `localStorage`（第 6 節的例外除外）。
 - `verify.py` 的站台層檢查：每頁 meta／canonical／og／favicon／theme-color／skip link／`main#main`、title 與 description 不重複、`sitemap.xml` 與 `public/` 頁面相符、`quick` 每個錨點都存在。
 - **外部連結要實際開啟**（WebFetch 或瀏覽器；shell 通常連不到外網，不能當證據）：結果寫進 `_build/<主題>/reports/link-check.md`（日期、方法、每條狀態）；被轉址的改成最終網址；只拿到頁面外殼的算「無法驗證」，不能寫成已驗證。介面名稱、指令、規格、額度逐項對照官方文件，查證日期在這些做完之後才更新。

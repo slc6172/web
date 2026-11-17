@@ -168,7 +168,7 @@ practice = section("practice", "動手演練與延伸閱讀",
           "我檢查過我的麵包板電源軌中間有沒有斷開。",
           "我完成了 5V → 電阻 → LED → GND 的電路,LED 會亮。"], "做完之後,對照這張清單"),
   resources([
-    ("https://www.arduino.cc/en/Tutorial/Blink", "Blink 教學(含電阻選擇說明)", "Blink · why the resistor matters"),
+    ("https://docs.arduino.cc/built-in-examples/basics/Blink/", "Blink 教學(含電阻選擇說明)", "Blink · why the resistor matters"),
     ("https://docs.arduino.cc/built-in-examples/basics/Blink/", "Blink 內建範例", "Blink (built-in example)"),
   ], "Arduino 官方文件"))
 

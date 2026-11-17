@@ -7,13 +7,13 @@
 <meta name="description" content="Git 在你的電腦上記錄存檔點，GitHub 是把存檔點放上雲端的網站。流程只有四個動作：clone（抓下來）→ add（挑檔案）→ commit（存檔）→ push（送上去）。">
 <meta name="theme-color" content="#FAF9F5">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='8'%20fill='%23FAF9F5'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='8'%20fill='%23D97757'/%3E%3C/svg%3E">
-<link rel="canonical" href="https://www.slc6172.workers.dev/github/github-start-guide.html">
+<link rel="canonical" href="https://www.slc6172.workers.dev/github/github-start-guide">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="zh_TW">
 <meta property="og:site_name" content="自學教學站">
 <meta property="og:title" content="GitHub 是什麼與第一次推送：五個指令就夠">
 <meta property="og:description" content="Git 在你的電腦上記錄存檔點，GitHub 是把存檔點放上雲端的網站。流程只有四個動作：clone（抓下來）→ add（挑檔案）→ commit（存檔）→ push（送上去）。">
-<meta property="og:url" content="https://www.slc6172.workers.dev/github/github-start-guide.html">
+<meta property="og:url" content="https://www.slc6172.workers.dev/github/github-start-guide">
 <meta name="twitter:card" content="summary">
 <style>
   :root {
@@ -358,9 +358,9 @@
       <text x="660" y="102" class="m" fill="#3D3D3A">push</text>
       <path d="M795,124 C795,210 100,210 100,124" fill="none" stroke="#D97757" stroke-width="2.5" marker-end="url(#ac)"/>
       <circle cx="447" cy="190" r="12" fill="#D97757"/><text x="447" y="194.5" text-anchor="middle" class="nn" fill="#fff">4</text>
-      <text x="468" y="214" class="s" fill="#B85C3E">clone:第一次把雲端 repo 抓下來</text>
+      <text x="468" y="214" class="s" fill="#B85C3E">clone：第一次把雲端 repo 抓下來</text>
     </svg></div>
-<ol class="legend" style="list-style:none"><li><span class="n">1</span><span><b>add</b>:把改好的檔案放進暫存區。</span></li><li><span class="n">2</span><span><b>commit</b>:把暫存區的內容存成一個存檔點。</span></li><li><span class="n">3</span><span><b>push</b>:把存檔點送上 GitHub。</span></li><li><span class="n">4</span><span><b>clone</b>:一開始把 GitHub 上的 repo 抓到電腦（只做一次）。</span></li></ol>
+<ol class="legend" style="list-style:none"><li><span class="n">1</span><span><b>add</b>：把改好的檔案放進暫存區。</span></li><li><span class="n">2</span><span><b>commit</b>：把暫存區的內容存成一個存檔點。</span></li><li><span class="n">3</span><span><b>push</b>：把存檔點送上 GitHub。</span></li><li><span class="n">4</span><span><b>clone</b>：一開始把 GitHub 上的 repo 抓到電腦（只做一次）。</span></li></ol>
 </section>
 
 <section id="fill">
@@ -376,7 +376,7 @@
 <div class="step"><div class="num">1</div><div>
 <h3>註冊 GitHub 並安裝 Git</h3>
 <p class="why">GitHub 是網站，Git 是要裝在電腦上的程式，兩個都要有。</p>
-<ol class="ops"><li>到 <code>github.com</code> 按 <b>Sign up</b>,依畫面建立帳號並驗證 email。</li><li>安裝 Git:Windows 到 <code>git-scm.com</code> 下載安裝（預設選項即可，會附帶 Git Bash）；macOS 在終端機打 <code>xcode-select --install</code>;Ubuntu / Debian 打 <code>sudo apt install git</code>。</li><li>開一個終端機（Windows 用 Git Bash），輸入下面指令確認安裝成功。</li></ol>
+<ol class="ops"><li>到 <code>github.com</code> 按 <b>Sign up</b>，依畫面建立帳號並驗證 email。</li><li>安裝 Git:Windows 到 <code>git-scm.com</code> 下載安裝（預設選項即可，會附帶 Git Bash）；macOS 在終端機打 <code>xcode-select --install</code>;Ubuntu / Debian 打 <code>sudo apt install git</code>。</li><li>開一個終端機（Windows 用 Git Bash），輸入下面指令確認安裝成功。</li></ol>
 <div class="cmd"><pre data-tpl>git --version</pre><button type="button" class="copy">Copy</button></div>
 <div class="see"><b class="l">你會看到</b>類似 <code>git version 2.45.0</code> 的一行（數字依你的版本而不同）。</div>
 </div></div>
@@ -393,17 +393,17 @@ git config --global --list</pre><button type="button" class="copy">Copy</button>
 <div class="step"><div class="num">3</div><div>
 <h3>在 GitHub 網頁上建立一個 repo</h3>
 <p class="why">先有雲端的家，才有東西可以 clone 與 push。</p>
-<ol class="ops"><li>登入 GitHub，按右上角的 <b>+</b> → <b>New repository</b>。</li><li><b>Repository name</b> 填 <code data-tpl>{repo}</code>。</li><li>選 <b>Public</b>（公開）或 <b>Private</b>（私人）。練習用哪個都可以。</li><li>勾選 <b>Add a README file</b>,讓 repo 一開始不是空的。</li><li>按 <b>Create repository</b>。</li></ol>
-<div class="see"><b class="l">你會看到</b>跳到 <code data-tpl>github.com/{me}/{repo}</code>,頁面列出一個 <code>README.md</code> 檔案。</div>
+<ol class="ops"><li>登入 GitHub，按右上角的 <b>+</b> → <b>New repository</b>。</li><li><b>Repository name</b> 填 <code data-tpl>{repo}</code>。</li><li>選 <b>Public</b>（公開）或 <b>Private</b>（私人）。練習用哪個都可以。</li><li>勾選 <b>Add a README file</b>，讓 repo 一開始不是空的。</li><li>按 <b>Create repository</b>。</li></ol>
+<div class="see"><b class="l">你會看到</b>跳到 <code data-tpl>github.com/{me}/{repo}</code>，頁面列出一個 <code>README.md</code> 檔案。</div>
 <div class="tip"><b class="l">小技巧</b>新手建議勾 README:repo 不是空的，下一步 clone 最簡單。</div>
 </div></div>
 <div class="step"><div class="num">4</div><div>
 <h3>Clone：把 repo 抓到電腦</h3>
-<p class="why">clone 會把整份 repo 與歷史抓下來，並自動把雲端那份取名 <code>origin</code>,所以你不需要再手動設定遠端。</p>
+<p class="why">clone 會把整份 repo 與歷史抓下來，並自動把雲端那份取名 <code>origin</code>，所以你不需要再手動設定遠端。</p>
 <div class="cmd"><pre data-tpl>git clone https://github.com/{me}/{repo}.git
 cd {repo}
 git status</pre><button type="button" class="copy">Copy</button></div>
-<div class="see"><b class="l">你會看到</b>終端機顯示 <code>Cloning into '{repo}'...</code>;<code>git status</code> 顯示 <code>On branch main</code> 與 <code>Your branch is up to date with 'origin/main'</code>。</div>
+<div class="see"><b class="l">你會看到</b>終端機顯示 <code>Cloning into '{repo}'...</code>；<code>git status</code> 顯示 <code>On branch main</code> 與 <code>Your branch is up to date with 'origin/main'</code>。</div>
 <div class="warn"><b class="l">檢查</b><code>cd {repo}</code> 之後，後面所有 git 指令都要在這個資料夾裡打。</div>
 </div></div>
 <div class="step"><div class="num">5</div><div>
@@ -419,23 +419,23 @@ git status</pre><button type="button" class="copy">Copy</button></div>
 <div class="cmd"><pre data-tpl>git add hello.txt
 git status</pre><button type="button" class="copy">Copy</button></div>
 <div class="see"><b class="l">你會看到</b><code>Changes to be committed:</code> 底下出現 <code>new file: hello.txt</code>（通常是綠色）。</div>
-<div class="tip"><b class="l">小技巧</b><code>git add .</code> 會一次加入全部變更。用之前先看 <code>git status</code>,避免把不該進 repo 的檔案也加進去（見第 2 篇 .gitignore）。</div>
+<div class="tip"><b class="l">小技巧</b><code>git add .</code> 會一次加入全部變更。用之前先看 <code>git status</code>，避免把不該進 repo 的檔案也加進去（見第 2 篇 .gitignore）。</div>
 </div></div>
 <div class="step"><div class="num">7</div><div>
 <h3>commit：存成一個存檔點</h3>
 <p class="why"><code>-m</code> 後面接這次存檔的說明。寫成「改了什麼」，以後翻歷史才看得懂。</p>
 <div class="cmd"><pre data-tpl>git commit -m "新增 hello.txt"
 git log --oneline</pre><button type="button" class="copy">Copy</button></div>
-<div class="see"><b class="l">你會看到</b><code>1 file changed, 1 insertion(+)</code>;<code>git log --oneline</code> 最上面一行是 7 個字元的代號加上你的說明。</div>
-<div class="warn"><b class="l">注意</b>如果畫面跳進一個文字編輯器(忘了 <code>-m</code>)，在 vim 裡按 <code>Esc</code>,輸入 <code>:q!</code> 再按 Enter 離開，然後補上 <code>-m</code> 重打。</div>
+<div class="see"><b class="l">你會看到</b><code>1 file changed, 1 insertion(+)</code>；<code>git log --oneline</code> 最上面一行是 7 個字元的代號加上你的說明。</div>
+<div class="warn"><b class="l">注意</b>如果畫面跳進一個文字編輯器（忘了 <code>-m</code>），在 vim 裡按 <code>Esc</code>，輸入 <code>:q!</code> 再按 Enter 離開，然後補上 <code>-m</code> 重打。</div>
 </div></div>
 <div class="step"><div class="num">8</div><div>
 <h3>push：送上 GitHub</h3>
 <p class="why">到這一步，commit 還只存在你的電腦。push 才會把它送到 GitHub。</p>
 <div class="cmd"><pre data-tpl>git push</pre><button type="button" class="copy">Copy</button></div>
 <ol class="ops"><li>第一次 push 可能要求登入：瀏覽器會跳出授權視窗（Git Credential Manager），照畫面登入即可。</li><li>回到 <code data-tpl>github.com/{me}/{repo}</code> 重新整理頁面。</li></ol>
-<div class="see"><b class="l">你會看到</b>終端機最後幾行有 <code>main -&gt; main</code>;網頁上出現 <code>hello.txt</code>,旁邊顯示你寫的 commit 說明。</div>
-<div class="warn"><b class="l">注意</b>登入時不能用 GitHub 密碼。若終端機要求密碼並顯示 <code>Authentication failed</code>,請看下方「常見卡關」與第 4 篇。</div>
+<div class="see"><b class="l">你會看到</b>終端機最後幾行有 <code>main -&gt; main</code>；網頁上出現 <code>hello.txt</code>，旁邊顯示你寫的 commit 說明。</div>
+<div class="warn"><b class="l">注意</b>登入時不能用 GitHub 密碼。若終端機要求密碼並顯示 <code>Authentication failed</code>，請看下方「常見卡關」與第 4 篇。</div>
 </div></div>
 </div>
 </section>
@@ -444,9 +444,9 @@ git log --oneline</pre><button type="button" class="copy">Copy</button></div>
   <h2>初學者最常卡住的六個地方</h2>
   <hr class="rule">
 <details><summary><code>fatal: not a git repository</code></summary><div class="body"><p>你所在的資料夾不是 repo。用 <code>pwd</code>（Windows 的 Git Bash 也可用）確認位置，<code>cd</code> 進 clone 下來的資料夾再試一次。</p></div></details>
-<details><summary><code>Author identity unknown</code>（commit 失敗）</summary><div class="body"><p>還沒設定 <code>user.name</code> 與 <code>user.email</code>,回到步驟 2 設定，再重打一次 <code>git commit</code>。</p></div></details>
+<details><summary><code>Author identity unknown</code>（commit 失敗）</summary><div class="body"><p>還沒設定 <code>user.name</code> 與 <code>user.email</code>，回到步驟 2 設定，再重打一次 <code>git commit</code>。</p></div></details>
 <details><summary>push 時要求輸入密碼，卻顯示 <code>Authentication failed</code></summary><div class="body"><p>GitHub 已不接受用帳號密碼登入 Git。解法是：使用 Git Credential Manager 的瀏覽器授權，或改用 Personal Access Token 或 SSH 金鑰。設定細節在第 4 篇「遠端與同步」。</p></div></details>
-<details><summary>我的分支叫 <code>master</code>,不是 <code>main</code></summary><div class="body"><p>舊版 Git 的預設分支叫 master。步驟 2 已設定新專案預設用 main。現有專案想改名：</p><div class="cmd"><pre data-tpl>git branch -M main</pre><button type="button" class="copy">Copy</button></div></div></details>
+<details><summary>我的分支叫 <code>master</code>，不是 <code>main</code></summary><div class="body"><p>舊版 Git 的預設分支叫 master。步驟 2 已設定新專案預設用 main。現有專案想改名：</p><div class="cmd"><pre data-tpl>git branch -M main</pre><button type="button" class="copy">Copy</button></div></div></details>
 <details><summary>我已經有一個本機專案，想把它放上 GitHub（不是 clone）</summary><div class="body"><p>先在 GitHub 建一個<b>空的</b> repo（不要勾 README），再在你的專案資料夾裡：</p><div class="cmd"><pre data-tpl>git init
 git add .
 git commit -m "第一次提交"
@@ -480,7 +480,7 @@ git push -u origin main</pre><button type="button" class="copy">Copy</button></d
 <div class="bar"><span id="checkBar"></span></div>
 </div>
 <h3 style="margin-top:30px">GitHub 官方文件</h3>
-<div class="resources"><a class="resource" href="https://docs.github.com/en/get-started/start-your-journey/hello-world" target="_blank" rel="noopener"><b>Hello World</b><small>Hello World 入門</small></a><a class="resource" href="https://docs.github.com/en/get-started/git-basics/set-up-git" target="_blank" rel="noopener"><b>設定 Git</b><small>Set up Git</small></a><a class="resource" href="https://docs.github.com/en/repositories/creating-and-managing-repositories/quickstart-for-repositories" target="_blank" rel="noopener"><b>建立 repo 快速入門</b><small>Quickstart for repositories</small></a><a class="resource" href="https://docs.github.com/en/get-started/git-basics/about-remote-repositories" target="_blank" rel="noopener"><b>關於遠端 repo</b><small>About remote repositories</small></a></div>
+<div class="resources"><a class="resource" href="https://docs.github.com/en/get-started/using-github/hello-world" target="_blank" rel="noopener"><b>Hello World</b><small>Hello World 入門</small></a><a class="resource" href="https://docs.github.com/en/get-started/git-basics/set-up-git" target="_blank" rel="noopener"><b>設定 Git</b><small>Set up Git</small></a><a class="resource" href="https://docs.github.com/en/repositories/creating-and-managing-repositories/quickstart-for-repositories" target="_blank" rel="noopener"><b>建立 repo 快速入門</b><small>Quickstart for repositories</small></a><a class="resource" href="https://docs.github.com/en/get-started/git-basics/about-remote-repositories" target="_blank" rel="noopener"><b>關於遠端 repo</b><small>About remote repositories</small></a></div>
 </section>
 </main>
 </div>

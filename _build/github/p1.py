@@ -160,7 +160,7 @@ practice = section("practice", "動手演練:確認你真的懂了",
           "我 commit 前會先看 <code>git status</code>。",
           "我知道登入 GitHub 不能用密碼,要用授權或 token。"]),
   resources([
-    ("https://docs.github.com/en/get-started/start-your-journey/hello-world", "Hello World", "Hello World 入門"),
+    ("https://docs.github.com/en/get-started/using-github/hello-world", "Hello World", "Hello World 入門"),
     ("https://docs.github.com/en/get-started/git-basics/set-up-git", "設定 Git", "Set up Git"),
     ("https://docs.github.com/en/repositories/creating-and-managing-repositories/quickstart-for-repositories", "建立 repo 快速入門", "Quickstart for repositories"),
     ("https://docs.github.com/en/get-started/git-basics/about-remote-repositories", "關於遠端 repo", "About remote repositories"),

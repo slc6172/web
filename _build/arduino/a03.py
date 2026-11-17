@@ -202,7 +202,7 @@ practice = section("practice", "動手演練:確認你真的懂了",
   resources([
     ("https://docs.arduino.cc/built-in-examples/basics/Blink/", "Blink 內建範例", "Blink (built-in example)"),
     ("https://docs.arduino.cc/language-reference/en/functions/digital-io/digitalwrite/", "digitalWrite()", "Arduino language reference"),
-    ("https://docs.arduino.cc/language-reference/en/functions/digital-io/pinmode/", "pinMode()", "Arduino language reference"),
+    ("https://docs.arduino.cc/language-reference/en/functions/digital-io/pinMode/", "pinMode()", "Arduino language reference"),
     ("https://docs.arduino.cc/language-reference/en/functions/time/delay/", "delay()", "Arduino language reference"),
     ("https://support.arduino.cc/hc/en-us/articles/4733418441116-Upload-a-sketch-in-Arduino-IDE", "在 Arduino IDE 上傳草稿碼", "Upload a sketch in Arduino IDE"),
   ], "Arduino 官方文件"))

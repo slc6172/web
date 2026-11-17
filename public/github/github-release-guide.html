@@ -7,13 +7,13 @@
 <meta name="description" content="版本號 MAJOR.MINOR.PATCH：壞掉舊用法升 MAJOR、新增功能升 MINOR、只修 bug 升 PATCH。">
 <meta name="theme-color" content="#FAF9F5">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='8'%20fill='%23FAF9F5'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='8'%20fill='%23D97757'/%3E%3C/svg%3E">
-<link rel="canonical" href="https://www.slc6172.workers.dev/github/github-release-guide.html">
+<link rel="canonical" href="https://www.slc6172.workers.dev/github/github-release-guide">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="zh_TW">
 <meta property="og:site_name" content="自學教學站">
 <meta property="og:title" content="Release 與版本號：版本號是對使用者的承諾">
 <meta property="og:description" content="版本號 MAJOR.MINOR.PATCH：壞掉舊用法升 MAJOR、新增功能升 MINOR、只修 bug 升 PATCH。">
-<meta property="og:url" content="https://www.slc6172.workers.dev/github/github-release-guide.html">
+<meta property="og:url" content="https://www.slc6172.workers.dev/github/github-release-guide">
 <meta name="twitter:card" content="summary">
 <style>
   :root {
@@ -300,7 +300,7 @@
   <div class="eyebrow">GitHub 入門 · 第 9 篇 · Release 與版本號</div>
   <h1>版本號是對使用者的承諾：用 tag 與 Release 發佈</h1>
   <p class="sub">把做好的成果正式交給使用者：決定版本號、貼上 tag、在 GitHub 上建立有說明與附件的 Release。重點是學會看改動內容決定該升哪一位。</p>
-  <div class="tldr"><b>TL;DR</b> 版本號 <code>MAJOR.MINOR.PATCH</code>:<strong>壞掉舊用法升 MAJOR、新增功能升 MINOR、只修 bug 升 PATCH</strong>。流程是 <code>git tag -a</code> → <code>git push origin 版本號</code> → 在網頁 <b>Draft a new release</b>。</div>
+  <div class="tldr"><b>TL;DR</b> 版本號 <code>MAJOR.MINOR.PATCH</code>：<strong>壞掉舊用法升 MAJOR、新增功能升 MINOR、只修 bug 升 PATCH</strong>。流程是 <code>git tag -a</code> → <code>git push origin 版本號</code> → 在網頁 <b>Draft a new release</b>。</div>
 </header>
 
 <div class="layout">
@@ -319,7 +319,7 @@
 <section id="what">
   <h2>版本號是對使用者的承諾</h2>
   <hr class="rule">
-<div class="panel"><h3>用「書的版次」來想</h3><p>書出了新版，封面會寫第幾版，讀者才知道自己手上的是不是最新、改了什麼。軟體也一樣：<b>tag</b> 是在某個 commit 上貼的書籤(<code>v1.2.0</code>),<b>Release</b> 則是在這個書籤旁邊附上更新說明與可下載的檔案。</p><p style="margin-bottom:0">使用者看到版本號，就能判斷「升級會不會壞掉我的東西」。所以<b>版本號要照規則升</b>。</p></div>
+<div class="panel"><h3>用「書的版次」來想</h3><p>書出了新版，封面會寫第幾版，讀者才知道自己手上的是不是最新、改了什麼。軟體也一樣：<b>tag</b> 是在某個 commit 上貼的書籤（<code>v1.2.0</code>），<b>Release</b> 則是在這個書籤旁邊附上更新說明與可下載的檔案。</p><p style="margin-bottom:0">使用者看到版本號，就能判斷「升級會不會壞掉我的東西」。所以<b>版本號要照規則升</b>。</p></div>
 <h3 style="margin-top:26px">五個名詞</h3>
 <div class="table-wrap"><div class="gt g2"><div class="row"><div class="cell head">名詞</div><div class="cell head">白話說明</div></div><div class="row"><div class="cell term">tag</div><div class="cell">貼在某個 commit 上的固定標記，通常用版本號命名，例如 <code>v1.2.0</code>。</div></div><div class="row"><div class="cell term">lightweight / annotated tag</div><div class="cell">輕量 tag 只是名字；<b>annotated tag</b>(<code>-a</code>)還附有作者、日期與說明，建議用這種。</div></div><div class="row"><div class="cell term">SemVer（語意化版本）</div><div class="cell"><code>MAJOR.MINOR.PATCH</code> 的命名規則，見下圖。</div></div><div class="row"><div class="cell term">Release</div><div class="cell">GitHub 上一頁正式的發佈，連結到一個 tag，可附說明與檔案。</div></div><div class="row"><div class="cell term">Pre-release</div><div class="cell">標示為預覽版：還不穩定，不是給所有人用的。</div></div></div></div>
 </section>
@@ -337,25 +337,25 @@
       <text x="20" y="26" class="s" fill="#87867F">版本號 v2.4.1 的三個數字</text>
       <rect x="20" y="40" width="180" height="90" rx="10" fill="#FBF1EC" stroke="#B04A3F" stroke-width="1.5"/>
       <text x="110" y="82" text-anchor="middle" class="m" fill="#141413">2</text>
-      <text x="110" y="104" text-anchor="middle" class="s" fill="#B04A3F">MAJOR:不相容的改動</text>
+      <text x="110" y="104" text-anchor="middle" class="s" fill="#B04A3F">MAJOR：不相容的改動</text>
       <text x="110" y="121" text-anchor="middle" class="s" fill="#3D3D3A">舊用法可能壞掉</text>
       <rect x="220" y="40" width="180" height="90" rx="10" fill="#F0EEE6" stroke="#3D3D3A" stroke-width="1.5"/>
       <text x="310" y="82" text-anchor="middle" class="m" fill="#141413">4</text>
-      <text x="310" y="104" text-anchor="middle" class="s" fill="#3D3D3A">MINOR:新增功能</text>
+      <text x="310" y="104" text-anchor="middle" class="s" fill="#3D3D3A">MINOR：新增功能</text>
       <text x="310" y="121" text-anchor="middle" class="s" fill="#3D3D3A">舊用法照常能用</text>
       <rect x="420" y="40" width="180" height="90" rx="10" fill="#EEF2E8" stroke="#788C5D" stroke-width="1.5"/>
       <text x="510" y="82" text-anchor="middle" class="m" fill="#141413">1</text>
-      <text x="510" y="104" text-anchor="middle" class="s" fill="#4B5C39">PATCH:修 bug</text>
+      <text x="510" y="104" text-anchor="middle" class="s" fill="#4B5C39">PATCH：修 bug</text>
       <text x="510" y="121" text-anchor="middle" class="s" fill="#3D3D3A">不改任何行為</text>
-      <text x="40" y="168" class="s" fill="#B85C3E">升 MAJOR,後面兩個歸零(2.4.1 → 3.0.0);升 MINOR,PATCH 歸零(2.4.1 → 2.5.0)</text>
+      <text x="40" y="168" class="s" fill="#B85C3E">升 MAJOR，後面兩個歸零（2.4.1 → 3.0.0）；升 MINOR,PATCH 歸零（2.4.1 → 2.5.0）</text>
       <rect x="640" y="40" width="240" height="90" rx="10" fill="#E3DACC" stroke="#3D3D3A" stroke-width="2"/>
       <text x="760" y="76" text-anchor="middle" class="mm" fill="#141413">tag v2.4.1</text>
       <text x="760" y="98" text-anchor="middle" class="s" fill="#3D3D3A">指向某個 commit 的書籤</text>
-      <text x="760" y="116" text-anchor="middle" class="s" fill="#3D3D3A">+ Release:說明與附件</text>
+      <text x="760" y="116" text-anchor="middle" class="s" fill="#3D3D3A">+ Release：說明與附件</text>
       <circle cx="620" cy="85" r="0" fill="none"/>
       <line x1="604" y1="85" x2="636" y2="85" stroke="#87867F" stroke-width="1.5" marker-end="url(#ag)"/>
     </svg></div>
-<ol class="legend" style="list-style:none"><li><span class="n">2</span><span><b>MAJOR</b>:有不相容的改動。使用者升級前必須看說明。</span></li><li><span class="n">4</span><span><b>MINOR</b>:新增功能，舊功能照舊。</span></li><li><span class="n">1</span><span><b>PATCH</b>:只修 bug，行為不變。</span></li></ol>
+<ol class="legend" style="list-style:none"><li><span class="n">2</span><span><b>MAJOR</b>：有不相容的改動。使用者升級前必須看說明。</span></li><li><span class="n">4</span><span><b>MINOR</b>：新增功能，舊功能照舊。</span></li><li><span class="n">1</span><span><b>PATCH</b>：只修 bug，行為不變。</span></li></ol>
 </section>
 
 <section id="fill">
@@ -371,7 +371,7 @@
 <div class="step"><div class="num">1</div><div>
 <h3>先決定這次是哪一種升級</h3>
 <p class="why">版本號不是亂取的。問自己：這次改動，會不會讓<b>舊的用法壞掉</b>？</p>
-<div class="table-wrap"><div class="gt g3"><div class="row"><div class="cell head">這次改了…</div><div class="cell head">升哪一位</div><div class="cell head">例子</div></div><div class="row"><div class="cell term">修 bug、文字更正，行為不變</div><div class="cell">PATCH</div><div class="cell"><code>1.2.3 → 1.2.4</code></div></div><div class="row"><div class="cell term">新增功能，舊功能照常可用</div><div class="cell">MINOR（PATCH 歸零）</div><div class="cell"><code>1.2.4 → 1.3.0</code></div></div><div class="row"><div class="cell term">改了既有用法、移除功能</div><div class="cell">MAJOR（其餘歸零）</div><div class="cell"><code>1.3.0 → 2.0.0</code></div></div><div class="row"><div class="cell term">還在開發、尚未穩定</div><div class="cell"><code>0.x.y</code>,或加上 <code>-beta.1</code> 這類後綴</div><div class="cell"><code>0.9.0</code>、<code>1.0.0-rc.1</code></div></div></div></div>
+<div class="table-wrap"><div class="gt g3"><div class="row"><div class="cell head">這次改了…</div><div class="cell head">升哪一位</div><div class="cell head">例子</div></div><div class="row"><div class="cell term">修 bug、文字更正，行為不變</div><div class="cell">PATCH</div><div class="cell"><code>1.2.3 → 1.2.4</code></div></div><div class="row"><div class="cell term">新增功能，舊功能照常可用</div><div class="cell">MINOR（PATCH 歸零）</div><div class="cell"><code>1.2.4 → 1.3.0</code></div></div><div class="row"><div class="cell term">改了既有用法、移除功能</div><div class="cell">MAJOR（其餘歸零）</div><div class="cell"><code>1.3.0 → 2.0.0</code></div></div><div class="row"><div class="cell term">還在開發、尚未穩定</div><div class="cell"><code>0.x.y</code>，或加上 <code>-beta.1</code> 這類後綴</div><div class="cell"><code>0.9.0</code>、<code>1.0.0-rc.1</code></div></div></div></div>
 <div class="tip"><b class="l">小技巧</b>第一次正式發佈通常從 <code>v1.0.0</code> 開始；還不穩定就先用 <code>v0.1.0</code>。</div>
 </div></div>
 <div class="step"><div class="num">2</div><div>
@@ -390,7 +390,7 @@ git log --oneline -n 3</pre><button type="button" class="copy">Copy</button></di
 <div class="cmd"><pre data-tpl>git tag -a {ver} -m "Release {ver}"
 git tag
 git show {ver} --stat</pre><button type="button" class="copy">Copy</button></div>
-<div class="see"><b class="l">你會看到</b><code>git tag</code> 列出所有 tag，其中有 <code data-tpl>{ver}</code>;<code>git show</code> 顯示 tag 的資訊與它指向的 commit。</div>
+<div class="see"><b class="l">你會看到</b><code>git tag</code> 列出所有 tag，其中有 <code data-tpl>{ver}</code>；<code>git show</code> 顯示 tag 的資訊與它指向的 commit。</div>
 <div class="tip"><b class="l">小技巧</b>貼錯了想刪掉（還沒 push）：<code>git tag -d {ver}</code>。</div>
 </div></div>
 <div class="step"><div class="num">4</div><div>
@@ -404,7 +404,7 @@ git show {ver} --stat</pre><button type="button" class="copy">Copy</button></div
 <div class="step"><div class="num">5</div><div>
 <h3>在網頁上建立 Release</h3>
 <p class="why">tag 只是標記。Release 才是給使用者看的發佈頁。</p>
-<ol class="ops"><li>在 repo 首頁，右側 <b>Releases</b> 區塊點 <b>Releases</b>(或用網址 <code data-tpl>github.com/{me}/{repo}/releases</code>)。</li><li>按 <b>Draft a new release</b>（若是第一次，也可能顯示 <b>Create a new release</b>）。</li><li><b>Choose a tag</b> 下拉選擇剛推上去的 <code data-tpl>{ver}</code>。</li><li><b>Release title</b> 填 <code data-tpl>{ver}</code> 或帶一點說明的標題。</li></ol>
+<ol class="ops"><li>在 repo 首頁，右側 <b>Releases</b> 區塊點 <b>Releases</b>（或用網址 <code data-tpl>github.com/{me}/{repo}/releases</code>）。</li><li>按 <b>Draft a new release</b>（若是第一次，也可能顯示 <b>Create a new release</b>）。</li><li><b>Choose a tag</b> 下拉選擇剛推上去的 <code data-tpl>{ver}</code>。</li><li><b>Release title</b> 填 <code data-tpl>{ver}</code> 或帶一點說明的標題。</li></ol>
 <div class="see"><b class="l">你會看到</b>頁面進入編輯狀態，左上顯示你選的 tag，下方是一個說明編輯框。</div>
 </div></div>
 <div class="step"><div class="num">6</div><div>
@@ -424,7 +424,7 @@ git show {ver} --stat</pre><button type="button" class="copy">Copy</button></div
 <div class="step"><div class="num">7</div><div>
 <h3>選發佈類型、附檔案、發佈</h3>
 <p class="why">Release 有三種常見狀態，依成熟度選。</p>
-<ol class="ops"><li>有要附上的安裝檔或壓縮檔，拖曳到 <b>Attach binaries</b> 的區域。</li><li>還不穩定：勾 <b>Set as a pre-release</b>,標成預覽版。</li><li>正式版：勾 <b>Set as the latest release</b>（不勾的話，GitHub 依版本號決定哪個是最新）。</li><li>還沒寫完：按 <b>Save draft</b> 存成草稿，只有管理者看得到。</li><li>準備好了，按 <b>Publish release</b>。</li></ol>
+<ol class="ops"><li>有要附上的安裝檔或壓縮檔，拖曳到 <b>Attach binaries</b> 的區域。</li><li>還不穩定：勾 <b>Set as a pre-release</b>，標成預覽版。</li><li>正式版：勾 <b>Set as the latest release</b>（不勾的話，GitHub 依版本號決定哪個是最新）。</li><li>還沒寫完：按 <b>Save draft</b> 存成草稿，只有管理者看得到。</li><li>準備好了，按 <b>Publish release</b>。</li></ol>
 <div class="see"><b class="l">你會看到</b>Release 頁面公開，綠色標籤 <b>Latest</b> 或橘色標籤 <b>Pre-release</b>。repo 首頁右側 Releases 區塊顯示最新版本號。</div>
 <div class="warn"><b class="l">提醒</b>GitHub 會自動附上「原始碼的壓縮檔」(Source code .zip / .tar.gz)，不需要自己上傳。若要附編譯好的檔案，才需要在步驟中附檔。</div>
 </div></div>
@@ -446,11 +446,11 @@ git show {ver} --stat</pre><button type="button" class="copy">Copy</button></div
 <section id="gotchas">
   <h2>常見卡關</h2>
   <hr class="rule">
-<details><summary>Release 的 Choose a tag 下拉選單找不到我的 tag</summary><div class="body"><p>多半是 tag 還沒推到 GitHub。用 <code>git push origin 版本號</code> 推上去，重新整理頁面。也可以直接在下拉裡輸入新的版本號並選 <b>Create new tag</b>,這時要再選 <b>Target</b> 是哪個分支。</p></div></details>
+<details><summary>Release 的 Choose a tag 下拉選單找不到我的 tag</summary><div class="body"><p>多半是 tag 還沒推到 GitHub。用 <code>git push origin 版本號</code> 推上去，重新整理頁面。也可以直接在下拉裡輸入新的版本號並選 <b>Create new tag</b>，這時要再選 <b>Target</b> 是哪個分支。</p></div></details>
 <details><summary>tag 貼錯 commit 了</summary><div class="body"><p>如果還沒推上去，<code>git tag -d 版本號</code> 刪掉重打。已經推上去，但還沒對外宣布，先在 GitHub 刪掉那個 Release 與 tag，再重打。已經被人用了，就別動它，發一個新的 PATCH。</p><div class="cmd"><pre data-tpl>git tag -d {ver}
 git push origin --delete {ver}</pre><button type="button" class="copy">Copy</button></div></div></details>
-<details><summary>發佈後發現有 bug</summary><div class="body"><p>不要改已發佈的版本。修好之後發一個新的 PATCH 版(例如 <code>v1.2.4</code>)，說明裡簡短交代修了什麼。</p></div></details>
-<details><summary>我應該用 <code>v1.0.0</code> 還是 <code>1.0.0</code>?</summary><div class="body"><p>兩者都可以。多數專案加前綴 <code>v</code>。重點是<b>全專案保持一致</b>，工具與腳本才不會出錯。</p></div></details>
+<details><summary>發佈後發現有 bug</summary><div class="body"><p>不要改已發佈的版本。修好之後發一個新的 PATCH 版（例如 <code>v1.2.4</code>），說明裡簡短交代修了什麼。</p></div></details>
+<details><summary>我應該用 <code>v1.0.0</code> 還是 <code>1.0.0</code>？</summary><div class="body"><p>兩者都可以。多數專案加前綴 <code>v</code>。重點是<b>全專案保持一致</b>，工具與腳本才不會出錯。</p></div></details>
 <details><summary>可以讓 GitHub 自動發 Release 嗎？</summary><div class="body"><p>可以，用 GitHub Actions 在推上 tag 時自動建立 Release 並附上建置好的檔案，見第 11 篇。</p></div></details>
 </section>
 
@@ -491,7 +491,7 @@ git push origin --delete {ver}</pre><button type="button" class="copy">Copy</but
 </nav>
 </div>
 
-<script>window.PAGE = {"fill": {"me": "your-name", "repo": "hello-world", "ver": "v1.0.0"}, "sim": {"v1": "<b>PATCH:<code>2.4.1 → 2.4.2</code>。</b>只修 bug、行為不變，只升最後一位。", "v2": "<b>MINOR:<code>2.4.1 → 2.5.0</code>。</b>新增功能但舊用法照常，升中間位，PATCH 歸零。", "v3": "<b>MAJOR:<code>2.4.1 → 3.0.0</code>。</b>改了既有用法會讓舊程式壞掉，升第一位，其餘歸零，並在說明裡寫清楚遷移方式。"}, "quiz": [{"q": "新增了一個功能，舊功能完全照常運作。版本號從 2.4.1 該升到？", "a": ["2.4.2", "2.5.0", "3.0.0"], "c": 1, "why": "新增功能升 MINOR,PATCH 歸零。"}, {"q": "<code>git push</code> 之後，tag 會自動上去嗎？", "a": ["會", "不會，要另外 git push origin 版本號", "只有 annotated tag 會"], "c": 1, "why": "tag 要另外推送，或用 --tags 一次推全部。"}, {"q": "Release 與 tag 的關係是？", "a": ["完全一樣", "Release 是建立在 tag 上的發佈頁，可附說明與檔案", "Release 只能手動刪除"], "c": 1, "why": "tag 是標記，Release 是給使用者看的發佈頁。"}, {"q": "發佈 <code>v1.2.3</code> 後發現 bug，正確做法是？", "a": ["修改 v1.2.3 的內容重新發佈", "修好後發 v1.2.4", "刪掉專案"], "c": 1, "why": "已發佈的版本不要變動，用新的 PATCH 版。"}, {"q": "版本還不穩定，想先給願意試用的人，應該？", "a": ["直接發正式版", "勾選 This is a pre-release", "不要發佈"], "c": 1, "why": "Pre-release 公開但標示為預覽版，適合蒐集回饋。"}], "stages": [{"badge": "Draft", "tone": "warn", "label": "草稿", "c": {"h": "只有你看得到", "items": ["可以反覆修改說明、換附件。", "按 <b>Save draft</b> 存起來，晚點再發佈。"]}, "o": {"h": "還沒公開", "items": ["使用者與訂閱的人不會收到通知。", "適合先貼上、請同事看一次說明。"]}}, {"badge": "Pre-release", "tone": "warn", "label": "預覽版", "c": {"h": "勾 This is a pre-release", "items": ["tag 常用 <code>v1.0.0-rc.1</code>、<code>v1.0.0-beta.2</code>。", "公開但標示「預覽」，不會被標成 Latest。"]}, "o": {"h": "蒐集回饋", "items": ["請願意試用的人測試，回報的問題開成 Issue。", "確認穩定了，再發正式版。"]}}, {"badge": "Latest", "tone": "done", "label": "正式版", "c": {"h": "發佈", "items": ["按 <b>Publish release</b>,標上 Latest。", "訂閱 release 通知的人會收到通知。"]}, "o": {"h": "對外承諾", "items": ["說明裡把不相容的改動寫在最前面。", "版本號一旦發佈就不要改；有錯就發新的 PATCH。"]}}]};</script>
+<script>window.PAGE = {"fill": {"me": "your-name", "repo": "hello-world", "ver": "v1.0.0"}, "sim": {"v1": "<b>PATCH:<code>2.4.1 → 2.4.2</code>。</b>只修 bug、行為不變，只升最後一位。", "v2": "<b>MINOR:<code>2.4.1 → 2.5.0</code>。</b>新增功能但舊用法照常，升中間位，PATCH 歸零。", "v3": "<b>MAJOR:<code>2.4.1 → 3.0.0</code>。</b>改了既有用法會讓舊程式壞掉，升第一位，其餘歸零，並在說明裡寫清楚遷移方式。"}, "quiz": [{"q": "新增了一個功能，舊功能完全照常運作。版本號從 2.4.1 該升到？", "a": ["2.4.2", "2.5.0", "3.0.0"], "c": 1, "why": "新增功能升 MINOR,PATCH 歸零。"}, {"q": "<code>git push</code> 之後，tag 會自動上去嗎？", "a": ["會", "不會，要另外 git push origin 版本號", "只有 annotated tag 會"], "c": 1, "why": "tag 要另外推送，或用 --tags 一次推全部。"}, {"q": "Release 與 tag 的關係是？", "a": ["完全一樣", "Release 是建立在 tag 上的發佈頁，可附說明與檔案", "Release 只能手動刪除"], "c": 1, "why": "tag 是標記，Release 是給使用者看的發佈頁。"}, {"q": "發佈 <code>v1.2.3</code> 後發現 bug，正確做法是？", "a": ["修改 v1.2.3 的內容重新發佈", "修好後發 v1.2.4", "刪掉專案"], "c": 1, "why": "已發佈的版本不要變動，用新的 PATCH 版。"}, {"q": "版本還不穩定，想先給願意試用的人，應該？", "a": ["直接發正式版", "勾選 This is a pre-release", "不要發佈"], "c": 1, "why": "Pre-release 公開但標示為預覽版，適合蒐集回饋。"}], "stages": [{"badge": "Draft", "tone": "warn", "label": "草稿", "c": {"h": "只有你看得到", "items": ["可以反覆修改說明、換附件。", "按 <b>Save draft</b> 存起來，晚點再發佈。"]}, "o": {"h": "還沒公開", "items": ["使用者與訂閱的人不會收到通知。", "適合先貼上、請同事看一次說明。"]}}, {"badge": "Pre-release", "tone": "warn", "label": "預覽版", "c": {"h": "勾 This is a pre-release", "items": ["tag 常用 <code>v1.0.0-rc.1</code>、<code>v1.0.0-beta.2</code>。", "公開但標示「預覽」，不會被標成 Latest。"]}, "o": {"h": "蒐集回饋", "items": ["請願意試用的人測試，回報的問題開成 Issue。", "確認穩定了，再發正式版。"]}}, {"badge": "Latest", "tone": "done", "label": "正式版", "c": {"h": "發佈", "items": ["按 <b>Publish release</b>，標上 Latest。", "訂閱 release 通知的人會收到通知。"]}, "o": {"h": "對外承諾", "items": ["說明裡把不相容的改動寫在最前面。", "版本號一旦發佈就不要改；有錯就發新的 PATCH。"]}}]};</script>
 <script>
 (function () {
   "use strict";

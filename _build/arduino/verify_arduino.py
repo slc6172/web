@@ -52,7 +52,7 @@ with sync_playwright() as p:
         # 零元件:沒有外部資源
         html = open(os.path.join(PUB, "arduino", pg), encoding="utf-8").read()
         check("localStorage" not in html and "sessionStorage" not in html, "沒有使用 localStorage/sessionStorage")
-        check(not re.search(r'<(script|link|img)[^>]+(src|href)="https?://', html), "沒有外部 script/link/img")
+        check(not re.search(r'<(script|img)[^>]+src="https?://|<link(?![^>]*rel="canonical")[^>]+href="https?://', html), "沒有外部 script/link/img（canonical 不算資源）")
         # 測驗
         if page.locator("#quizAns button").count():
             page.click("#quizAns button >> nth=1"); check(page.locator("#quizFb.show").count() == 1, "測驗作答後顯示回饋")

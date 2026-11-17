@@ -275,7 +275,7 @@ practice = section("practice", "動手演練與延伸閱讀",
           "我能解釋什麼是彈跳,以及怎麼簡單處理它。"], "做完之後,對照這張清單"),
   resources([
     ("https://docs.arduino.cc/language-reference/en/functions/digital-io/digitalread/", "digitalRead()", "Arduino language reference"),
-    ("https://docs.arduino.cc/language-reference/en/functions/digital-io/pinmode/", "pinMode()(含 INPUT_PULLUP)", "Arduino language reference"),
+    ("https://docs.arduino.cc/language-reference/en/functions/digital-io/pinMode/", "pinMode()(含 INPUT_PULLUP)", "Arduino language reference"),
     ("https://docs.arduino.cc/language-reference/en/structure/control-structure/if/", "if 條件判斷", "Arduino language reference"),
     ("https://docs.arduino.cc/language-reference/en/structure/control-structure/while/", "while 迴圈", "Arduino language reference"),
   ], "Arduino 官方文件"))

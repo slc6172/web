@@ -161,7 +161,7 @@ practice = section("practice", "動手演練:確認你真的懂了",
           "我知道 revert 不能讓已外洩的密碼消失。"]),
   resources([
     ("https://docs.github.com/en/get-started/using-git/about-git", "關於 Git", "About Git"),
-    ("https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/reverting-a-pull-request", "從網頁還原一個 PR", "Reverting a pull request"),
+    ("https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/reverting-a-pull-request", "從網頁還原一個 PR", "Reverting a pull request"),
     ("https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository", "移除 repo 中的敏感資料", "Removing sensitive data from a repository"),
   ]))
 

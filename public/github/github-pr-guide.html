@@ -7,13 +7,13 @@
 <meta name="description" content="PR 是一張「請把我這個分支的修改合併進你的專案」的申請單。發起者要新學的只有 fork、分支、remote、在網頁上開 PR；">
 <meta name="theme-color" content="#FAF9F5">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='8'%20fill='%23FAF9F5'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='8'%20fill='%23D97757'/%3E%3C/svg%3E">
-<link rel="canonical" href="https://www.slc6172.workers.dev/github/github-pr-guide.html">
+<link rel="canonical" href="https://www.slc6172.workers.dev/github/github-pr-guide">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="zh_TW">
 <meta property="og:site_name" content="自學教學站">
 <meta property="og:title" content="Pull Request 新手教學：發起者與擁有者兩種視角">
 <meta property="og:description" content="PR 是一張「請把我這個分支的修改合併進你的專案」的申請單。發起者要新學的只有 fork、分支、remote、在網頁上開 PR；">
-<meta property="og:url" content="https://www.slc6172.workers.dev/github/github-pr-guide.html">
+<meta property="og:url" content="https://www.slc6172.workers.dev/github/github-pr-guide">
 <meta name="twitter:card" content="summary">
 <style>
   :root {
@@ -292,7 +292,7 @@
   <div class="eyebrow">GitHub 入門 · Pull Request</div>
   <h1>把修改交給別人：Pull Request 從零開始</h1>
   <p class="sub">給只會 <code>git add</code>、<code>git commit</code>、<code>git push</code>、<code>git clone</code> 的你。同一件事分兩個視角講：「送出修改的人（發起者）」和「收到修改的人（repo 擁有者）」。每一步都說明為什麼要做、要打什麼、會看到什麼。</p>
-  <div class="tldr"><b>TL;DR</b> PR 是一張「請把我這個分支的修改合併進你的專案」的申請單。發起者要新學的只有 <strong>fork、分支、remote、在網頁上開 PR</strong>;擁有者全程在網頁上看 <strong>Files changed → Review → Merge</strong>,不需要任何新指令。</div>
+  <div class="tldr"><b>TL;DR</b> PR 是一張「請把我這個分支的修改合併進你的專案」的申請單。發起者要新學的只有 <strong>fork、分支、remote、在網頁上開 PR</strong>；擁有者全程在網頁上看 <strong>Files changed → Review → Merge</strong>，不需要任何新指令。</div>
 </header>
 
 <div class="layout">
@@ -316,7 +316,7 @@
   <hr class="rule">
   <div class="panel">
     <h3>用一本共用筆記本來想</h3>
-    <p>別人的專案就像「別人的筆記本」。你沒有權限直接在上面寫字(<code>git push</code> 會被拒絕)。所以流程是：<b>① 影印一份</b>(fork)→ <b>② 在影印本上修改</b>(commit、push)→ <b>③ 附上一張紙條請對方看</b>(Pull Request)→ <b>④ 對方決定要不要貼進原本的筆記本</b>(merge)。</p>
+    <p>別人的專案就像「別人的筆記本」。你沒有權限直接在上面寫字（<code>git push</code> 會被拒絕）。所以流程是：<b>① 影印一份</b>(fork)→ <b>② 在影印本上修改</b>(commit、push)→ <b>③ 附上一張紙條請對方看</b>(Pull Request)→ <b>④ 對方決定要不要貼進原本的筆記本</b>(merge)。</p>
     <p style="margin-bottom:0">所以：<b>PR 不是 git 指令，而是 GitHub 網站的功能</b>。git 負責把你的修改送上 GitHub;「請對方看、討論、同意」這整段是網站在處理。</p>
   </div>
   <h3 style="margin-top:26px">八個會一直出現的名詞</h3>
@@ -371,18 +371,18 @@
       <!-- 4 PR -->
       <path d="M450,120 C450,190 145,190 145,122" fill="none" stroke="#D97757" stroke-width="2.5" marker-end="url(#ac)"/>
       <circle cx="298" cy="170" r="12" fill="#D97757"/><text x="298" y="174.5" text-anchor="middle" class="nn" fill="#fff">4</text>
-      <text x="318" y="198" class="s" fill="#B85C3E">Pull Request:請對方合併</text>
+      <text x="318" y="198" class="s" fill="#B85C3E">Pull Request：請對方合併</text>
       <!-- 5 sync -->
       <path d="M85,120 C85,268 755,268 755,122" fill="none" stroke="#788C5D" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#ao)"/>
       <circle cx="420" cy="237" r="12" fill="#788C5D"/><text x="420" y="241.5" text-anchor="middle" class="nn" fill="#fff">5</text>
-      <text x="440" y="241" class="s" fill="#4B5C39">合併後,把最新 main 同步回來</text>
+      <text x="440" y="241" class="s" fill="#4B5C39">合併後，把最新 main 同步回來</text>
     </svg>
   </div>
   <ol class="legend" style="list-style:none">
-    <li><span class="n">1</span><span><b>Fork</b>:在網頁上複製一份到你的帳號。<span class="role c">發起者</span></span></li>
-    <li><span class="n">2</span><span><b>Clone</b>:把「你的 fork」抓到電腦。<span class="role c">發起者</span></span></li>
-    <li><span class="n">3</span><span><b>Push</b>:改完 commit 後，推到你的 fork 的新分支。<span class="role c">發起者</span></span></li>
-    <li><span class="n">4</span><span><b>開 PR</b>:在網頁上請原作者看並合併；之後擁有者審查、按 Merge。<span class="role c">發起者</span><span class="role o">擁有者</span></span></li>
+    <li><span class="n">1</span><span><b>Fork</b>：在網頁上複製一份到你的帳號。<span class="role c">發起者</span></span></li>
+    <li><span class="n">2</span><span><b>Clone</b>：把「你的 fork」抓到電腦。<span class="role c">發起者</span></span></li>
+    <li><span class="n">3</span><span><b>Push</b>：改完 commit 後，推到你的 fork 的新分支。<span class="role c">發起者</span></span></li>
+    <li><span class="n">4</span><span><b>開 PR</b>：在網頁上請原作者看並合併；之後擁有者審查、按 Merge。<span class="role c">發起者</span><span class="role o">擁有者</span></span></li>
     <li><span class="n k">5</span><span><b>同步</b>：合併後，把原作者最新的 main 拉回你的電腦與 fork。<span class="role c">發起者</span></span></li>
   </ol>
 </section>
@@ -478,7 +478,7 @@ git push -u origin {branch}</pre><button type="button" class="copy">Copy</button
           <li>點右上角的 <b>Fork</b> 按鈕。</li>
           <li>確認 Owner 是你自己的帳號，按 <b>Create fork</b>。</li>
         </ol>
-        <div class="see"><b class="l">你會看到</b>網址變成 <code data-tpl>github.com/{me}/{repo}</code>,專案名稱下方多一行小字 <code>forked from …</code>。</div>
+        <div class="see"><b class="l">你會看到</b>網址變成 <code data-tpl>github.com/{me}/{repo}</code>，專案名稱下方多一行小字 <code>forked from …</code>。</div>
         <div class="tip"><b class="l">注意</b>fork 是網站上的按鈕，不是 git 指令，這一步不用打任何指令。</div>
       </div></div>
 
@@ -487,13 +487,13 @@ git push -u origin {branch}</pre><button type="button" class="copy">Copy</button
         <p class="why">把你剛剛複製的那份抓到電腦上。如果 clone 的是原作者的 repo，之後 push 會因為沒有權限被拒絕。</p>
         <div class="cmd"><pre data-tpl>git clone https://github.com/{me}/{repo}.git
 cd {repo}</pre><button type="button" class="copy">Copy</button></div>
-        <div class="see"><b class="l">你會看到</b>終端機顯示 <code>Cloning into '…'</code>,電腦上多了一個專案資料夾，<code>cd</code> 之後你就在裡面了。</div>
+        <div class="see"><b class="l">你會看到</b>終端機顯示 <code>Cloning into '…'</code>，電腦上多了一個專案資料夾，<code>cd</code> 之後你就在裡面了。</div>
         <div class="warn"><b class="l">檢查</b>網址裡的帳號必須是<b>你自己</b>(<span data-tpl>{me}</span>)，不是原作者。</div>
       </div></div>
 
       <div class="step"><div class="num">3</div><div>
         <h3>把原作者的 repo 登記成 upstream</h3>
-        <p class="why">原作者的專案會持續更新。你需要一條線能把他的最新內容拉下來。git 已經把你的 fork 取名 <code>origin</code>,我們再替原作者取名 <code>upstream</code>。只需要做一次。</p>
+        <p class="why">原作者的專案會持續更新。你需要一條線能把他的最新內容拉下來。git 已經把你的 fork 取名 <code>origin</code>，我們再替原作者取名 <code>upstream</code>。只需要做一次。</p>
         <div class="cmd"><pre data-tpl>git remote add upstream https://github.com/{owner}/{repo}.git
 git remote -v</pre><button type="button" class="copy">Copy</button></div>
         <div class="see"><b class="l">你會看到</b>四行輸出：<code>origin</code> 兩行（指向你的 fork）、<code>upstream</code> 兩行（指向原作者）。</div>
@@ -508,7 +508,7 @@ git remote -v</pre><button type="button" class="copy">Copy</button></div>
         <p class="why">分支是平行的工作線。一個 PR 對應一個分支：你的 <code>main</code> 保持乾淨，也能同時做好幾個 PR 互不影響。分支名稱取成「看得出在做什麼」的短名字。</p>
         <div class="cmd"><pre data-tpl>git switch -c {branch}
 git branch</pre><button type="button" class="copy">Copy</button></div>
-        <div class="see"><b class="l">你會看到</b>輸出 <code data-tpl>Switched to a new branch '{branch}'</code>;<code>git branch</code> 列表中目前分支前面有 <code>*</code>。</div>
+        <div class="see"><b class="l">你會看到</b>輸出 <code data-tpl>Switched to a new branch '{branch}'</code>；<code>git branch</code> 列表中目前分支前面有 <code>*</code>。</div>
         <div class="tip"><b class="l">舊版 git</b>如果 <code>git switch</code> 不能用（git 版本低於 2.23），改打 <code data-tpl>git checkout -b {branch}</code>。</div>
       </div></div>
 
@@ -526,7 +526,7 @@ git commit -m "修正 README 的錯字"</pre><button type="button" class="copy">
         <p class="why"><code>origin</code> 就是你的 fork。<code>-u</code> 的作用是記住「這個本機分支對應 origin 上的哪個分支」，之後在這個分支只要打 <code>git push</code> 就好。</p>
         <div class="cmd"><pre data-tpl>git push -u origin {branch}</pre><button type="button" class="copy">Copy</button></div>
         <div class="see"><b class="l">你會看到</b>最後幾行出現 <code data-tpl>* [new branch]  {branch} -&gt; {branch}</code>。有時還會印出一個「Create a pull request」的網址，點它也能直接進入步驟 7。</div>
-        <div class="warn"><b class="l">檢查</b>是 push 到 <code>origin</code>,不是 <code>upstream</code>（你對 upstream 沒有寫入權限）。</div>
+        <div class="warn"><b class="l">檢查</b>是 push 到 <code>origin</code>，不是 <code>upstream</code>（你對 upstream 沒有寫入權限）。</div>
       </div></div>
 
       <div class="step"><div class="num">7</div><div>
@@ -537,7 +537,7 @@ git commit -m "修正 README 的錯字"</pre><button type="button" class="copy">
           <li>頂端會出現黃色橫幅，點綠色的 <b>Compare &amp; pull request</b>。沒看到的話：<b>Pull requests</b> 分頁 → <b>New pull request</b> → <b>compare across forks</b>。</li>
           <li><b>檢查兩端</b>（下圖）。這是新手最容易填錯的地方。</li>
           <li>填標題與說明（可用下方範本）。</li>
-          <li>按 <b>Create pull request</b>。還沒做完的話，改按旁邊下拉選單的 <b>Create draft pull request</b>,草稿 PR 不會被當成可以合併。</li>
+          <li>按 <b>Create pull request</b>。還沒做完的話，改按旁邊下拉選單的 <b>Create draft pull request</b>，草稿 PR 不會被當成可以合併。</li>
         </ol>
         <div class="pr-mock" role="group" aria-label="開 PR 時 base 與 head 的設定">
           <div class="half base"><div class="t">base · 目的地（對方）</div><div class="r"><i>repository</i><span data-tpl>{owner}/{repo}</span></div><div class="r"><i>branch</i>main</div></div>
@@ -556,7 +556,7 @@ git commit -m "修正 README 的錯字"</pre><button type="button" class="copy">
 
 Closes #12</pre><button type="button" class="copy">Copy</button></div>
         <p class="mock-cap">最後一行 <code>Closes #12</code> 是範例：對應到編號 12 的 issue,PR 合併時會自動把它關閉。沒有對應 issue 就刪掉這行。</p>
-        <div class="see"><b class="l">你會看到</b>跳到 <code data-tpl>github.com/{owner}/{repo}/pull/編號</code>,狀態標籤是 <b>Open</b>。</div>
+        <div class="see"><b class="l">你會看到</b>跳到 <code data-tpl>github.com/{owner}/{repo}/pull/編號</code>，狀態標籤是 <b>Open</b>。</div>
       </div></div>
 
       <div class="step"><div class="num">8</div><div>
@@ -568,7 +568,7 @@ git commit -m "依照 review 調整寫法"
 git push</pre><button type="button" class="copy">Copy</button></div>
         <ol class="ops">
           <li>對方的意見會出現在 PR 的 <b>Conversation</b> 分頁，你會收到 email 通知。</li>
-          <li>想回覆就在該則留言下按 <b>Reply</b>;處理完可按 <b>Resolve conversation</b>。</li>
+          <li>想回覆就在該則留言下按 <b>Reply</b>；處理完可按 <b>Resolve conversation</b>。</li>
           <li>改完後在右側 <b>Reviewers</b> 旁可按重新請求審查的圖示，或直接留言告訴對方「已更新」。</li>
         </ol>
         <div class="see"><b class="l">你會看到</b>新的 commit 自動出現在 PR 的時間軸裡。</div>
@@ -629,7 +629,7 @@ git push origin --delete {branch}    # 刪除 fork 上的分支(也可在 PR 頁
         <p class="why">這裡逐檔列出「改了什麼」：<b style="color:var(--rust)">紅色 −</b> 是被刪掉的，<b style="color:var(--olive)">綠色 +</b> 是新加的。</p>
         <ol class="ops">
           <li>點 <b>Files changed</b> 分頁。</li>
-          <li>把滑鼠移到某一行左邊，會出現藍色 <b>+</b>,點下去就能針對「那一行」留言。</li>
+          <li>把滑鼠移到某一行左邊，會出現藍色 <b>+</b>，點下去就能針對「那一行」留言。</li>
           <li>看完一個檔案，可以勾右上角的 <b>Viewed</b> 幫自己做記號。</li>
         </ol>
         <div class="diff" role="img" aria-label="README.md 的修改範例：recieve 改成 receive">
@@ -661,7 +661,7 @@ git push origin --delete {branch}    # 刪除 fork 上的分支(也可在 PR 頁
 
       <div class="step"><div class="num">5</div><div>
         <h3>（可選）把 PR 拉到自己電腦試跑</h3>
-        <p class="why">想親自跑跑看再決定？GitHub 替每個 PR 準備了一條特殊參照 <code>pull/編號/head</code>,可以直接抓成本機分支，不需要加對方的 remote。以下在你 clone 的 repo 資料夾裡執行。</p>
+        <p class="why">想親自跑跑看再決定？GitHub 替每個 PR 準備了一條特殊參照 <code>pull/編號/head</code>，可以直接抓成本機分支，不需要加對方的 remote。以下在你 clone 的 repo 資料夾裡執行。</p>
         <div class="cmd"><pre data-tpl>git fetch origin pull/{n}/head:pr-{n}
 git switch pr-{n}
 # 測試完畢後回到 main 並刪掉暫時分支
@@ -746,7 +746,7 @@ git pull</pre><button type="button" class="copy">Copy</button></div>
   <details>
     <summary>push 時出現 403 / Permission denied</summary>
     <div class="body">
-      <p>代表你正在 push 到沒有權限的地方，通常是 clone 時選到了原作者的 repo。先看 <code>git remote -v</code>:<code>origin</code> 必須是你自己的 fork。</p>
+      <p>代表你正在 push 到沒有權限的地方，通常是 clone 時選到了原作者的 repo。先看 <code>git remote -v</code>：<code>origin</code> 必須是你自己的 fork。</p>
       <p>如果 <code>origin</code> 指到原作者，先完成步驟 1(fork)，然後把名字換一換：</p>
       <div class="cmd"><pre data-tpl>git remote rename origin upstream
 git remote add origin https://github.com/{me}/{repo}.git
@@ -763,7 +763,7 @@ git push -u origin {branch}</pre><button type="button" class="copy">Copy</button
 git fetch upstream
 git reset --hard upstream/main    # 把 main 拉回與原作者一致
 git switch {branch}</pre><button type="button" class="copy">Copy</button></div>
-      <div class="warn"><b class="l">小心</b><code>reset --hard</code> 會丟掉「尚未 commit」的修改。執行前先打 <code>git status</code>,確認沒有未存的東西。</div>
+      <div class="warn"><b class="l">小心</b><code>reset --hard</code> 會丟掉「尚未 commit」的修改。執行前先打 <code>git status</code>，確認沒有未存的東西。</div>
     </div>
   </details>
 
@@ -789,10 +789,10 @@ git push</pre><button type="button" class="copy">Copy</button></div>
   </details>
 
   <details>
-    <summary>合併後打 <code>git branch -d</code>,卻說 “not fully merged”</summary>
+    <summary>合併後打 <code>git branch -d</code>，卻說 “not fully merged”</summary>
     <div class="body">
-      <p>如果擁有者用了 <b>Squash and merge</b>,你的所有 commit 被壓成一個「新」commit,git 在 main 上認不出你原本那幾個，所以不敢刪。</p>
-      <p>只要你在網頁上確認 PR 已經是 <b>Merged</b>,就可以放心強制刪除：</p>
+      <p>如果擁有者用了 <b>Squash and merge</b>，你的所有 commit 被壓成一個「新」commit,git 在 main 上認不出你原本那幾個，所以不敢刪。</p>
+      <p>只要你在網頁上確認 PR 已經是 <b>Merged</b>，就可以放心強制刪除：</p>
       <div class="cmd"><pre data-tpl>git branch -D {branch}</pre><button type="button" class="copy">Copy</button></div>
     </div>
   </details>
@@ -800,7 +800,7 @@ git push</pre><button type="button" class="copy">Copy</button></div>
   <details>
     <summary>我的 fork 落後原作者很多</summary>
     <div class="body">
-      <p>最簡單：到你 fork 的網頁，按 <b>Sync fork</b> → <b>Update branch</b>,然後在本機 <code>git switch main</code>、<code>git pull</code>。想用指令的話，就是步驟 9 前四行。</p>
+      <p>最簡單：到你 fork 的網頁，按 <b>Sync fork</b> → <b>Update branch</b>，然後在本機 <code>git switch main</code>、<code>git pull</code>。想用指令的話，就是步驟 9 前四行。</p>
       <p>建議：<b>每次要開新分支前</b>，先同步一次 main，再從最新的 main 開分支，可以減少很多衝突。</p>
     </div>
   </details>
@@ -808,7 +808,7 @@ git push</pre><button type="button" class="copy">Copy</button></div>
   <details>
     <summary>我有寫入權限（自己的 repo / 團隊 repo），還需要 fork 嗎？</summary>
     <div class="body">
-      <p>不需要。直接 clone 原 repo，開分支，<code>git push -u origin 分支名</code>,然後在網頁上開 PR,base 是 <code>main</code>、compare 是你的分支。也就是跳過步驟 1 與 3，其他一樣。</p>
+      <p>不需要。直接 clone 原 repo，開分支，<code>git push -u origin 分支名</code>，然後在網頁上開 PR,base 是 <code>main</code>、compare 是你的分支。也就是跳過步驟 1 與 3，其他一樣。</p>
     </div>
   </details>
 
@@ -829,7 +829,7 @@ git push</pre><button type="button" class="copy">Copy</button></div>
             <li><b>盡快回一句</b>：就算還沒空審，先說「收到了」，對方會安心很多。</li>
             <li><b>意見要具體</b>：指出行號與建議的寫法。</li>
             <li><b>分清必改與建議</b>：必改用 Request changes，其他用 Comment。</li>
-            <li><b>善用「允許維護者編輯」</b>：若發起者勾選了 <b>Allow edits by maintainers</b>,小問題你可以直接幫他改。</li>
+            <li><b>善用「允許維護者編輯」</b>：若發起者勾選了 <b>Allow edits by maintainers</b>，小問題你可以直接幫他改。</li>
             <li><b>不合併也要說明原因</b>，並感謝對方花時間。</li>
           </ul></div>
       </div>
@@ -879,7 +879,7 @@ git push</pre><button type="button" class="copy">Copy</button></div>
     <div class="checks" id="checks">
       <label class="check-item"><input type="checkbox"><span><span class="role c">發起者</span>我知道自己有沒有寫入權限，所以知道要不要 fork。</span></label>
       <label class="check-item"><input type="checkbox"><span><span class="role c">發起者</span>我不是在 main 上改，而是在新分支上。</span></label>
-      <label class="check-item"><input type="checkbox"><span><span class="role c">發起者</span>push 前我看過 <code>git status</code>,沒有誤加檔案。</span></label>
+      <label class="check-item"><input type="checkbox"><span><span class="role c">發起者</span>push 前我看過 <code>git status</code>，沒有誤加檔案。</span></label>
       <label class="check-item"><input type="checkbox"><span><span class="role c">發起者</span>開 PR 時我確認過 base 是對方的 main、head 是我的分支。</span></label>
       <label class="check-item"><input type="checkbox"><span><span class="role c">發起者</span>PR 說明寫了做什麼、為什麼、怎麼確認。</span></label>
       <label class="check-item"><input type="checkbox"><span><span class="role c">發起者</span>收到意見後，我知道要回同一個分支再 push。</span></label>
@@ -896,7 +896,7 @@ git push</pre><button type="button" class="copy">Copy</button></div>
   <div class="resources">
     <a class="resource" href="https://docs.github.com/en/pull-requests/how-tos/create-pull-requests/creating-a-pull-request" target="_blank" rel="noopener"><b>建立 Pull Request</b><small>Creating a pull request</small></a>
     <a class="resource" href="https://docs.github.com/en/pull-requests/how-tos/create-pull-requests/creating-a-pull-request-from-a-fork" target="_blank" rel="noopener"><b>從 Fork 建立 PR</b><small>Creating a pull request from a fork</small></a>
-    <a class="resource" href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/reviewing-changes-in-pull-requests/reviewing-proposed-changes-in-a-pull-request" target="_blank" rel="noopener"><b>審查 PR 的修改</b><small>Reviewing proposed changes</small></a>
+    <a class="resource" href="https://docs.github.com/en/pull-requests/how-tos/review-pull-requests/reviewing-proposed-changes-in-a-pull-request" target="_blank" rel="noopener"><b>審查 PR 的修改</b><small>Reviewing proposed changes</small></a>
     <a class="resource" href="https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/merging-a-pull-request" target="_blank" rel="noopener"><b>合併 PR</b><small>Merging a pull request</small></a>
   </div>
 </section>
@@ -1051,21 +1051,21 @@ git push</pre><button type="button" class="copy">Copy</button></div>
     { badge:"Review", tone:"ok", label:"審查中",
       c:{ h:"等待對方回應", items:[
         "對方留言時你會收到通知，到 <b>Conversation</b> 分頁閱讀。",
-        "不懂就直接 <b>Reply</b>,不用不好意思。",
+        "不懂就直接 <b>Reply</b>，不用不好意思。",
         "還沒被要求修改時，保持不動就好。"] },
       o:{ h:"閱讀與留言", items:[
         "切到 <b>Files changed</b> 逐檔閱讀，在行號旁的 <b>+</b> 留言。",
         "需要時把 PR 拉到本機試跑（擁有者步驟 5）。",
-        "看完按 <b>Review changes</b>,選 Comment / Approve / Request changes。"] } },
+        "看完按 <b>Review changes</b>，選 Comment / Approve / Request changes。"] } },
     { badge:"Changes requested", tone:"warn", label:"要求修改",
       c:{ h:"回到電腦修改", items:[
-        "PR 上出現 <b>Changes requested</b>,讀完對方的意見。",
+        "PR 上出現 <b>Changes requested</b>，讀完對方的意見。",
         "留在<b>同一個分支</b>：修改 → <code>git add</code> → <code>git commit</code> → <code>git push</code>。",
-        "<b>不要重開 PR</b>,新 commit 會自動出現在同一個 PR 裡。",
+        "<b>不要重開 PR</b>，新 commit 會自動出現在同一個 PR 裡。",
         "改完留言告知，或按重新請求審查的圖示。"] },
       o:{ h:"等待對方更新", items:[
         "不需要做什麼，等對方 push 新的 commit。",
-        "收到通知後回到 <b>Files changed</b>,確認意見是否已被處理。",
+        "收到通知後回到 <b>Files changed</b>，確認意見是否已被處理。",
         "沒問題就再按 <b>Review changes → Approve</b>。"] } },
     { badge:"Approved", tone:"ok", label:"審查通過",
       c:{ h:"等待合併", items:[
@@ -1073,10 +1073,10 @@ git push</pre><button type="button" class="copy">Copy</button></div>
         "通常合併按鈕在擁有者手上，你等待即可；只有專案給你合併權限時，你才會看到 Merge 按鈕。"] },
       o:{ h:"準備合併", items:[
         "確認 Checks 是綠勾，而且沒有衝突。",
-        "準備按 <b>Merge pull request</b>,並選擇合併方式。"] } },
+        "準備按 <b>Merge pull request</b>，並選擇合併方式。"] } },
     { badge:"Merged", tone:"done", label:"已合併",
       c:{ h:"收尾與同步", items:[
-        "看到 <b>Merged</b>:你的修改正式進入原作者的 main。",
+        "看到 <b>Merged</b>：你的修改正式進入原作者的 main。",
         "回電腦同步 main、刪掉用完的分支（發起者步驟 9）。",
         "想再貢獻？從同步後的 main 開新分支，送一個新的 PR。"] },
       o:{ h:"按下合併並清理", items:[

@@ -2,6 +2,7 @@
 robots.txt、sitemap.xml、_headers。
 
 用法(repo 根目錄):  python3 _build/site_files.py
+  - 順便對所有頁面再套一次 fw.apply(全形標點,冪等),手寫頁(github-pr-guide.html)也會一致。
   - build.py 組出來的頁面本來就會套用;這支負責手寫頁(index.html、github-pr-guide.html)
     與既有頁面的就地補強,並重新產生 sitemap.xml。
   - 新增主題或改了 shared/seo.py 的 SITE_URL 後,重跑一次即可。
@@ -9,7 +10,7 @@ robots.txt、sitemap.xml、_headers。
 import os, sys, glob
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, "shared"))
-import seo
+import seo, fw
 
 PUB = os.path.join(os.path.dirname(HERE), "public")
 
@@ -27,7 +28,7 @@ def main():
     for rel in ps:
         p = os.path.join(PUB, rel)
         h = open(p, encoding="utf-8").read()
-        new = seo.apply(h, rel)
+        new = seo.apply(fw.apply(h), rel)   # 先全形標點(冪等),再補站台層
         if new != h:
             open(p, "w", encoding="utf-8").write(new)
             n += 1

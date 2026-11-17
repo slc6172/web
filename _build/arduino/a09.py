@@ -245,9 +245,9 @@ practice = section("practice", "動手演練與延伸閱讀",
           "我的旋鈕能控制 LED 亮度,並知道 <code>map()</code> 做什麼。",
           "我知道 A0 不接東西會讀到雜訊(浮接)。"], "做完之後,對照這張清單"),
   resources([
-    ("https://docs.arduino.cc/language-reference/en/functions/analog-io/analogread/", "analogRead()", "Arduino language reference"),
+    ("https://docs.arduino.cc/language-reference/en/functions/analog-io/analogRead/", "analogRead()", "Arduino language reference"),
     ("https://docs.arduino.cc/language-reference/en/functions/math/map/", "map()", "Arduino language reference"),
-    ("https://docs.arduino.cc/language-reference/en/functions/analog-io/analogwrite/", "analogWrite()", "Arduino language reference"),
+    ("https://docs.arduino.cc/language-reference/en/functions/analog-io/analogWrite/", "analogWrite()", "Arduino language reference"),
   ], "Arduino 官方文件"))
 
 SPEC = dict(

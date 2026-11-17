@@ -234,7 +234,7 @@ practice = section("practice", "動手演練與延伸閱讀",
           "我的蜂鳴器能「嗶嗶嗶」三聲。",
           "我知道蜂鳴器也有方向(+ 腳),並且前面串了電阻。"], "做完之後,對照這張清單"),
   resources([
-    ("https://docs.arduino.cc/language-reference/en/functions/analog-io/analogwrite/", "analogWrite()", "Arduino language reference"),
+    ("https://docs.arduino.cc/language-reference/en/functions/analog-io/analogWrite/", "analogWrite()", "Arduino language reference"),
     ("https://docs.arduino.cc/language-reference/en/functions/advanced-io/tone/", "tone()", "Arduino language reference"),
     ("https://docs.arduino.cc/language-reference/en/functions/digital-io/digitalwrite/", "digitalWrite()", "Arduino language reference"),
   ], "Arduino 官方文件"))

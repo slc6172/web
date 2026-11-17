@@ -209,7 +209,7 @@ practice = section("practice", "動手演練與延伸閱讀",
           "我知道 SPI 的腳位:11 = MOSI、13 = SCK,10 = SS。"], "做完之後,對照這張清單"),
   resources([
     ("https://docs.arduino.cc/language-reference/en/functions/communication/wire/", "Wire(I2C)", "Arduino language reference"),
-    ("https://docs.arduino.cc/language-reference/en/functions/communication/spi/", "SPI", "Arduino language reference"),
+    ("https://docs.arduino.cc/language-reference/en/functions/communication/SPI/", "SPI", "Arduino language reference"),
     ("https://docs.arduino.cc/tutorials/communication/guide-to-shift-out/", "移位暫存器入門(shiftOut)", "A guide to shiftOut"),
   ], "Arduino 官方文件"))
 

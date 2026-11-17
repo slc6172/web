@@ -7,13 +7,13 @@
 <meta name="description" content="先斷電、再縮小範圍：上傳 Blink 確認「IDE → USB → 板子」是通的，然後一次只測一組零件。編譯錯誤先看第一條紅字。零件發燙立刻拔 USB。">
 <meta name="theme-color" content="#FAF9F5">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='8'%20fill='%23FAF9F5'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='8'%20fill='%23D97757'/%3E%3C/svg%3E">
-<link rel="canonical" href="https://www.slc6172.workers.dev/arduino/arduino-troubleshoot-guide.html">
+<link rel="canonical" href="https://www.slc6172.workers.dev/arduino/arduino-troubleshoot-guide">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="zh_TW">
 <meta property="og:site_name" content="自學教學站">
 <meta property="og:title" content="故障排除總整理">
 <meta property="og:description" content="先斷電、再縮小範圍：上傳 Blink 確認「IDE → USB → 板子」是通的，然後一次只測一組零件。編譯錯誤先看第一條紅字。零件發燙立刻拔 USB。">
-<meta property="og:url" content="https://www.slc6172.workers.dev/arduino/arduino-troubleshoot-guide.html">
+<meta property="og:url" content="https://www.slc6172.workers.dev/arduino/arduino-troubleshoot-guide">
 <meta name="twitter:card" content="summary">
 <style>
   :root {
@@ -455,7 +455,7 @@
 </nav>
 </div>
 
-<script>window.PAGE = {"fill": {}, "sim": {"a1": "<b>對。</b>把問題拆小：拔掉其他零件，只留一組，對照圖與接線表檢查，再用簡單的程式確認。重寫一般只會浪費時間。", "a2": "<b>不一定。</b>多數問題不在 IDE。先排除接線與電源，再考慮其他。"}, "quiz": [{"q": "零件發燙、有焦味，第一步？", "a": ["立刻拔掉 USB", "繼續觀察", "換更大的電阻"], "c": 0, "why": "先斷電，再找原因，避免零件損壞擴大。"}, {"q": "編譯出現很多錯誤，先看哪一條？", "a": ["第一條，從它的行號與上一行找起", "最後一條", "任意一條"], "c": 0, "why": "後面的錯誤常是第一個錯誤連累的。"}, {"q": "確認「IDE、USB、板子」這一段是通的，最好的測試是？", "a": ["上傳 Blink，看 L 燈有沒有閃", "重新安裝作業系統", "換電腦"], "c": 0, "why": "這是最簡單、不用接線的測試。"}, {"q": "為什麼要「一次只改一個地方」？", "a": ["才知道是哪個改動有用", "比較快", "沒有理由"], "c": 0, "why": "同時改很多處，就分不清誰有用。"}, {"q": "程式裡混進全形的括號，會出現什麼？", "a": ["stray 開頭的編譯錯誤", "沒有影響", "LED 變亮"], "c": 0, "why": "程式碼必須用半形符號。"}], "decide": [{"label": "IDE 的 Port 選單是灰的 / 找不到連接埠", "risk": "低", "cmd": "1. 確認 Uno 的 ON 燈有亮\n2. 換一條能傳資料的 USB 線,再換一個 USB 孔\n3. Windows 開「裝置管理員」→「連接埠(COM 和 LPT)」,看有沒有 Arduino Uno 或 USB-SERIAL CH340\n4. 相容板:安裝 CH340 驅動後重新插拔\n5. 關掉其他佔用連接埠的程式,重新插拔 USB", "why": "多半是 USB 線(只能充電)或驅動。詳見 <a href=\"arduino-start-guide.html\">第 1 篇</a>（連接電腦）。"}, {"label": "上傳失敗（avrdude / stk500 開頭的紅字）", "risk": "低", "cmd": "1. 確認板子選 Arduino Uno、連接埠選對\n2. 換 USB 線、換 USB 孔\n3. 關掉可能佔用連接埠的程式(另一個 IDE 視窗、序列埠軟體)\n4. 拔掉接在 0、1 號腳的零件(它們與 USB 通訊共用)\n5. 重新插拔 USB,再上傳一次", "why": "這類訊息多半表示「IDE 跟板子溝通不上」。詳見 <a href=\"arduino-start-guide.html\">第 1 篇</a>、<a href=\"arduino-led-guide.html\">第 3 篇</a>。"}, {"label": "編譯錯誤：expected ';' / was not declared in this scope", "risk": "低", "cmd": "1. 看輸出視窗第一條紅字的行號,從那一行與上一行找起\n2. 行尾少了分號 ; 嗎?\n3. { } 或 ( ) 有沒有成對?\n4. 大小寫:digitalWrite、HIGH、OUTPUT、Serial\n5. 變數有沒有先宣告?拼字有沒有打錯?", "why": "先修第一條錯誤,後面的紅字常是它連帶出來的。詳見 <a href=\"arduino-led-guide.html\">第 3 篇</a>、<a href=\"arduino-loop-guide.html\">第 4 篇</a>。"}, {"label": "編譯錯誤：找不到 xxx.h（函式庫）", "risk": "低", "cmd": "1. 開 Library Manager,搜尋函式庫名稱並 INSTALL\n2. 安裝時跳出相依視窗,按 INSTALL ALL\n3. DHT:還要有 Adafruit Unified Sensor;LCD:hd44780\n4. 裝好後重新驗證", "why": "Servo、Wire、SPI 是內建的;DHT、hd44780 要自己裝。詳見 <a href=\"arduino-dht-guide.html\">第 13 篇</a>、<a href=\"arduino-lcd-guide.html\">第 14 篇</a>。"}, {"label": "外接 LED 不亮", "risk": "中", "cmd": "1. 先拔 USB\n2. LED 方向:長腳(+)靠電阻、靠訊號那一側\n3. 電阻右腳與 LED 長腳在同一欄;LED 短腳那一欄有線接到 GND\n4. 程式的 LED_PIN 與訊號線插的腳位一致\n5. 有 pinMode(LED_PIN, OUTPUT) 嗎?上傳成功了嗎?", "why": "九成是接線。LED 一定要串電阻,不要為了讓它亮就拿掉。詳見 <a href=\"arduino-led-guide.html\">第 3 篇</a>。"}, {"label": "零件發燙、冒煙或有焦味", "risk": "高", "cmd": "立刻拔掉 USB!\n1. 等零件冷卻\n2. 檢查 5V 與 GND 有沒有碰在一起(短路)\n3. 模組的 VCC、GND 有沒有接反(超音波、DHT11、LCD、SG90)\n4. LED 有沒有少了電阻\n5. 逐一拔掉零件再通電,找出元兇;燒壞的零件要換新", "why": "發燙幾乎都是短路或電源接反。詳見 <a href=\"arduino-electric-guide.html\">第 2 篇</a>、<a href=\"arduino-ultrasonic-guide.html\">第 11 篇</a>。"}, {"label": "Uno 一直重新開機，或整個板子沒反應", "risk": "高", "cmd": "1. 拔掉 USB\n2. 檢查有沒有短路(5V 碰到 GND)\n3. 伺服馬達是不是吃太多電:拿掉負重,或改外接電源並共用 GND\n4. 一次接回一組零件,看是哪一組造成的\n5. 換一個 USB 孔、或用有電源的 USB 集線器", "why": "電流不夠或短路。詳見 <a href=\"arduino-servo-guide.html\">第 12 篇</a>、<a href=\"arduino-project-guide.html\">第 18 篇</a>、<a href=\"arduino-electric-guide.html\">第 2 篇</a>。"}, {"label": "按鈕一直是按下，或完全沒反應", "risk": "低", "cmd": "1. 按鈕用「對角」兩隻腳接線,並跨在中間凹槽上\n2. 一腳接訊號腳(例如 2 號腳),另一腳接 GND\n3. 程式用 pinMode(腳位, INPUT_PULLUP);按下讀到 LOW\n4. 用 Serial.println(digitalRead(...)) 親眼看", "why": "同一側的兩腳永遠相通。詳見 <a href=\"arduino-button-guide.html\">第 7 篇</a>。"}, {"label": "按一下，程式觸發很多次", "risk": "低", "cmd": "1. 這是按鈕彈跳\n2. 簡單做法:偵測到變化後 delay(30),再等放開\n3. 不能 delay 的程式:用 millis() 的時間差(第 15 篇)\n4. 中斷:每一次電位變化都記時間,並用 CHANGE", "why": "詳見 <a href=\"arduino-button-guide.html\">第 7 篇</a>、<a href=\"arduino-millis-guide.html\">第 15 篇</a>、<a href=\"arduino-interrupt-guide.html\">第 16 篇</a>。"}, {"label": "Serial Monitor 亂碼或空白", "risk": "低", "cmd": "1. baud 選成和程式一致(Serial.begin(9600) → 9600)\n2. 程式有 Serial.begin(),且寫在 setup()\n3. 打開了 Serial Monitor,選對連接埠\n4. 不要把零件接在 0、1 號腳", "why": "詳見 <a href=\"arduino-serial-guide.html\">第 8 篇</a>。"}, {"label": "analogRead 固定是 0 或 1023，或亂跳", "risk": "低", "cmd": "1. 電位器:兩端接 5V 與 GND,中間腳接 A0\n2. 光敏電阻:A0 接在光敏電阻與 10kΩ 相接的那一欄\n3. A0 沒接任何東西會浮接、亂跳\n4. 用 Serial 印出數字,慢慢轉旋鈕 / 遮光看變化", "why": "詳見 <a href=\"arduino-analog-guide.html\">第 9 篇</a>、<a href=\"arduino-ldr-guide.html\">第 10 篇</a>。"}, {"label": "超音波一直顯示 out of range", "risk": "低", "cmd": "1. Trig 接 9 號腳(輸出)、Echo 接 10 號腳(輸入),沒有接反\n2. VCC 接 5V、GND 接 GND(對照模組上印的字)\n3. 前方要有硬的平面,不要太斜、太軟\n4. 程式的 TRIG_PIN、ECHO_PIN 與接線一致", "why": "詳見 <a href=\"arduino-ultrasonic-guide.html\">第 11 篇</a>。"}, {"label": "伺服馬達不動，或一動就抖、Uno 重開機", "risk": "中", "cmd": "1. 棕 GND、紅 5V、橘訊號(9 號腳),不要接反\n2. 程式有 #include <Servo.h>、attach(9)\n3. 抖動或重開機:拿掉負重;還是不行就改外接 4.8–6V 電源,與 Uno 共用 GND\n4. 不要讓搖臂頂到底或被卡住", "why": "伺服吃電多。詳見 <a href=\"arduino-servo-guide.html\">第 12 篇</a>。"}, {"label": "DHT11 一直讀取失敗", "risk": "低", "cmd": "1. S(DATA)接 2 號腳、+ 接 5V、− 接 GND(對照模組印刷)\n2. 函式庫與 Adafruit Unified Sensor 都裝了\n3. 兩次讀取至少隔 1–2 秒\n4. 程式型號是 DHT11,腳位與接線一致", "why": "詳見 <a href=\"arduino-dht-guide.html\">第 13 篇</a>。"}, {"label": "LCD 背光亮但沒字，或只有一排白色方塊", "risk": "低", "cmd": "1. 用小螺絲起子慢慢轉轉接板上的藍色對比旋鈕\n2. 四條線:VCC 5V、GND、SDA、SCL(沒有接反)\n3. L 燈一直閃:LCD 沒被找到,檢查接線\n4. 用 I2C 掃描器(第 17 篇)確認位址", "why": "對比沒調好是最常見的原因。詳見 <a href=\"arduino-lcd-guide.html\">第 14 篇</a>、<a href=\"arduino-bus-guide.html\">第 17 篇</a>。"}, {"label": "74HC595 的 LED 不亮或亂亮", "risk": "低", "cmd": "1. 晶片缺口朝左,16 腳(左上)5V、8 腳(右下)GND\n2. OE(13 腳)接 GND、SRCLR(10 腳)接 5V\n3. SER 接 11 號腳、SRCLK 接 13 號腳、RCLK 接 12 號腳\n4. 程式裡 LATCH_PIN 是 12,且 SPI.transfer 之後有把鎖存拉高", "why": "詳見 <a href=\"arduino-bus-guide.html\">第 17 篇</a>。"}, {"label": "按鈕有時候漏掉，或程式一做別的事就卡住", "risk": "低", "cmd": "1. 找出 loop() 裡的 delay()\n2. 改用 millis() 的時間差,每個工作快速檢查「該不該做」\n3. 變數用 unsigned long,比較用減法\n4. 真的不能漏的快速事件,用外部中斷(2、3 號腳)", "why": "詳見 <a href=\"arduino-millis-guide.html\">第 15 篇</a>、<a href=\"arduino-interrupt-guide.html\">第 16 篇</a>。"}, {"label": "程式上傳成功，但行為還是舊的", "risk": "低", "cmd": "1. 確認上傳的是現在這個視窗(多個 IDE 視窗時很容易搞混)\n2. 輸出視窗有出現上傳完成嗎?\n3. 按一下 Uno 的 RESET\n4. 改一個明顯的地方(例如 delay 時間)再上傳,確認有變化", "why": "先確定「新程式真的進去了」,再找邏輯錯誤。詳見 <a href=\"arduino-led-guide.html\">第 3 篇</a>。"}]};</script>
+<script>window.PAGE = {"fill": {}, "sim": {"a1": "<b>對。</b>把問題拆小：拔掉其他零件，只留一組，對照圖與接線表檢查，再用簡單的程式確認。重寫一般只會浪費時間。", "a2": "<b>不一定。</b>多數問題不在 IDE。先排除接線與電源，再考慮其他。"}, "quiz": [{"q": "零件發燙、有焦味，第一步？", "a": ["立刻拔掉 USB", "繼續觀察", "換更大的電阻"], "c": 0, "why": "先斷電，再找原因，避免零件損壞擴大。"}, {"q": "編譯出現很多錯誤，先看哪一條？", "a": ["第一條，從它的行號與上一行找起", "最後一條", "任意一條"], "c": 0, "why": "後面的錯誤常是第一個錯誤連累的。"}, {"q": "確認「IDE、USB、板子」這一段是通的，最好的測試是？", "a": ["上傳 Blink，看 L 燈有沒有閃", "重新安裝作業系統", "換電腦"], "c": 0, "why": "這是最簡單、不用接線的測試。"}, {"q": "為什麼要「一次只改一個地方」？", "a": ["才知道是哪個改動有用", "比較快", "沒有理由"], "c": 0, "why": "同時改很多處，就分不清誰有用。"}, {"q": "程式裡混進全形的括號，會出現什麼？", "a": ["stray 開頭的編譯錯誤", "沒有影響", "LED 變亮"], "c": 0, "why": "程式碼必須用半形符號。"}], "decide": [{"label": "IDE 的 Port 選單是灰的 / 找不到連接埠", "risk": "低", "cmd": "1. 確認 Uno 的 ON 燈有亮\n2. 換一條能傳資料的 USB 線，再換一個 USB 孔\n3. Windows 開「裝置管理員」→「連接埠（COM 和 LPT）」，看有沒有 Arduino Uno 或 USB-SERIAL CH340\n4. 相容板：安裝 CH340 驅動後重新插拔\n5. 關掉其他佔用連接埠的程式，重新插拔 USB", "why": "多半是 USB 線（只能充電）或驅動。詳見 <a href=\"arduino-start-guide.html\">第 1 篇</a>（連接電腦）。"}, {"label": "上傳失敗（avrdude / stk500 開頭的紅字）", "risk": "低", "cmd": "1. 確認板子選 Arduino Uno、連接埠選對\n2. 換 USB 線、換 USB 孔\n3. 關掉可能佔用連接埠的程式（另一個 IDE 視窗、序列埠軟體）\n4. 拔掉接在 0、1 號腳的零件（它們與 USB 通訊共用）\n5. 重新插拔 USB，再上傳一次", "why": "這類訊息多半表示「IDE 跟板子溝通不上」。詳見 <a href=\"arduino-start-guide.html\">第 1 篇</a>、<a href=\"arduino-led-guide.html\">第 3 篇</a>。"}, {"label": "編譯錯誤：expected ';' / was not declared in this scope", "risk": "低", "cmd": "1. 看輸出視窗第一條紅字的行號，從那一行與上一行找起\n2. 行尾少了分號 ; 嗎？\n3. { } 或 ( ) 有沒有成對？\n4. 大小寫：digitalWrite、HIGH、OUTPUT、Serial\n5. 變數有沒有先宣告？拼字有沒有打錯？", "why": "先修第一條錯誤，後面的紅字常是它連帶出來的。詳見 <a href=\"arduino-led-guide.html\">第 3 篇</a>、<a href=\"arduino-loop-guide.html\">第 4 篇</a>。"}, {"label": "編譯錯誤：找不到 xxx.h（函式庫）", "risk": "低", "cmd": "1. 開 Library Manager，搜尋函式庫名稱並 INSTALL\n2. 安裝時跳出相依視窗，按 INSTALL ALL\n3. DHT：還要有 Adafruit Unified Sensor;LCD:hd44780\n4. 裝好後重新驗證", "why": "Servo、Wire、SPI 是內建的；DHT、hd44780 要自己裝。詳見 <a href=\"arduino-dht-guide.html\">第 13 篇</a>、<a href=\"arduino-lcd-guide.html\">第 14 篇</a>。"}, {"label": "外接 LED 不亮", "risk": "中", "cmd": "1. 先拔 USB\n2. LED 方向：長腳（+）靠電阻、靠訊號那一側\n3. 電阻右腳與 LED 長腳在同一欄；LED 短腳那一欄有線接到 GND\n4. 程式的 LED_PIN 與訊號線插的腳位一致\n5. 有 pinMode(LED_PIN, OUTPUT) 嗎？上傳成功了嗎？", "why": "九成是接線。LED 一定要串電阻，不要為了讓它亮就拿掉。詳見 <a href=\"arduino-led-guide.html\">第 3 篇</a>。"}, {"label": "零件發燙、冒煙或有焦味", "risk": "高", "cmd": "立刻拔掉 USB!\n1. 等零件冷卻\n2. 檢查 5V 與 GND 有沒有碰在一起（短路）\n3. 模組的 VCC、GND 有沒有接反（超音波、DHT11、LCD、SG90）\n4. LED 有沒有少了電阻\n5. 逐一拔掉零件再通電，找出元兇；燒壞的零件要換新", "why": "發燙幾乎都是短路或電源接反。詳見 <a href=\"arduino-electric-guide.html\">第 2 篇</a>、<a href=\"arduino-ultrasonic-guide.html\">第 11 篇</a>。"}, {"label": "Uno 一直重新開機，或整個板子沒反應", "risk": "高", "cmd": "1. 拔掉 USB\n2. 檢查有沒有短路（5V 碰到 GND）\n3. 伺服馬達是不是吃太多電：拿掉負重，或改外接電源並共用 GND\n4. 一次接回一組零件，看是哪一組造成的\n5. 換一個 USB 孔、或用有電源的 USB 集線器", "why": "電流不夠或短路。詳見 <a href=\"arduino-servo-guide.html\">第 12 篇</a>、<a href=\"arduino-project-guide.html\">第 18 篇</a>、<a href=\"arduino-electric-guide.html\">第 2 篇</a>。"}, {"label": "按鈕一直是按下，或完全沒反應", "risk": "低", "cmd": "1. 按鈕用「對角」兩隻腳接線，並跨在中間凹槽上\n2. 一腳接訊號腳（例如 2 號腳），另一腳接 GND\n3. 程式用 pinMode（腳位， INPUT_PULLUP）；按下讀到 LOW\n4. 用 Serial.println(digitalRead(...)) 親眼看", "why": "同一側的兩腳永遠相通。詳見 <a href=\"arduino-button-guide.html\">第 7 篇</a>。"}, {"label": "按一下，程式觸發很多次", "risk": "低", "cmd": "1. 這是按鈕彈跳\n2. 簡單做法：偵測到變化後 delay(30)，再等放開\n3. 不能 delay 的程式：用 millis() 的時間差（第 15 篇）\n4. 中斷：每一次電位變化都記時間，並用 CHANGE", "why": "詳見 <a href=\"arduino-button-guide.html\">第 7 篇</a>、<a href=\"arduino-millis-guide.html\">第 15 篇</a>、<a href=\"arduino-interrupt-guide.html\">第 16 篇</a>。"}, {"label": "Serial Monitor 亂碼或空白", "risk": "低", "cmd": "1. baud 選成和程式一致(Serial.begin(9600) → 9600)\n2. 程式有 Serial.begin()，且寫在 setup()\n3. 打開了 Serial Monitor，選對連接埠\n4. 不要把零件接在 0、1 號腳", "why": "詳見 <a href=\"arduino-serial-guide.html\">第 8 篇</a>。"}, {"label": "analogRead 固定是 0 或 1023，或亂跳", "risk": "低", "cmd": "1. 電位器：兩端接 5V 與 GND，中間腳接 A0\n2. 光敏電阻：A0 接在光敏電阻與 10kΩ 相接的那一欄\n3. A0 沒接任何東西會浮接、亂跳\n4. 用 Serial 印出數字，慢慢轉旋鈕 / 遮光看變化", "why": "詳見 <a href=\"arduino-analog-guide.html\">第 9 篇</a>、<a href=\"arduino-ldr-guide.html\">第 10 篇</a>。"}, {"label": "超音波一直顯示 out of range", "risk": "低", "cmd": "1. Trig 接 9 號腳（輸出）、Echo 接 10 號腳（輸入），沒有接反\n2. VCC 接 5V、GND 接 GND（對照模組上印的字）\n3. 前方要有硬的平面，不要太斜、太軟\n4. 程式的 TRIG_PIN、ECHO_PIN 與接線一致", "why": "詳見 <a href=\"arduino-ultrasonic-guide.html\">第 11 篇</a>。"}, {"label": "伺服馬達不動，或一動就抖、Uno 重開機", "risk": "中", "cmd": "1. 棕 GND、紅 5V、橘訊號（9 號腳），不要接反\n2. 程式有 #include <Servo.h>、attach(9)\n3. 抖動或重開機：拿掉負重；還是不行就改外接 4.8–6V 電源，與 Uno 共用 GND\n4. 不要讓搖臂頂到底或被卡住", "why": "伺服吃電多。詳見 <a href=\"arduino-servo-guide.html\">第 12 篇</a>。"}, {"label": "DHT11 一直讀取失敗", "risk": "低", "cmd": "1. S(DATA)接 2 號腳、+ 接 5V、− 接 GND（對照模組印刷）\n2. 函式庫與 Adafruit Unified Sensor 都裝了\n3. 兩次讀取至少隔 1–2 秒\n4. 程式型號是 DHT11，腳位與接線一致", "why": "詳見 <a href=\"arduino-dht-guide.html\">第 13 篇</a>。"}, {"label": "LCD 背光亮但沒字，或只有一排白色方塊", "risk": "低", "cmd": "1. 用小螺絲起子慢慢轉轉接板上的藍色對比旋鈕\n2. 四條線：VCC 5V、GND、SDA、SCL（沒有接反）\n3. L 燈一直閃：LCD 沒被找到，檢查接線\n4. 用 I2C 掃描器（第 17 篇）確認位址", "why": "對比沒調好是最常見的原因。詳見 <a href=\"arduino-lcd-guide.html\">第 14 篇</a>、<a href=\"arduino-bus-guide.html\">第 17 篇</a>。"}, {"label": "74HC595 的 LED 不亮或亂亮", "risk": "低", "cmd": "1. 晶片缺口朝左，16 腳（左上）5V、8 腳（右下）GND\n2. OE（13 腳）接 GND、SRCLR（10 腳）接 5V\n3. SER 接 11 號腳、SRCLK 接 13 號腳、RCLK 接 12 號腳\n4. 程式裡 LATCH_PIN 是 12，且 SPI.transfer 之後有把鎖存拉高", "why": "詳見 <a href=\"arduino-bus-guide.html\">第 17 篇</a>。"}, {"label": "按鈕有時候漏掉，或程式一做別的事就卡住", "risk": "低", "cmd": "1. 找出 loop() 裡的 delay()\n2. 改用 millis() 的時間差，每個工作快速檢查「該不該做」\n3. 變數用 unsigned long，比較用減法\n4. 真的不能漏的快速事件，用外部中斷（2、3 號腳）", "why": "詳見 <a href=\"arduino-millis-guide.html\">第 15 篇</a>、<a href=\"arduino-interrupt-guide.html\">第 16 篇</a>。"}, {"label": "程式上傳成功，但行為還是舊的", "risk": "低", "cmd": "1. 確認上傳的是現在這個視窗（多個 IDE 視窗時很容易搞混）\n2. 輸出視窗有出現上傳完成嗎？\n3. 按一下 Uno 的 RESET\n4. 改一個明顯的地方（例如 delay 時間）再上傳，確認有變化", "why": "先確定「新程式真的進去了」，再找邏輯錯誤。詳見 <a href=\"arduino-led-guide.html\">第 3 篇</a>。"}]};</script>
 <script>
 (function () {
   "use strict";
@@ -770,10 +770,10 @@
       });
       var h = sel.getAttribute("data-h"), txt;
       if (/^[tb]/.test(h)) {
-        txt = "你點的是 <code>" + h + "</code>,它屬於電源軌。<b>同一條軌上共 " + (mates.length + 1) + " 個孔彼此相通</b>" +
+        txt = "你點的是 <code>" + h + "</code>，它屬於電源軌。<b>同一條軌上共 " + (mates.length + 1) + " 個孔彼此相通</b>" +
               (split && split.checked ? "（這片麵包板的電源軌在中間斷開，左半與右半不相通）。" : "。") + "把 5V 接到 + 軌、GND 接到 − 軌，之後整排孔都能取用。";
       } else {
-        txt = "你點的是 <code>" + h + "</code>,它和 <code>" + mates.join("、") + "</code> 在內部相通(同一欄的 " + (/[a-e]/.test(h[0]) ? "a–e" : "f–j") + ")。" +
+        txt = "你點的是 <code>" + h + "</code>，它和 <code>" + mates.join("、") + "</code> 在內部相通（同一欄的 " + (/[a-e]/.test(h[0]) ? "a–e" : "f–j") + "）。" +
               "把兩個零件的腳插在這 " + (mates.length + 1) + " 個孔裡，它們就接在一起了。";
       }
       info.innerHTML = txt;
@@ -850,7 +850,7 @@
       var r = (5 - v) / (i / 1000), std = nextE12(r), real = (5 - v) / std * 1000;
       var msg = "電阻上要承擔的電壓 = 5 − " + v + " = <b>" + (5 - v).toFixed(1) + " V</b><br>" +
                 "理論電阻 R = " + (5 - v).toFixed(1) + " ÷ " + (i / 1000) + " A = <b>" + Math.round(r) + " Ω</b><br>" +
-                "取不小於它的標準值 → <b>" + fmtOhm(std) + "</b>,實際電流約 <b>" + real.toFixed(1) + " mA</b>";
+                "取不小於它的標準值 → <b>" + fmtOhm(std) + "</b>，實際電流約 <b>" + real.toFixed(1) + " mA</b>";
       if (real > 20) msg += "<br><span class=\"calc-bad\">超過 Uno 每腳建議上限 20 mA，請選更大的電阻或降低目標電流。</span>";
       else if (real < 1) msg += "<br>電流太小，LED 可能幾乎看不出來在亮。";
       out.innerHTML = msg;
@@ -898,7 +898,7 @@
       btn.textContent = pressed ? "目前：按住中（點一下放開）" : "目前：放開（點一下按住）";
       btn.setAttribute("aria-pressed", pressed ? "true" : "false");
       if (pull && !pressed) { read = "HIGH(1)"; col = "#788C5D"; txt = "<b>沒按</b>：5 V 經過內建上拉電阻到達 2 號腳。D2 沒有別的去處，幾乎沒有電流，電壓留在約 5 V → <code>digitalRead(2)</code> = <b>HIGH(1)</b>。"; }
-      else if (pull && pressed) { read = "LOW(0)"; col = "#B04A3F"; txt = "<b>按下</b>：按鈕把 2 號腳接到 GND。上拉電阻只讓一點點電流通過（5 V ÷ 約 20–50 kΩ,約 0.1–0.25 mA），2 號腳電壓被拉到約 0 V → <code>digitalRead(2)</code> = <b>LOW(0)</b>。"; }
+      else if (pull && pressed) { read = "LOW(0)"; col = "#B04A3F"; txt = "<b>按下</b>：按鈕把 2 號腳接到 GND。上拉電阻只讓一點點電流通過（5 V ÷ 約 20–50 kΩ，約 0.1–0.25 mA），2 號腳電壓被拉到約 0 V → <code>digitalRead(2)</code> = <b>LOW(0)</b>。"; }
       else if (!pull && !pressed) { read = "不確定"; col = "#87867F"; txt = "<b>沒按</b>：2 號腳什麼都沒接，像一根天線，會收到周圍的雜訊，讀到的值<b>在 HIGH 與 LOW 之間亂跳</b>。這叫<b>浮接</b>，是新手最常踩的坑。"; }
       else { read = "LOW(0)"; col = "#B04A3F"; txt = "<b>按下</b>：2 號腳接到 GND → LOW。但<b>放開的瞬間又回到浮接</b>，讀值不穩，所以這樣的接法不能用。"; }
       lvl.textContent = "digitalRead(2) → " + read;
@@ -920,7 +920,7 @@
     function render() {
       var m = +sel.value, p = +prog;
       if (m === p) { scr.textContent = "Hello, Arduino!\ncount = 0\ncount = 1\ncount = 2"; scr.style.color = "#3D3D3A"; note.innerHTML = "<b>兩邊都是 " + p + "。</b>文字正常顯示。"; }
-      else { scr.textContent = m < p ? GARBLE.lower : GARBLE.higher; scr.style.color = "#B04A3F"; note.innerHTML = "程式用 <code>Serial.begin(" + p + ")</code>,Serial Monitor 卻選 <b>" + m + "</b>:雙方講話速度不同，對方聽到的是亂碼。<b>把 Serial Monitor 右上角的 baud 選成和程式一樣。</b>"; }
+      else { scr.textContent = m < p ? GARBLE.lower : GARBLE.higher; scr.style.color = "#B04A3F"; note.innerHTML = "程式用 <code>Serial.begin(" + p + ")</code>,Serial Monitor 卻選 <b>" + m + "</b>：雙方講話速度不同，對方聽到的是亂碼。<b>把 Serial Monitor 右上角的 baud 選成和程式一樣。</b>"; }
     }
     sel.addEventListener("change", render); render();
   });
@@ -934,8 +934,8 @@
       var rt = 10 * (1 - x), rb = 10 * x, v = 5 * x, adc = Math.round(x * 1023), mapped = Math.floor(adc * 255 / 1023);
       bar.style.width = pos + "%";
       led.style.background = "rgba(176,74,63," + (0.08 + 0.92 * mapped / 255).toFixed(2) + ")";
-      out.innerHTML = "旋鈕轉到 <b>" + pos + "%</b>:<br>" +
-        "上段電阻（5V 到中間腳）= <b>" + rt.toFixed(1) + " kΩ</b>,下段電阻（中間腳到 GND）= <b>" + rb.toFixed(1) + " kΩ</b>（加起來永遠是 10 kΩ）<br>" +
+      out.innerHTML = "旋鈕轉到 <b>" + pos + "%</b>：<br>" +
+        "上段電阻（5V 到中間腳）= <b>" + rt.toFixed(1) + " kΩ</b>，下段電阻（中間腳到 GND）= <b>" + rb.toFixed(1) + " kΩ</b>（加起來永遠是 10 kΩ）<br>" +
         "中間腳（接 A0）電壓 = 5 V × " + rb.toFixed(1) + " ÷ 10 = <b>" + v.toFixed(2) + " V</b><br>" +
         "<code>analogRead(A0)</code> ≈ <b>" + adc + "</b>(0–1023)<br>" +
         "<code>map(值, 0, 1023, 0, 255)</code> ≈ <b>" + mapped + "</b> → LED 亮度";
@@ -953,7 +953,7 @@
       bar.style.width = (adc / 1023 * 100) + "%";
       var on = !isNaN(t) && adc < t;
       led.style.background = on ? "rgba(176,74,63,1)" : "rgba(176,74,63,.08)";
-      out.innerHTML = "環境亮度 <b>" + Math.round(x * 100) + "%</b>:光敏電阻約 <b>" + fmt(r) + "</b>（範例值）<br>" +
+      out.innerHTML = "環境亮度 <b>" + Math.round(x * 100) + "%</b>：光敏電阻約 <b>" + fmt(r) + "</b>（範例值）<br>" +
         "A0 電壓 = 5 V × 10 kΩ ÷ （光敏電阻 + 10 kΩ） = <b>" + v.toFixed(2) + " V</b> → <code>analogRead(A0)</code> ≈ <b>" + adc + "</b><br>" +
         "門檻 " + (isNaN(t) ? "?" : t) + ":<b>" + (on ? "讀值低於門檻 → 天黑，LED 亮" : "讀值不低於門檻 → 夠亮，LED 滅") + "</b>";
     }
@@ -967,7 +967,7 @@
     function render() {
       var d = +rng.value, t = d * 2 / 0.0343;
       bar.style.width = (d / 400 * 100) + "%";
-      out.innerHTML = "物體在 <b>" + d + " cm</b> 外：聲音來回 <b>" + (d * 2) + " cm</b>,<br>花的時間 = " + (d * 2) + " ÷ 0.0343 ≈ <b>" + Math.round(t) + " 微秒</b>(約 " + (t / 1000).toFixed(2) + " 毫秒)<br>" +
+      out.innerHTML = "物體在 <b>" + d + " cm</b> 外：聲音來回 <b>" + (d * 2) + " cm</b>，<br>花的時間 = " + (d * 2) + " ÷ 0.0343 ≈ <b>" + Math.round(t) + " 微秒</b>（約 " + (t / 1000).toFixed(2) + " 毫秒）<br>" +
         "所以 Echo 腳會維持 HIGH 約 <b>" + Math.round(t) + " 微秒</b>；程式用 <code>duration * 0.0343 / 2</code> 換回 " + d + " cm。" +
         (d < 2 || d > 400 ? "<br><span class=\"calc-bad\">HC-SR04 的有效範圍約 2–400 cm，超出可能不準。</span>" : "");
     }
@@ -983,7 +983,7 @@
       var px = 50 + w / 20000 * 400;   // 20 ms 對應 400 px
       wave.setAttribute("points", "50,110 50,40 " + px + ",40 " + px + ",110 450,110");
       arm.setAttribute("transform", "rotate(" + (-a) + " 400 130)");
-      out.innerHTML = "<code>myServo.write(" + a + ");</code> → 每 20 毫秒送一次脈衝，<b>HIGH 長度約 " + w + " 微秒(" + (w / 1000).toFixed(2) + " 毫秒)</b>。伺服馬達依脈衝寬度轉到對應角度。";
+      out.innerHTML = "<code>myServo.write(" + a + ");</code> → 每 20 毫秒送一次脈衝，<b>HIGH 長度約 " + w + " 微秒（" + (w / 1000).toFixed(2) + " 毫秒）</b>。伺服馬達依脈衝寬度轉到對應角度。";
     }
     rng.addEventListener("input", render); render();
   });

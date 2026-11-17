@@ -7,13 +7,13 @@
 <meta name="description" content="Uno 是一塊能自己寫程式的小電腦。分三批買零件（第一批做完第 1–10 篇），安裝 Arduino IDE 2，用 USB 接上板子，貼上 Blink 程式、選好板子與連接埠，按…">
 <meta name="theme-color" content="#FAF9F5">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='8'%20fill='%23FAF9F5'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='8'%20fill='%23D97757'/%3E%3C/svg%3E">
-<link rel="canonical" href="https://www.slc6172.workers.dev/arduino/arduino-start-guide.html">
+<link rel="canonical" href="https://www.slc6172.workers.dev/arduino/arduino-start-guide">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="zh_TW">
 <meta property="og:site_name" content="自學教學站">
 <meta property="og:title" content="認識 Arduino 與第一次上傳">
 <meta property="og:description" content="Uno 是一塊能自己寫程式的小電腦。分三批買零件（第一批做完第 1–10 篇），安裝 Arduino IDE 2，用 USB 接上板子，貼上 Blink 程式、選好板子與連接埠，按…">
-<meta property="og:url" content="https://www.slc6172.workers.dev/arduino/arduino-start-guide.html">
+<meta property="og:url" content="https://www.slc6172.workers.dev/arduino/arduino-start-guide">
 <meta name="twitter:card" content="summary">
 <style>
   :root {
@@ -379,7 +379,7 @@
   <div class="eyebrow">Arduino 入門 · 第 1 篇 · 認識 Arduino</div>
   <h1>從零開始：認識 Arduino、安裝 IDE，讓板子自己閃一次</h1>
   <p class="sub">這一篇不接任何線。先認識 Uno 板子、備好零件、裝好軟體，再讓板子上自己的小燈閃爍，確認電腦到板子這條路是通的。</p>
-  <div class="tldr"><b>TL;DR</b> Uno 是一塊能自己寫程式的小電腦。<strong>分三批買零件</strong>（第一批做完第 1–10 篇），安裝 <strong>Arduino IDE 2</strong>,用 USB 接上板子，貼上 Blink 程式、選好板子與連接埠，按 Upload,L 燈每秒閃一次就成功了。</div>
+  <div class="tldr"><b>TL;DR</b> Uno 是一塊能自己寫程式的小電腦。<strong>分三批買零件</strong>（第一批做完第 1–10 篇），安裝 <strong>Arduino IDE 2</strong>，用 USB 接上板子，貼上 Blink 程式、選好板子與連接埠，按 Upload,L 燈每秒閃一次就成功了。</div>
 </header>
 
 <div class="layout">
@@ -407,7 +407,7 @@
 <rect width="600" height="270" fill="#FFFFFF"/>
 <rect x="40" y="34" width="520" height="196" rx="10" fill="#3D3D3A" stroke="#141413" stroke-width="1.5"/><rect x="14" y="74" width="64" height="58" rx="4" fill="#D1CFC5" stroke="#87867F" stroke-width="1.5"/><text x="46.0" y="108.0" class="m" fill="#3D3D3A" text-anchor="middle">USB-B</text><rect x="14" y="162" width="56" height="52" rx="4" fill="#141413" stroke="#87867F" stroke-width="1.5"/><text x="42.0" y="192.0" class="m" fill="#D1CFC5" text-anchor="middle">DC 電源孔</text><circle cx="116" cy="86" r="10" fill="#B04A3F" stroke="#141413" stroke-width="2"/><text x="116.0" y="112.0" class="m" fill="#F0EEE6" text-anchor="middle">RESET</text><rect x="146.0" y="42" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227"/><text x="150.0" y="64.0" class="m" fill="#F0EEE6" text-anchor="middle">SCL</text><rect x="164.0" y="42" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227"/><text x="168.0" y="64.0" class="m" fill="#F0EEE6" text-anchor="middle">SDA</text><rect x="182.0" y="42" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227"/><text transform="translate(189.0 78) rotate(-90)" font-size="8" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#F0EEE6" text-anchor="end">AREF</text><rect x="200.0" y="42" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227"/><text x="204.0" y="64.0" class="m" fill="#F0EEE6" text-anchor="middle">GND</text><rect x="218.0" y="42" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227"/><text x="222.0" y="64.0" class="m" fill="#F0EEE6" text-anchor="middle">13</text><rect x="236.0" y="42" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227"/><text x="240.0" y="64.0" class="m" fill="#F0EEE6" text-anchor="middle">12</text><rect x="254.0" y="42" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227"/><text x="258.0" y="64.0" class="m" fill="#F0EEE6" text-anchor="middle">~11</text><rect x="272.0" y="42" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227"/><text x="276.0" y="64.0" class="m" fill="#F0EEE6" text-anchor="middle">~10</text><rect x="290.0" y="42" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227"/><text x="294.0" y="64.0" class="m" fill="#F0EEE6" text-anchor="middle">~9</text><rect x="308.0" y="42" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227"/><text x="312.0" y="64.0" class="m" fill="#F0EEE6" text-anchor="middle">8</text><rect x="344.0" y="42" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227"/><text x="348.0" y="64.0" class="m" fill="#F0EEE6" text-anchor="middle">7</text><rect x="362.0" y="42" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227"/><text x="366.0" y="64.0" class="m" fill="#F0EEE6" text-anchor="middle">~6</text><rect x="380.0" y="42" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227"/><text x="384.0" y="64.0" class="m" fill="#F0EEE6" text-anchor="middle">~5</text><rect x="398.0" y="42" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227"/><text x="402.0" y="64.0" class="m" fill="#F0EEE6" text-anchor="middle">4</text><rect x="416.0" y="42" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227"/><text x="420.0" y="64.0" class="m" fill="#F0EEE6" text-anchor="middle">~3</text><rect x="434.0" y="42" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227"/><text x="438.0" y="64.0" class="m" fill="#F0EEE6" text-anchor="middle">2</text><rect x="452.0" y="42" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227"/><text x="456.0" y="64.0" class="m" fill="#F0EEE6" text-anchor="middle">TX1</text><rect x="470.0" y="42" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227"/><text x="474.0" y="64.0" class="m" fill="#F0EEE6" text-anchor="middle">RX0</text><rect x="244.0" y="214" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227"/><text transform="translate(251.0 208) rotate(-90)" font-size="8" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#F0EEE6" text-anchor="start">IOREF</text><rect x="262.0" y="214" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227"/><text transform="translate(269.0 208) rotate(-90)" font-size="8" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#F0EEE6" text-anchor="start">RESET</text><rect x="280.0" y="214" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227"/><text transform="translate(287.0 208) rotate(-90)" font-size="8" font-family="ui-monospace,Menlo,Consolas,monospace" fill="#F0EEE6" text-anchor="start">3.3V</text><rect x="298.0" y="214" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227"/><text x="302.0" y="206.0" class="m" fill="#F0EEE6" text-anchor="middle">5V</text><rect x="316.0" y="214" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227"/><text x="320.0" y="206.0" class="m" fill="#F0EEE6" text-anchor="middle">GND</text><rect x="334.0" y="214" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227"/><text x="338.0" y="206.0" class="m" fill="#F0EEE6" text-anchor="middle">GND</text><rect x="352.0" y="214" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227"/><text x="356.0" y="206.0" class="m" fill="#F0EEE6" text-anchor="middle">VIN</text><rect x="388.0" y="214" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227"/><text x="392.0" y="206.0" class="m" fill="#F0EEE6" text-anchor="middle">A0</text><rect x="406.0" y="214" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227"/><text x="410.0" y="206.0" class="m" fill="#F0EEE6" text-anchor="middle">A1</text><rect x="424.0" y="214" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227"/><text x="428.0" y="206.0" class="m" fill="#F0EEE6" text-anchor="middle">A2</text><rect x="442.0" y="214" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227"/><text x="446.0" y="206.0" class="m" fill="#F0EEE6" text-anchor="middle">A3</text><rect x="460.0" y="214" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227"/><text x="464.0" y="206.0" class="m" fill="#F0EEE6" text-anchor="middle">A4</text><rect x="478.0" y="214" width="8" height="8" rx="1.5" fill="#141413" stroke="#C9A227"/><text x="482.0" y="206.0" class="m" fill="#F0EEE6" text-anchor="middle">A5</text><rect x="390" y="122" width="86" height="34" rx="3" fill="#141413"/><text x="433.0" y="143.0" class="m" fill="#D1CFC5" text-anchor="middle">ATmega328P</text><text x="300.0" y="134.0" class="mb" fill="#F0EEE6" text-anchor="middle">ARDUINO UNO</text><rect x="213" y="96" width="12" height="7" rx="1.5" fill="#E1B93B" stroke="#141413"/><text x="219.0" y="114.0" class="m" fill="#F0EEE6" text-anchor="middle">L</text><rect x="262" y="96" width="12" height="7" rx="1.5" fill="#E1B93B" stroke="#141413"/><text x="268.0" y="114.0" class="m" fill="#F0EEE6" text-anchor="middle">TX</text><rect x="286" y="96" width="12" height="7" rx="1.5" fill="#E1B93B" stroke="#141413"/><text x="292.0" y="114.0" class="m" fill="#F0EEE6" text-anchor="middle">RX</text><rect x="470" y="184" width="12" height="7" rx="1.5" fill="#788C5D" stroke="#141413"/><text x="486.0" y="191.0" class="m" fill="#F0EEE6" text-anchor="start">ON</text><circle cx="30" cy="52" r="10" fill="#D97757"/><text x="30" y="55" class="mb" fill="#FFFFFF" text-anchor="middle">1</text><circle cx="90" cy="72" r="10" fill="#D97757"/><text x="90" y="75" class="mb" fill="#FFFFFF" text-anchor="middle">2</text><circle cx="360" cy="16" r="10" fill="#D97757"/><text x="360" y="19" class="mb" fill="#FFFFFF" text-anchor="middle">3</text><circle cx="330" cy="252" r="10" fill="#D97757"/><text x="330" y="255" class="mb" fill="#FFFFFF" text-anchor="middle">4</text><circle cx="468" cy="252" r="10" fill="#D97757"/><text x="468" y="255" class="mb" fill="#FFFFFF" text-anchor="middle">5</text><circle cx="433" cy="156" r="10" fill="#D97757"/><text x="433" y="159" class="mb" fill="#FFFFFF" text-anchor="middle">6</text><circle cx="192" cy="100" r="10" fill="#D97757"/><text x="192" y="103" class="mb" fill="#FFFFFF" text-anchor="middle">7</text><circle cx="30" cy="232" r="10" fill="#D97757"/><text x="30" y="235" class="mb" fill="#FFFFFF" text-anchor="middle">8</text>
 </svg></div>
-<ol class="legend" style="list-style:none"><li><span class="n">1</span><span><b>USB-B 接頭</b>：接電腦。同時負責供電、上傳程式、傳資料回電腦。</span></li><li><span class="n">2</span><span><b>RESET 按鈕</b>：按一下，程式從頭再跑一次。</span></li><li><span class="n">3</span><span><b>數位腳位 0–13</b>:可以輸出 0 V / 5 V，也可以讀取高低電位。前面有 <code>~</code> 的腳位可輸出 PWM（第 6 篇）。旁邊的 GND 是接地腳。</span></li><li><span class="n">4</span><span><b>電源腳位</b>：<code>5V</code> 與 <code>3.3V</code> 是輸出電源，<code>GND</code> 是接地（0 V）。<code>VIN</code> 是外部電源輸入。</span></li><li><span class="n">5</span><span><b>類比輸入 A0–A5</b>:讀取 0–5 V 之間的電壓大小（第 9 篇）。</span></li><li><span class="n">6</span><span><b>ATmega328P 晶片</b>：Uno 的大腦，你寫的程式就存在裡面。</span></li><li><span class="n">7</span><span><b>小燈</b>：<code>L</code> 接在 13 號腳（程式能控制）；<code>TX</code>、<code>RX</code> 在傳資料時閃；右下 <code>ON</code> 表示有電。</span></li><li><span class="n">8</span><span><b>DC 電源孔</b>：接 7–12 V 的外部電源。只用 USB 時用不到。</span></li></ol>
+<ol class="legend" style="list-style:none"><li><span class="n">1</span><span><b>USB-B 接頭</b>：接電腦。同時負責供電、上傳程式、傳資料回電腦。</span></li><li><span class="n">2</span><span><b>RESET 按鈕</b>：按一下，程式從頭再跑一次。</span></li><li><span class="n">3</span><span><b>數位腳位 0–13</b>：可以輸出 0 V / 5 V，也可以讀取高低電位。前面有 <code>~</code> 的腳位可輸出 PWM（第 6 篇）。旁邊的 GND 是接地腳。</span></li><li><span class="n">4</span><span><b>電源腳位</b>：<code>5V</code> 與 <code>3.3V</code> 是輸出電源，<code>GND</code> 是接地（0 V）。<code>VIN</code> 是外部電源輸入。</span></li><li><span class="n">5</span><span><b>類比輸入 A0–A5</b>：讀取 0–5 V 之間的電壓大小（第 9 篇）。</span></li><li><span class="n">6</span><span><b>ATmega328P 晶片</b>：Uno 的大腦，你寫的程式就存在裡面。</span></li><li><span class="n">7</span><span><b>小燈</b>：<code>L</code> 接在 13 號腳（程式能控制）；<code>TX</code>、<code>RX</code> 在傳資料時閃；右下 <code>ON</code> 表示有電。</span></li><li><span class="n">8</span><span><b>DC 電源孔</b>：接 7–12 V 的外部電源。只用 USB 時用不到。</span></li></ol>
 <h3 style="margin-top:26px">四條安全守則（整個主題都適用）</h3>
 <ol class="ops"><li><b>改接線之前，先拔掉 USB。</b>先接好零件，最後才通電。</li><li><b>LED 一定要串電阻。</b>沒有電阻，電流過大會燒掉 LED 或腳位。</li><li><b>只用 USB 供電，電壓是 5 V。</b>初學階段不要接其他電源，也不要把 5V 直接接到 GND（短路）。</li><li><b>不確定就停手。</b>零件發燙、有焦味，立刻拔掉 USB，再檢查接線。</li></ol>
 </section>
@@ -436,12 +436,12 @@
 <section id="install">
   <h2>安裝 Arduino IDE(Windows)</h2>
   <hr class="rule">
-<p class="sub" style="margin-bottom:14px">IDE 是你寫程式、檢查、再送進 Uno 的軟體。本主題使用 <b>Arduino IDE 2.x</b>,需要 Windows 10 以上的 64 位元系統。</p>
+<p class="sub" style="margin-bottom:14px">IDE 是你寫程式、檢查、再送進 Uno 的軟體。本主題使用 <b>Arduino IDE 2.x</b>，需要 Windows 10 以上的 64 位元系統。</p>
 <div class="steps">
 <div class="step"><div class="num">1</div><div>
 <h3>下載安裝檔</h3>
 <p class="why">只從官方下載，避免抓到夾帶其他軟體的安裝檔。</p>
-<ol class="ops"><li>用瀏覽器開 <code>arduino.cc</code> 的 Software 下載頁。</li><li>找到 <b>Arduino IDE 2.x</b>,點 <b>Windows</b> 版本（Win 10 and newer, 64 bits）的安裝檔。</li><li>下載頁可能問你要不要捐款，可以直接按 <b>Just Download</b>。</li></ol>
+<ol class="ops"><li>用瀏覽器開 <code>arduino.cc</code> 的 Software 下載頁。</li><li>找到 <b>Arduino IDE 2.x</b>，點 <b>Windows</b> 版本（Win 10 and newer, 64 bits）的安裝檔。</li><li>下載頁可能問你要不要捐款，可以直接按 <b>Just Download</b>。</li></ol>
 </div></div>
 <div class="step"><div class="num">2</div><div>
 <h3>執行安裝程式</h3>
@@ -456,7 +456,7 @@
 </div></div>
 </div>
 <h3 style="margin-top:26px">IDE 畫面導覽</h3>
-<div class="table-wrap"><div class="gt g2"><div class="row"><div class="cell head">位置</div><div class="cell head">有什麼</div></div><div class="row"><div class="cell term">上方工具列左側</div><div class="cell"><b>勾號 Verify</b>:檢查並編譯程式，不會動到板子。<b>右箭頭 Upload</b>:編譯後把程式送進板子。旁邊是<b>板子下拉選單</b>，選板子與連接埠。</div></div><div class="row"><div class="cell term">上方工具列右側</div><div class="cell"><b>Serial Plotter</b>（繪圖）與 <b>Serial Monitor</b>（放大鏡圖示）。第 8 篇會用到。</div></div><div class="row"><div class="cell term">左側側邊欄</div><div class="cell">由上而下：Sketchbook（你存的程式）、<b>Boards Manager</b>（安裝板子套件）、<b>Library Manager</b>（安裝函式庫）、Debug、Search。</div></div><div class="row"><div class="cell term">下方</div><div class="cell"><b>Output</b> 視窗：編譯與上傳的訊息；出錯時會有紅字。</div></div></div></div>
+<div class="table-wrap"><div class="gt g2"><div class="row"><div class="cell head">位置</div><div class="cell head">有什麼</div></div><div class="row"><div class="cell term">上方工具列左側</div><div class="cell"><b>勾號 Verify</b>：檢查並編譯程式，不會動到板子。<b>右箭頭 Upload</b>：編譯後把程式送進板子。旁邊是<b>板子下拉選單</b>，選板子與連接埠。</div></div><div class="row"><div class="cell term">上方工具列右側</div><div class="cell"><b>Serial Plotter</b>（繪圖）與 <b>Serial Monitor</b>（放大鏡圖示）。第 8 篇會用到。</div></div><div class="row"><div class="cell term">左側側邊欄</div><div class="cell">由上而下：Sketchbook（你存的程式）、<b>Boards Manager</b>（安裝板子套件）、<b>Library Manager</b>（安裝函式庫）、Debug、Search。</div></div><div class="row"><div class="cell term">下方</div><div class="cell"><b>Output</b> 視窗：編譯與上傳的訊息；出錯時會有紅字。</div></div></div></div>
 <div class="tip"><b class="l">小技巧</b>IDE 可以切換成中文介面，但<b>本主題的按鈕與選單名稱一律以英文介面為準</b>，對照畫面比較不會迷路，建議保持英文。</div>
 </section>
 
@@ -476,7 +476,7 @@
 <div class="see"><b class="l">你會看到</b>原廠 Uno 會顯示 <code>Arduino Uno (COM3)</code> 這類名稱，後面的數字依電腦而異。相容板常顯示 <code>USB-SERIAL CH340 (COM4)</code>。這個 COM 數字就是之後在 IDE 選的連接埠。</div>
 </div></div>
 <details><summary>相容板：裝置管理員裡有黃色驚嘆號，或根本沒有連接埠</summary><div class="body"><p>多半是缺少 CH340 晶片的 USB 驅動。Windows 有時會自動安裝；沒有的話，到晶片廠商 <b>WCH（沁恆）</b>的官網搜尋 <code>CH341SER</code> 驅動，下載後執行安裝，再重新插拔 USB。這一步不是 Arduino 官方文件的內容，請只從 WCH 官網下載。</p><p style="margin-bottom:0">裝好後，裝置管理員會出現 <code>USB-SERIAL CH340 (COM數字)</code>。</p></div></details>
-<details><summary>我的板子是 Uno R4(USB-C)</summary><div class="body"><p>接線與程式和 R3 完全相同（兩者都是 5V 邏輯、腳位位置相同），但 IDE 需要多一個設定：點左側邊欄的 <b>Boards Manager</b>,搜尋 <code>UNO R4</code>,安裝 <b>Arduino UNO R4 Boards</b> 套件。之後在板子下拉選單選你的 R4 型號（Minima 或 WiFi）。</p><p style="margin-bottom:0">本主題的範例都能在 R4 上編譯，但驗證是以 R3 為準；R4 的內建 LED 腳位同樣用 <code>LED_BUILTIN</code> 表示。</p></div></details>
+<details><summary>我的板子是 Uno R4(USB-C)</summary><div class="body"><p>接線與程式和 R3 完全相同（兩者都是 5V 邏輯、腳位位置相同），但 IDE 需要多一個設定：點左側邊欄的 <b>Boards Manager</b>，搜尋 <code>UNO R4</code>，安裝 <b>Arduino UNO R4 Boards</b> 套件。之後在板子下拉選單選你的 R4 型號（Minima 或 WiFi）。</p><p style="margin-bottom:0">本主題的範例都能在 R4 上編譯，但驗證是以 R3 為準；R4 的內建 LED 腳位同樣用 <code>LED_BUILTIN</code> 表示。</p></div></details>
 </section>
 
 <section id="first">
@@ -488,7 +488,7 @@
 <div class="step"><div class="num">1</div><div>
 <h3>開新草稿碼並貼上程式</h3>
 <p class="why">Arduino 稱程式為「草稿碼（sketch）」。</p>
-<ol class="ops"><li>選單 <b>File → New Sketch</b>。</li><li><code>Ctrl + A</code> 全選預設內容後刪掉。</li><li>按下面程式的 <b>Copy</b>,貼進編輯區。</li></ol>
+<ol class="ops"><li>選單 <b>File → New Sketch</b>。</li><li><code>Ctrl + A</code> 全選預設內容後刪掉。</li><li>按下面程式的 <b>Copy</b>，貼進編輯區。</li></ol>
 <div class="cmd"><div class="cap">Arduino 程式（會依上面填的間隔更新）</div><pre data-tpl data-cpp>// 第 1 篇:讓 Uno 板子上自己的 L 燈閃爍(不需要接任何線)
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);   // LED_BUILTIN 是板子內建 LED 的腳位;Uno 上就是 13 號腳
@@ -501,12 +501,12 @@ void loop() {
   delay({ms});
 }
 </pre><button type="button" class="copy">Copy</button></div>
-<div class="tip"><b class="l">小技巧</b>你也可以用內建範例：<b>File → Examples → 01.Basics → Blink</b>,效果相同。</div>
+<div class="tip"><b class="l">小技巧</b>你也可以用內建範例：<b>File → Examples → 01.Basics → Blink</b>，效果相同。</div>
 </div></div>
 <div class="step"><div class="num">2</div><div>
 <h3>選板子與連接埠</h3>
 <p class="why">告訴 IDE 要把程式送到哪塊板子。</p>
-<ol class="ops"><li>看工具列，勾號與右箭頭旁有下拉選單。Uno 接好後通常會自動顯示 <b>Arduino Uno</b> 與 COM 埠。</li><li>沒有的話：點下拉選單 → <b>Select other board and port…</b>,或用 <b>Tools → Board → Arduino AVR Boards → Arduino Uno</b> 加上 <b>Tools → Port</b>,選後面標著 <code>(Arduino Uno)</code> 的那個。</li></ol>
+<ol class="ops"><li>看工具列，勾號與右箭頭旁有下拉選單。Uno 接好後通常會自動顯示 <b>Arduino Uno</b> 與 COM 埠。</li><li>沒有的話：點下拉選單 → <b>Select other board and port…</b>，或用 <b>Tools → Board → Arduino AVR Boards → Arduino Uno</b> 加上 <b>Tools → Port</b>，選後面標著 <code>(Arduino Uno)</code> 的那個。</li></ol>
 </div></div>
 <div class="step"><div class="num">3</div><div>
 <h3>驗證，再上傳</h3>
@@ -529,7 +529,7 @@ void loop() {
 <section id="gotchas">
   <h2>常見卡關</h2>
   <hr class="rule">
-<details open><summary>Port 選單是灰色的，或 IDE 說找不到板子</summary><div class="body"><ol class="ops"><li>先確認 Uno 上的 <code>ON</code> 燈有亮。</li><li>換一條 USB 線（有些線只能充電），再換一個 USB 孔。</li><li>到「裝置管理員」看有沒有連接埠；相容板請看前面的 CH340 驅動。</li><li>關掉其他可能佔用連接埠的程式（例如另一個開著的 IDE 或序列埠軟體），重新插拔 USB。</li></ol></div></details><details><summary>上傳失敗，出現 avrdude 或 stk500 開頭的紅字</summary><div class="body"><p>這類訊息的意思大多是「IDE 跟板子溝通不上」。依序檢查：板子是否選成 <b>Arduino Uno</b>、連接埠是否選對、USB 線是否能傳資料、同時有沒有別的程式佔用連接埠。這四項都對，才懷疑板子本身。</p></div></details><details><summary>驗證時出現紅字錯誤</summary><div class="body"><p>第 1 篇的程式是直接貼上的，若出錯通常是貼上時少了一部分(例如最後的 <code>}</code>)。把編輯區清空，重新複製貼上一次。</p></div></details><details><summary>上傳成功但 L 燈不閃</summary><div class="body"><p>先按一下 RESET。還是不閃的話，檢查程式裡 <code>pinMode</code> 與 <code>digitalWrite</code> 的拼字與大小寫；Arduino 區分大小寫，<code>HIGH</code>、<code>OUTPUT</code> 必須全大寫。</p></div></details>
+<details open><summary>Port 選單是灰色的，或 IDE 說找不到板子</summary><div class="body"><ol class="ops"><li>先確認 Uno 上的 <code>ON</code> 燈有亮。</li><li>換一條 USB 線（有些線只能充電），再換一個 USB 孔。</li><li>到「裝置管理員」看有沒有連接埠；相容板請看前面的 CH340 驅動。</li><li>關掉其他可能佔用連接埠的程式（例如另一個開著的 IDE 或序列埠軟體），重新插拔 USB。</li></ol></div></details><details><summary>上傳失敗，出現 avrdude 或 stk500 開頭的紅字</summary><div class="body"><p>這類訊息的意思大多是「IDE 跟板子溝通不上」。依序檢查：板子是否選成 <b>Arduino Uno</b>、連接埠是否選對、USB 線是否能傳資料、同時有沒有別的程式佔用連接埠。這四項都對，才懷疑板子本身。</p></div></details><details><summary>驗證時出現紅字錯誤</summary><div class="body"><p>第 1 篇的程式是直接貼上的，若出錯通常是貼上時少了一部分（例如最後的 <code>}</code>）。把編輯區清空，重新複製貼上一次。</p></div></details><details><summary>上傳成功但 L 燈不閃</summary><div class="body"><p>先按一下 RESET。還是不閃的話，檢查程式裡 <code>pinMode</code> 與 <code>digitalWrite</code> 的拼字與大小寫；Arduino 區分大小寫，<code>HIGH</code>、<code>OUTPUT</code> 必須全大寫。</p></div></details>
 </section>
 
 <section id="practice">
@@ -883,10 +883,10 @@ void loop() {
       });
       var h = sel.getAttribute("data-h"), txt;
       if (/^[tb]/.test(h)) {
-        txt = "你點的是 <code>" + h + "</code>,它屬於電源軌。<b>同一條軌上共 " + (mates.length + 1) + " 個孔彼此相通</b>" +
+        txt = "你點的是 <code>" + h + "</code>，它屬於電源軌。<b>同一條軌上共 " + (mates.length + 1) + " 個孔彼此相通</b>" +
               (split && split.checked ? "（這片麵包板的電源軌在中間斷開，左半與右半不相通）。" : "。") + "把 5V 接到 + 軌、GND 接到 − 軌，之後整排孔都能取用。";
       } else {
-        txt = "你點的是 <code>" + h + "</code>,它和 <code>" + mates.join("、") + "</code> 在內部相通(同一欄的 " + (/[a-e]/.test(h[0]) ? "a–e" : "f–j") + ")。" +
+        txt = "你點的是 <code>" + h + "</code>，它和 <code>" + mates.join("、") + "</code> 在內部相通（同一欄的 " + (/[a-e]/.test(h[0]) ? "a–e" : "f–j") + "）。" +
               "把兩個零件的腳插在這 " + (mates.length + 1) + " 個孔裡，它們就接在一起了。";
       }
       info.innerHTML = txt;
@@ -963,7 +963,7 @@ void loop() {
       var r = (5 - v) / (i / 1000), std = nextE12(r), real = (5 - v) / std * 1000;
       var msg = "電阻上要承擔的電壓 = 5 − " + v + " = <b>" + (5 - v).toFixed(1) + " V</b><br>" +
                 "理論電阻 R = " + (5 - v).toFixed(1) + " ÷ " + (i / 1000) + " A = <b>" + Math.round(r) + " Ω</b><br>" +
-                "取不小於它的標準值 → <b>" + fmtOhm(std) + "</b>,實際電流約 <b>" + real.toFixed(1) + " mA</b>";
+                "取不小於它的標準值 → <b>" + fmtOhm(std) + "</b>，實際電流約 <b>" + real.toFixed(1) + " mA</b>";
       if (real > 20) msg += "<br><span class=\"calc-bad\">超過 Uno 每腳建議上限 20 mA，請選更大的電阻或降低目標電流。</span>";
       else if (real < 1) msg += "<br>電流太小，LED 可能幾乎看不出來在亮。";
       out.innerHTML = msg;
@@ -1011,7 +1011,7 @@ void loop() {
       btn.textContent = pressed ? "目前：按住中（點一下放開）" : "目前：放開（點一下按住）";
       btn.setAttribute("aria-pressed", pressed ? "true" : "false");
       if (pull && !pressed) { read = "HIGH(1)"; col = "#788C5D"; txt = "<b>沒按</b>：5 V 經過內建上拉電阻到達 2 號腳。D2 沒有別的去處，幾乎沒有電流，電壓留在約 5 V → <code>digitalRead(2)</code> = <b>HIGH(1)</b>。"; }
-      else if (pull && pressed) { read = "LOW(0)"; col = "#B04A3F"; txt = "<b>按下</b>：按鈕把 2 號腳接到 GND。上拉電阻只讓一點點電流通過（5 V ÷ 約 20–50 kΩ,約 0.1–0.25 mA），2 號腳電壓被拉到約 0 V → <code>digitalRead(2)</code> = <b>LOW(0)</b>。"; }
+      else if (pull && pressed) { read = "LOW(0)"; col = "#B04A3F"; txt = "<b>按下</b>：按鈕把 2 號腳接到 GND。上拉電阻只讓一點點電流通過（5 V ÷ 約 20–50 kΩ，約 0.1–0.25 mA），2 號腳電壓被拉到約 0 V → <code>digitalRead(2)</code> = <b>LOW(0)</b>。"; }
       else if (!pull && !pressed) { read = "不確定"; col = "#87867F"; txt = "<b>沒按</b>：2 號腳什麼都沒接，像一根天線，會收到周圍的雜訊，讀到的值<b>在 HIGH 與 LOW 之間亂跳</b>。這叫<b>浮接</b>，是新手最常踩的坑。"; }
       else { read = "LOW(0)"; col = "#B04A3F"; txt = "<b>按下</b>：2 號腳接到 GND → LOW。但<b>放開的瞬間又回到浮接</b>，讀值不穩，所以這樣的接法不能用。"; }
       lvl.textContent = "digitalRead(2) → " + read;
@@ -1033,7 +1033,7 @@ void loop() {
     function render() {
       var m = +sel.value, p = +prog;
       if (m === p) { scr.textContent = "Hello, Arduino!\ncount = 0\ncount = 1\ncount = 2"; scr.style.color = "#3D3D3A"; note.innerHTML = "<b>兩邊都是 " + p + "。</b>文字正常顯示。"; }
-      else { scr.textContent = m < p ? GARBLE.lower : GARBLE.higher; scr.style.color = "#B04A3F"; note.innerHTML = "程式用 <code>Serial.begin(" + p + ")</code>,Serial Monitor 卻選 <b>" + m + "</b>:雙方講話速度不同，對方聽到的是亂碼。<b>把 Serial Monitor 右上角的 baud 選成和程式一樣。</b>"; }
+      else { scr.textContent = m < p ? GARBLE.lower : GARBLE.higher; scr.style.color = "#B04A3F"; note.innerHTML = "程式用 <code>Serial.begin(" + p + ")</code>,Serial Monitor 卻選 <b>" + m + "</b>：雙方講話速度不同，對方聽到的是亂碼。<b>把 Serial Monitor 右上角的 baud 選成和程式一樣。</b>"; }
     }
     sel.addEventListener("change", render); render();
   });
@@ -1047,8 +1047,8 @@ void loop() {
       var rt = 10 * (1 - x), rb = 10 * x, v = 5 * x, adc = Math.round(x * 1023), mapped = Math.floor(adc * 255 / 1023);
       bar.style.width = pos + "%";
       led.style.background = "rgba(176,74,63," + (0.08 + 0.92 * mapped / 255).toFixed(2) + ")";
-      out.innerHTML = "旋鈕轉到 <b>" + pos + "%</b>:<br>" +
-        "上段電阻（5V 到中間腳）= <b>" + rt.toFixed(1) + " kΩ</b>,下段電阻（中間腳到 GND）= <b>" + rb.toFixed(1) + " kΩ</b>（加起來永遠是 10 kΩ）<br>" +
+      out.innerHTML = "旋鈕轉到 <b>" + pos + "%</b>：<br>" +
+        "上段電阻（5V 到中間腳）= <b>" + rt.toFixed(1) + " kΩ</b>，下段電阻（中間腳到 GND）= <b>" + rb.toFixed(1) + " kΩ</b>（加起來永遠是 10 kΩ）<br>" +
         "中間腳（接 A0）電壓 = 5 V × " + rb.toFixed(1) + " ÷ 10 = <b>" + v.toFixed(2) + " V</b><br>" +
         "<code>analogRead(A0)</code> ≈ <b>" + adc + "</b>(0–1023)<br>" +
         "<code>map(值, 0, 1023, 0, 255)</code> ≈ <b>" + mapped + "</b> → LED 亮度";
@@ -1066,7 +1066,7 @@ void loop() {
       bar.style.width = (adc / 1023 * 100) + "%";
       var on = !isNaN(t) && adc < t;
       led.style.background = on ? "rgba(176,74,63,1)" : "rgba(176,74,63,.08)";
-      out.innerHTML = "環境亮度 <b>" + Math.round(x * 100) + "%</b>:光敏電阻約 <b>" + fmt(r) + "</b>（範例值）<br>" +
+      out.innerHTML = "環境亮度 <b>" + Math.round(x * 100) + "%</b>：光敏電阻約 <b>" + fmt(r) + "</b>（範例值）<br>" +
         "A0 電壓 = 5 V × 10 kΩ ÷ （光敏電阻 + 10 kΩ） = <b>" + v.toFixed(2) + " V</b> → <code>analogRead(A0)</code> ≈ <b>" + adc + "</b><br>" +
         "門檻 " + (isNaN(t) ? "?" : t) + ":<b>" + (on ? "讀值低於門檻 → 天黑，LED 亮" : "讀值不低於門檻 → 夠亮，LED 滅") + "</b>";
     }
@@ -1080,7 +1080,7 @@ void loop() {
     function render() {
       var d = +rng.value, t = d * 2 / 0.0343;
       bar.style.width = (d / 400 * 100) + "%";
-      out.innerHTML = "物體在 <b>" + d + " cm</b> 外：聲音來回 <b>" + (d * 2) + " cm</b>,<br>花的時間 = " + (d * 2) + " ÷ 0.0343 ≈ <b>" + Math.round(t) + " 微秒</b>(約 " + (t / 1000).toFixed(2) + " 毫秒)<br>" +
+      out.innerHTML = "物體在 <b>" + d + " cm</b> 外：聲音來回 <b>" + (d * 2) + " cm</b>，<br>花的時間 = " + (d * 2) + " ÷ 0.0343 ≈ <b>" + Math.round(t) + " 微秒</b>（約 " + (t / 1000).toFixed(2) + " 毫秒）<br>" +
         "所以 Echo 腳會維持 HIGH 約 <b>" + Math.round(t) + " 微秒</b>；程式用 <code>duration * 0.0343 / 2</code> 換回 " + d + " cm。" +
         (d < 2 || d > 400 ? "<br><span class=\"calc-bad\">HC-SR04 的有效範圍約 2–400 cm，超出可能不準。</span>" : "");
     }
@@ -1096,7 +1096,7 @@ void loop() {
       var px = 50 + w / 20000 * 400;   // 20 ms 對應 400 px
       wave.setAttribute("points", "50,110 50,40 " + px + ",40 " + px + ",110 450,110");
       arm.setAttribute("transform", "rotate(" + (-a) + " 400 130)");
-      out.innerHTML = "<code>myServo.write(" + a + ");</code> → 每 20 毫秒送一次脈衝，<b>HIGH 長度約 " + w + " 微秒(" + (w / 1000).toFixed(2) + " 毫秒)</b>。伺服馬達依脈衝寬度轉到對應角度。";
+      out.innerHTML = "<code>myServo.write(" + a + ");</code> → 每 20 毫秒送一次脈衝，<b>HIGH 長度約 " + w + " 微秒（" + (w / 1000).toFixed(2) + " 毫秒）</b>。伺服馬達依脈衝寬度轉到對應角度。";
     }
     rng.addEventListener("input", render); render();
   });
