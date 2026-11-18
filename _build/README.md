@@ -21,6 +21,7 @@ _build/
 │   ├── common.js        每頁內嵌的共用互動（複製、測驗、檢查表、模擬、視角/階段切換…）
 │   ├── h.py             HTML 輔助函式（cmd、step、table、fill、sim、checks、resources…）
 │   ├── fw.py            全形標點轉換
+│   ├── pwutil.py        Playwright 驗證共用：stub_analytics（攔下 Cloudflare Web Analytics 的請求）
 │   └── seo.py           站台層設定：SITE_URL、description／canonical／Open Graph／favicon／theme-color、skip link
 ├── github/              p1 … p11（沒有 p6：PR 頁是手寫的原始樣板）；README.md、reports/link-check.md
 ├── arduino/             a01 … a20、bb.py（接線圖）、arduino.css/.js、驗證工具、tools/、reports/；README.md
@@ -98,7 +99,7 @@ python3 _build/arduino/arduino_verify.py a03 # Arduino 電路與程式驗證（�
 ## 6. 設計規範（所有主題一致）
 
 **硬規則**
-- 單檔、零依賴：CSS 在 `<style>`、JS 在 `<script>`；不用框架、CDN、網路字型、外部圖片，不發網路請求；圖像用內嵌 SVG 或 CSS。
+- 單檔、零依賴：CSS 在 `<style>`、JS 在 `<script>`；不用框架、CDN、網路字型、外部圖片，不發網路請求；圖像用內嵌 SVG 或 CSS。**唯一的選用例外**是 Cloudflare Web Analytics：`shared/seo.py` 的 `ANALYTICS_TOKEN` 非空時，`seo.apply()` 會在每頁 `</body>` 前輸出 `https://static.cloudflareinsights.com/beacon.min.js`（留空則完全不輸出）。要開關只改這一處再跑 `site_files.py`，**不要手貼到頁面或規格檔**（重組會被洗掉）。若日後在 `_headers` 加 CSP，要放行 `static.cloudflareinsights.com` 與 `cloudflareinsights.com`。
 - 一律 `<!doctype html>` + `lang="zh-Hant"` + charset + viewport，`<title>` 要具體。
 - 顏色只用 `:root` 變數（SVG 屬性可寫字面色碼，但必須取自同一組 token）。
 - **`localStorage` 只有兩個例外**：首頁的「已讀進度」、微電影第 15 篇的分鏡編輯器；一律包 try/catch，失敗時退回記憶體變數，頁面不得壞掉。其他頁面不使用。
@@ -142,7 +143,8 @@ python3 _build/arduino/arduino_verify.py a03 # Arduino 電路與程式驗證（�
 
 - `python3 _build/verify.py`：每頁 1280 與 390 寬 `overflow: 0`、`ERRORS: []`。
 - 沒有重複 id、沒有失效的相對連結或 `#錨點`（`verify.py` 會檢查）。
-- 搜尋 `http://`、`https://`：只應出現在官方文件連結、SVG `xmlns`，以及 `<head>` 的 canonical／`og:url`。
+- 搜尋 `http://`、`https://`：只應出現在官方文件連結、SVG `xmlns`、`<head>` 的 canonical／`og:url`，以及選用的 Analytics beacon。`verify.py` 會檢查外部資源白名單：除了 canonical 與該 beacon，任何外部 `<script>`／`<link>`／`<img>`／`<iframe>` 來源都算錯誤。
+- **寫 Playwright 驗證腳本時**，每個 `new_context()` 後都要呼叫 `shared/pwutil.py` 的 `stub_analytics(ctx)`：驗證用 `file://` 開頁（origin 為 null），beacon 的請求會被 CORS 擋下並產生 console error，導致 workflow 失敗；stub 會把 `cloudflareinsights.com` 與其子網域的請求用空回應攔下，不影響頁面本身。`verify.py`、`arduino/verify_arduino.py`、`microfilm/check.py` 都已套用。
 - 子頁沒有 `localStorage`（第 6 節的例外除外）。
 - `verify.py` 的站台層與部署檢查（`wrangler.jsonc` 的 `name` 要與 `SITE_URL` 一致、部署相關檔案要存在）：每頁 meta／canonical／og／favicon／theme-color／skip link／`main#main`、title 與 description 不重複、`sitemap.xml` 與 `public/` 頁面相符、`quick` 每個錨點都存在。
 - **外部連結要實際開啟**（WebFetch 或瀏覽器；shell 通常連不到外網，不能當證據）：結果寫進 `_build/<主題>/reports/link-check.md`（日期、方法、每條狀態）；被轉址的改成最終網址；只拿到頁面外殼的算「無法驗證」，不能寫成已驗證。介面名稱、指令、規格、額度逐項對照官方文件，查證日期在這些做完之後才更新。

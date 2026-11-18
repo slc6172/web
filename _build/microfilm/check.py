@@ -2,6 +2,8 @@
 每頁:1280/390 寬的橫向溢出、JS 錯誤、重複 id、http 連結、localStorage、題目/選擇題/動畫/滑桿的實際操作。--shot 會存 /tmp/mf_<頁>_<寬>.png(整頁)。"""
 import sys, os, re
 from playwright.sync_api import sync_playwright
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "shared"))
+from pwutil import stub_analytics
 HERE = os.path.dirname(os.path.abspath(__file__))
 PUB = os.path.join(os.path.dirname(os.path.dirname(HERE)), "public", "microfilm")
 CHROME = os.environ.get("CHROME_PATH") or None   # 沒設定就用 Playwright 內建的 Chromium
@@ -18,7 +20,7 @@ with sync_playwright() as p:
         print("==", n, "lines", src.count("\n"), "KB", len(src.encode()) // 1024, "dupIDs", dup, "http", urls[:3], "localStorage", "localStorage" in src)
         for w in (1280, 390):
             errs = []
-            ctx = b.new_context(viewport={"width": w, "height": 900}); pg = ctx.new_page()
+            ctx = b.new_context(viewport={"width": w, "height": 900}); stub_analytics(ctx); pg = ctx.new_page()
             pg.on("pageerror", lambda e: errs.append(str(e)))
             pg.on("console", lambda m: errs.append(m.text) if m.type == "error" else None)
             pg.goto("file://" + f); pg.wait_for_timeout(250)

@@ -8,6 +8,7 @@ import re, html as _h, urllib.parse
 
 SITE_URL = "https://www.slc6172.workers.dev"   # 不含結尾斜線;留空 = 略過 canonical / og:url / sitemap
 CLEAN_URLS = True                               # Cloudflare 會把 /x.html 轉成 /x(已實測),canonical 與 sitemap 用無 .html 版本
+ANALYTICS_TOKEN = ""                            # 選用:Cloudflare Web Analytics 的 token;留空 = 不輸出任何外部資源(預設)
 SITE_NAME = "自學教學站"
 THEME_COLOR = "#FAF9F5"
 INDEX_DESC = "繁體中文的單頁自學教學站：GitHub、Arduino、微電影分鏡。每篇都有演練、測驗與檢查表，可離線開啟。"
@@ -60,6 +61,14 @@ def _esc(s):
     return _h.escape(s, quote=True)
 
 
+_BEACON_RE = re.compile(r'\n?<script defer src="https://static\.cloudflareinsights\.com/beacon\.min\.js"[^>]*></script>')
+
+
+def _beacon():
+    return ('<script defer src="https://static.cloudflareinsights.com/beacon.min.js" '
+            "data-cf-beacon='{\"token\": \"%s\"}'></script>" % ANALYTICS_TOKEN)
+
+
 def apply(html, rel, desc=None):
     title = _text(re.search(r"<title>(.*?)</title>", html, re.S).group(1))
     if rel == "index.html":
@@ -90,4 +99,7 @@ def apply(html, rel, desc=None):
         html = re.sub(r"(<body[^>]*>)", lambda m: m.group(1) + '\n<a class="skip" href="#main">跳到主要內容</a>', html, count=1)
     if 'id="main"' not in html:
         html = html.replace("<main>", '<main id="main" tabindex="-1">', 1)
+    html = _BEACON_RE.sub("", html)          # 先清掉舊的,token 改了或移除後重跑即可更新
+    if ANALYTICS_TOKEN:
+        html = html.replace("</body>", _beacon() + "\n</body>", 1)
     return html

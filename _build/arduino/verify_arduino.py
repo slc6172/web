@@ -6,6 +6,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 PUB = os.path.join(os.path.dirname(os.path.dirname(HERE)), "public")
 BASE = "file://" + PUB + "/"
 import tempfile
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "shared"))
+from pwutil import stub_analytics
 SHOTS = os.path.join(tempfile.gettempdir(), "learning-hub-shots"); os.makedirs(SHOTS, exist_ok=True)
 CHROME = os.environ.get("CHROME_PATH") or None   # 沒設定就用 Playwright 內建的 Chromium
 pages = sorted(os.path.basename(f) for f in glob.glob(PUB + "/arduino/arduino-*-guide.html"))
@@ -20,7 +22,7 @@ with sync_playwright() as p:
     b = p.chromium.launch(executable_path=CHROME, args=["--no-sandbox"])
     for w in (1280, 390):
         for pg in pages:
-            ctx = b.new_context(viewport={"width": w, "height": 900})
+            ctx = b.new_context(viewport={"width": w, "height": 900}); stub_analytics(ctx)
             page = ctx.new_page()
             page.on("pageerror", lambda e, pg=pg: errs.append((pg, str(e))))
             page.on("console", lambda m, pg=pg: errs.append((pg, m.text)) if m.type == "error" else None)
@@ -33,7 +35,7 @@ with sync_playwright() as p:
     # ---- 功能檢查(每頁) ----
     for pg in pages:
         print("\n[%s]" % pg)
-        ctx = b.new_context(viewport={"width": 1280, "height": 900}); page = ctx.new_page()
+        ctx = b.new_context(viewport={"width": 1280, "height": 900}); stub_analytics(ctx); page = ctx.new_page()
         page.on("pageerror", lambda e, pg=pg: errs.append((pg, str(e))))
         page.on("console", lambda m, pg=pg: errs.append((pg, m.text)) if m.type == "error" else None)
         page.goto(BASE + "arduino/" + pg); page.wait_for_timeout(300)
@@ -52,7 +54,7 @@ with sync_playwright() as p:
         # 零元件:沒有外部資源
         html = open(os.path.join(PUB, "arduino", pg), encoding="utf-8").read()
         check("localStorage" not in html and "sessionStorage" not in html, "沒有使用 localStorage/sessionStorage")
-        check(not re.search(r'<(script|img)[^>]+src="https?://|<link(?![^>]*rel="canonical")[^>]+href="https?://', html), "沒有外部 script/link/img（canonical 不算資源）")
+        check(not re.search(r'<(script|img)(?![^>]*static\.cloudflareinsights\.com)[^>]+src="https?://|<link(?![^>]*rel="canonical")[^>]+href="https?://', html), "沒有外部 script/link/img（canonical 與選用的 Cloudflare Web Analytics beacon 不算）")
         # 測驗
         if page.locator("#quizAns button").count():
             page.click("#quizAns button >> nth=1"); check(page.locator("#quizFb.show").count() == 1, "測驗作答後顯示回饋")
@@ -189,7 +191,7 @@ with sync_playwright() as p:
         ctx.close()
     # ---- 首頁 ----
     print("\n[index.html]")
-    ctx = b.new_context(viewport={"width": 1280, "height": 900}); page = ctx.new_page()
+    ctx = b.new_context(viewport={"width": 1280, "height": 900}); stub_analytics(ctx); page = ctx.new_page()
     page.on("pageerror", lambda e: errs.append(("index", str(e))))
     page.goto(BASE + "index.html"); page.wait_for_timeout(200)
     gh_h1 = page.inner_text("#heroH1")

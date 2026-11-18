@@ -57,7 +57,7 @@ python3 -m http.server 8000
 
 ## 設計原則
 
-- **單檔、零依賴**：每頁的 CSS 與 JavaScript 都內嵌，不使用框架、CDN、網路字型或外部圖片，可離線開啟、單獨分享。
+- **單檔、零依賴**：每頁的 CSS 與 JavaScript 都內嵌，不使用框架、CDN、網路字型或外部圖片，可離線開啟、單獨分享。唯一的選用例外是 Cloudflare Web Analytics：在 `_build/shared/seo.py` 填入 `ANALYTICS_TOKEN` 後，每頁才會多一個 beacon 指令碼（預設留空，不載入任何外部資源）。
 - **統一的視覺語言**：象牙白底、陶土橘強調色；serif 標題、sans 內文、mono 指令與標籤。三個主題共用同一組設計 tokens 與元件。
 - **每步都有解釋**：說明為什麼要做、要打什麼、會看到什麼，並附測驗與檢查表。
 - **可搜尋、可分享、可用鍵盤**：每頁都有 description、canonical、Open Graph、favicon 與 theme-color；每頁開頭有「跳到主要內容」連結；首頁快速入口直接連到頁內對應段落。

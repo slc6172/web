@@ -7,6 +7,9 @@
 import sys, os, re, glob, tempfile
 from playwright.sync_api import sync_playwright
 
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "shared"))
+from pwutil import stub_analytics   # 攔下 Cloudflare Web Analytics 的請求,避免 file:// 驗證時的 CORS console error
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 PUB = os.path.join(os.path.dirname(HERE), "public")
 BASE = "file://" + PUB + "/"
@@ -21,11 +24,13 @@ for t in THEMES:
     pages += sorted(t + "/" + os.path.basename(f) for f in glob.glob(os.path.join(PUB, t, "*.html")))
 
 errs = []
+
 with sync_playwright() as p:
     b = p.chromium.launch(executable_path=CHROME, args=["--no-sandbox"])
     for w in (1280, 390):
         for pg in pages:
             ctx = b.new_context(viewport={"width": w, "height": 900})
+            stub_analytics(ctx)
             page = ctx.new_page()
             page.on("pageerror", lambda e, pg=pg: errs.append((pg, "pageerror", str(e))))
             page.on("console", lambda m, pg=pg: errs.append((pg, "console", m.text)) if m.type == "error" else None)
@@ -40,7 +45,7 @@ with sync_playwright() as p:
             ctx.close()
 
     # ---- 首頁功能 ----
-    ctx = b.new_context(viewport={"width": 1280, "height": 900}); page = ctx.new_page()
+    ctx = b.new_context(viewport={"width": 1280, "height": 900}); stub_analytics(ctx); page = ctx.new_page()
     page.on("pageerror", lambda e: errs.append(("index", "pageerror", str(e))))
     page.goto(BASE + "index.html")
     tabs = page.eval_on_selector_all("#catTabs button[data-cat]", "els => els.map(e => e.dataset.cat)")
@@ -142,6 +147,13 @@ def static_checks():
         norm = lambda x: x if x.endswith(".html") else (x + ".html" if x else "index.html")
         if set(map(norm, want)) != have:
             errs.append(("sitemap.xml", "與 public/ 頁面不符", sorted(set(map(norm, want)) ^ have)))
+    # 外部資源白名單:唯一允許的是選用的 Cloudflare Web Analytics beacon(canonical 不算資源)
+    ok_ext = "https://static.cloudflareinsights.com/beacon.min.js"
+    for pg in pages:
+        h = open(os.path.join(PUB, pg), encoding="utf-8").read()
+        for m in re.finditer(r'<(?:script|img|iframe|source|video|audio)\b[^>]*\ssrc=["\'](https?:)?//[^"\']+["\']|<link\b(?![^>]*rel=["\']canonical["\'])[^>]*\shref=["\'](https?:)?//[^"\']+["\']', h):
+            if ok_ext not in m.group(0):
+                errs.append((pg, "不允許的外部資源", m.group(0)[:100]))
     # 部署設定:wrangler.jsonc 與 SITE_URL、CLEAN_URLS 一致,workflow 與 .gitignore 存在
     root = os.path.dirname(PUB)
     wr = os.path.join(root, "wrangler.jsonc")
