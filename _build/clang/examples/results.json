@@ -1,0 +1,2086 @@
+{
+ "p01/e1.err": {
+  "err": "main.cpp: In function ‘int main()’:\nmain.cpp:4:44: error: expected ‘;’ before ‘return’\n    4 |     std::cout << \"Hello, C++!\" << std::endl\n      |                                            ^\n      |                                            ;\n    5 |     return 0;\n      |     ~~~~~~",
+  "ok": false
+ },
+ "p01/hello": {
+  "ok": true,
+  "out": "Hello, C++!\n",
+  "stdin": ""
+ },
+ "p01/x1": {
+  "ok": true,
+  "out": "Hello, 小明!\n",
+  "stdin": ""
+ },
+ "p01/x3": {
+  "ok": true,
+  "out": "Hello, C++!\n我開始學 C++ 了\n",
+  "stdin": ""
+ },
+ "p02/a1": {
+  "ok": true,
+  "out": "",
+  "stdin": ""
+ },
+ "p02/a2": {
+  "ok": true,
+  "out": "Hello, C++!\n",
+  "stdin": ""
+ },
+ "p02/a3": {
+  "ok": true,
+  "out": "Hello, C++!\n我正在學 C++\n",
+  "stdin": ""
+ },
+ "p02/a4": {
+  "ok": true,
+  "out": "Hello, C++!\n我正在學 C++\n",
+  "stdin": ""
+ },
+ "p02/e1.err": {
+  "err": "main.cpp: In function ‘int main()’:\nmain.cpp:4:44: error: expected ‘;’ before ‘return’\n    4 |     std::cout << \"Hello, C++!\" << std::endl\n      |                                            ^\n      |                                            ;\n    5 |     return 0;\n      |     ~~~~~~",
+  "ok": false
+ },
+ "p02/e2.err": {
+  "err": "main.cpp: In function ‘int main()’:\nmain.cpp:4:5: error: ‘cout’ was not declared in this scope; did you mean ‘std::cout’?\n    4 |     cout << \"Hello, C++!\" << endl;\n      |     ^~~~\n      |     std::cout",
+  "ok": false
+ },
+ "p02/e3.err": {
+  "err": "main.cpp: In function ‘int main()’:\nmain.cpp:2:10: error: ‘cout’ is not a member of ‘std’\n    2 |     std::cout << \"Hello, C++!\" << std::endl;\n      |          ^~~~\nmain.cpp:1:1: note: ‘std::cout’ is defined in header ‘<iostream>’; did you forget to ‘#include <iostream>’?\n  +++ |+#include <iostream>\n    1 | int main() {",
+  "ok": false
+ },
+ "p02/e4.err": {
+  "err": "main.cpp: In function ‘int main()’:\nmain.cpp:5:14: error: expected ‘}’ at end of input\n    5 |     return 0;\n      |              ^",
+  "ok": false
+ },
+ "p02/x1": {
+  "ok": true,
+  "out": "我叫小明\n我住在台北\n",
+  "stdin": ""
+ },
+ "p02/x2": {
+  "ok": true,
+  "out": "  *\n ***\n*****\n",
+  "stdin": ""
+ },
+ "p02/x3.err": {
+  "err": "main.cpp: In function ‘int main()’:\nmain.cpp:4:36: error: expected ‘;’ before ‘retrun’\n    4 |     std::cout << \"Hi!\" << std::endl\n      |                                    ^\n      |                                    ;\n    5 |     retrun 0;\n      |     ~~~~~~",
+  "ok": false
+ },
+ "p02/x3fix": {
+  "ok": true,
+  "out": "Hi!\n",
+  "stdin": ""
+ },
+ "p03/a1": {
+  "ok": true,
+  "out": "18\n",
+  "stdin": ""
+ },
+ "p03/a2": {
+  "ok": true,
+  "out": "年齡:18\n身高:170.5\n等級:A\n及格:1\n",
+  "stdin": ""
+ },
+ "p03/a3": {
+  "ok": true,
+  "out": "18\n19\n20\n",
+  "stdin": ""
+ },
+ "p03/a3b": {
+  "ok": true,
+  "out": "3\n3\nA\n66\n",
+  "stdin": ""
+ },
+ "p03/a4": {
+  "ok": true,
+  "out": "3.14159\n42\n9.5\n4 8\n",
+  "stdin": ""
+ },
+ "p03/e1.err": {
+  "err": "main.cpp: In function ‘int main()’:\nmain.cpp:6:8: error: assignment of read-only variable ‘PI’\n    6 |     PI = 3.14;\n      |     ~~~^~~~~~",
+  "ok": false
+ },
+ "p03/o1": {
+  "ok": true,
+  "out": "4294967295\n0\n2147483647\n-2147483648\n",
+  "stdin": ""
+ },
+ "p03/s1": {
+  "ok": true,
+  "out": "char       1\nbool       1\nshort      2\nint        4\nlong long  8\nfloat      4\ndouble     8\n",
+  "stdin": ""
+ },
+ "p03/x1": {
+  "ok": true,
+  "out": "年齡:20\n身高:168.5\n姓名縮寫:M\n是學生:1\n",
+  "stdin": ""
+ },
+ "p03/x2": {
+  "ok": true,
+  "out": "交換前:a=3 b=5\n交換後:a=5 b=3\n",
+  "stdin": ""
+ },
+ "p03/x3": {
+  "ok": true,
+  "out": "半徑 5 的圓面積是 78.5397\n",
+  "stdin": ""
+ },
+ "p04/a1": {
+  "ok": true,
+  "out": "請輸入年齡:18\n你今年 18 歲\n",
+  "parts": [
+   [
+    "o",
+    "請輸入年齡:"
+   ],
+   [
+    "i",
+    "18\n"
+   ],
+   [
+    "o",
+    "你今年 18 歲\n"
+   ]
+  ],
+  "stdin": "18\n"
+ },
+ "p04/a2": {
+  "ok": true,
+  "out": "請輸入兩個整數:3 5\n3 + 5 = 8\n",
+  "parts": [
+   [
+    "o",
+    "請輸入兩個整數:"
+   ],
+   [
+    "i",
+    "3 5\n"
+   ],
+   [
+    "o",
+    "3 + 5 = 8\n"
+   ]
+  ],
+  "stdin": "3 5\n"
+ },
+ "p04/a3": {
+  "ok": true,
+  "out": "單價與數量:19.9 3\n預設輸出:59.7\n固定兩位:59.70\n[   19.90]\n",
+  "parts": [
+   [
+    "o",
+    "單價與數量:"
+   ],
+   [
+    "i",
+    "19.9 3\n"
+   ],
+   [
+    "o",
+    "預設輸出:59.7\n固定兩位:59.70\n[   19.90]\n"
+   ]
+  ],
+  "stdin": "19.9 3\n"
+ },
+ "p04/a4": {
+  "ok": true,
+  "out": "年齡:18\n名字:你好 ,年齡 18\n",
+  "parts": [
+   [
+    "o",
+    "年齡:"
+   ],
+   [
+    "i",
+    "18\n"
+   ],
+   [
+    "o",
+    "名字:你好 ,年齡 18\n"
+   ]
+  ],
+  "stdin": "18\nAlice\n"
+ },
+ "p04/a4fix": {
+  "ok": true,
+  "out": "年齡:18\n名字:Alice\n你好 Alice,年齡 18\n",
+  "parts": [
+   [
+    "o",
+    "年齡:"
+   ],
+   [
+    "i",
+    "18\n"
+   ],
+   [
+    "o",
+    "名字:"
+   ],
+   [
+    "i",
+    "Alice\n"
+   ],
+   [
+    "o",
+    "你好 Alice,年齡 18\n"
+   ]
+  ],
+  "stdin": "18\nAlice\n"
+ },
+ "p04/a5": {
+  "ok": true,
+  "out": "請輸入兩個整數:abc 5\na=0 b=-1\n",
+  "parts": [
+   [
+    "o",
+    "請輸入兩個整數:"
+   ],
+   [
+    "i",
+    "abc 5\n"
+   ],
+   [
+    "o",
+    "a=0 b=-1\n"
+   ]
+  ],
+  "stdin": "abc 5\n"
+ },
+ "p04/x1": {
+  "ok": true,
+  "out": "請輸入兩個整數:12 30\n和:42\n差:-18\n",
+  "parts": [
+   [
+    "o",
+    "請輸入兩個整數:"
+   ],
+   [
+    "i",
+    "12 30\n"
+   ],
+   [
+    "o",
+    "和:42\n差:-18\n"
+   ]
+  ],
+  "stdin": "12 30\n"
+ },
+ "p04/x2": {
+  "ok": true,
+  "out": "單價與數量:19.9 3\n總價:59.70\n",
+  "parts": [
+   [
+    "o",
+    "單價與數量:"
+   ],
+   [
+    "i",
+    "19.9 3\n"
+   ],
+   [
+    "o",
+    "總價:59.70\n"
+   ]
+  ],
+  "stdin": "19.9 3\n"
+ },
+ "p04/x3": {
+  "ok": true,
+  "out": "年齡:20\n全名:Mina Chen\nMina Chen,你 20 歲\n",
+  "parts": [
+   [
+    "o",
+    "年齡:"
+   ],
+   [
+    "i",
+    "20\n"
+   ],
+   [
+    "o",
+    "全名:"
+   ],
+   [
+    "i",
+    "Mina Chen\n"
+   ],
+   [
+    "o",
+    "Mina Chen,你 20 歲\n"
+   ]
+  ],
+  "stdin": "20\nMina Chen\n"
+ },
+ "p05/a1": {
+  "ok": true,
+  "out": "22\n12\n85\n3\n2\n",
+  "stdin": ""
+ },
+ "p05/a2": {
+  "ok": true,
+  "out": "3\n3.5\n3\n3.5\n",
+  "stdin": ""
+ },
+ "p05/a3": {
+  "ok": true,
+  "out": "14\n20\n5\n",
+  "stdin": ""
+ },
+ "p05/a4": {
+  "ok": true,
+  "out": "1\n0\n1\n0\n1\n0\n",
+  "stdin": ""
+ },
+ "p05/a5": {
+  "ok": true,
+  "out": "5\n",
+  "stdin": ""
+ },
+ "p05/a6": {
+  "ok": true,
+  "out": "5\n6\n7\n",
+  "stdin": ""
+ },
+ "p05/x1": {
+  "ok": true,
+  "out": "3725 秒 = 1 時 2 分 5 秒\n",
+  "stdin": ""
+ },
+ "p05/x2": {
+  "ok": true,
+  "out": "n = 14,是偶數嗎(1 是、0 不是):1\nn = 7,是偶數嗎(1 是、0 不是):0\n",
+  "stdin": ""
+ },
+ "p05/x3": {
+  "ok": true,
+  "out": "2024:1\n1900:0\n2000:1\n",
+  "stdin": ""
+ },
+ "p06/a1": {
+  "ok": true,
+  "out": "年齡:20\n成年\n",
+  "parts": [
+   [
+    "o",
+    "年齡:"
+   ],
+   [
+    "i",
+    "20\n"
+   ],
+   [
+    "o",
+    "成年\n"
+   ]
+  ],
+  "stdin": "20\n"
+ },
+ "p06/a2": {
+  "ok": true,
+  "out": "分數:85\nB\n",
+  "parts": [
+   [
+    "o",
+    "分數:"
+   ],
+   [
+    "i",
+    "85\n"
+   ],
+   [
+    "o",
+    "B\n"
+   ]
+  ],
+  "stdin": "85\n"
+ },
+ "p06/a3": {
+  "ok": true,
+  "out": "1 查詢  2 新增  3 離開,請選擇:2\n新增中\n",
+  "parts": [
+   [
+    "o",
+    "1 查詢  2 新增  3 離開,請選擇:"
+   ],
+   [
+    "i",
+    "2\n"
+   ],
+   [
+    "o",
+    "新增中\n"
+   ]
+  ],
+  "stdin": "2\n"
+ },
+ "p06/a4": {
+  "ok": true,
+  "out": "請選擇:2\n新增中\n再見\n沒有這個選項\n",
+  "parts": [
+   [
+    "o",
+    "請選擇:"
+   ],
+   [
+    "i",
+    "2\n"
+   ],
+   [
+    "o",
+    "新增中\n再見\n沒有這個選項\n"
+   ]
+  ],
+  "stdin": "2\n"
+ },
+ "p06/a5": {
+  "ok": true,
+  "out": "年齡與是否學生(1 是、0 否):20 1\n學生票\n",
+  "parts": [
+   [
+    "o",
+    "年齡與是否學生(1 是、0 否):"
+   ],
+   [
+    "i",
+    "20 1\n"
+   ],
+   [
+    "o",
+    "學生票\n"
+   ]
+  ],
+  "stdin": "20 1\n"
+ },
+ "p06/a6": {
+  "ok": true,
+  "out": "較大的數:17\n",
+  "stdin": ""
+ },
+ "p06/x1": {
+  "ok": true,
+  "out": "整數:7\n7 是奇數\n",
+  "parts": [
+   [
+    "o",
+    "整數:"
+   ],
+   [
+    "i",
+    "7\n"
+   ],
+   [
+    "o",
+    "7 是奇數\n"
+   ]
+  ],
+  "stdin": "7\n"
+ },
+ "p06/x2": {
+  "ok": true,
+  "out": "分數:72\n等級 B\n",
+  "parts": [
+   [
+    "o",
+    "分數:"
+   ],
+   [
+    "i",
+    "72\n"
+   ],
+   [
+    "o",
+    "等級 B\n"
+   ]
+  ],
+  "stdin": "72\n"
+ },
+ "p06/x3": {
+  "ok": true,
+  "out": "算式(例如 12 + 30):12 + 30\n42\n",
+  "parts": [
+   [
+    "o",
+    "算式(例如 12 + 30):"
+   ],
+   [
+    "i",
+    "12 + 30\n"
+   ],
+   [
+    "o",
+    "42\n"
+   ]
+  ],
+  "stdin": "12 + 30\n"
+ },
+ "p07/a1": {
+  "ok": true,
+  "out": "1 2 3 4 5 \n",
+  "stdin": ""
+ },
+ "p07/a2": {
+  "ok": true,
+  "out": "10\n",
+  "stdin": ""
+ },
+ "p07/a3": {
+  "ok": true,
+  "out": "輸入數字(輸入 0 結束):3 8 5 0\n總和:16\n",
+  "parts": [
+   [
+    "o",
+    "輸入數字(輸入 0 結束):"
+   ],
+   [
+    "i",
+    "3 8 5 0\n"
+   ],
+   [
+    "o",
+    "總和:16\n"
+   ]
+  ],
+  "stdin": "3 8 5 0\n"
+ },
+ "p07/a4": {
+  "ok": true,
+  "out": "請輸入 1 到 10 的數字:15\n請輸入 1 到 10 的數字:0\n請輸入 1 到 10 的數字:7\n你輸入了 7\n",
+  "parts": [
+   [
+    "o",
+    "請輸入 1 到 10 的數字:"
+   ],
+   [
+    "i",
+    "15\n"
+   ],
+   [
+    "o",
+    "請輸入 1 到 10 的數字:"
+   ],
+   [
+    "i",
+    "0\n"
+   ],
+   [
+    "o",
+    "請輸入 1 到 10 的數字:"
+   ],
+   [
+    "i",
+    "7\n"
+   ],
+   [
+    "o",
+    "你輸入了 7\n"
+   ]
+  ],
+  "stdin": "15\n0\n7\n"
+ },
+ "p07/a5": {
+  "ok": true,
+  "out": "1 3 5 7 \n",
+  "stdin": ""
+ },
+ "p07/a6": {
+  "ok": true,
+  "out": "1\t2\t3\t\n2\t4\t6\t\n3\t6\t9\t\n",
+  "stdin": ""
+ },
+ "p07/a7": {
+  "ok": true,
+  "out": "0 1 2 3 4 \n0 1 2 3 4 5 \n",
+  "stdin": ""
+ },
+ "p07/x1": {
+  "ok": true,
+  "out": "1 加到 100 = 5050\n",
+  "stdin": ""
+ },
+ "p07/x2": {
+  "ok": true,
+  "out": "*\n**\n***\n****\n",
+  "stdin": ""
+ },
+ "p07/x3": {
+  "ok": true,
+  "out": "輸入一個大於 1 的整數:29\n29 是質數\n",
+  "parts": [
+   [
+    "o",
+    "輸入一個大於 1 的整數:"
+   ],
+   [
+    "i",
+    "29\n"
+   ],
+   [
+    "o",
+    "29 是質數\n"
+   ]
+  ],
+  "stdin": "29\n"
+ },
+ "p08/g1": {
+  "ok": true,
+  "out": "猜一個 1 到 100 的數字:30\n太小了\n",
+  "parts": [
+   [
+    "o",
+    "猜一個 1 到 100 的數字:"
+   ],
+   [
+    "i",
+    "30\n"
+   ],
+   [
+    "o",
+    "太小了\n"
+   ]
+  ],
+  "stdin": "30\n"
+ },
+ "p08/g2": {
+  "ok": true,
+  "out": "猜一個 1 到 100 的數字。\n你的猜測:50\n太大了\n你的猜測:25\n太小了\n你的猜測:42\n答對了!\n",
+  "parts": [
+   [
+    "o",
+    "猜一個 1 到 100 的數字。\n你的猜測:"
+   ],
+   [
+    "i",
+    "50\n"
+   ],
+   [
+    "o",
+    "太大了\n你的猜測:"
+   ],
+   [
+    "i",
+    "25\n"
+   ],
+   [
+    "o",
+    "太小了\n你的猜測:"
+   ],
+   [
+    "i",
+    "42\n"
+   ],
+   [
+    "o",
+    "答對了!\n"
+   ]
+  ],
+  "stdin": "50\n25\n42\n"
+ },
+ "p08/g3": {
+  "ok": true,
+  "out": "猜一個 1 到 100 的數字,你有 7 次機會。\n第 1 次猜:50\n太大了\n第 2 次猜:25\n太小了\n第 3 次猜:37\n太小了\n第 4 次猜:42\n答對了!你用了 4 次。\n",
+  "parts": [
+   [
+    "o",
+    "猜一個 1 到 100 的數字,你有 7 次機會。\n第 1 次猜:"
+   ],
+   [
+    "i",
+    "50\n"
+   ],
+   [
+    "o",
+    "太大了\n第 2 次猜:"
+   ],
+   [
+    "i",
+    "25\n"
+   ],
+   [
+    "o",
+    "太小了\n第 3 次猜:"
+   ],
+   [
+    "i",
+    "37\n"
+   ],
+   [
+    "o",
+    "太小了\n第 4 次猜:"
+   ],
+   [
+    "i",
+    "42\n"
+   ],
+   [
+    "o",
+    "答對了!你用了 4 次。\n"
+   ]
+  ],
+  "stdin": "50\n25\n37\n42\n"
+ },
+ "p08/g4": {
+  "ok": true,
+  "out": "猜一個 1 到 100 的數字,你有 7 次機會。\n第 1 次猜:50\n太大了\n第 2 次猜:25\n太大了\n第 3 次猜:12\n太小了\n第 4 次猜:18\n太大了\n第 5 次猜:15\n太大了\n第 6 次猜:13\n答對了!你用了 6 次。\n",
+  "parts": [
+   [
+    "o",
+    "猜一個 1 到 100 的數字,你有 7 次機會。\n第 1 次猜:"
+   ],
+   [
+    "i",
+    "50\n"
+   ],
+   [
+    "o",
+    "太大了\n第 2 次猜:"
+   ],
+   [
+    "i",
+    "25\n"
+   ],
+   [
+    "o",
+    "太大了\n第 3 次猜:"
+   ],
+   [
+    "i",
+    "12\n"
+   ],
+   [
+    "o",
+    "太小了\n第 4 次猜:"
+   ],
+   [
+    "i",
+    "18\n"
+   ],
+   [
+    "o",
+    "太大了\n第 5 次猜:"
+   ],
+   [
+    "i",
+    "15\n"
+   ],
+   [
+    "o",
+    "太大了\n第 6 次猜:"
+   ],
+   [
+    "i",
+    "13\n"
+   ],
+   [
+    "o",
+    "答對了!你用了 6 次。\n"
+   ]
+  ],
+  "stdin": "50\n25\n12\n18\n15\n13\n"
+ },
+ "p08/g5.norun": {
+  "norun": true,
+  "ok": true,
+  "out": ""
+ },
+ "p08/m1": {
+  "ok": true,
+  "out": "3 x 1 = 3\n3 x 2 = 6\n3 x 3 = 9\n3 x 4 = 12\n3 x 5 = 15\n3 x 6 = 18\n3 x 7 = 21\n3 x 8 = 24\n3 x 9 = 27\n",
+  "stdin": ""
+ },
+ "p08/m2": {
+  "ok": true,
+  "out": "   1   2   3   4   5   6   7   8   9\n   2   4   6   8  10  12  14  16  18\n   3   6   9  12  15  18  21  24  27\n   4   8  12  16  20  24  28  32  36\n   5  10  15  20  25  30  35  40  45\n   6  12  18  24  30  36  42  48  54\n   7  14  21  28  35  42  49  56  63\n   8  16  24  32  40  48  56  64  72\n   9  18  27  36  45  54  63  72  81\n",
+  "stdin": ""
+ },
+ "p08/m3": {
+  "ok": true,
+  "out": "1x1= 1  \n1x2= 2  2x2= 4  \n1x3= 3  2x3= 6  3x3= 9  \n1x4= 4  2x4= 8  3x4=12  4x4=16  \n1x5= 5  2x5=10  3x5=15  4x5=20  5x5=25  \n1x6= 6  2x6=12  3x6=18  4x6=24  5x6=30  6x6=36  \n1x7= 7  2x7=14  3x7=21  4x7=28  5x7=35  6x7=42  7x7=49  \n1x8= 8  2x8=16  3x8=24  4x8=32  5x8=40  6x8=48  7x8=56  8x8=64  \n1x9= 9  2x9=18  3x9=27  4x9=36  5x9=45  6x9=54  7x9=63  8x9=72  9x9=81  \n",
+  "stdin": ""
+ },
+ "p08/x1": {
+  "ok": true,
+  "out": "要印哪一個數字的乘法表?7\n7 x 1 = 7\n7 x 2 = 14\n7 x 3 = 21\n7 x 4 = 28\n7 x 5 = 35\n7 x 6 = 42\n7 x 7 = 49\n7 x 8 = 56\n7 x 9 = 63\n",
+  "parts": [
+   [
+    "o",
+    "要印哪一個數字的乘法表?"
+   ],
+   [
+    "i",
+    "7\n"
+   ],
+   [
+    "o",
+    "7 x 1 = 7\n7 x 2 = 14\n7 x 3 = 21\n7 x 4 = 28\n7 x 5 = 35\n7 x 6 = 42\n7 x 7 = 49\n7 x 8 = 56\n7 x 9 = 63\n"
+   ]
+  ],
+  "stdin": "7\n"
+ },
+ "p08/x2": {
+  "ok": true,
+  "out": "最大範圍是多少?10\n猜一個 1 到 10 的數字。\n15\n超出範圍了\n3\n太小了\n9\n太大了\n7\n答對了,共猜了 4 次。\n",
+  "parts": [
+   [
+    "o",
+    "最大範圍是多少?"
+   ],
+   [
+    "i",
+    "10\n"
+   ],
+   [
+    "o",
+    "猜一個 1 到 10 的數字。\n"
+   ],
+   [
+    "i",
+    "15\n"
+   ],
+   [
+    "o",
+    "超出範圍了\n"
+   ],
+   [
+    "i",
+    "3\n"
+   ],
+   [
+    "o",
+    "太小了\n"
+   ],
+   [
+    "i",
+    "9\n"
+   ],
+   [
+    "o",
+    "太大了\n"
+   ],
+   [
+    "i",
+    "7\n"
+   ],
+   [
+    "o",
+    "答對了,共猜了 4 次。\n"
+   ]
+  ],
+  "stdin": "10\n15\n3\n9\n7\n"
+ },
+ "p08/x3": {
+  "ok": true,
+  "out": "輸入正整數(輸入 0 結束):5 12 9 3 0\n共 4 個數字,最大的是 12\n",
+  "parts": [
+   [
+    "o",
+    "輸入正整數(輸入 0 結束):"
+   ],
+   [
+    "i",
+    "5 12 9 3 0\n"
+   ],
+   [
+    "o",
+    "共 4 個數字,最大的是 12\n"
+   ]
+  ],
+  "stdin": "5 12 9 3 0\n"
+ },
+ "p09/a1": {
+  "ok": true,
+  "out": "80\n88\n77\n",
+  "stdin": ""
+ },
+ "p09/a2": {
+  "ok": true,
+  "out": "總分:395\n平均:79\n",
+  "stdin": ""
+ },
+ "p09/a3": {
+  "ok": true,
+  "out": "最高分:92\n",
+  "stdin": ""
+ },
+ "p09/a4": {
+  "ok": true,
+  "out": "80 92 75 60 88 \n",
+  "stdin": ""
+ },
+ "p09/a5": {
+  "ok": true,
+  "out": "長度:4\nv[1] = 5\n3 5 8 10 \n現在長度:3\n",
+  "stdin": ""
+ },
+ "p09/a6": {
+  "ok": true,
+  "out": "要輸入幾個數字?4\n7 3 9 5\n共 4 個,最大的是 9\n",
+  "parts": [
+   [
+    "o",
+    "要輸入幾個數字?"
+   ],
+   [
+    "i",
+    "4\n"
+   ],
+   [
+    "i",
+    "7 3 9 5\n"
+   ],
+   [
+    "o",
+    "共 4 個,最大的是 9\n"
+   ]
+  ],
+  "stdin": "4\n7 3 9 5\n"
+ },
+ "p09/a7": {
+  "ok": true,
+  "out": "1 2 3 \n4 5 6 \n6\n",
+  "stdin": ""
+ },
+ "p09/c1.crash": {
+  "crash": true,
+  "err": "terminate called after throwing an instance of 'std::out_of_range'\n  what():  vector::_M_range_check: __n (which is 10) >= this->size() (which is 5)",
+  "ok": false,
+  "out": "準備讀取 v.at(10)\n"
+ },
+ "p09/x1": {
+  "ok": true,
+  "out": "總和:80\n平均:13.3333\n最大:30\n",
+  "stdin": ""
+ },
+ "p09/x2": {
+  "ok": true,
+  "out": "5 4 3 2 1 \n",
+  "stdin": ""
+ },
+ "p09/x3": {
+  "ok": true,
+  "out": "3 1 2 4 \n",
+  "stdin": ""
+ },
+ "p10/a1": {
+  "ok": true,
+  "out": "Hello\n5\n",
+  "stdin": ""
+ },
+ "p10/a2": {
+  "ok": true,
+  "out": "Hello C++!\n",
+  "stdin": ""
+ },
+ "p10/a3": {
+  "ok": true,
+  "out": "H\no\nJello\n0:J 1:e 2:l 3:l 4:o \n",
+  "stdin": ""
+ },
+ "p10/a4": {
+  "ok": true,
+  "out": "7\nC++\nC++ World\n找不到 Java\n",
+  "stdin": ""
+ },
+ "p10/a5": {
+  "ok": true,
+  "out": "0\n1\n0\n",
+  "stdin": ""
+ },
+ "p10/a6": {
+  "ok": true,
+  "out": "全名:Mina Chen\n你好,Mina Chen(9 個字元)\n",
+  "parts": [
+   [
+    "o",
+    "全名:"
+   ],
+   [
+    "i",
+    "Mina Chen\n"
+   ],
+   [
+    "o",
+    "你好,Mina Chen(9 個字元)\n"
+   ]
+  ],
+  "stdin": "Mina Chen\n"
+ },
+ "p10/a6b": {
+  "ok": true,
+  "out": "全名:Mina Chen\n你好,Mina\n",
+  "parts": [
+   [
+    "o",
+    "全名:"
+   ],
+   [
+    "i",
+    "Mina Chen\n"
+   ],
+   [
+    "o",
+    "你好,Mina\n"
+   ]
+  ],
+  "stdin": "Mina Chen\n"
+ },
+ "p10/a7": {
+  "ok": true,
+  "out": "你好\n6\n",
+  "stdin": ""
+ },
+ "p10/a8": {
+  "ok": true,
+  "out": "Hi!\n3\n4\n",
+  "stdin": ""
+ },
+ "p10/x1": {
+  "ok": true,
+  "out": "母音共有 7 個\n",
+  "stdin": ""
+ },
+ "p10/x2": {
+  "ok": true,
+  "out": "level 是回文\nhello 不是回文\n",
+  "stdin": ""
+ },
+ "p10/x3": {
+  "ok": true,
+  "out": "olleH\n",
+  "stdin": ""
+ },
+ "p11/a1": {
+  "ok": true,
+  "out": "25\n144\n",
+  "stdin": ""
+ },
+ "p11/a2": {
+  "ok": true,
+  "out": "7\n19\n16\n",
+  "stdin": ""
+ },
+ "p11/a3": {
+  "ok": true,
+  "out": "Hello, Mina!\nHello, Leo!\n",
+  "stdin": ""
+ },
+ "p11/a4": {
+  "ok": true,
+  "out": "函式裡 n = 6\nmain 裡 x = 5\n",
+  "stdin": ""
+ },
+ "p11/a5": {
+  "ok": true,
+  "out": "5\n",
+  "stdin": ""
+ },
+ "p11/a6": {
+  "ok": true,
+  "out": "你好,Mina\n早安,Leo\n5\n4\n",
+  "stdin": ""
+ },
+ "p11/a7": {
+  "ok": true,
+  "out": "24\n",
+  "stdin": ""
+ },
+ "p11/e1.err": {
+  "err": "main.cpp: In function ‘int main()’:\nmain.cpp:5:13: error: ‘add’ was not declared in this scope\n    5 |     cout << add(2, 3) << endl;\n      |             ^~~",
+  "ok": false
+ },
+ "p11/x1": {
+  "ok": true,
+  "out": "19\n-2\n",
+  "stdin": ""
+ },
+ "p11/x2": {
+  "ok": true,
+  "out": "2 3 5 7 11 13 17 19 \n",
+  "stdin": ""
+ },
+ "p11/x3": {
+  "ok": true,
+  "out": "1024\n81\n",
+  "stdin": ""
+ },
+ "p12/a1": {
+  "ok": true,
+  "out": "10\n20\n1\n",
+  "stdin": ""
+ },
+ "p12/a2": {
+  "ok": true,
+  "out": "30\n30\n",
+  "stdin": ""
+ },
+ "p12/a3": {
+  "ok": true,
+  "out": "5 3\n",
+  "stdin": ""
+ },
+ "p12/a4": {
+  "ok": true,
+  "out": "Mina Chen(9 個字元)\n",
+  "stdin": ""
+ },
+ "p12/a5": {
+  "ok": true,
+  "out": "10\n20\n30\n30\n",
+  "stdin": ""
+ },
+ "p12/a6": {
+  "ok": true,
+  "out": "p 是空指標,不能使用 *p\n現在 *p = 7\n",
+  "stdin": ""
+ },
+ "p12/a7": {
+  "ok": true,
+  "out": "0\n",
+  "stdin": ""
+ },
+ "p12/e1.err": {
+  "err": "main.cpp: In function ‘void show(const int&)’:\nmain.cpp:5:7: error: assignment of read-only reference ‘n’\n    5 |     n = 5;\n      |     ~~^~~",
+  "ok": false
+ },
+ "p12/x1": {
+  "ok": true,
+  "out": "banana apple\n",
+  "stdin": ""
+ },
+ "p12/x2": {
+  "ok": true,
+  "out": "6\n7\n",
+  "stdin": ""
+ },
+ "p12/x3": {
+  "ok": true,
+  "out": "最小 1,最大 9\n",
+  "stdin": ""
+ },
+ "p13/a1": {
+  "ok": true,
+  "out": "apple 有 7\n共 2 種\napple: 7\nbanana: 3\n",
+  "stdin": ""
+ },
+ "p13/a1b": {
+  "ok": true,
+  "out": "0\n0\n2\n",
+  "stdin": ""
+ },
+ "p13/a2": {
+  "ok": true,
+  "out": "the cat saw the dog and the cat ran\nand 1\ncat 2\ndog 1\nran 1\nsaw 1\nthe 3\n",
+  "parts": [
+   [
+    "i",
+    "the cat saw the dog and the cat ran\n"
+   ],
+   [
+    "o",
+    "and 1\ncat 2\ndog 1\nran 1\nsaw 1\nthe 3\n"
+   ]
+  ],
+  "stdin": "the cat saw the dog and the cat ran\n"
+ },
+ "p13/a3": {
+  "ok": true,
+  "out": "1 2 3 \n有 2 嗎?1\n共 3 個\n",
+  "stdin": ""
+ },
+ "p13/a4": {
+  "ok": true,
+  "out": "1 2 5 7 9 \n9 7 5 2 1 \n",
+  "stdin": ""
+ },
+ "p13/a5": {
+  "ok": true,
+  "out": "找到了,索引 2\n共有 1 個 7\n",
+  "stdin": ""
+ },
+ "p13/e1.err": {
+  "err": "main.cpp: In function ‘int main()’:\nmain.cpp:7:5: error: ‘sort’ was not declared in this scope; did you mean ‘short’?\n    7 |     sort(v.begin(), v.end());\n      |     ^~~~\n      |     short",
+  "ok": false
+ },
+ "p13/x1": {
+  "ok": true,
+  "out": "to be or not to be\nbe: 2\nnot: 1\nor: 1\nto: 2\n",
+  "parts": [
+   [
+    "i",
+    "to be or not to be\n"
+   ],
+   [
+    "o",
+    "be: 2\nnot: 1\nor: 1\nto: 2\n"
+   ]
+  ],
+  "stdin": "to be or not to be\n"
+ },
+ "p13/x2": {
+  "ok": true,
+  "out": "1 3 5 9 \n",
+  "stdin": ""
+ },
+ "p13/x3": {
+  "ok": true,
+  "out": "查詢誰?Leo\nLeo 的成績是 75\n",
+  "parts": [
+   [
+    "o",
+    "查詢誰?"
+   ],
+   [
+    "i",
+    "Leo\n"
+   ],
+   [
+    "o",
+    "Leo 的成績是 75\n"
+   ]
+  ],
+  "stdin": "Leo\n"
+ },
+ "p13/x3b": {
+  "ok": true,
+  "out": "查詢誰?Bob\n查無此人\n",
+  "parts": [
+   [
+    "o",
+    "查詢誰?"
+   ],
+   [
+    "i",
+    "Bob\n"
+   ],
+   [
+    "o",
+    "查無此人\n"
+   ]
+  ],
+  "stdin": "Bob\n"
+ },
+ "p14/a1": {
+  "ok": true,
+  "out": "Mina: 90\n",
+  "stdin": ""
+ },
+ "p14/a2": {
+  "ok": true,
+  "out": "Mina: 90\nLeo: 75\n",
+  "stdin": ""
+ },
+ "p14/a3": {
+  "ok": true,
+  "out": "餘額:500\n",
+  "stdin": ""
+ },
+ "p14/a4": {
+  "ok": true,
+  "out": "Mina: 90\nLeo: 75\n",
+  "stdin": ""
+ },
+ "p14/a5": {
+  "ok": true,
+  "out": "分數 120 不合法,保持原本的 90\nMina: 90\n",
+  "stdin": ""
+ },
+ "p14/a6": {
+  "ok": true,
+  "out": "Mina: 90\nLeo: 75\nAmy: 82\n平均:82.3333\n",
+  "stdin": ""
+ },
+ "p14/e1.err": {
+  "err": "main.cpp: In function ‘int main()’:\nmain.cpp:15:9: error: ‘int BankAccount::balance’ is private within this context\n   15 |     acc.balance = 1000000;\n      |         ^~~~~~~",
+  "ok": false
+ },
+ "p14/x1": {
+  "ok": true,
+  "out": "距離:7\n",
+  "stdin": ""
+ },
+ "p14/x2": {
+  "ok": true,
+  "out": "Mina 92 等級 A\nLeo 75 等級 B\nAmy 58 等級 C\n",
+  "stdin": ""
+ },
+ "p14/x3": {
+  "ok": true,
+  "out": "提領成功,餘額 700\n餘額不足,餘額仍是 700\n",
+  "stdin": ""
+ },
+ "p15/a1": {
+  "ok": true,
+  "out": "Rex\nRex: 汪汪!\n",
+  "stdin": ""
+ },
+ "p15/a2": {
+  "ok": true,
+  "out": "汪汪!\n(某種聲音)\n",
+  "stdin": ""
+ },
+ "p15/a3": {
+  "ok": true,
+  "out": "汪汪!\n汪汪!\n",
+  "stdin": ""
+ },
+ "p15/a4": {
+  "ok": true,
+  "out": "汪汪!\n喵喵!\n",
+  "stdin": ""
+ },
+ "p15/e1.err": {
+  "err": "main.cpp: In function ‘int main()’:\nmain.cpp:14:15: error: ‘std::string Animal::name’ is protected within this context\n   14 |     cout << a.name << endl;\n      |               ^~~~",
+  "ok": false
+ },
+ "p15/x1": {
+  "ok": true,
+  "out": "面積:12.5664\n面積:12\n",
+  "stdin": ""
+ },
+ "p15/x2": {
+  "ok": true,
+  "out": "汪汪!\n喵喵!\n哞~\n",
+  "stdin": ""
+ },
+ "p15/x3": {
+  "ok": true,
+  "out": "我是 Mina,今年 20 歲\n就讀 台北大學\n",
+  "stdin": ""
+ },
+ "p16/a1": {
+  "ok": true,
+  "out": "Hello\nC++ 檔案\n",
+  "stdin": ""
+ },
+ "p16/a2.exit1": {
+  "ok": true,
+  "out": "打不開檔案,請確認檔名與位置\n",
+  "stdin": ""
+ },
+ "p16/a3": {
+  "ok": true,
+  "out": "共 4 個,總和 100\n",
+  "stdin": ""
+ },
+ "p16/a4": {
+  "ok": true,
+  "out": "第一次執行\n第二次執行\n",
+  "stdin": ""
+ },
+ "p16/a5": {
+  "ok": true,
+  "out": "轉換失敗:stoi\n程式繼續執行\n",
+  "stdin": ""
+ },
+ "p16/a6": {
+  "ok": true,
+  "out": "2.5\n錯誤:除數不能是 0\n",
+  "stdin": ""
+ },
+ "p16/a7": {
+  "ok": true,
+  "out": "總和 40,略過 1 行\n",
+  "stdin": ""
+ },
+ "p16/c1.crash": {
+  "crash": true,
+  "err": "terminate called after throwing an instance of 'std::invalid_argument'\n  what():  stoi",
+  "ok": false,
+  "out": "準備轉換\n"
+ },
+ "p16/x1": {
+  "ok": true,
+  "out": "1. Mina\n2. Leo\n3. Amy\n",
+  "stdin": ""
+ },
+ "p16/x2": {
+  "ok": true,
+  "out": "共 4 個,總和 80,平均 20\n",
+  "stdin": ""
+ },
+ "p16/x3": {
+  "ok": true,
+  "out": "12 x5 7\n12 -> 24\nx5 不是整數,略過\n7 -> 14\n",
+  "parts": [
+   [
+    "i",
+    "12 x5 7\n"
+   ],
+   [
+    "o",
+    "12 -> 24\nx5 不是整數,略過\n7 -> 14\n"
+   ]
+  ],
+  "stdin": "12 x5 7\n"
+ },
+ "p17/a1": {
+  "ok": true,
+  "out": "42\n7\n",
+  "stdin": ""
+ },
+ "p17/a2": {
+  "ok": true,
+  "out": "1\n2\n",
+  "stdin": ""
+ },
+ "p17/a3": {
+  "ok": true,
+  "out": "42\n7\n",
+  "stdin": ""
+ },
+ "p17/a4": {
+  "ok": true,
+  "out": "取得資源\n使用中\n釋放資源\n離開區塊之後\n",
+  "stdin": ""
+ },
+ "p17/a5": {
+  "ok": true,
+  "out": "取得資源\n使用中\n離開區塊之後\n",
+  "stdin": ""
+ },
+ "p17/a6": {
+  "ok": true,
+  "out": "1\n2\n1\n",
+  "stdin": ""
+ },
+ "p17/e1.err": {
+  "err": "main.cpp: In function ‘int main()’:\nmain.cpp:7:25: error: use of deleted function ‘std::unique_ptr<_Tp, _Dp>::unique_ptr(const std::unique_ptr<_Tp, _Dp>&) [with _Tp = int; _Dp = std::default_delete<int>]’\n    7 |     unique_ptr<int> b = a;\n      |                         ^",
+  "ok": false
+ },
+ "p17/x1": {
+  "ok": true,
+  "out": "取得資源\n發生問題,提早離開\n釋放資源\n取得資源\n正常完成\n釋放資源\n",
+  "stdin": ""
+ },
+ "p17/x2": {
+  "ok": true,
+  "out": "汪汪!\n喵喵!\n",
+  "stdin": ""
+ },
+ "p17/x3": {
+  "ok": true,
+  "out": "a 建立後:1\n複製兩次後:3\nb 放手後:2\n",
+  "stdin": ""
+ },
+ "p18/dbg1": {
+  "ok": true,
+  "out": "平均:63\n",
+  "stdin": ""
+ },
+ "p18/dbg2": {
+  "ok": true,
+  "out": "[除錯] i=1 v[i]=92 sum=92\n[除錯] i=2 v[i]=75 sum=167\n[除錯] i=3 v[i]=60 sum=227\n[除錯] i=4 v[i]=88 sum=315\n平均:63\n",
+  "stdin": ""
+ },
+ "p18/dbg3": {
+  "ok": true,
+  "out": "平均:79\n",
+  "stdin": ""
+ },
+ "p18/s1": {
+  "ok": true,
+  "out": "\n1 新增  2 列出  0 離開:1\n姓名:Mina\n分數(0-100):90\n已新增 Mina\n\n1 新增  2 列出  0 離開:1\n姓名:Leo\n分數(0-100):75\n已新增 Leo\n\n1 新增  2 列出  0 離開:2\nMina  90\nLeo  75\n\n1 新增  2 列出  0 離開:0\n再見\n",
+  "parts": [
+   [
+    "o",
+    "\n1 新增  2 列出  0 離開:"
+   ],
+   [
+    "i",
+    "1\n"
+   ],
+   [
+    "o",
+    "姓名:"
+   ],
+   [
+    "i",
+    "Mina\n"
+   ],
+   [
+    "o",
+    "分數(0-100):"
+   ],
+   [
+    "i",
+    "90\n"
+   ],
+   [
+    "o",
+    "已新增 Mina\n\n1 新增  2 列出  0 離開:"
+   ],
+   [
+    "i",
+    "1\n"
+   ],
+   [
+    "o",
+    "姓名:"
+   ],
+   [
+    "i",
+    "Leo\n"
+   ],
+   [
+    "o",
+    "分數(0-100):"
+   ],
+   [
+    "i",
+    "75\n"
+   ],
+   [
+    "o",
+    "已新增 Leo\n\n1 新增  2 列出  0 離開:"
+   ],
+   [
+    "i",
+    "2\n"
+   ],
+   [
+    "o",
+    "Mina  90\nLeo  75\n\n1 新增  2 列出  0 離開:"
+   ],
+   [
+    "i",
+    "0\n"
+   ],
+   [
+    "o",
+    "再見\n"
+   ]
+  ],
+  "stdin": "1\nMina\n90\n1\nLeo\n75\n2\n0\n"
+ },
+ "p18/s2": {
+  "ok": true,
+  "out": "\n1 新增  2 列出  3 統計  0 離開:1\n姓名:Mina\n分數(0-100):90\n已新增 Mina\n\n1 新增  2 列出  3 統計  0 離開:1\n姓名:Leo\n分數(0-100):75\n已新增 Leo\n\n1 新增  2 列出  3 統計  0 離開:1\n姓名:Amy\n分數(0-100):82\n已新增 Amy\n\n1 新增  2 列出  3 統計  0 離開:3\n共 3 人,平均 82.3333\n最高分:Mina 90\n\n1 新增  2 列出  3 統計  0 離開:0\n再見\n",
+  "parts": [
+   [
+    "o",
+    "\n1 新增  2 列出  3 統計  0 離開:"
+   ],
+   [
+    "i",
+    "1\n"
+   ],
+   [
+    "o",
+    "姓名:"
+   ],
+   [
+    "i",
+    "Mina\n"
+   ],
+   [
+    "o",
+    "分數(0-100):"
+   ],
+   [
+    "i",
+    "90\n"
+   ],
+   [
+    "o",
+    "已新增 Mina\n\n1 新增  2 列出  3 統計  0 離開:"
+   ],
+   [
+    "i",
+    "1\n"
+   ],
+   [
+    "o",
+    "姓名:"
+   ],
+   [
+    "i",
+    "Leo\n"
+   ],
+   [
+    "o",
+    "分數(0-100):"
+   ],
+   [
+    "i",
+    "75\n"
+   ],
+   [
+    "o",
+    "已新增 Leo\n\n1 新增  2 列出  3 統計  0 離開:"
+   ],
+   [
+    "i",
+    "1\n"
+   ],
+   [
+    "o",
+    "姓名:"
+   ],
+   [
+    "i",
+    "Amy\n"
+   ],
+   [
+    "o",
+    "分數(0-100):"
+   ],
+   [
+    "i",
+    "82\n"
+   ],
+   [
+    "o",
+    "已新增 Amy\n\n1 新增  2 列出  3 統計  0 離開:"
+   ],
+   [
+    "i",
+    "3\n"
+   ],
+   [
+    "o",
+    "共 3 人,平均 82.3333\n最高分:Mina 90\n\n1 新增  2 列出  3 統計  0 離開:"
+   ],
+   [
+    "i",
+    "0\n"
+   ],
+   [
+    "o",
+    "再見\n"
+   ]
+  ],
+  "stdin": "1\nMina\n90\n1\nLeo\n75\n1\nAmy\n82\n3\n0\n"
+ },
+ "p18/s3": {
+  "ok": true,
+  "out": "\n1 新增  2 列出  3 統計  4 排序  0 離開:1\n姓名:Mina\n分數(0-100):90\n已新增 Mina\n\n1 新增  2 列出  3 統計  4 排序  0 離開:1\n姓名:Leo\n分數(0-100):75\n已新增 Leo\n\n1 新增  2 列出  3 統計  4 排序  0 離開:1\n姓名:Amy\n分數(0-100):82\n已新增 Amy\n\n1 新增  2 列出  3 統計  4 排序  0 離開:4\n已依分數由高到低排序\n\n1 新增  2 列出  3 統計  4 排序  0 離開:2\nMina  90\nAmy  82\nLeo  75\n\n1 新增  2 列出  3 統計  4 排序  0 離開:0\n再見\n",
+  "parts": [
+   [
+    "o",
+    "\n1 新增  2 列出  3 統計  4 排序  0 離開:"
+   ],
+   [
+    "i",
+    "1\n"
+   ],
+   [
+    "o",
+    "姓名:"
+   ],
+   [
+    "i",
+    "Mina\n"
+   ],
+   [
+    "o",
+    "分數(0-100):"
+   ],
+   [
+    "i",
+    "90\n"
+   ],
+   [
+    "o",
+    "已新增 Mina\n\n1 新增  2 列出  3 統計  4 排序  0 離開:"
+   ],
+   [
+    "i",
+    "1\n"
+   ],
+   [
+    "o",
+    "姓名:"
+   ],
+   [
+    "i",
+    "Leo\n"
+   ],
+   [
+    "o",
+    "分數(0-100):"
+   ],
+   [
+    "i",
+    "75\n"
+   ],
+   [
+    "o",
+    "已新增 Leo\n\n1 新增  2 列出  3 統計  4 排序  0 離開:"
+   ],
+   [
+    "i",
+    "1\n"
+   ],
+   [
+    "o",
+    "姓名:"
+   ],
+   [
+    "i",
+    "Amy\n"
+   ],
+   [
+    "o",
+    "分數(0-100):"
+   ],
+   [
+    "i",
+    "82\n"
+   ],
+   [
+    "o",
+    "已新增 Amy\n\n1 新增  2 列出  3 統計  4 排序  0 離開:"
+   ],
+   [
+    "i",
+    "4\n"
+   ],
+   [
+    "o",
+    "已依分數由高到低排序\n\n1 新增  2 列出  3 統計  4 排序  0 離開:"
+   ],
+   [
+    "i",
+    "2\n"
+   ],
+   [
+    "o",
+    "Mina  90\nAmy  82\nLeo  75\n\n1 新增  2 列出  3 統計  4 排序  0 離開:"
+   ],
+   [
+    "i",
+    "0\n"
+   ],
+   [
+    "o",
+    "再見\n"
+   ]
+  ],
+  "stdin": "1\nMina\n90\n1\nLeo\n75\n1\nAmy\n82\n4\n2\n0\n"
+ },
+ "p18/s4": {
+  "ok": true,
+  "out": "\n1 新增  2 列出  3 統計  4 排序  5 存檔  6 讀檔  0 離開:1\n姓名:Mina\n分數(0-100):90\n已新增 Mina\n\n1 新增  2 列出  3 統計  4 排序  5 存檔  6 讀檔  0 離開:1\n姓名:Leo\n分數(0-100):75\n已新增 Leo\n\n1 新增  2 列出  3 統計  4 排序  5 存檔  6 讀檔  0 離開:1\n姓名:Amy\n分數(0-100):82\n已新增 Amy\n\n1 新增  2 列出  3 統計  4 排序  5 存檔  6 讀檔  0 離開:5\n已儲存 3 筆\n\n1 新增  2 列出  3 統計  4 排序  5 存檔  6 讀檔  0 離開:1\n姓名:Bob\n分數(0-100):60\n已新增 Bob\n\n1 新增  2 列出  3 統計  4 排序  5 存檔  6 讀檔  0 離開:2\nMina  90\nLeo  75\nAmy  82\nBob  60\n\n1 新增  2 列出  3 統計  4 排序  5 存檔  6 讀檔  0 離開:6\n已讀入 3 筆\n\n1 新增  2 列出  3 統計  4 排序  5 存檔  6 讀檔  0 離開:2\nMina  90\nLeo  75\nAmy  82\n\n1 新增  2 列出  3 統計  4 排序  5 存檔  6 讀檔  0 離開:0\n再見\n",
+  "parts": [
+   [
+    "o",
+    "\n1 新增  2 列出  3 統計  4 排序  5 存檔  6 讀檔  0 離開:"
+   ],
+   [
+    "i",
+    "1\n"
+   ],
+   [
+    "o",
+    "姓名:"
+   ],
+   [
+    "i",
+    "Mina\n"
+   ],
+   [
+    "o",
+    "分數(0-100):"
+   ],
+   [
+    "i",
+    "90\n"
+   ],
+   [
+    "o",
+    "已新增 Mina\n\n1 新增  2 列出  3 統計  4 排序  5 存檔  6 讀檔  0 離開:"
+   ],
+   [
+    "i",
+    "1\n"
+   ],
+   [
+    "o",
+    "姓名:"
+   ],
+   [
+    "i",
+    "Leo\n"
+   ],
+   [
+    "o",
+    "分數(0-100):"
+   ],
+   [
+    "i",
+    "75\n"
+   ],
+   [
+    "o",
+    "已新增 Leo\n\n1 新增  2 列出  3 統計  4 排序  5 存檔  6 讀檔  0 離開:"
+   ],
+   [
+    "i",
+    "1\n"
+   ],
+   [
+    "o",
+    "姓名:"
+   ],
+   [
+    "i",
+    "Amy\n"
+   ],
+   [
+    "o",
+    "分數(0-100):"
+   ],
+   [
+    "i",
+    "82\n"
+   ],
+   [
+    "o",
+    "已新增 Amy\n\n1 新增  2 列出  3 統計  4 排序  5 存檔  6 讀檔  0 離開:"
+   ],
+   [
+    "i",
+    "5\n"
+   ],
+   [
+    "o",
+    "已儲存 3 筆\n\n1 新增  2 列出  3 統計  4 排序  5 存檔  6 讀檔  0 離開:"
+   ],
+   [
+    "i",
+    "1\n"
+   ],
+   [
+    "o",
+    "姓名:"
+   ],
+   [
+    "i",
+    "Bob\n"
+   ],
+   [
+    "o",
+    "分數(0-100):"
+   ],
+   [
+    "i",
+    "60\n"
+   ],
+   [
+    "o",
+    "已新增 Bob\n\n1 新增  2 列出  3 統計  4 排序  5 存檔  6 讀檔  0 離開:"
+   ],
+   [
+    "i",
+    "2\n"
+   ],
+   [
+    "o",
+    "Mina  90\nLeo  75\nAmy  82\nBob  60\n\n1 新增  2 列出  3 統計  4 排序  5 存檔  6 讀檔  0 離開:"
+   ],
+   [
+    "i",
+    "6\n"
+   ],
+   [
+    "o",
+    "已讀入 3 筆\n\n1 新增  2 列出  3 統計  4 排序  5 存檔  6 讀檔  0 離開:"
+   ],
+   [
+    "i",
+    "2\n"
+   ],
+   [
+    "o",
+    "Mina  90\nLeo  75\nAmy  82\n\n1 新增  2 列出  3 統計  4 排序  5 存檔  6 讀檔  0 離開:"
+   ],
+   [
+    "i",
+    "0\n"
+   ],
+   [
+    "o",
+    "再見\n"
+   ]
+  ],
+  "stdin": "1\nMina\n90\n1\nLeo\n75\n1\nAmy\n82\n5\n1\nBob\n60\n2\n6\n2\n0\n"
+ },
+ "p18/s5": {
+  "ok": true,
+  "out": "\n1 新增  2 列出  3 統計  4 排序  5 存檔  6 讀檔  0 離開\n選擇:1\n姓名:Mina\n分數(0-100):150\n請輸入 0 到 100 的整數\n分數(0-100):90\n已新增 Mina\n\n1 新增  2 列出  3 統計  4 排序  5 存檔  6 讀檔  0 離開\n選擇:1\n姓名:Leo\n分數(0-100):75\n已新增 Leo\n\n1 新增  2 列出  3 統計  4 排序  5 存檔  6 讀檔  0 離開\n選擇:1\n姓名:Amy\n分數(0-100):82\n已新增 Amy\n\n1 新增  2 列出  3 統計  4 排序  5 存檔  6 讀檔  0 離開\n選擇:3\n共 3 人,平均 82.3333\n最高分:Mina 90\n\n1 新增  2 列出  3 統計  4 排序  5 存檔  6 讀檔  0 離開\n選擇:4\n已依分數由高到低排序\n\n1 新增  2 列出  3 統計  4 排序  5 存檔  6 讀檔  0 離開\n選擇:2\nMina      90\nAmy       82\nLeo       75\n\n1 新增  2 列出  3 統計  4 排序  5 存檔  6 讀檔  0 離開\n選擇:5\n已儲存 3 筆\n\n1 新增  2 列出  3 統計  4 排序  5 存檔  6 讀檔  0 離開\n選擇:x\n請輸入數字\n\n1 新增  2 列出  3 統計  4 排序  5 存檔  6 讀檔  0 離開\n選擇:9\n沒有這個選項\n\n1 新增  2 列出  3 統計  4 排序  5 存檔  6 讀檔  0 離開\n選擇:0\n再見\n",
+  "parts": [
+   [
+    "o",
+    "\n1 新增  2 列出  3 統計  4 排序  5 存檔  6 讀檔  0 離開\n選擇:"
+   ],
+   [
+    "i",
+    "1\n"
+   ],
+   [
+    "o",
+    "姓名:"
+   ],
+   [
+    "i",
+    "Mina\n"
+   ],
+   [
+    "o",
+    "分數(0-100):"
+   ],
+   [
+    "i",
+    "150\n"
+   ],
+   [
+    "o",
+    "請輸入 0 到 100 的整數\n分數(0-100):"
+   ],
+   [
+    "i",
+    "90\n"
+   ],
+   [
+    "o",
+    "已新增 Mina\n\n1 新增  2 列出  3 統計  4 排序  5 存檔  6 讀檔  0 離開\n選擇:"
+   ],
+   [
+    "i",
+    "1\n"
+   ],
+   [
+    "o",
+    "姓名:"
+   ],
+   [
+    "i",
+    "Leo\n"
+   ],
+   [
+    "o",
+    "分數(0-100):"
+   ],
+   [
+    "i",
+    "75\n"
+   ],
+   [
+    "o",
+    "已新增 Leo\n\n1 新增  2 列出  3 統計  4 排序  5 存檔  6 讀檔  0 離開\n選擇:"
+   ],
+   [
+    "i",
+    "1\n"
+   ],
+   [
+    "o",
+    "姓名:"
+   ],
+   [
+    "i",
+    "Amy\n"
+   ],
+   [
+    "o",
+    "分數(0-100):"
+   ],
+   [
+    "i",
+    "82\n"
+   ],
+   [
+    "o",
+    "已新增 Amy\n\n1 新增  2 列出  3 統計  4 排序  5 存檔  6 讀檔  0 離開\n選擇:"
+   ],
+   [
+    "i",
+    "3\n"
+   ],
+   [
+    "o",
+    "共 3 人,平均 82.3333\n最高分:Mina 90\n\n1 新增  2 列出  3 統計  4 排序  5 存檔  6 讀檔  0 離開\n選擇:"
+   ],
+   [
+    "i",
+    "4\n"
+   ],
+   [
+    "o",
+    "已依分數由高到低排序\n\n1 新增  2 列出  3 統計  4 排序  5 存檔  6 讀檔  0 離開\n選擇:"
+   ],
+   [
+    "i",
+    "2\n"
+   ],
+   [
+    "o",
+    "Mina      90\nAmy       82\nLeo       75\n\n1 新增  2 列出  3 統計  4 排序  5 存檔  6 讀檔  0 離開\n選擇:"
+   ],
+   [
+    "i",
+    "5\n"
+   ],
+   [
+    "o",
+    "已儲存 3 筆\n\n1 新增  2 列出  3 統計  4 排序  5 存檔  6 讀檔  0 離開\n選擇:"
+   ],
+   [
+    "i",
+    "x\n"
+   ],
+   [
+    "o",
+    "請輸入數字\n\n1 新增  2 列出  3 統計  4 排序  5 存檔  6 讀檔  0 離開\n選擇:"
+   ],
+   [
+    "i",
+    "9\n"
+   ],
+   [
+    "o",
+    "沒有這個選項\n\n1 新增  2 列出  3 統計  4 排序  5 存檔  6 讀檔  0 離開\n選擇:"
+   ],
+   [
+    "i",
+    "0\n"
+   ],
+   [
+    "o",
+    "再見\n"
+   ]
+  ],
+  "stdin": "1\nMina\n150\n90\n1\nLeo\n75\n1\nAmy\n82\n3\n4\n2\n5\nx\n9\n0\n"
+ },
+ "p18/x1": {
+  "ok": true,
+  "out": "要找誰?Amy\nAmy 的分數是 82\n",
+  "parts": [
+   [
+    "o",
+    "要找誰?"
+   ],
+   [
+    "i",
+    "Amy\n"
+   ],
+   [
+    "o",
+    "Amy 的分數是 82\n"
+   ]
+  ],
+  "stdin": "Amy\n"
+ },
+ "p18/x2": {
+  "ok": true,
+  "out": "及格人數:2 / 4\n",
+  "stdin": ""
+ },
+ "p18/x3": {
+  "ok": true,
+  "out": "已刪除 Leo\n找不到 Bob\nMina 90\nAmy 82\n",
+  "stdin": ""
+ }
+}

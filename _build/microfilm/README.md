@@ -56,7 +56,7 @@
 | `mh.py` | 微電影共用：`MF_CSS`、`defaults()`、`lv()`、`fig()`、`figrow()`、`mvpair()`、`animbox()` / `ANIM_JS` / `anim_page()` / `mvf()`、`fx_buttons()`、`feel()` |
 | `svgkit.py` | `kit.js` 的薄包裝（需要 `node`）：`shot(...)`、`P()` 角色、`A()` 箭頭、`N()` 道具、`sb()` 分鏡卡、`sbrow()`、`angle()`、`lens()`、`topdown()`、`move(name, t, cam=...)` |
 | `kit.js` | 繪圖積木（見上） |
-| `check.py` | 單頁快速檢查：`python3 _build/microfilm/check.py angle lens --shot`（1280／390 溢出、JS 錯誤、重複 id、`http`、實際點測驗／選擇題／動畫／按鈕；`--shot` 存整頁截圖到 /tmp） |
+| `check.py` | 單頁快速檢查（已套用 `stub_analytics`）：`python3 _build/microfilm/check.py angle lens --shot`（1280／390 溢出、JS 錯誤、重複 id、`http`、實際點測驗／選擇題／動畫／按鈕；`--shot` 存整頁截圖到 /tmp） |
 
 共用的 `shared/fw.py`：`build.py` 對微電影頁面自動套用全形標點（JS 裡含反斜線的字串不會被轉，請直接寫全形）。
 

@@ -10,6 +10,8 @@
 | GitHub | `public/github/` | 11 | 從第一次 `push` 到團隊協作：分支、PR、還原、Release、安全性、Actions |
 | Arduino | `public/arduino/` | 20 | 以 Arduino Uno 從接第一條線到綜合專案，附接線圖、原理圖與程式碼 |
 | 微電影分鏡 | `public/microfilm/` | 16 | 給沒拍過影片的人：分鏡圖、景別、角度、運鏡、連戲，到把劇本畫成分鏡 |
+| C++ | `public/clang/` | 18 | 給完全沒寫過程式的人：從線上編譯器與第一支程式，到陣列、函式、指標、物件導向與成績管理小專案，範例皆以 g++ 實測 |
+| C++ 演算法 | `public/datastruct/` | 17 | 給剛學完 C++17 的人：Big‑O、陣列、鏈結串列、堆疊佇列、搜尋、遞迴、排序、雜湊、樹、堆積、圖、Dijkstra、動態規劃，每頁有逐步動畫與同步高亮的程式碼，範例皆以 g++ 實測 |
 
 ## 專案結構
 
@@ -26,7 +28,9 @@ public/                  ← 唯一會被部署的資料夾
 ├── _headers             Cloudflare 靜態資源的回應標頭
 ├── github/              github-<子題>-guide.html
 ├── arduino/             arduino-<子題>-guide.html
-└── microfilm/           microfilm-<子題>-guide.html
+├── microfilm/           microfilm-<子題>-guide.html
+├── clang/               clang-<子題>-guide.html
+└── datastruct/          datastruct-<子題>-guide.html
 _build/                  製作工具與維護指南（不會上線），入口見 _build/README.md
 README.md                本文件
 ```
@@ -52,16 +56,17 @@ python3 -m http.server 8000
 - **所需 secrets**（GitHub repo → Settings → Secrets and variables → Actions）：`CLOUDFLARE_API_TOKEN`（需有編輯 Workers 的權限）與 `CLOUDFLARE_ACCOUNT_ID`。
 - **網址**：`wrangler.jsonc` 的 `name` 是 `www`，加上帳號子網域得到 `https://www.slc6172.workers.dev/`。**改了 `name` 網址就會變**，要同步改 `_build/shared/seo.py` 的 `SITE_URL` 並重跑 `site_files.py`。
 - **無副檔名網址**：`wrangler.jsonc` 沒有設定 `html_handling`，採預設行為，所以 `/arduino/arduino-loop-guide.html` 會轉到 `/arduino/arduino-loop-guide`（已實測）；canonical 與 sitemap 因此使用無 `.html` 的網址（`seo.py` 的 `CLEAN_URLS = True`）。若日後改了 `html_handling`，要一併改這個設定。
+- **Cloudflare Web Analytics（選用）**：預設關閉。要啟用，把 token 填進 `_build/shared/seo.py` 的 `ANALYTICS_TOKEN`，本機跑 `python3 _build/site_files.py` 與 `python3 _build/verify.py`，再連同 `public/` 一起 commit 並 push；不要手貼到頁面。驗證腳本已內建攔截 beacon 請求，所以不會因此在 workflow 失敗。
 - **回應標頭**：`public/_headers`（由 `site_files.py` 產生）會被 Workers 套用，但不會被當成網頁提供。
 - 部署流程與設定由專案擁有者維護，維護工具（`_build/`）不會改動它們。
 
 ## 設計原則
 
 - **單檔、零依賴**：每頁的 CSS 與 JavaScript 都內嵌，不使用框架、CDN、網路字型或外部圖片，可離線開啟、單獨分享。唯一的選用例外是 Cloudflare Web Analytics：在 `_build/shared/seo.py` 填入 `ANALYTICS_TOKEN` 後，每頁才會多一個 beacon 指令碼（預設留空，不載入任何外部資源）。
-- **統一的視覺語言**：象牙白底、陶土橘強調色；serif 標題、sans 內文、mono 指令與標籤。三個主題共用同一組設計 tokens 與元件。
+- **統一的視覺語言**：象牙白底、陶土橘強調色；serif 標題、sans 內文、mono 指令與標籤。五個主題共用同一組設計 tokens 與元件。
 - **每步都有解釋**：說明為什麼要做、要打什麼、會看到什麼，並附測驗與檢查表。
 - **可搜尋、可分享、可用鍵盤**：每頁都有 description、canonical、Open Graph、favicon 與 theme-color；每頁開頭有「跳到主要內容」連結；首頁快速入口直接連到頁內對應段落。
-- **不依賴瀏覽器儲存**：教學頁本身不使用 `localStorage`（微電影第 15 篇的分鏡編輯器除外）；首頁的「已讀進度」會使用，若瀏覽器不允許儲存，頁面仍可正常使用。
+- **不依賴瀏覽器儲存**：教學頁本身不使用 `localStorage`（微電影第 15 篇的分鏡編輯器除外；C++ 與 C++ 演算法主題沒有例外）；首頁的「已讀進度」會使用，若瀏覽器不允許儲存，頁面仍可正常使用。
 
 ## 維護與擴充
 
@@ -69,8 +74,8 @@ python3 -m http.server 8000
 
 ## 內容說明
 
-- GitHub 主題的按鈕與選單名稱以 GitHub 英文介面為準；Arduino 主題以 Arduino IDE 2.x（Windows）與 Uno R3 為準。介面與規格偶爾會變，找不到時請用關鍵字對照畫面上相近的項目。
-- 各主題的查證日期寫在每頁頁尾：GitHub 2026-11-06、Arduino 2026-11-07、微電影 2026-11-10。費用、免費額度與零件規格可能變動，請以官方文件與你手上的零件為準。
+- GitHub 主題的按鈕與選單名稱以 GitHub 英文介面為準；Arduino 主題以 Arduino IDE 2.x（Windows）與 Uno R3 為準；C++ 與 C++ 演算法主題的範例以 g++ 13、`-std=c++17` 實測。介面與規格偶爾會變，找不到時請用關鍵字對照畫面上相近的項目。
+- 各主題的查證日期寫在每頁頁尾：GitHub 2026-11-06、Arduino 2026-11-07、微電影 2026-11-10；C++ 頁尾寫的是製作日期 2026-11-12，外部連結於 2026-11-18 由使用者抽查十篇、判斷足夠（非逐條驗證），安裝步驟未對照官方文件（見 `_build/clang/reports/link-check.md`）；C++ 演算法 2026-11-18（範例以 g++ 13 重新編譯執行；30 條 cppreference 連結由使用者逐條開啟確認，`std::` 說明內容未逐句對照官方頁，見 `_build/datastruct/reports/link-check.md`）。費用、免費額度與零件規格可能變動，請以官方文件與你手上的零件為準。
 
 ## 授權
 

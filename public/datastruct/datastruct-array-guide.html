@@ -1,0 +1,1239 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>陣列與 vector：讀取很快，中間插入要搬家</title>
+<meta name="description" content="vector 把元素連續放在一起，所以用索引讀取一步就到(O(1))。">
+<meta name="theme-color" content="#FAF9F5">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='8'%20fill='%23FAF9F5'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='8'%20fill='%23D97757'/%3E%3C/svg%3E">
+<link rel="canonical" href="https://www.slc6172.workers.dev/datastruct/datastruct-array-guide">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:site_name" content="自學教學站">
+<meta property="og:title" content="陣列與 vector：讀取很快，中間插入要搬家">
+<meta property="og:description" content="vector 把元素連續放在一起，所以用索引讀取一步就到(O(1))。">
+<meta property="og:url" content="https://www.slc6172.workers.dev/datastruct/datastruct-array-guide">
+<meta name="twitter:card" content="summary">
+<style>
+  :root {
+    --ivory:#FAF9F5; --white:#FFFFFF; --slate:#141413;
+    --clay:#D97757; --clay-d:#B85C3E; --oat:#E3DACC; --olive:#788C5D; --rust:#B04A3F;
+    --gray-100:#F0EEE6; --gray-300:#D1CFC5; --gray-500:#87867F; --gray-700:#3D3D3A;
+    --serif: ui-serif, Georgia, "Times New Roman", "Noto Serif TC", "Songti TC", "PMingLiU", serif;
+    --sans:  system-ui, -apple-system, "Segoe UI", Roboto, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", Helvetica, Arial, sans-serif;
+    --mono:  ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
+    --border: 1.5px solid var(--gray-300);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  [hidden] { display:none !important; }
+  body { margin:0; padding:56px 24px 120px; background:var(--ivory); color:var(--slate);
+         font-family:var(--sans); font-size:15px; line-height:1.65; -webkit-font-smoothing:antialiased; }
+  .page { max-width:1100px; margin:0 auto; }
+  .page > header { margin-bottom:36px; }
+  .layout { display:grid; grid-template-columns:190px minmax(0,1fr); gap:48px; }
+  .layout > * { min-width:0; }
+  main > section { margin-bottom:56px; scroll-margin-top:24px; }
+
+  .eyebrow { font:12px var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--gray-500);
+             display:flex; align-items:center; gap:12px; margin-bottom:18px; }
+  .eyebrow::before { content:""; width:24px; height:1.5px; background:var(--clay); }
+  h1 { font:500 clamp(30px,4.6vw,42px)/1.18 var(--serif); letter-spacing:-.012em; margin:0 0 12px; }
+  h2 { font:500 25px/1.28 var(--serif); letter-spacing:-.01em; margin:0 0 6px; }
+  h3 { font:500 18px/1.35 var(--serif); margin:0 0 6px; }
+  .sub { color:var(--gray-700); max-width:680px; margin:0 0 4px; }
+  hr.rule { border:0; border-top:1px solid var(--gray-300); margin:10px 0 22px; }
+  p { margin:0 0 12px; }
+  code { font:12.5px var(--mono); background:var(--gray-100); padding:1px 5px; border-radius:4px; }
+  .slot { background:rgba(217,119,87,.14); color:var(--clay-d); border-radius:4px; padding:0 3px; }
+  pre .slot { background:rgba(217,119,87,.22); color:#F2B49E; }
+
+  .panel { background:var(--white); border:var(--border); border-radius:12px; padding:20px 22px; }
+  .tldr { border:var(--border); border-left:3px solid var(--clay); border-radius:10px; background:#fff; padding:16px 18px; margin-top:22px; max-width:820px; }
+  .tldr b { font:600 11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--clay-d); margin-right:6px; }
+
+  /* toc */
+  nav.toc { position:sticky; top:32px; align-self:start; font-size:13px; }
+  nav.toc .label { font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--gray-500); margin-bottom:8px; }
+  nav.toc a { display:block; padding:5px 0; color:var(--gray-700); text-decoration:none; }
+  nav.toc a:hover { color:var(--clay); }
+
+  /* buttons */
+  button { font:12px var(--mono); cursor:pointer; border-radius:999px; padding:9px 16px; transition:background .14s ease, transform .08s ease; }
+  button.primary { background:var(--slate); color:var(--ivory); border:1.5px solid var(--slate); }
+  button.primary:hover:not(:disabled) { background:var(--gray-700); }
+  button.primary:disabled { background:var(--gray-300); border-color:var(--gray-300); cursor:not-allowed; }
+  button.primary.copied { background:var(--olive); border-color:var(--olive); }
+  button.ghost { background:transparent; color:var(--gray-700); border:var(--border); }
+  button.ghost:hover { border-color:var(--gray-500); }
+  button:focus-visible, a:focus-visible, summary:focus-visible, input:focus-visible { outline:2px solid var(--clay); outline-offset:2px; }
+
+  /* tables (grid style) */
+  .table-wrap { overflow-x:auto; border:var(--border); border-radius:12px; background:#fff; }
+  .gt { min-width:560px; }
+  .gt .row { display:grid; gap:0; }
+  .gt .cell { padding:11px 14px; border-top:1px solid var(--gray-300); font-size:13.5px; }
+  .gt .row:first-child .cell { border-top:0; }
+  .gt .cell.head { font:11px var(--sans); text-transform:uppercase; letter-spacing:.06em; color:var(--gray-500); background:var(--gray-100); }
+  .gt .cell.term { font:600 12.5px var(--mono); }
+  .gt.g3 .row { grid-template-columns:150px minmax(0,1fr) minmax(0,1fr); }
+  .gt.g2 .row { grid-template-columns:140px minmax(0,1fr); }
+  .gt.g3b .row { grid-template-columns:170px minmax(0,1.2fr) minmax(0,1fr); }
+
+  /* code blocks */
+  .cmd { position:relative; background:var(--slate); border-radius:12px; margin:10px 0 12px; }
+  .cmd pre { margin:0; padding:16px 78px 16px 18px; font:12.5px/1.7 var(--mono); color:var(--ivory); overflow-x:auto; white-space:pre; }
+  .cmd .cm { color:var(--gray-500); }
+  .cmd button { position:absolute; top:9px; right:9px; padding:5px 11px; font-size:11px; color:var(--ivory);
+                background:rgba(250,249,245,.08); border:1px solid rgba(250,249,245,.28); }
+  .cmd button:hover { background:rgba(250,249,245,.18); }
+  .cmd button.copied { background:var(--olive); border-color:var(--olive); color:#fff; }
+  .cmd .cap { font:11px var(--mono); letter-spacing:.06em; color:var(--gray-500); padding:10px 18px 0; text-transform:uppercase; }
+  .cmd .cap + pre { padding-top:6px; }
+
+  /* diagram */
+  .canvas { background:#fff; border:var(--border); border-radius:12px; padding:14px; overflow-x:auto; }
+  .canvas svg { display:block; width:100%; height:auto; min-width:640px; }
+  .legend { list-style:none; margin:16px 0 0; padding:0; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 24px; }
+  .legend li { display:grid; grid-template-columns:26px minmax(0,1fr); gap:8px; font-size:13.5px; color:var(--gray-700); }
+  .legend .n { width:22px; height:22px; border-radius:50%; background:var(--clay); color:#fff; font:600 12px/22px var(--mono); text-align:center; }
+  .legend .n.k { background:var(--slate); }
+  .role { font:600 10.5px var(--mono); padding:1px 7px; border-radius:999px; margin-left:6px; white-space:nowrap; }
+  .role.c { background:rgba(217,119,87,.14); color:var(--clay-d); border:1px solid rgba(217,119,87,.45); }
+  .role.o { background:var(--oat); color:var(--slate); border:1px solid #CFC3AE; }
+
+  /* fill form */
+  .fill { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:12px; align-items:end; }
+  .fill label { display:block; font:11px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--gray-500); margin-bottom:5px; }
+  .fill input { width:100%; font:13px var(--mono); padding:9px 11px; border:var(--border); border-radius:8px; background:var(--gray-100); color:var(--slate); }
+  .fill-foot { display:flex; gap:12px; align-items:center; margin-top:14px; flex-wrap:wrap; }
+  .fill-foot span { font-size:13px; color:var(--gray-500); }
+
+  /* role tabs */
+  .role-tabs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin:18px 0 26px; }
+  .role-tabs button { text-align:left; font-family:var(--sans); font-size:14px; border-radius:12px; padding:16px 18px; background:#fff;
+                      border:var(--border); color:var(--gray-700); display:flex; flex-direction:column; gap:2px; }
+  .role-tabs button .rt { font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--gray-500); }
+  .role-tabs button b { font:500 20px/1.3 var(--serif); color:var(--slate); }
+  .role-tabs button:hover { border-color:var(--gray-500); }
+  .role-tabs button.on { border-color:var(--clay); background:#FBF1EC; }
+  .role-tabs button.on .rt { color:var(--clay-d); }
+
+  .orient { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-bottom:8px; }
+  .orient .panel { padding:14px 18px; font-size:13.5px; }
+  .orient .k { font:600 11px var(--mono); letter-spacing:.08em; text-transform:uppercase; display:block; margin-bottom:4px; }
+  .orient .known .k { color:#4B5C39; } .orient .new .k { color:var(--clay-d); }
+
+  /* steps */
+  .step { display:grid; grid-template-columns:40px minmax(0,1fr); gap:0 16px; padding:26px 0; border-top:1px solid var(--gray-300); }
+  .steps > .step:first-child { border-top:0; }
+  .step > * { min-width:0; }
+  .num { width:34px; height:34px; border-radius:50%; background:var(--oat); display:flex; align-items:center; justify-content:center; font:600 14px var(--mono); margin-top:2px; }
+  .step h3 { font-size:20px; margin:2px 0 6px; }
+  .why { color:var(--gray-700); margin:0 0 12px; }
+  .ops { margin:0 0 12px; padding-left:22px; color:var(--gray-700); }
+  .ops li { margin-bottom:5px; }
+  .see, .warn, .tip { border:var(--border); border-radius:8px; background:#fff; padding:10px 14px; font-size:13.5px; margin:12px 0; color:var(--gray-700); }
+  .see { border-left:3px solid var(--olive); } .warn { border-left:3px solid var(--rust); } .tip { border-left:3px solid var(--clay); }
+  .see b.l, .warn b.l, .tip b.l { font:600 11px var(--mono); letter-spacing:.08em; text-transform:uppercase; margin-right:6px; }
+  .see b.l { color:#4B5C39; } .warn b.l { color:var(--rust); } .tip b.l { color:var(--clay-d); }
+
+  /* PR compare mock */
+  .pr-mock { display:grid; grid-template-columns:minmax(0,1fr) 44px minmax(0,1fr); gap:0; align-items:stretch; margin:12px 0; }
+  .pr-mock .half { background:#fff; border:var(--border); border-radius:10px; padding:12px 14px; }
+  .pr-mock .half .t { font:600 11px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--gray-500); margin-bottom:6px; }
+  .pr-mock .half .r { font:12.5px var(--mono); margin:2px 0; word-break:break-all; }
+  .pr-mock .half .r i { font-style:normal; color:var(--gray-500); margin-right:6px; }
+  .pr-mock .arr { display:flex; align-items:center; justify-content:center; font:22px var(--mono); color:var(--clay); }
+  .pr-mock .half.base { border-color:var(--clay); background:#FBF1EC; }
+  .mock-cap { font-size:13px; color:var(--gray-500); margin:0 0 12px; }
+
+  .gh-tabs { display:flex; gap:0; border-bottom:1.5px solid var(--gray-300); margin:12px 0; overflow-x:auto; }
+  .gh-tabs span { padding:8px 16px; font-size:13.5px; color:var(--gray-500); white-space:nowrap; }
+  .gh-tabs span.on { color:var(--slate); box-shadow:inset 0 -2px 0 var(--clay); font-weight:600; }
+  .gh-tabs span small { font:11px var(--mono); margin-left:6px; color:var(--gray-500); }
+
+  /* diff */
+  .diff { font:12.5px/1.7 var(--mono); background:#fff; border:var(--border); border-radius:8px; overflow-x:auto; margin:12px 0 0; }
+  .diff-row { display:grid; grid-template-columns:44px 18px minmax(max-content,1fr); white-space:pre; padding-right:14px; }
+  .diff-row .ln { color:var(--gray-500); text-align:right; padding-right:10px; user-select:none; }
+  .diff-row.add { background:rgba(120,140,93,.12); } .diff-row.add .mark { color:var(--olive); font-weight:600; }
+  .diff-row.del { background:rgba(176,74,63,.10); } .diff-row.del .mark { color:var(--rust); font-weight:600; }
+  .bubble { background:#fff; border:var(--border); border-left:4px solid var(--olive); border-radius:8px; padding:10px 14px; margin:8px 0 0 44px; font-size:13px; max-width:560px; }
+  .bubble .who { font:600 11px var(--mono); color:var(--gray-500); display:block; margin-bottom:2px; }
+
+  /* lifecycle */
+  .stages { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; margin:18px 0 16px; }
+  .stages button { text-align:left; font-family:var(--sans); border-radius:10px; padding:11px 12px; background:#fff; border:var(--border); color:var(--gray-700); font-size:13px; display:flex; flex-direction:column; gap:6px; }
+  .stages button:hover { border-color:var(--gray-500); }
+  .stages button.on { border-color:var(--clay); background:#FBF1EC; }
+  .stages button .si { font:11px var(--mono); color:var(--gray-500); }
+  .badge { font:600 11px var(--mono); padding:2px 9px; border-radius:999px; align-self:flex-start; }
+  .badge.ok { background:rgba(120,140,93,.18); color:#4B5C39; }
+  .badge.warn { background:rgba(217,119,87,.18); color:var(--clay-d); }
+  .badge.done { background:var(--slate); color:var(--ivory); }
+  .two { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+  .two .panel h3 { display:flex; align-items:center; gap:8px; }
+  .two ul { margin:8px 0 0; padding-left:20px; color:var(--gray-700); }
+  .two li { margin-bottom:6px; }
+  .stage-nav { display:flex; gap:10px; margin-top:16px; }
+
+  /* details */
+  details { border:var(--border); border-radius:10px; background:#fff; margin:12px 0; overflow:hidden; }
+  summary { list-style:none; cursor:pointer; padding:14px 16px; font:17px/1.4 var(--serif); display:flex; align-items:baseline; gap:10px; }
+  summary::-webkit-details-marker { display:none; }
+  summary::before { content:"▸"; color:var(--gray-500); transition:transform .12s; flex:none; }
+  details[open] > summary::before { transform:rotate(90deg); }
+  details > .body { padding:0 18px 16px; border-top:1px solid var(--gray-300); padding-top:14px; }
+  details > .body > :last-child { margin-bottom:0; }
+
+  .habits { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+  .habits ul { margin:8px 0 0; padding-left:20px; color:var(--gray-700); }
+  .habits li { margin-bottom:6px; }
+  .export { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:8px; padding-top:20px; border-top:1px solid var(--gray-300); }
+  .export span { font-size:13px; color:var(--gray-500); }
+
+  /* progress + toc active */
+  .progress { position:fixed; top:0; left:0; right:0; height:3px; z-index:60; }
+  .progress span { display:block; height:100%; width:0; background:var(--clay); }
+  nav.toc a.active { color:var(--clay-d); font-weight:600; }
+
+  /* route switch */
+  .route-switch { display:flex; gap:6px; flex-wrap:wrap; background:var(--gray-100); padding:5px; border-radius:12px; width:max-content; max-width:100%; margin:16px 0; }
+  .route-switch button { border:0; background:transparent; border-radius:9px; color:var(--gray-500); font:13px var(--sans); padding:9px 14px; }
+  .route-switch button[aria-pressed="true"] { background:#fff; color:var(--slate); box-shadow:inset 0 -2px 0 var(--clay); }
+  .route-steps { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; margin:14px 0; }
+  .route-step { border:var(--border); border-radius:10px; background:#fff; padding:10px 12px; }
+  .route-step.new { border-color:var(--clay); background:#FBF1EC; }
+  .route-step i { font:600 11px var(--mono); color:var(--gray-500); font-style:normal; }
+  .route-step b { display:block; font-size:14px; margin:2px 0; }
+  .route-step small { display:block; font-size:12.5px; color:var(--gray-700); line-height:1.5; }
+  .route-note { font-size:13px; color:var(--gray-500); margin:0 0 4px; }
+
+  /* practice */
+  .sim { margin-bottom:16px; }
+  .sim h3 { margin-bottom:4px; }
+  .sim-buttons { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0; }
+  .sim-buttons button, .answer { font:14px var(--sans); border-radius:10px; border:var(--border); background:#fff; color:var(--gray-700); padding:10px 14px; text-align:left; }
+  .sim-buttons button:hover, .answer:hover:not(:disabled) { border-color:var(--gray-500); }
+  .sim-buttons button.selected { border-color:var(--clay); background:#FBF1EC; color:var(--slate); }
+  .sim-result { background:var(--gray-100); border-radius:10px; padding:12px 14px; font-size:14px; min-height:52px; color:var(--gray-700); }
+  .quiz-top { display:flex; justify-content:space-between; gap:10px; align-items:baseline; flex-wrap:wrap; }
+  .quiz-top .count { font:12px var(--mono); color:var(--gray-500); }
+  .question { font:500 18px/1.45 var(--serif); margin:14px 0 12px; }
+  .answers { display:grid; gap:8px; }
+  .answer { display:flex; gap:10px; align-items:flex-start; }
+  .answer .letter { width:22px; height:22px; flex:none; border-radius:6px; background:var(--gray-100); font:600 11px/22px var(--mono); text-align:center; }
+  .answer:disabled { cursor:default; }
+  .answer.correct { border-color:var(--olive); background:rgba(120,140,93,.12); }
+  .answer.wrong { border-color:var(--rust); background:rgba(176,74,63,.10); }
+  .feedback { display:none; margin-top:12px; padding:12px 14px; border-radius:10px; font-size:14px; border:var(--border); border-left-width:4px; background:#fff; }
+  .feedback.show { display:block; } .feedback.good { border-left-color:var(--olive); } .feedback.bad { border-left-color:var(--clay); }
+  .quiz-foot { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:14px; }
+  .quiz-foot span { font-size:13px; color:var(--gray-500); }
+  .checks { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  .check-item { display:flex; gap:10px; align-items:flex-start; padding:11px 13px; border:var(--border); border-radius:10px; background:#fff; font-size:14px; color:var(--gray-700); cursor:pointer; }
+  .check-item input { accent-color:var(--clay); margin-top:5px; flex:none; }
+  .check-item.done { background:rgba(120,140,93,.10); border-color:rgba(120,140,93,.45); }
+  .bar { height:6px; border-radius:999px; background:var(--gray-100); overflow:hidden; margin-top:8px; }
+  .bar span { display:block; height:100%; width:0; background:var(--olive); transition:width .2s; }
+  .check-progress { font-size:13px; color:var(--gray-500); margin-top:12px; }
+  .resources { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  .resource { display:block; padding:12px 14px; border:var(--border); border-radius:10px; background:#fff; color:var(--slate); text-decoration:none; }
+  .resource:hover { border-color:var(--clay); }
+  .resource b { display:block; font-size:14px; } .resource small { font:12px var(--mono); color:var(--gray-500); }
+  .warn ul { margin:6px 0 0; padding-left:20px; }
+  .foot { font-size:13px; color:var(--gray-500); border-top:1px solid var(--gray-300); padding-top:18px; }
+
+  @media (max-width: 920px) {
+    .layout { grid-template-columns:minmax(0,1fr); gap:24px; }
+    nav.toc { position:static; display:flex; flex-wrap:wrap; gap:4px 16px; }
+    nav.toc .label { width:100%; margin-bottom:2px; }
+    .fill { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .stages { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .two, .habits, .orient, .role-tabs, .legend, .checks, .resources { grid-template-columns:minmax(0,1fr); }
+    .route-steps { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  }
+  @media (max-width: 720px) {
+    body { padding:32px 16px 80px; }
+    .step { grid-template-columns:minmax(0,1fr); }
+    .num { margin-bottom:8px; }
+    .pr-mock { grid-template-columns:minmax(0,1fr); }
+    .pr-mock .arr { transform:rotate(90deg); height:32px; }
+  }
+  /* site nav */
+  .crumb { margin:0 0 18px; font:12px var(--mono); }
+  .crumb a { color:var(--gray-500); text-decoration:none; }
+  .crumb a:hover { color:var(--clay); }
+  .pager { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-top:40px; }
+  .pager a { display:block; padding:14px 18px; border:var(--border); border-radius:12px; background:#fff; color:var(--slate); text-decoration:none; }
+  .pager a:hover { border-color:var(--clay); }
+  .pager small { display:block; font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--gray-500); }
+  .pager b { font:500 17px/1.4 var(--serif); }
+  .pager .next { text-align:right; grid-column:2; }
+  .pager .prev { grid-column:1; }
+  @media (max-width:720px){ .pager{grid-template-columns:minmax(0,1fr);} .pager .next,.pager .prev{grid-column:1;text-align:left;} }
+  @media (prefers-reduced-motion: reduce) { * { transition:none !important; scroll-behavior:auto !important; } }
+
+  .skip { position:absolute; left:12px; top:-60px; z-index:100; background:var(--slate); color:var(--ivory);
+          padding:10px 16px; border-radius:8px; font-size:14px; text-decoration:none; }
+  .skip:focus { top:12px; outline:2px solid var(--clay); outline-offset:2px; }
+  main:focus { outline:none; }
+
+  .fill.f4 { grid-template-columns:repeat(4,minmax(0,1fr)); }
+  .fill.f3 { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .fill.f2 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  @media (max-width: 920px) { .fill.f4, .fill.f3 { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  @media (max-width: 520px) { .fill.f4, .fill.f3, .fill.f2 { grid-template-columns:minmax(0,1fr); } }
+  .badge.bad { background:rgba(176,74,63,.15); color:var(--rust); }
+  .dec-out { background:var(--gray-100); border-radius:10px; padding:12px 14px; font-size:14px; color:var(--gray-700); margin-top:12px; }
+
+  /* ===== algo widgets (datastruct 主題) ===== */
+  .algo-w { background:var(--white); border:var(--border); border-radius:12px; padding:16px 18px; margin:14px 0; }
+  .algo-form { display:flex; flex-wrap:wrap; gap:10px 14px; align-items:flex-end; margin-bottom:14px; }
+  .algo-f[hidden] { display:none; }
+  .algo-f label { display:block; font:11px var(--mono); letter-spacing:.06em; color:var(--gray-500); margin-bottom:4px; }
+  .algo-form select, .algo-form input, .algo-ctl select { font:13px var(--mono); padding:7px 10px; border:var(--border); border-radius:8px; background:#fff; color:var(--slate); min-width:0; }
+  .algo-form input[type=number] { width:84px; }
+  .algo-form input[type=text] { width:220px; max-width:100%; }
+  .algo-main { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.15fr); gap:16px; align-items:start; }
+  .algo-main.nocode { grid-template-columns:minmax(0,1fr); }
+  .algo-left { min-width:0; border-radius:10px; }
+  .algo-left:focus-visible { outline:2px solid var(--clay); outline-offset:3px; }
+  .algo-stage { min-height:170px; background:var(--gray-100); border-radius:10px; padding:14px; overflow-x:auto; }
+  .algo-msg { margin-top:10px; padding:10px 12px; border-radius:8px; background:#fff; border:1px solid var(--gray-300); font-size:14px; min-height:3.4em; }
+  .algo-msg.err { border-color:var(--rust); color:var(--rust); }
+  .algo-ctl { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:10px; }
+  .algo-ctl button { padding:6px 12px; }
+  .algo-ctl button:disabled { opacity:.45; cursor:not-allowed; }
+  .algo-ctl input[type=range] { flex:1 1 110px; min-width:90px; accent-color:var(--clay); }
+  .algo-step { font:12px var(--mono); color:var(--gray-500); white-space:nowrap; }
+  .algo-code { margin:0; }
+  .algo-code pre { padding-right:18px; font-size:12px; max-height:440px; overflow:auto; position:relative; }
+  @media (max-width:920px) { .algo-main { grid-template-columns:minmax(0,1fr); } }
+
+  /* C++ 程式碼:行號、語法色、逐行高亮 */
+  pre[data-cpp], .algo-code pre { counter-reset:ln; }
+  pre .l { display:block; counter-increment:ln; border-left:3px solid transparent; padding-left:6px; }
+  pre .l::before { content:counter(ln); display:inline-block; width:2em; margin-right:.9em; text-align:right; color:var(--gray-500); user-select:none; }
+  pre .l.on { background:rgba(217,119,87,.24); border-left-color:var(--clay); }
+  pre .xk { color:#F2B49E; } pre .xt { color:#B7C99B; } pre .xs { color:#E3DACC; font-style:italic; }
+  pre .xn { color:#E6C98F; } pre .xp { color:#C9A8D6; } pre .xc { color:var(--gray-500); }
+  .cmd.out pre { color:var(--oat); padding-right:18px; }
+  .cmd.out .cap { color:var(--olive); }
+  @media (prefers-reduced-motion: reduce) { .algo-w * { animation:none !important; transition:none !important; } }
+
+  .gt.g4 .row { grid-template-columns:120px minmax(0,1.2fr) minmax(0,1fr) minmax(0,1.1fr); }
+  .algo-code .cap, .cmd.out .cap { text-transform:none; }
+
+  /* 格子繪圖器(陣列 / vector) */
+  .cells { display:flex; flex-wrap:wrap; gap:8px; align-items:flex-start; }
+  .cells + .cells, .rowlab + .cells { margin-top:6px; }
+  .rowlab { font:11px var(--mono); letter-spacing:.06em; color:var(--gray-500); margin:12px 0 6px; }
+  .rowlab:first-child { margin-top:0; }
+  .cells .cell { width:46px; text-align:center; }
+  .cells .cell .b { height:46px; display:flex; align-items:center; justify-content:center; border:1.5px solid var(--gray-700); border-radius:8px; background:#fff; font:600 15px var(--mono); }
+  .cells .cell .i { display:block; font:11px var(--mono); color:var(--gray-500); margin-top:3px; }
+  .cells .cell .t { display:block; height:12px; font:600 11px var(--mono); color:var(--clay-d); }
+  .cells .cell.cur .b { border-color:var(--clay); background:#FBF1EC; }
+  .cells .cell.mv .b { border-color:var(--clay); background:rgba(217,119,87,.2); }
+  .cells .cell.mvr .b { animation:cellR .45s ease; } .cells .cell.mvl .b { animation:cellL .45s ease; }
+  .cells .cell.new .b { border-color:var(--olive); background:rgba(120,140,93,.18); animation:cellPop .4s ease; }
+  .cells .cell.del .b { border-color:var(--rust); background:rgba(176,74,63,.12); text-decoration:line-through; }
+  .cells .cell.dim .b { opacity:.4; }
+  .cells .cell.ok .b { border-color:var(--olive); background:rgba(120,140,93,.1); }
+  .cells .cell.empty .b { border-style:dashed; border-color:var(--gray-300); background:transparent; color:transparent; }
+  .kv { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+  .kv span { font:12px var(--mono); background:#fff; border:1px solid var(--gray-300); border-radius:999px; padding:3px 11px; color:var(--gray-700); }
+  .kv b { color:var(--slate); font-weight:600; }
+  @keyframes cellR { from { transform:translateX(-54px); } to { transform:none; } }
+  @keyframes cellL { from { transform:translateX(54px); } to { transform:none; } }
+  @keyframes cellPop { from { transform:scale(.6); } to { transform:none; } }
+  @media (max-width:520px) { .cells .cell { width:38px; } .cells .cell .b { height:38px; font-size:13px; } .cells { gap:6px; } }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">跳到主要內容</a>
+<div class="progress" aria-hidden="true"><span id="readBar"></span></div>
+<div class="page">
+
+<header>
+  <nav class="crumb" aria-label="站內導覽"><a href="../index.html#datastruct">← 回教學首頁</a></nav>
+  <div class="eyebrow">C++ 演算法 · 第 3 篇 · 陣列與 vector</div>
+  <h1>vector 讀取很快，但在中間插入要搬家</h1>
+  <p class="sub">vector 是學完 C++ 之後最常用的容器。這一篇用動畫看它裡面怎麼擺資料、為什麼在最前面插入很慢，以及它怎麼自己長大。</p>
+  <div class="tldr"><b>TL;DR</b> vector 把元素<strong>連續</strong>放在一起，所以用索引讀取一步就到(O(1))。但在中間插入或刪除，後面的元素都要搬一格(O(n))；尾端 <code>push_back</code> 通常很快，只有容量滿了才要換新空間搬家。<br><small>先備：會用 <code>vector</code>、<code>push_back</code> 與 <code>for</code>。預估 12 分鐘。難度：入門。</small></div>
+</header>
+
+<div class="layout">
+<nav class="toc" aria-label="本頁目錄">
+  <div class="label">On this page</div>
+  <a href="#what">1. 直覺：置物櫃</a>
+  <a href="#basic">2. 先認識 vector</a>
+  <a href="#play">3. 插入與刪除</a>
+  <a href="#grow">4. 自己長大</a>
+  <a href="#code">5. 完整程式</a>
+  <a href="#cost">6. 複雜度小表</a>
+  <a href="#gotchas">7. 常見錯誤</a>
+  <a href="#practice">8. 動手寫與測驗</a>
+</nav>
+
+<main id="main" tabindex="-1">
+<section id="what">
+  <h2>vector 就是一排編號的置物櫃</h2>
+  <hr class="rule">
+<div class="panel"><h3>用「一排緊貼的置物櫃」來想</h3><p>想像走廊上有一排<strong>緊貼在一起</strong>的置物櫃，編號從 <b>0</b> 開始。要拿 5 號櫃的東西，你不用從 0 號開始一個個找，直接走到 5 號就好，這叫<strong>隨機存取</strong>，一步到位。</p><p style="margin-bottom:0">但如果想在 2 號和 3 號之間「再擠進一個新櫃子」，右邊每一個櫃子裡的東西，都得先往後搬一格。<strong>讀取很快、中間插入很貴</strong>，這就是這一篇要看懂的事。</p></div>
+<h3 style="margin-top:26px">五個名詞</h3>
+<div class="table-wrap"><div class="gt g2"><div class="row"><div class="cell head">名詞</div><div class="cell head">白話說明</div></div><div class="row"><div class="cell term">元素（element）</div><div class="cell">vector 裡存的每一筆資料，例如 <code>{10, 20, 30}</code> 有 3 個元素。</div></div><div class="row"><div class="cell term">索引（index）</div><div class="cell">元素的編號，<b>從 0 開始</b>。<code>v[0]</code> 是第一個，最後一個是 <code>v[size - 1]</code>。</div></div><div class="row"><div class="cell term">size</div><div class="cell">目前實際放了幾個元素。</div></div><div class="row"><div class="cell term">capacity</div><div class="cell">目前向系統「租下」的格子數。永遠 ≥ size；容量用完了才需要換更大的空間。</div></div><div class="row"><div class="cell term">連續記憶體</div><div class="cell">元素在記憶體中一個緊接一個排好。這讓 <code>v[i]</code> 能直接算出位置，也是「搬家」成本的來源。</div></div></div></div>
+<div class="tip"><b class="l">原生陣列呢？</b>你也許看過 <code>int a[5];</code>。它同樣是連續記憶體、同樣用索引讀取，但<b>大小在寫程式時就固定</b>，不能 <code>push_back</code>。這一篇的觀念兩者通用；實務上我們優先用 <code>std::vector</code>。</div>
+</section>
+
+<section id="basic">
+  <h2>先認識 vector 的幾個寫法</h2>
+  <hr class="rule">
+<p class="sub" style="margin-bottom:14px">這份程式用到本篇會出現的全部基本語法。先看一遍，不用背。</p>
+<div class="cmd"><div class="cap">main.cpp</div><pre data-cpp>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+int main() {
+    std::vector&lt;int&gt; v = {10, 20, 30};   // 建立,一開始有 3 個元素
+    v.push_back(40);                     // 在尾端加一個
+    std::cout &lt;&lt; "size = " &lt;&lt; v.size() &lt;&lt; "\n";
+    std::cout &lt;&lt; "v[0] = " &lt;&lt; v[0] &lt;&lt; "\n";
+
+    int total = 0;
+    for (int i = 0; i &lt; static_cast&lt;int&gt;(v.size()); ++i) {
+        total += v[i];                   // 用索引逐一讀取
+    }
+    std::cout &lt;&lt; "total = " &lt;&lt; total &lt;&lt; "\n";
+
+    for (int x : v) {                    // range-for:不需要索引時更簡潔
+        std::cout &lt;&lt; x &lt;&lt; " ";
+    }
+    std::cout &lt;&lt; "\n";
+}</pre><button type="button" class="copy">Copy</button></div>
+<div class="cmd out"><div class="cap">執行結果</div><pre>size = 4
+v[0] = 10
+total = 100
+10 20 30 40 </pre></div>
+<div class="cmd"><div class="cap">編譯並執行（g++ 或 clang++ 皆可）</div><pre>g++ -std=c++17 -Wall -Wextra -o main main.cpp
+./main</pre><button type="button" class="copy">Copy</button></div>
+<div class="table-wrap"><div class="gt g2"><div class="row"><div class="cell head">寫法</div><div class="cell head">意思</div></div><div class="row"><div class="cell term"><code>std::vector&lt;int&gt; v = {10, 20, 30};</code></div><div class="cell">建立一個放 <code>int</code> 的 vector，一開始有 3 個元素。尖括號裡是元素的型別。</div></div><div class="row"><div class="cell term"><code>v.push_back(40);</code></div><div class="cell">在尾端加一個元素。vector 會自己長大，不用先決定大小。</div></div><div class="row"><div class="cell term"><code>v.size()</code></div><div class="cell">目前有幾個元素。</div></div><div class="row"><div class="cell term"><code>v[0]</code></div><div class="cell">用索引讀取（或修改）元素。</div></div><div class="row"><div class="cell term"><code>for (int x : v)</code></div><div class="cell">range-for：依序把每個元素拿出來給 <code>x</code>，不需要索引時最簡潔。</div></div></div></div>
+<div class="tip"><b class="l">為什麼寫 static_cast&lt;int&gt;(v.size())?</b><code>v.size()</code> 的型別是<b>無號整數</b>(<code>size_t</code>)，不能是負數。拿它和 <code>int</code> 比較、相減，很容易出怪事（見下方「常見錯誤」）。本站一律先轉成 <code>int</code> 再用，讓初學階段少踩坑。</div>
+</section>
+
+<section id="play">
+  <h2>動手玩：在中間插入、從前面刪除</h2>
+  <hr class="rule">
+<p class="sub" style="margin-bottom:14px">畫面上是一個 vector，下方的程式碼就是我們自己寫的 <code>insertAt</code> 與 <code>eraseAt</code>。每按一次「下一步」，就執行一小步，亮起來的行就是目前執行到的地方。</p>
+<ol class="ops"><li>按「最前面插入」：看有幾個元素被搬動（橘色格子）。</li><li>按「尾端插入」：這次要搬幾個？</li><li>按「刪除最前面」，再按「刪除最後面」，比較搬動次數。</li><li>插入太多次後再按一次，看看會出現什麼提示。</li></ol>
+<div id="w-edit" role="group" aria-label="vector 插入與刪除動畫"></div>
+<div class="panel sim" data-simgroup>
+<h3>猜猜看：這一步會發生什麼？</h3>
+<p style="margin:6px 0 0;color:var(--gray-700)">vector 現在有 5 個元素 <code>{10, 20, 30, 40, 50}</code>，在<b>位置 0（最前面）</b>插入一個新值，要搬動幾個既有元素？</p>
+<div class="sim-buttons" role="group" aria-label="選擇做法"><button type="button" data-sim="a1">0 個</button><button type="button" data-sim="a2">1 個</button><button type="button" data-sim="a3">5 個</button></div>
+<div class="sim-result" aria-live="polite">選一個做法，看看對不對。</div>
+</div>
+<p style="margin-top:14px">結論：搬動次數 = <b>插入位置之後有幾個元素</b>。插在最前面要搬全部 n 個，插在尾端要搬 0 個。刪除也一樣，位置越靠前，後面要補位的元素越多。</p>
+</section>
+
+<section id="grow">
+  <h2>動手玩：vector 怎麼自己長大</h2>
+  <hr class="rule">
+<p class="sub" style="margin-bottom:14px"><code>push_back</code> 看起來永遠成功，但 vector 的格子是<b>租來的</b>。租的格子用完了，它就要換一塊更大的、把舊資料全部搬過去。</p>
+<ol class="ops"><li>按幾次「push_back」，觀察 capacity 如何變化。</li><li>看到「已經滿了」時，注意舊空間與新空間兩列，以及累計複製的次數。</li><li>按「連續 9 次」，對照下方真實程式的輸出。</li></ol>
+<div id="w-grow" role="group" aria-label="vector 擴容動畫"></div>
+<div class="cmd"><div class="cap">main.cpp</div><pre data-cpp>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+int main() {
+    std::vector&lt;int&gt; v;
+    for (int i = 1; i &lt;= 9; ++i) {
+        v.push_back(i);
+        std::cout &lt;&lt; v.size() &lt;&lt; " " &lt;&lt; v.capacity() &lt;&lt; "\n";
+    }
+}</pre><button type="button" class="copy">Copy</button></div>
+<div class="cmd out"><div class="cap">執行結果（size  capacity）</div><pre>1 1
+2 2
+3 4
+4 4
+5 8
+6 8
+7 8
+8 8
+9 16</pre></div>
+<div class="see"><b class="l">你會看到</b>capacity 依序是 1、2、4、4、8、8、8、8、16，每次滿了就變成 2 倍。這是 g++ 的做法；不同編譯器的倍數可能不同（例如 MSVC 是 1.5 倍），但「滿了就換更大的空間並搬家」是一樣的。</div>
+<div class="tip"><b class="l">知道要放多少時，先 reserve</b>如果事先知道大概會放 100 個，<code>v.reserve(100)</code> 一次租好，就不會在途中反覆搬家。</div>
+<div class="cmd"><div class="cap">main.cpp</div><pre data-cpp>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+int main() {
+    std::vector&lt;int&gt; v;
+    v.reserve(100);                      // 一次先要 100 格,之後 push_back 不用再搬家
+    for (int i = 0; i &lt; 100; ++i) {
+        v.push_back(i);
+    }
+    std::cout &lt;&lt; "size = " &lt;&lt; v.size() &lt;&lt; ", capacity = " &lt;&lt; v.capacity() &lt;&lt; "\n";
+}</pre><button type="button" class="copy">Copy</button></div>
+<div class="cmd out"><div class="cap">執行結果</div><pre>size = 100, capacity = 100</pre></div>
+</section>
+
+<section id="code">
+  <h2>完整程式：自己寫一次插入與刪除</h2>
+  <hr class="rule">
+<p class="sub" style="margin-bottom:14px">這就是動畫裡用的那兩個函式，加上 <code>main</code> 與印出的小函式。你可以複製到自己的電腦編譯執行。</p>
+<div class="cmd"><div class="cap">main.cpp</div><pre data-cpp>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+void insertAt(std::vector&lt;int&gt;&amp; v, int pos, int value) {
+    v.push_back(0);                      // 先在尾端多開一格
+    int last = static_cast&lt;int&gt;(v.size()) - 1;
+    for (int i = last; i &gt; pos; --i) {
+        v[i] = v[i - 1];                 // 把前一格搬過來
+    }
+    v[pos] = value;                      // 空位放進新值
+}
+
+void eraseAt(std::vector&lt;int&gt;&amp; v, int pos) {
+    int n = static_cast&lt;int&gt;(v.size());
+    for (int i = pos; i + 1 &lt; n; ++i) {
+        v[i] = v[i + 1];                 // 把後一格搬過來
+    }
+    v.pop_back();                        // 丟掉最後一格
+}
+
+void print(const std::vector&lt;int&gt;&amp; v) {
+    for (int x : v) {
+        std::cout &lt;&lt; x &lt;&lt; " ";
+    }
+    std::cout &lt;&lt; "\n";
+}
+
+int main() {
+    std::vector&lt;int&gt; v = {10, 20, 30, 40, 50};
+    insertAt(v, 2, 99);
+    print(v);                            // 插在位置 2
+    eraseAt(v, 0);
+    print(v);                            // 刪掉最前面
+    insertAt(v, static_cast&lt;int&gt;(v.size()), 7);
+    print(v);                            // 插在尾端
+}</pre><button type="button" class="copy">Copy</button></div>
+<div class="cmd out"><div class="cap">執行結果</div><pre>10 20 99 30 40 50 
+20 99 30 40 50 
+20 99 30 40 50 7 </pre></div>
+<p>重點在 <code>for</code> 迴圈：<code>insertAt</code> 從<b>後面往前</b>搬（不然會把還沒搬的資料蓋掉），<code>eraseAt</code> 從<b>前面往後</b>搬。順序反過來，結果就會錯。</p>
+<h3 style="margin-top:22px">實務上：直接用 STL</h3>
+<p>你不需要每次都自己寫迴圈。<code>std::vector</code> 已經提供 <code>insert</code> 與 <code>erase</code>，做的事和我們寫的一樣(一樣要搬動元素，一樣是 O(n))。<code>v.begin()</code> 是「指向第一個元素的位置」，<code>v.begin() + 2</code> 就是位置 2。</p>
+<div class="cmd"><div class="cap">main.cpp</div><pre data-cpp>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+int main() {
+    std::vector&lt;int&gt; v = {10, 20, 30, 40, 50};
+    v.insert(v.begin() + 2, 99);         // 在位置 2 插入 99
+    v.erase(v.begin());                  // 刪掉位置 0
+    for (int x : v) {
+        std::cout &lt;&lt; x &lt;&lt; " ";
+    }
+    std::cout &lt;&lt; "\n";
+}</pre><button type="button" class="copy">Copy</button></div>
+<div class="cmd out"><div class="cap">執行結果</div><pre>20 99 30 40 50 </pre></div>
+</section>
+
+<section id="cost">
+  <h2>複雜度小表：哪些操作快、哪些慢</h2>
+  <hr class="rule">
+<p class="sub" style="margin-bottom:14px">n 代表元素個數。O(1) 是「不管多少元素，都是固定幾步」；O(n) 是「元素越多，步數成正比」。（第 2 篇有完整說明。）</p>
+<div class="table-wrap"><div class="gt g3"><div class="row"><div class="cell head">操作</div><div class="cell head">時間</div><div class="cell head">為什麼</div></div><div class="row"><div class="cell term"><code>v[i]</code> 讀取 / 修改</div><div class="cell">O(1)</div><div class="cell">位置算得出來，一步到位。</div></div><div class="row"><div class="cell term"><code>push_back</code></div><div class="cell">平均 O(1)</div><div class="cell">大多數時候直接放進空位；只有容量滿了才搬家(那一次是 O(n))。</div></div><div class="row"><div class="cell term"><code>pop_back</code></div><div class="cell">O(1)</div><div class="cell">只是把 size 減 1，不用搬任何東西。</div></div><div class="row"><div class="cell term">在中間 <code>insert</code></div><div class="cell">O(n)</div><div class="cell">插入位置之後的元素全部往後搬一格。</div></div><div class="row"><div class="cell term">在中間 <code>erase</code></div><div class="cell">O(n)</div><div class="cell">刪除位置之後的元素全部往前補一格。</div></div><div class="row"><div class="cell term">在最前面插入 / 刪除</div><div class="cell">O(n)</div><div class="cell">最糟：全部 n 個元素都要搬。</div></div><div class="row"><div class="cell term">找某個值（沒排序）</div><div class="cell">O(n)</div><div class="cell">只能從頭一個一個看。第 6 篇會學更快的方法。</div></div></div></div>
+<p style="margin-top:14px"><b>空間：</b>O(n)。capacity 可能比 size 大（最多約 2 倍），這是用空間換「<code>push_back</code> 很少搬家」的代價。</p>
+</section>
+
+<section id="gotchas">
+  <h2>初學者最常卡住的三個地方</h2>
+  <hr class="rule">
+<details><summary><code>v.size() - 1</code> 在空 vector 上變成超大的數字</summary><div class="body"><p>因為 <code>size()</code> 是無號整數，<code>0 - 1</code> 不會變成 -1，而是「繞回」最大值。如果拿它當迴圈上限，迴圈會跑到天荒地老。</p><div class="cmd"><div class="cap">main.cpp</div><pre data-cpp>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+int main() {
+    std::vector&lt;int&gt; v;                      // 空的 vector
+    std::cout &lt;&lt; v.size() - 1 &lt;&lt; "\n";       // 不是 -1!size() 是無號數
+    int n = static_cast&lt;int&gt;(v.size());      // 先轉成 int 再計算
+    std::cout &lt;&lt; n - 1 &lt;&lt; "\n";
+}</pre><button type="button" class="copy">Copy</button></div><div class="cmd out"><div class="cap">執行結果（第一行就是那個超大數字）</div><pre>18446744073709551615
+-1</pre></div><p>解法：先 <code>static_cast&lt;int&gt;(v.size())</code>，再計算。</p></div></details>
+<details><summary><code>v[10]</code> 越界，程式卻沒有報錯</summary><div class="body"><p><code>v[i]</code> <b>不會檢查範圍</b>。越界讀寫是未定義行為：可能剛好沒事、可能讀到亂值、也可能當掉，而且每次不一定一樣，最難除錯。</p><p>想要有保護，用 <code>v.at(i)</code>：越界時會丟出 <code>std::out_of_range</code> 例外，錯誤變得看得見。</p><div class="cmd"><div class="cap">main.cpp</div><pre data-cpp>#include &lt;iostream&gt;
+#include &lt;stdexcept&gt;
+#include &lt;vector&gt;
+
+int main() {
+    std::vector&lt;int&gt; v = {10, 20, 30};
+    try {
+        std::cout &lt;&lt; v.at(10) &lt;&lt; "\n";       // at() 會檢查範圍,越界就丟例外
+    } catch (const std::out_of_range&amp;) {
+        std::cout &lt;&lt; "out of range\n";
+    }
+}</pre><button type="button" class="copy">Copy</button></div><div class="cmd out"><div class="cap">執行結果</div><pre>out of range</pre></div></div></details>
+<details><summary>我 <code>push_back</code> 了很多次，程式變慢了</summary><div class="body"><p>很可能是反覆擴容搬家。如果事先知道大概的數量，用 <code>reserve</code>（見上方「擴容」那一節）一次租好。另外，如果你常在最前面或中間插入，vector 本來就不適合，下一篇的鏈結串列是另一種取捨。</p></div></details>
+</section>
+
+<section id="practice">
+  <h2>動手演練：確認你真的懂了</h2>
+  <hr class="rule">
+<h3 style="margin-top:30px">動手寫（兩題）</h3><p class="sub" style="margin-bottom:12px">先自己在電腦上寫寫看，再展開參考答案。兩題的起始程式都能編譯，只是答案還不對。</p><div class="panel"><h3>第 1 題：把 x 加進 total（補一行）</h3><p>下面的 <code>sum</code> 應該回傳所有元素的總和，但迴圈裡少了一行。補上它，輸出要是 14。</p><div class="cmd"><div class="cap">main.cpp</div><pre data-cpp>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+int sum(const std::vector&lt;int&gt;&amp; v) {
+    int total = 0;
+    for (int x : v) {
+        // 在這裡加一行,把 x 加進 total
+    }
+    return total;
+}
+
+int main() {
+    std::vector&lt;int&gt; v = {3, 1, 4, 1, 5};
+    std::cout &lt;&lt; sum(v) &lt;&lt; "\n";         // 預期輸出 14
+}</pre><button type="button" class="copy">Copy</button></div><details><summary>參考答案</summary><div class="body"><p>迴圈裡加上這一行就好：<code>total += x;</code></p><div class="cmd"><div class="cap">完整答案</div><pre data-cpp>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+int sum(const std::vector&lt;int&gt;&amp; v) {
+    int total = 0;
+    for (int x : v) {
+        total += x;
+    }
+    return total;
+}
+
+int main() {
+    std::vector&lt;int&gt; v = {3, 1, 4, 1, 5};
+    std::cout &lt;&lt; sum(v) &lt;&lt; "\n";
+}</pre><button type="button" class="copy">Copy</button></div><div class="cmd out"><div class="cap">執行結果</div><pre>14</pre></div></div></details></div><div class="panel" style="margin-top:14px"><h3>第 2 題：數有幾個大於 x（完整寫出函式）</h3><p>完成 <code>countGreater</code>：回傳 v 裡「大於 x」的元素個數。範例的輸出應該是 4 和 0。</p><div class="cmd"><div class="cap">main.cpp</div><pre data-cpp>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+int countGreater(const std::vector&lt;int&gt;&amp; v, int x) {
+    // 回傳 v 裡「大於 x」的元素有幾個
+    return 0;
+}
+
+int main() {
+    std::vector&lt;int&gt; v = {3, 1, 4, 1, 5, 9, 2, 6};
+    std::cout &lt;&lt; countGreater(v, 3) &lt;&lt; "\n";   // 預期輸出 4
+    std::cout &lt;&lt; countGreater(v, 9) &lt;&lt; "\n";   // 預期輸出 0
+}</pre><button type="button" class="copy">Copy</button></div><details><summary>參考答案</summary><div class="body"><p>用一個計數器，走訪每個元素，大於 x 就加 1。時間是 O(n)，因為每個元素都看一次。</p><div class="cmd"><div class="cap">完整答案</div><pre data-cpp>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+int countGreater(const std::vector&lt;int&gt;&amp; v, int x) {
+    int count = 0;
+    for (int y : v) {
+        if (y &gt; x) {
+            ++count;
+        }
+    }
+    return count;
+}
+
+int main() {
+    std::vector&lt;int&gt; v = {3, 1, 4, 1, 5, 9, 2, 6};
+    std::cout &lt;&lt; countGreater(v, 3) &lt;&lt; "\n";
+    std::cout &lt;&lt; countGreater(v, 9) &lt;&lt; "\n";
+}</pre><button type="button" class="copy">Copy</button></div><div class="cmd out"><div class="cap">執行結果</div><pre>4
+0</pre></div></div></details></div>
+<div class="panel" id="quiz">
+    <div class="quiz-top"><h3 style="margin:0">快速測驗</h3><span class="count" id="quizCount">1 / 1</span></div>
+    <div class="question" id="quizQ"></div>
+    <div class="answers" id="quizAns"></div>
+    <div class="feedback" id="quizFb" aria-live="polite"></div>
+    <div class="quiz-foot"><span id="quizScore">答對 0 題</span><button type="button" class="primary" id="quizNext" disabled>下一題 →</button></div>
+  </div>
+<h3 style="margin-top:30px">學完之後，對照這張清單</h3>
+<div class="panel">
+<div class="checks" id="checks"><label class="check-item"><input type="checkbox"><span>我知道 vector 的元素是連續擺放的，所以 <code>v[i]</code> 一步就到。</span></label><label class="check-item"><input type="checkbox"><span>我知道索引從 0 開始，最後一個元素是 <code>v[size - 1]</code>。</span></label><label class="check-item"><input type="checkbox"><span>我能說出為什麼在最前面插入要搬動所有元素。</span></label><label class="check-item"><input type="checkbox"><span>我知道 size 與 capacity 的差別，也知道容量滿了會換新空間並搬家。</span></label><label class="check-item"><input type="checkbox"><span>我看得懂 <code>insertAt</code> 與 <code>eraseAt</code>，知道為什麼搬動方向不同。</span></label><label class="check-item"><input type="checkbox"><span>我知道 <code>v[i]</code> 越界不會報錯，想檢查可以用 <code>at()</code>。</span></label></div>
+<div class="check-progress" id="checkProgress">已完成 0 / 6 項</div>
+<div class="bar"><span id="checkBar"></span></div>
+</div>
+<h3 style="margin-top:30px">cppreference 參考頁面</h3>
+<div class="resources"><a class="resource" href="https://en.cppreference.com/cpp/container/vector" target="_blank" rel="noopener"><b>std::vector</b><small>cppreference · std::vector</small></a><a class="resource" href="https://en.cppreference.com/cpp/container/vector/insert" target="_blank" rel="noopener"><b>vector::insert</b><small>cppreference · std::vector::insert</small></a><a class="resource" href="https://en.cppreference.com/cpp/container/vector/erase" target="_blank" rel="noopener"><b>vector::erase</b><small>cppreference · std::vector::erase</small></a><a class="resource" href="https://en.cppreference.com/cpp/container/vector/capacity" target="_blank" rel="noopener"><b>vector::capacity</b><small>cppreference · std::vector::capacity</small></a><a class="resource" href="https://en.cppreference.com/cpp/container/vector/reserve" target="_blank" rel="noopener"><b>vector::reserve</b><small>cppreference · std::vector::reserve</small></a></div>
+</section>
+</main>
+</div>
+
+<p class="foot" style="margin-top:28px">範例以 g++ 13、<code>-std=c++17 -Wall -Wextra</code> 實際編譯執行驗證（零警告）；動畫為教學示意，資料量固定很小。cppreference 連結已逐條開啟確認。查證日期：2026-11-18。</p>
+
+<nav class="pager" aria-label="上一篇與下一篇">
+  <a class="prev" href="datastruct-bigo-guide.html"><small>上一篇</small><b>複雜度與 Big‑O</b></a>
+  <a class="next" href="datastruct-linkedlist-guide.html"><small>下一篇</small><b>鏈結串列</b></a>
+</nav>
+</div>
+
+<script>window.PAGE = {"sim": {"a1": "<b>不是。</b>位置 0 之後的每個元素，都要先往後搬一格，才能空出位置 0。回到動畫按「最前面插入」確認。", "a2": "<b>不是。</b>只搬 1 個的話，其他元素會被蓋掉。每個元素都要往後移一格。", "a3": "<b>正確！</b>5 個元素全部都要往後搬一格，搬動次數 = 插入位置之後的元素個數 = 5。這就是在最前面插入是 O(n) 的原因。"}, "quiz": [{"q": "vector 有 5 個元素，在最前面（位置 0）插入一個新值，要搬動幾個既有元素？", "a": ["0 個", "5 個", "1 個"], "c": 1, "why": "位置 0 之後的 5 個元素都要往後搬一格。搬動次數等於插入位置之後的元素個數。"}, {"q": "下面哪個操作「不需要」搬動任何既有元素（假設容量夠）？", "a": ["在位置 0 插入", "刪除位置 2", "在尾端 push_back"], "c": 2, "why": "尾端後面沒有元素，所以不用搬。其他兩個都要讓後面的元素補位或讓位。"}, {"q": "capacity 依序是 1、2、4、8。第幾次 push_back 會讓 capacity 從 4 變成 8?", "a": ["第 5 次", "第 4 次", "第 8 次"], "c": 0, "why": "前 4 次放滿 4 格（size = capacity = 4），第 5 次沒有空位，才需要擴容成 8。"}, {"q": "為什麼空 vector 的 <code>v.size() - 1</code> 會得到超大數字？", "a": ["vector 壞掉了", "編譯器的 bug", "size() 是無號整數，0 - 1 會繞回最大值"], "c": 2, "why": "無號整數不能是負的，減過頭會從最大值繞回來。所以先轉成 int 再算。"}, {"q": "讀取 <code>v[i]</code> 的時間成本是？", "a": ["O(n)", "O(1)", "O(n²)"], "c": 1, "why": "連續記憶體讓位置可以直接算出來，不用從頭找，一步到位。"}]};</script>
+<script>
+(function () {
+  "use strict";
+  var CFG = window.PAGE || {};
+  function $(id){ return document.getElementById(id); }
+  function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+  window.PAGE_UTIL = { copyText: function(t, b){ copyText(t, b); }, esc: esc };
+  function copyText(text, btn){
+    var orig = btn.textContent;
+    function flash(){
+      btn.textContent = "Copied ✓"; btn.classList.add("copied");
+      setTimeout(function(){ btn.textContent = orig; btn.classList.remove("copied"); }, 1200);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(flash, flash);
+    } else {
+      var ta = document.createElement("textarea"); ta.value = text;
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); } catch(e){}
+      document.body.removeChild(ta); flash();
+    }
+  }
+
+  /* ---------- fill-in template values ---------- */
+  var DEF = CFG.fill || {};
+  var vals = {};
+  var RE = /\{([A-Za-z0-9_]+)\}/g;
+  function val(k){ return vals[k] || DEF[k]; }
+  function resolvePlain(t){ return t.replace(RE, function(m, k){ return (k in DEF) ? val(k) : m; }); }
+  function resolveHtml(t){
+    var out = "", last = 0, m;
+    RE.lastIndex = 0;
+    while ((m = RE.exec(t))){
+      if (!(m[1] in DEF)) continue;
+      out += esc(t.slice(last, m.index)) + '<span class="slot">' + esc(val(m[1])) + "</span>";
+      last = RE.lastIndex;
+    }
+    return out + esc(t.slice(last));
+  }
+  function lineHtml(line, cpp){
+    if (cpp){
+      var j = line.indexOf("//");
+      if (j > -1) return resolveHtml(line.slice(0, j)) + '<span class="cm">' + resolveHtml(line.slice(j)) + "</span>";
+      return resolveHtml(line);
+    }
+    if (line.trim().indexOf("# ") === 0) return '<span class="cm">' + resolveHtml(line) + "</span>";
+    var i = line.indexOf("  # ");
+    if (i > -1) return resolveHtml(line.slice(0, i)) + '<span class="cm">' + resolveHtml(line.slice(i)) + "</span>";
+    return resolveHtml(line);
+  }
+  var tplEls = Array.prototype.slice.call(document.querySelectorAll("[data-tpl]"));
+  tplEls.forEach(function(el){ el._tpl = el.textContent; });
+  function renderTpl(){
+    tplEls.forEach(function(el){
+      if (el.tagName === "PRE") el.innerHTML = el._tpl.split("\n").map(function(l){ return lineHtml(l, el.hasAttribute("data-cpp")); }).join("\n");
+      else el.innerHTML = resolveHtml(el._tpl);
+    });
+  }
+  var inputs = Array.prototype.slice.call(document.querySelectorAll(".fill input"));
+  inputs.forEach(function(inp){
+    inp.placeholder = DEF[inp.dataset.k] || "";
+    inp.addEventListener("input", function(){
+      var v = inp.value;
+      if (!inp.dataset.ns){ v = v.replace(/\s+/g, "-"); if (v !== inp.value) inp.value = v; }
+      vals[inp.dataset.k] = v;
+      renderTpl();
+    });
+  });
+  var rb = $("resetBtn");
+  if (rb) rb.addEventListener("click", function(){
+    inputs.forEach(function(inp){ inp.value = ""; vals[inp.dataset.k] = ""; });
+    renderTpl();
+  });
+  document.querySelectorAll(".cmd .copy").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var pre = btn.parentNode.querySelector("pre");
+      copyText(pre._tpl !== undefined ? resolvePlain(pre._tpl) : pre.textContent, btn);
+    });
+  });
+
+  /* ---------- reading progress + toc spy ---------- */
+  var readBar = $("readBar");
+  function updateBar(){
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    readBar.style.width = (max > 0 ? Math.min(100, window.scrollY / max * 100) : 0) + "%";
+  }
+  window.addEventListener("scroll", updateBar, { passive: true });
+  window.addEventListener("resize", updateBar);
+  updateBar();
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll("nav.toc a"));
+  if ("IntersectionObserver" in window){
+    var spy = new IntersectionObserver(function(es){
+      es.forEach(function(en){
+        if (en.isIntersecting) tocLinks.forEach(function(a){ a.classList.toggle("active", a.getAttribute("href") === "#" + en.target.id); });
+      });
+    }, { rootMargin: "-15% 0px -70% 0px" });
+    tocLinks.forEach(function(a){ var sec = document.querySelector(a.getAttribute("href")); if (sec) spy.observe(sec); });
+  }
+
+  /* ---------- scenario simulators ---------- */
+  var SIM = CFG.sim || {};
+  document.querySelectorAll("[data-simgroup]").forEach(function(group){
+    var btns = Array.prototype.slice.call(group.querySelectorAll("[data-sim]"));
+    var out = group.querySelector(".sim-result");
+    btns.forEach(function(btn){
+      btn.addEventListener("click", function(){
+        btns.forEach(function(b){ b.classList.toggle("selected", b === btn); });
+        out.innerHTML = SIM[btn.dataset.sim] || "";
+      });
+    });
+  });
+
+  /* ---------- quiz ---------- */
+  var QUIZ = CFG.quiz || [];
+  if (QUIZ.length && $("quiz")){
+    var qi = 0, qScore = 0, qDone = false;
+    var qCount = $("quizCount"), qQ = $("quizQ"), qAns = $("quizAns"), qFb = $("quizFb"), qNext = $("quizNext"), qScoreEl = $("quizScore");
+    var renderQuiz = function(){
+      var item = QUIZ[qi]; qDone = false;
+      qCount.textContent = (qi + 1) + " / " + QUIZ.length;
+      qQ.innerHTML = item.q;
+      qAns.innerHTML = "";
+      qFb.className = "feedback"; qFb.textContent = "";
+      qNext.disabled = true;
+      qNext.textContent = qi === QUIZ.length - 1 ? "重新測驗 ↻" : "下一題 →";
+      item.a.forEach(function(text, i){
+        var b = document.createElement("button");
+        b.type = "button"; b.className = "answer";
+        b.innerHTML = '<span class="letter">' + String.fromCharCode(65 + i) + "</span><span>" + esc(text) + "</span>";
+        b.addEventListener("click", function(){ pick(i); });
+        qAns.appendChild(b);
+      });
+    };
+    var pick = function(i){
+      if (qDone) return; qDone = true;
+      var item = QUIZ[qi], good = i === item.c;
+      Array.prototype.forEach.call(qAns.querySelectorAll("button"), function(b, n){
+        b.disabled = true;
+        if (n === item.c) b.classList.add("correct");
+        if (n === i && !good) b.classList.add("wrong");
+      });
+      if (good) qScore++;
+      qFb.className = "feedback show " + (good ? "good" : "bad");
+      qFb.innerHTML = "<b>" + (good ? "答對了！" : "再記一下這個觀念。") + "</b> " + esc(item.why);
+      qScoreEl.textContent = "答對 " + qScore + " / " + (qi + 1) + " 題";
+      qNext.disabled = false;
+    };
+    qNext.addEventListener("click", function(){
+      if (qi === QUIZ.length - 1){ qi = 0; qScore = 0; } else { qi++; }
+      renderQuiz();
+      qScoreEl.textContent = "答對 " + qScore + " 題";
+    });
+    renderQuiz();
+  }
+
+  /* ---------- checklist ---------- */
+  var checks = Array.prototype.slice.call(document.querySelectorAll("#checks input"));
+  function updateChecks(){
+    var n = checks.filter(function(c){ return c.checked; }).length;
+    $("checkProgress").textContent = "已完成 " + n + " / " + checks.length + " 項";
+    $("checkBar").style.width = (n / checks.length * 100) + "%";
+    checks.forEach(function(c){ c.closest(".check-item").classList.toggle("done", c.checked); });
+  }
+  checks.forEach(function(c){ c.addEventListener("change", updateChecks); });
+
+  /* ---------- role tabs (dual-view pages) ---------- */
+  var roleBtns = Array.prototype.slice.call(document.querySelectorAll("[data-role]"));
+  var rolePanels = Array.prototype.slice.call(document.querySelectorAll("[data-panel]"));
+  function setRole(r, focus){
+    roleBtns.forEach(function(b){
+      var on = b.dataset.role === r;
+      b.classList.toggle("on", on);
+      b.setAttribute("aria-selected", on ? "true" : "false");
+      b.tabIndex = on ? 0 : -1;
+      if (on && focus) b.focus();
+    });
+    rolePanels.forEach(function(p){ p.hidden = p.dataset.panel !== r; });
+  }
+  roleBtns.forEach(function(b){
+    b.addEventListener("click", function(){ setRole(b.dataset.role); });
+    b.addEventListener("keydown", function(e){
+      if (e.key === "ArrowLeft" || e.key === "ArrowRight"){
+        e.preventDefault(); setRole(b.dataset.role === "c" ? "o" : "c", true);
+      }
+    });
+  });
+  if (roleBtns.length) setRole("c");
+
+  /* ---------- stage stepper (two columns) ---------- */
+  var STAGES = CFG.stages || [];
+  if (STAGES.length && $("stages")){
+    var stage = 0;
+    var stagesEl = $("stages");
+    var renderStages = function(){
+      stagesEl.innerHTML = STAGES.map(function(s, i){
+        return '<button type="button" data-i="' + i + '" class="' + (i === stage ? "on" : "") + '" aria-pressed="' + (i === stage) + '">' +
+          '<span class="si">階段 ' + (i + 1) + "</span><span>" + s.label + '</span><span class="badge ' + s.tone + '">' + s.badge + "</span></button>";
+      }).join("");
+      var s = STAGES[stage];
+      $("c-h").textContent = s.c.h; $("o-h").textContent = s.o.h;
+      $("c-list").innerHTML = s.c.items.map(function(t){ return "<li>" + t + "</li>"; }).join("");
+      $("o-list").innerHTML = s.o.items.map(function(t){ return "<li>" + t + "</li>"; }).join("");
+      $("prevStage").disabled = stage === 0;
+      $("nextStage").disabled = stage === STAGES.length - 1;
+    };
+    stagesEl.addEventListener("click", function(e){
+      var b = e.target.closest("button[data-i]"); if (!b) return;
+      stage = +b.dataset.i; renderStages();
+    });
+    $("prevStage").addEventListener("click", function(){ if (stage > 0){ stage--; renderStages(); } });
+    $("nextStage").addEventListener("click", function(){ if (stage < STAGES.length - 1){ stage++; renderStages(); } });
+    renderStages();
+  }
+
+  /* ---------- decision picker ---------- */
+  var DECIDE = CFG.decide || [];
+  if (DECIDE.length && $("decideBtns")){
+    var decBtns = $("decideBtns"), decOut = $("decideOut");
+    decBtns.innerHTML = DECIDE.map(function(d, i){
+      return '<button type="button" data-d="' + i + '">' + d.label + "</button>";
+    }).join("");
+    decBtns.addEventListener("click", function(e){
+      var b = e.target.closest("button[data-d]"); if (!b) return;
+      var d = DECIDE[+b.dataset.d];
+      Array.prototype.forEach.call(decBtns.querySelectorAll("button"), function(x){ x.classList.toggle("selected", x === b); });
+      var tone = d.risk === "高" ? "bad" : (d.risk === "中" ? "warn" : "ok");
+      decOut.innerHTML = '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px"><b>建議做法</b><span class="badge ' + tone + '">風險：' + d.risk + "</span></div>" +
+        '<div class="cmd" style="margin:8px 0"><pre></pre><button type="button" class="copy">Copy</button></div><div>' + d.why + "</div>";
+      decOut.querySelector("pre").textContent = d.cmd;
+      decOut.querySelector(".copy").addEventListener("click", function(ev){ copyText(d.cmd, ev.currentTarget); });
+    });
+  }
+
+  renderTpl();
+  if (checks.length) updateChecks();
+})();
+
+</script>
+<script>
+
+/* ---- core ---- */
+(function (G) {
+  "use strict";
+  var A = G.Algo = G.Algo || {};
+  function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+  A.esc = esc;
+
+  /* ---------- 極簡 C++ 語法上色(每行一個 <span class="l">,換行字元保留在 span 內,複製時不會掉) ---------- */
+  var KW = /^(?:auto|break|case|const|constexpr|continue|default|delete|do|else|enum|false|for|if|namespace|new|nullptr|operator|private|public|return|sizeof|static|static_cast|struct|switch|template|this|true|typedef|using|while|class|void|int|long|short|unsigned|signed|char|bool|float|double)$/;
+  var TY = /^(?:vector|string|size_t|cout|cin|cerr|endl|array|list|stack|queue|deque|map|set|unordered_map|unordered_set|priority_queue|pair|sort|swap|min|max|begin|end|int64_t)$/;
+  var RE = /(\/\/[^\n]*)|("(?:\\.|[^"\\\n])*")|('(?:\\.|[^'\\\n])+')|(^[ \t]*#[^\n]*)|(\b\d+(?:\.\d+)?\b)|(\b[A-Za-z_]\w*\b)/g;
+  function hlInline(line){
+    var out = "", last = 0, m; RE.lastIndex = 0;
+    while ((m = RE.exec(line))){
+      out += esc(line.slice(last, m.index));
+      var t = m[0], c = null;
+      if (m[1]) c = "c"; else if (m[2] || m[3]) c = "s"; else if (m[4]) c = "p"; else if (m[5]) c = "n";
+      else if (KW.test(t)) c = "k"; else if (TY.test(t)) c = "t";
+      out += c ? '<span class="x' + c + '">' + esc(t) + "</span>" : esc(t);
+      last = RE.lastIndex;
+    }
+    return out + esc(line.slice(last));
+  }
+  A.hlCpp = function (code) {
+    return code.replace(/\n$/, "").split("\n").map(function (ln) {
+      return '<span class="l">' + hlInline(ln) + "\n</span>";
+    }).join("");
+  };
+  A.highlightAll = function () {
+    if (typeof document === "undefined") return;
+    Array.prototype.forEach.call(document.querySelectorAll("pre[data-cpp]"), function (pre) {
+      pre.innerHTML = A.hlCpp(pre.textContent);
+    });
+  };
+
+  /* ---------- 通用播放器 widget ----------
+     o = { form:[{id,label,type:'select'|'number'|'text',options,value,min,max,showIf}], runLabel,
+           init():base, idle(base):frame, make(vals, base):{frames,result}|{error},
+           render(frame):html, code:string|null, code_cap:string }
+     frame = { msg, line:number|[number], ...(由 render 決定其餘欄位) }                                 */
+  var SPEEDS = { slow: 1400, mid: 800, fast: 350 };
+  A.widget = function (id, o) {
+    if (typeof document === "undefined") return null;
+    var root = document.getElementById(id); if (!root) return null;
+    root.classList.add("algo-w");
+    var form = (o.form || []).map(function (f) {
+      var inner;
+      if (f.type === "select") inner = '<select id="' + id + "-" + f.id + '">' + f.options.map(function (op) {
+        return '<option value="' + esc(op[0]) + '"' + (op[0] === f.value ? " selected" : "") + ">" + esc(op[1]) + "</option>"; }).join("") + "</select>";
+      else inner = '<input id="' + id + "-" + f.id + '" type="' + (f.type || "text") + '" value="' + esc(f.value === undefined ? "" : f.value) + '"' +
+        (f.min !== undefined ? ' min="' + f.min + '"' : "") + (f.max !== undefined ? ' max="' + f.max + '"' : "") + ' autocomplete="off">';
+      return '<div class="algo-f" data-f="' + f.id + '"><label for="' + id + "-" + f.id + '">' + esc(f.label) + "</label>" + inner + "</div>";
+    }).join("");
+    var extra = (o.buttons || []).map(function (b, i) { return '<button type="button" class="ghost" data-x="' + i + '">' + esc(b.label) + "</button>"; }).join("");
+    root.innerHTML =
+      '<div class="algo-form">' + form + '<button type="button" class="primary" data-a="run">' + esc(o.runLabel || "執行") + "</button>" + extra +
+      '<button type="button" class="ghost" data-a="reset">Reset</button></div>' +
+      '<div class="algo-main' + (o.code ? "" : " nocode") + '">' +
+      '<div class="algo-left" tabindex="0" aria-label="動畫區：按左右方向鍵逐步，空白鍵播放或暫停">' +
+        '<div class="algo-stage"></div><div class="algo-msg" aria-live="polite"></div>' +
+        '<div class="algo-ctl"><button type="button" class="ghost" data-a="first" title="回到第一步">⏮</button>' +
+        '<button type="button" class="ghost" data-a="prev">← 上一步</button>' +
+        '<button type="button" class="primary" data-a="next">下一步 →</button>' +
+        '<button type="button" class="ghost" data-a="play">▶ 播放</button>' +
+        '<select data-a="speed" aria-label="播放速度"><option value="slow">慢</option><option value="mid" selected>中</option><option value="fast">快</option></select>' +
+        '<input type="range" data-a="seek" min="0" max="0" value="0" aria-label="步驟"><span class="algo-step"></span></div></div>' +
+      (o.code ? '<div class="cmd algo-code"><div class="cap">' + esc(o.code_cap || "程式碼（目前執行的那一行會亮起來）") + "</div><pre>" + A.hlCpp(o.code) + "</pre></div>" : "") +
+      "</div>";
+    var $ = function (s) { return root.querySelector(s); };
+    var stage = $(".algo-stage"), msg = $(".algo-msg"), step = $(".algo-step"), seek = $('[data-a="seek"]'),
+        btnPrev = $('[data-a="prev"]'), btnNext = $('[data-a="next"]'), btnPlay = $('[data-a="play"]'), btnFirst = $('[data-a="first"]');
+    var lines = o.code ? Array.prototype.slice.call(root.querySelectorAll(".algo-code .l")) : [];
+    var base = o.init(), frames = [o.idle(base)], idx = 0, timer = null;
+
+    function vals() {
+      var v = {}; (o.form || []).forEach(function (f) {
+        var el = document.getElementById(id + "-" + f.id); v[f.id] = f.type === "number" ? (el.value === "" ? NaN : +el.value) : el.value; });
+      return v;
+    }
+    function showIf() {
+      var v = vals();
+      (o.form || []).forEach(function (f) {
+        if (!f.showIf) return;
+        var ok = Object.keys(f.showIf).every(function (k) { return [].concat(f.showIf[k]).map(String).indexOf(String(v[k])) !== -1; });
+        $('[data-f="' + f.id + '"]').hidden = !ok;
+      });
+    }
+    function stop() { if (timer) { clearInterval(timer); timer = null; } btnPlay.textContent = "▶ 播放"; }
+    function show() {
+      var f = frames[idx];
+      stage.innerHTML = o.render(f);
+      msg.className = "algo-msg"; msg.innerHTML = f.msg || "";
+      var on = f.line === undefined ? [] : [].concat(f.line);
+      lines.forEach(function (l, i) { l.classList.toggle("on", on.indexOf(i + 1) !== -1); });
+      if (on.length && lines[on[0] - 1]) { var el = lines[on[0] - 1], pre = el.parentNode;
+        if (el.offsetTop < pre.scrollTop || el.offsetTop + el.offsetHeight > pre.scrollTop + pre.clientHeight) pre.scrollTop = Math.max(0, el.offsetTop - pre.clientHeight / 3); }
+      var last = frames.length - 1;
+      seek.max = last; seek.value = idx; seek.disabled = last === 0;
+      step.textContent = last === 0 ? "尚未執行" : "步驟 " + (idx + 1) + " / " + frames.length;
+      btnPrev.disabled = idx === 0; btnFirst.disabled = idx === 0;
+      btnNext.disabled = idx >= last; btnPlay.disabled = last === 0;
+    }
+    function go(i) { idx = Math.max(0, Math.min(frames.length - 1, i)); show(); }
+    function play() {
+      if (timer) { stop(); return; }
+      if (idx >= frames.length - 1) go(0);
+      btnPlay.textContent = "⏸ 暫停";
+      timer = setInterval(function () { if (idx >= frames.length - 1) { stop(); return; } go(idx + 1); if (idx >= frames.length - 1) stop(); },
+        SPEEDS[$('[data-a="speed"]').value] || 800);
+    }
+    function run(v) {
+      stop();
+      var r = o.make(v, base);
+      if (r.error) { msg.className = "algo-msg err"; msg.textContent = r.error; return false; }
+      frames = r.frames; base = r.result; go(0); return true;
+    }
+    function reset() { stop(); base = o.init(); frames = [o.idle(base)]; idx = 0; show(); }
+
+    root.addEventListener("click", function (e) {
+      var b = e.target.closest("button[data-a],button[data-x]"); if (!b || !root.contains(b)) return;
+      if (b.dataset.x !== undefined) { var bx = o.buttons[+b.dataset.x]; if (bx.run) { bx.run(vals(), { base: base, setBase: function (b) { stop(); base = b; frames = [o.idle(base)]; idx = 0; show(); }, set: function (k, val) { document.getElementById(id + "-" + k).value = val; showIf(); }, run: function () { run(vals()); } }); } return; }
+      var a = b.dataset.a;
+      if (a === "run") run(vals()); else if (a === "reset") reset();
+      else if (a === "next") { stop(); go(idx + 1); } else if (a === "prev") { stop(); go(idx - 1); }
+      else if (a === "first") { stop(); go(0); } else if (a === "play") play();
+    });
+    seek.addEventListener("input", function () { stop(); go(+seek.value); });
+    root.addEventListener("change", function (e) { if (e.target.closest(".algo-form")) showIf(); });
+    $(".algo-left").addEventListener("keydown", function (e) {
+      if (e.key === "ArrowRight") { e.preventDefault(); stop(); go(idx + 1); }
+      else if (e.key === "ArrowLeft") { e.preventDefault(); stop(); go(idx - 1); }
+      else if (e.key === " ") { e.preventDefault(); play(); }
+    });
+    showIf(); show();
+    var api = { run: run, reset: reset, go: go, frames: function () { return frames; }, base: function () { return base; } };
+    root._algo = api; return api;
+  };
+  if (typeof document !== "undefined") A.highlightAll();
+})(typeof window !== "undefined" ? window : globalThis);
+
+/* ---- cells ---- */
+(function (G) {
+  "use strict";
+  var A = G.Algo = G.Algo || {};
+  var esc = A.esc || function (s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); };
+  function row(cells, empty) {
+    var h = '<div class="cells">';
+    (cells || []).forEach(function (c, i) {
+      h += '<div class="cell ' + (c.cls || "") + '"><span class="t">' + esc(c.t || "") + '</span><div class="b">' +
+        (c.v === null || c.v === undefined ? "" : esc(c.v)) + '</div><span class="i">' + i + "</span></div>";
+    });
+    var n = (cells || []).length;
+    for (var e = 0; e < (empty || 0); e++) h += '<div class="cell empty"><span class="t"></span><div class="b">0</div><span class="i">' + (n + e) + "</span></div>";
+    return h + "</div>";
+  }
+  /* frame = { cells:[{v,cls,t}], empty:n, chips:[[label,value]] }  或  { rows:[{label,cells,empty}], chips } */
+  A.cellsHtml = function (f) {
+    var h = "";
+    if (f.rows) f.rows.forEach(function (r) { h += (r.label ? '<div class="rowlab">' + esc(r.label) + "</div>" : "") + row(r.cells, r.empty); });
+    else h = row(f.cells, f.empty);
+    if (f.chips && f.chips.length) h += '<div class="kv">' + f.chips.map(function (c) { return "<span>" + esc(c[0]) + " <b>" + esc(c[1]) + "</b></span>"; }).join("") + "</div>";
+    return h;
+  };
+})(typeof window !== "undefined" ? window : globalThis);
+
+/* ---- alg_array ---- */
+(function (G) {
+  "use strict";
+  var A = G.Algo = G.Algo || {};
+  var MAXN = 10, MAXCAP = 16;
+
+  /* 程式碼面板文字:必須與 cpp/array_edit.cpp、cpp/array_grow.cpp 的對應片段一致(test_algo.js 會檢查) */
+  var CODE_EDIT = [
+    "void insertAt(std::vector<int>& v, int pos, int value) {",
+    "    v.push_back(0);                      // 先在尾端多開一格",
+    "    int last = static_cast<int>(v.size()) - 1;",
+    "    for (int i = last; i > pos; --i) {",
+    "        v[i] = v[i - 1];                 // 把前一格搬過來",
+    "    }",
+    "    v[pos] = value;                      // 空位放進新值",
+    "}",
+    "",
+    "void eraseAt(std::vector<int>& v, int pos) {",
+    "    int n = static_cast<int>(v.size());",
+    "    for (int i = pos; i + 1 < n; ++i) {",
+    "        v[i] = v[i + 1];                 // 把後一格搬過來",
+    "    }",
+    "    v.pop_back();                        // 丟掉最後一格",
+    "}"].join("\n");
+  var CODE_GROW = [
+    "std::vector<int> v;",
+    "for (int i = 1; i <= 9; ++i) {",
+    "    v.push_back(i);",
+    "    std::cout << v.size() << \" \" << v.capacity() << \"\\n\";",
+    "}"].join("\n");
+
+  function mk(arr, over) { return arr.map(function (v, i) { return { v: v, cls: (over && over[i]) || "" }; }); }
+  function isInt(x) { return typeof x === "number" && isFinite(x) && Math.floor(x) === x; }
+
+  /* ---- 在 pos 插入 value ---- */
+  function insert(arr, pos, val) {
+    var n = arr.length;
+    if (n >= MAXN) return { error: "示範最多放 " + MAXN + " 個元素，請先按 Reset 或刪掉幾個。" };
+    if (!isInt(pos) || pos < 0 || pos > n) return { error: "位置必須是 0 到 " + n + " 的整數(目前有 " + n + " 個元素)。" };
+    if (!isInt(val) || val < 0 || val > 99) return { error: "數值請輸入 0 到 99 的整數。" };
+    var a = arr.slice(), moves = 0, fr = [];
+    function chips() { return [["元素個數", a.length], ["搬動次數", moves]]; }
+    fr.push({ cells: mk(a), chips: chips(), line: 1, msg: "現在有 " + n + " 個元素，要在位置 <b>" + pos + "</b> 插入 <b>" + val + "</b>。" });
+    a.push(0);
+    var o = {}; o[n] = "new";
+    fr.push({ cells: mk(a, o), chips: chips(), line: [2, 3], msg: "<code>push_back(0)</code>：先在尾端多開一格（裡面暫時是 0，等一下會被蓋掉）。" });
+    for (var i = n; i > pos; i--) {
+      a[i] = a[i - 1]; moves++;
+      o = {}; o[i] = "mv mvr"; o[i - 1] = "cur";
+      fr.push({ cells: mk(a, o), chips: chips(), line: [4, 5],
+        msg: "<code>v[" + i + "] = v[" + (i - 1) + "]</code>：把 " + a[i] + " 從位置 " + (i - 1) + " 搬到位置 " + i + "。這是第 " + moves + " 次搬動。" });
+    }
+    a[pos] = val; o = {}; o[pos] = "new";
+    fr.push({ cells: mk(a, o), chips: chips(), line: 7,
+      msg: "<code>v[" + pos + "] = " + val + "</code>：空位放進新值。" + (moves === 0 ? "插在尾端，<b>完全不用搬動</b>。" : "一共搬動了 <b>" + moves + "</b> 次。") });
+    return { frames: fr, result: a };
+  }
+
+  /* ---- 刪除 pos ---- */
+  function erase(arr, pos) {
+    var n = arr.length;
+    if (n === 0) return { error: "vector 是空的，沒有東西可以刪。" };
+    if (!isInt(pos) || pos < 0 || pos >= n) return { error: "位置必須是 0 到 " + (n - 1) + " 的整數。" };
+    var a = arr.slice(), moves = 0, fr = [], o = {};
+    function chips() { return [["元素個數", a.length], ["搬動次數", moves]]; }
+    o[pos] = "del";
+    fr.push({ cells: mk(a, o), chips: chips(), line: 10, msg: "要刪除位置 <b>" + pos + "</b> 的 " + a[pos] + "。刪掉之後，後面的元素都要往前補位。" });
+    for (var i = pos; i + 1 < n; i++) {
+      a[i] = a[i + 1]; moves++;
+      o = {}; o[i] = "mv mvl"; o[i + 1] = "cur";
+      fr.push({ cells: mk(a, o), chips: chips(), line: [12, 13],
+        msg: "<code>v[" + i + "] = v[" + (i + 1) + "]</code>：把 " + a[i] + " 從位置 " + (i + 1) + " 搬到位置 " + i + "。這是第 " + moves + " 次搬動。" });
+    }
+    a.pop();
+    fr.push({ cells: mk(a), chips: chips(), line: 15,
+      msg: "<code>pop_back()</code>：丟掉最後一格。" + (moves === 0 ? "刪的是最後一個，<b>完全不用搬動</b>。" : "一共搬動了 <b>" + moves + "</b> 次。越靠前面的位置，要搬的越多。") });
+    return { frames: fr, result: a };
+  }
+
+  /* ---- push_back 與擴容(模型:容量不夠就換成 2 倍大的新空間並搬家,與 g++ 的 libstdc++ 行為相同) ---- */
+  function growInit() { return { vals: [], cap: 0, grows: 0, copies: 0, next: 1 }; }
+  function push(base, count) {
+    if (!isInt(count) || count < 1 || count > 9) return { error: "一次請輸入 1 到 9 次。" };
+    if (base.vals.length + count > MAXCAP) return { error: "示範最多放 " + MAXCAP + " 個元素，請按 Reset 重新開始。" };
+    var b = { vals: base.vals.slice(), cap: base.cap, grows: base.grows, copies: base.copies, next: base.next }, fr = [];
+    function chips() { return [["size", b.vals.length], ["capacity", b.cap], ["擴容次數", b.grows], ["累計複製", b.copies]]; }
+    function one(cells, empty, over) { return { cells: mk(cells, over), empty: empty, chips: chips() }; }
+    for (var k = 0; k < count; k++) {
+      var x = b.next++, f;
+      if (b.vals.length < b.cap) {
+        f = one(b.vals, b.cap - b.vals.length); f.line = 3;
+        f.msg = "<code>push_back(" + x + ")</code>:size=" + b.vals.length + "、capacity=" + b.cap + ",還有空位，直接放進去。";
+        fr.push(f);
+      } else {
+        var nc = b.cap === 0 ? 1 : b.cap * 2, old = b.vals.slice();
+        f = one(b.vals, 0); f.line = 3;
+        f.msg = "<code>push_back(" + x + ")</code>:size=" + old.length + "、capacity=" + b.cap + ",<b>已經滿了</b>，需要擴容。";
+        if (old.length === 0) f.msg = "<code>push_back(" + x + ")</code>：一開始 capacity=0，一個位置都沒有，要先要一塊空間。";
+        fr.push(f);
+        fr.push({ rows: [{ label: "舊空間(容量 " + b.cap + ")", cells: mk(old, { 0: "" }), empty: 0 }, { label: "新空間(容量 " + nc + ")", cells: [], empty: nc }],
+          chips: chips(), line: 3, msg: "向系統要一塊容量 <b>" + nc + "</b> 的新空間（通常是原本的 2 倍）。" });
+        for (var j = 0; j < old.length; j++) {
+          b.copies++;
+          var oo = {}; oo[j] = "cur";
+          fr.push({ rows: [{ label: "舊空間(容量 " + b.cap + ")", cells: mk(old, oo), empty: 0 }, { label: "新空間(容量 " + nc + ")", cells: mk(old.slice(0, j + 1), (function (q) { var r = {}; r[q] = "mv"; return r; })(j)), empty: nc - j - 1 }],
+            chips: chips(), line: 3, msg: "把位置 " + j + " 的 " + old[j] + " 複製到新空間(累計複製 " + b.copies + " 次)。" });
+        }
+        b.cap = nc; b.grows++;
+        fr.push(Object.assign(one(old, nc - old.length), { line: 3, msg: "舊空間釋放掉，之後只用新空間。擴容一次，就要搬一次家。" }));
+        b.vals.push(x);
+        var no = {}; no[b.vals.length - 1] = "new";
+        fr.push(Object.assign(one(b.vals, b.cap - b.vals.length, no), { line: 3, msg: "新值 " + x + " 放進新空間。" }));
+        fr.push(Object.assign(one(b.vals, b.cap - b.vals.length), { line: 4, msg: "印出 <code>" + b.vals.length + " " + b.cap + "</code>（size 和 capacity）。" }));
+        continue;
+      }
+      b.vals.push(x);
+      var o2 = {}; o2[b.vals.length - 1] = "new";
+      fr.push(Object.assign(one(b.vals, b.cap - b.vals.length, o2), { line: 3, msg: "新值 " + x + " 放進去，size 變成 " + b.vals.length + "。" }));
+      fr.push(Object.assign(one(b.vals, b.cap - b.vals.length), { line: 4, msg: "印出 <code>" + b.vals.length + " " + b.cap + "</code>（size 和 capacity）。" }));
+    }
+    return { frames: fr, result: b };
+  }
+
+  A.vec = { mk: mk, MAXN: MAXN, MAXCAP: MAXCAP, CODE_EDIT: CODE_EDIT, CODE_GROW: CODE_GROW, insert: insert, erase: erase, growInit: growInit, push: push };
+  if (typeof module !== "undefined" && module.exports) module.exports = A;
+})(typeof window !== "undefined" ? window : globalThis);
+
+</script>
+<script>
+(function(){
+"use strict";
+
+var V = Algo.vec;
+function idleEdit(b){ return { cells: V.mk(b), chips: [["元素個數", b.length], ["搬動次數", 0]], msg: "選好操作與位置，按「執行」。也可以直接按下面的快捷按鈕。" }; }
+Algo.widget("w-edit", {
+  form: [
+    { id: "op", label: "操作", type: "select", value: "insert", options: [["insert", "在位置插入"], ["erase", "刪除位置"]] },
+    { id: "pos", label: "位置", type: "number", min: 0, max: 10, value: 0 },
+    { id: "val", label: "數值", type: "number", min: 0, max: 99, value: 99, showIf: { op: "insert" } }
+  ],
+  buttons: [
+    { label: "最前面插入", run: function (v, c) { c.set("op", "insert"); c.set("pos", 0); c.run(); } },
+    { label: "尾端插入", run: function (v, c) { c.set("op", "insert"); c.set("pos", c.base.length); c.run(); } },
+    { label: "刪除最前面", run: function (v, c) { c.set("op", "erase"); c.set("pos", 0); c.run(); } },
+    { label: "刪除最後面", run: function (v, c) { c.set("op", "erase"); c.set("pos", Math.max(0, c.base.length - 1)); c.run(); } }
+  ],
+  init: function () { return [10, 20, 30, 40, 50]; },
+  idle: idleEdit,
+  make: function (v, base) { return v.op === "insert" ? V.insert(base, v.pos, v.val) : V.erase(base, v.pos); },
+  render: Algo.cellsHtml, code: V.CODE_EDIT, code_cap: "insertAt / eraseAt（亮起來的行 = 目前執行到的地方）"
+});
+Algo.widget("w-grow", {
+  form: [{ id: "count", label: "連續 push_back 幾次", type: "number", min: 1, max: 9, value: 1 }],
+  runLabel: "push_back",
+  buttons: [{ label: "連續 9 次", run: function (v, c) { c.set("count", 9); c.run(); } }],
+  init: V.growInit,
+  idle: function (b) { return { cells: V.mk(b.vals), empty: b.cap - b.vals.length, chips: [["size", b.vals.length], ["capacity", b.cap], ["擴容次數", b.grows], ["累計複製", b.copies]],
+                               msg: "vector 一開始是空的（size 0、capacity 0）。按「push_back」放進第一個元素。" }; },
+  make: function (v, base) { return V.push(base, v.count); },
+  render: Algo.cellsHtml, code: V.CODE_GROW, code_cap: "對應的程式（亮起來的行 = 目前執行到的地方）"
+});
+
+})();
+</script>
+</body>
+</html>

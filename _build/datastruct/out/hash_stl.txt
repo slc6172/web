@@ -1,0 +1,5 @@
+cat = 3
+dog = 2
+fish found? 0
+size = 3
+has dog? 0

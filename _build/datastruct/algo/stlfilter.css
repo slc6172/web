@@ -1,0 +1,9 @@
+  /* STL 速查表:篩選列 + 搜尋 */
+  .filterbar { display:flex; flex-wrap:wrap; gap:8px; margin:20px 0 10px; }
+  .fbtn { font:13px var(--sans); padding:7px 14px; border:1.5px solid var(--gray-300); border-radius:999px; background:#fff; color:var(--slate); cursor:pointer; min-height:36px; }
+  .fbtn:hover { border-color:var(--gray-500); }
+  .fbtn[aria-pressed="true"] { background:var(--slate); color:var(--ivory); border-color:var(--slate); }
+  .filterq { display:block; width:100%; max-width:420px; font:14px var(--sans); padding:9px 12px; border:1.5px solid var(--gray-300); border-radius:10px; background:#fff; color:var(--slate); box-sizing:border-box; margin:0 0 8px; }
+  .filtercount { font:12px var(--mono); color:var(--gray-500); margin:0 0 10px; }
+  .gt.g5 { min-width:780px; }
+  .gt.g5 .row { grid-template-columns:170px minmax(0,.95fr) minmax(0,1.5fr) minmax(0,1.7fr) 74px; }

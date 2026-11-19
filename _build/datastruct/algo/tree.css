@@ -1,0 +1,16 @@
+
+  /* 二元樹 / 呼叫樹 繪圖器(SVG,寬度固定,窄螢幕在動畫區內橫向捲動) */
+  .tr svg { display:block; max-width:none; }
+  .tr text { font:600 12px var(--mono); fill:var(--slate); }
+  .tr .ed { stroke:var(--gray-500); stroke-width:1.5; fill:none; }
+  .tr .tn rect { fill:#fff; stroke:var(--gray-700); stroke-width:1.5; }
+  .tr .tn.ok rect { fill:rgba(120,140,93,.2); stroke:var(--olive); }
+  .tr .tn.cur rect { fill:#FBF1EC; stroke:var(--clay); stroke-width:2.4; }
+  .tr .tn.dup rect { stroke:var(--rust); stroke-dasharray:4 3; stroke-width:2; }
+  .tr .tn.new rect { fill:rgba(120,140,93,.2); stroke:var(--olive); stroke-width:2.2; }
+  .tr .tn.del rect { fill:rgba(176,74,63,.1); stroke:var(--rust); stroke-dasharray:4 3; }
+  .tr .tn.dim { opacity:.4; }
+  .stk { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-bottom:10px; }
+  .stk .lab { font:11px var(--mono); color:var(--gray-500); margin-right:4px; }
+  .stk span.f { font:600 12px var(--mono); background:#fff; border:1px solid var(--gray-300); border-radius:6px; padding:3px 8px; }
+  .stk span.f.top { border-color:var(--clay); background:#FBF1EC; }

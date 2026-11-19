@@ -1,0 +1,25 @@
+
+  /* 格子繪圖器(陣列 / vector) */
+  .cells { display:flex; flex-wrap:wrap; gap:8px; align-items:flex-start; }
+  .cells + .cells, .rowlab + .cells { margin-top:6px; }
+  .rowlab { font:11px var(--mono); letter-spacing:.06em; color:var(--gray-500); margin:12px 0 6px; }
+  .rowlab:first-child { margin-top:0; }
+  .cells .cell { width:46px; text-align:center; }
+  .cells .cell .b { height:46px; display:flex; align-items:center; justify-content:center; border:1.5px solid var(--gray-700); border-radius:8px; background:#fff; font:600 15px var(--mono); }
+  .cells .cell .i { display:block; font:11px var(--mono); color:var(--gray-500); margin-top:3px; }
+  .cells .cell .t { display:block; height:12px; font:600 11px var(--mono); color:var(--clay-d); }
+  .cells .cell.cur .b { border-color:var(--clay); background:#FBF1EC; }
+  .cells .cell.mv .b { border-color:var(--clay); background:rgba(217,119,87,.2); }
+  .cells .cell.mvr .b { animation:cellR .45s ease; } .cells .cell.mvl .b { animation:cellL .45s ease; }
+  .cells .cell.new .b { border-color:var(--olive); background:rgba(120,140,93,.18); animation:cellPop .4s ease; }
+  .cells .cell.del .b { border-color:var(--rust); background:rgba(176,74,63,.12); text-decoration:line-through; }
+  .cells .cell.dim .b { opacity:.4; }
+  .cells .cell.ok .b { border-color:var(--olive); background:rgba(120,140,93,.1); }
+  .cells .cell.empty .b { border-style:dashed; border-color:var(--gray-300); background:transparent; color:transparent; }
+  .kv { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+  .kv span { font:12px var(--mono); background:#fff; border:1px solid var(--gray-300); border-radius:999px; padding:3px 11px; color:var(--gray-700); }
+  .kv b { color:var(--slate); font-weight:600; }
+  @keyframes cellR { from { transform:translateX(-54px); } to { transform:none; } }
+  @keyframes cellL { from { transform:translateX(54px); } to { transform:none; } }
+  @keyframes cellPop { from { transform:scale(.6); } to { transform:none; } }
+  @media (max-width:520px) { .cells .cell { width:38px; } .cells .cell .b { height:38px; font-size:13px; } .cells { gap:6px; } }

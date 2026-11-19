@@ -1,0 +1,12 @@
+
+  /* 鏈結串列節點圖(SVG,寬度固定,窄螢幕時在動畫區內橫向捲動) */
+  .lst svg { display:block; max-width:none; }
+  .lst text { font:600 13px var(--mono); fill:var(--slate); }
+  .lst .tg { font:600 11px var(--mono); fill:var(--clay-d); }
+  .lst .nl { font:11px var(--mono); fill:var(--gray-500); }
+  .lst .nd rect.box { fill:#fff; stroke:var(--gray-700); stroke-width:1.5; }
+  .lst .nd.new rect.box { fill:rgba(120,140,93,.2); stroke:var(--olive); }
+  .lst .nd.cur rect.box { fill:#FBF1EC; stroke:var(--clay); }
+  .lst .nd.del rect.box { fill:rgba(176,74,63,.1); stroke:var(--rust); stroke-dasharray:5 3; }
+  .lst .ed { stroke:var(--gray-700); stroke-width:1.6; fill:none; }
+  .lst .ed.hot { stroke:var(--clay); stroke-width:2.6; }

@@ -1,0 +1,1131 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>遞迴：函式呼叫自己，直到碰到基底條件</title>
+<meta name="description" content="遞迴三要素：基底條件（何時停）、縮小問題、相信子呼叫。每次呼叫佔呼叫堆疊一層，太深會爆；天真的 fib 因為重複計算是指數時間。先備：第 5 篇堆疊的概念。預估 15 分鐘。">
+<meta name="theme-color" content="#FAF9F5">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='8'%20fill='%23FAF9F5'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='8'%20fill='%23D97757'/%3E%3C/svg%3E">
+<link rel="canonical" href="https://www.slc6172.workers.dev/datastruct/datastruct-recursion-guide">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:site_name" content="自學教學站">
+<meta property="og:title" content="遞迴：函式呼叫自己，直到碰到基底條件">
+<meta property="og:description" content="遞迴三要素：基底條件（何時停）、縮小問題、相信子呼叫。每次呼叫佔呼叫堆疊一層，太深會爆；天真的 fib 因為重複計算是指數時間。先備：第 5 篇堆疊的概念。預估 15 分鐘。">
+<meta property="og:url" content="https://www.slc6172.workers.dev/datastruct/datastruct-recursion-guide">
+<meta name="twitter:card" content="summary">
+<style>
+  :root {
+    --ivory:#FAF9F5; --white:#FFFFFF; --slate:#141413;
+    --clay:#D97757; --clay-d:#B85C3E; --oat:#E3DACC; --olive:#788C5D; --rust:#B04A3F;
+    --gray-100:#F0EEE6; --gray-300:#D1CFC5; --gray-500:#87867F; --gray-700:#3D3D3A;
+    --serif: ui-serif, Georgia, "Times New Roman", "Noto Serif TC", "Songti TC", "PMingLiU", serif;
+    --sans:  system-ui, -apple-system, "Segoe UI", Roboto, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", Helvetica, Arial, sans-serif;
+    --mono:  ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
+    --border: 1.5px solid var(--gray-300);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  [hidden] { display:none !important; }
+  body { margin:0; padding:56px 24px 120px; background:var(--ivory); color:var(--slate);
+         font-family:var(--sans); font-size:15px; line-height:1.65; -webkit-font-smoothing:antialiased; }
+  .page { max-width:1100px; margin:0 auto; }
+  .page > header { margin-bottom:36px; }
+  .layout { display:grid; grid-template-columns:190px minmax(0,1fr); gap:48px; }
+  .layout > * { min-width:0; }
+  main > section { margin-bottom:56px; scroll-margin-top:24px; }
+
+  .eyebrow { font:12px var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--gray-500);
+             display:flex; align-items:center; gap:12px; margin-bottom:18px; }
+  .eyebrow::before { content:""; width:24px; height:1.5px; background:var(--clay); }
+  h1 { font:500 clamp(30px,4.6vw,42px)/1.18 var(--serif); letter-spacing:-.012em; margin:0 0 12px; }
+  h2 { font:500 25px/1.28 var(--serif); letter-spacing:-.01em; margin:0 0 6px; }
+  h3 { font:500 18px/1.35 var(--serif); margin:0 0 6px; }
+  .sub { color:var(--gray-700); max-width:680px; margin:0 0 4px; }
+  hr.rule { border:0; border-top:1px solid var(--gray-300); margin:10px 0 22px; }
+  p { margin:0 0 12px; }
+  code { font:12.5px var(--mono); background:var(--gray-100); padding:1px 5px; border-radius:4px; }
+  .slot { background:rgba(217,119,87,.14); color:var(--clay-d); border-radius:4px; padding:0 3px; }
+  pre .slot { background:rgba(217,119,87,.22); color:#F2B49E; }
+
+  .panel { background:var(--white); border:var(--border); border-radius:12px; padding:20px 22px; }
+  .tldr { border:var(--border); border-left:3px solid var(--clay); border-radius:10px; background:#fff; padding:16px 18px; margin-top:22px; max-width:820px; }
+  .tldr b { font:600 11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--clay-d); margin-right:6px; }
+
+  /* toc */
+  nav.toc { position:sticky; top:32px; align-self:start; font-size:13px; }
+  nav.toc .label { font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--gray-500); margin-bottom:8px; }
+  nav.toc a { display:block; padding:5px 0; color:var(--gray-700); text-decoration:none; }
+  nav.toc a:hover { color:var(--clay); }
+
+  /* buttons */
+  button { font:12px var(--mono); cursor:pointer; border-radius:999px; padding:9px 16px; transition:background .14s ease, transform .08s ease; }
+  button.primary { background:var(--slate); color:var(--ivory); border:1.5px solid var(--slate); }
+  button.primary:hover:not(:disabled) { background:var(--gray-700); }
+  button.primary:disabled { background:var(--gray-300); border-color:var(--gray-300); cursor:not-allowed; }
+  button.primary.copied { background:var(--olive); border-color:var(--olive); }
+  button.ghost { background:transparent; color:var(--gray-700); border:var(--border); }
+  button.ghost:hover { border-color:var(--gray-500); }
+  button:focus-visible, a:focus-visible, summary:focus-visible, input:focus-visible { outline:2px solid var(--clay); outline-offset:2px; }
+
+  /* tables (grid style) */
+  .table-wrap { overflow-x:auto; border:var(--border); border-radius:12px; background:#fff; }
+  .gt { min-width:560px; }
+  .gt .row { display:grid; gap:0; }
+  .gt .cell { padding:11px 14px; border-top:1px solid var(--gray-300); font-size:13.5px; }
+  .gt .row:first-child .cell { border-top:0; }
+  .gt .cell.head { font:11px var(--sans); text-transform:uppercase; letter-spacing:.06em; color:var(--gray-500); background:var(--gray-100); }
+  .gt .cell.term { font:600 12.5px var(--mono); }
+  .gt.g3 .row { grid-template-columns:150px minmax(0,1fr) minmax(0,1fr); }
+  .gt.g2 .row { grid-template-columns:140px minmax(0,1fr); }
+  .gt.g3b .row { grid-template-columns:170px minmax(0,1.2fr) minmax(0,1fr); }
+
+  /* code blocks */
+  .cmd { position:relative; background:var(--slate); border-radius:12px; margin:10px 0 12px; }
+  .cmd pre { margin:0; padding:16px 78px 16px 18px; font:12.5px/1.7 var(--mono); color:var(--ivory); overflow-x:auto; white-space:pre; }
+  .cmd .cm { color:var(--gray-500); }
+  .cmd button { position:absolute; top:9px; right:9px; padding:5px 11px; font-size:11px; color:var(--ivory);
+                background:rgba(250,249,245,.08); border:1px solid rgba(250,249,245,.28); }
+  .cmd button:hover { background:rgba(250,249,245,.18); }
+  .cmd button.copied { background:var(--olive); border-color:var(--olive); color:#fff; }
+  .cmd .cap { font:11px var(--mono); letter-spacing:.06em; color:var(--gray-500); padding:10px 18px 0; text-transform:uppercase; }
+  .cmd .cap + pre { padding-top:6px; }
+
+  /* diagram */
+  .canvas { background:#fff; border:var(--border); border-radius:12px; padding:14px; overflow-x:auto; }
+  .canvas svg { display:block; width:100%; height:auto; min-width:640px; }
+  .legend { list-style:none; margin:16px 0 0; padding:0; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 24px; }
+  .legend li { display:grid; grid-template-columns:26px minmax(0,1fr); gap:8px; font-size:13.5px; color:var(--gray-700); }
+  .legend .n { width:22px; height:22px; border-radius:50%; background:var(--clay); color:#fff; font:600 12px/22px var(--mono); text-align:center; }
+  .legend .n.k { background:var(--slate); }
+  .role { font:600 10.5px var(--mono); padding:1px 7px; border-radius:999px; margin-left:6px; white-space:nowrap; }
+  .role.c { background:rgba(217,119,87,.14); color:var(--clay-d); border:1px solid rgba(217,119,87,.45); }
+  .role.o { background:var(--oat); color:var(--slate); border:1px solid #CFC3AE; }
+
+  /* fill form */
+  .fill { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:12px; align-items:end; }
+  .fill label { display:block; font:11px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--gray-500); margin-bottom:5px; }
+  .fill input { width:100%; font:13px var(--mono); padding:9px 11px; border:var(--border); border-radius:8px; background:var(--gray-100); color:var(--slate); }
+  .fill-foot { display:flex; gap:12px; align-items:center; margin-top:14px; flex-wrap:wrap; }
+  .fill-foot span { font-size:13px; color:var(--gray-500); }
+
+  /* role tabs */
+  .role-tabs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin:18px 0 26px; }
+  .role-tabs button { text-align:left; font-family:var(--sans); font-size:14px; border-radius:12px; padding:16px 18px; background:#fff;
+                      border:var(--border); color:var(--gray-700); display:flex; flex-direction:column; gap:2px; }
+  .role-tabs button .rt { font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--gray-500); }
+  .role-tabs button b { font:500 20px/1.3 var(--serif); color:var(--slate); }
+  .role-tabs button:hover { border-color:var(--gray-500); }
+  .role-tabs button.on { border-color:var(--clay); background:#FBF1EC; }
+  .role-tabs button.on .rt { color:var(--clay-d); }
+
+  .orient { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-bottom:8px; }
+  .orient .panel { padding:14px 18px; font-size:13.5px; }
+  .orient .k { font:600 11px var(--mono); letter-spacing:.08em; text-transform:uppercase; display:block; margin-bottom:4px; }
+  .orient .known .k { color:#4B5C39; } .orient .new .k { color:var(--clay-d); }
+
+  /* steps */
+  .step { display:grid; grid-template-columns:40px minmax(0,1fr); gap:0 16px; padding:26px 0; border-top:1px solid var(--gray-300); }
+  .steps > .step:first-child { border-top:0; }
+  .step > * { min-width:0; }
+  .num { width:34px; height:34px; border-radius:50%; background:var(--oat); display:flex; align-items:center; justify-content:center; font:600 14px var(--mono); margin-top:2px; }
+  .step h3 { font-size:20px; margin:2px 0 6px; }
+  .why { color:var(--gray-700); margin:0 0 12px; }
+  .ops { margin:0 0 12px; padding-left:22px; color:var(--gray-700); }
+  .ops li { margin-bottom:5px; }
+  .see, .warn, .tip { border:var(--border); border-radius:8px; background:#fff; padding:10px 14px; font-size:13.5px; margin:12px 0; color:var(--gray-700); }
+  .see { border-left:3px solid var(--olive); } .warn { border-left:3px solid var(--rust); } .tip { border-left:3px solid var(--clay); }
+  .see b.l, .warn b.l, .tip b.l { font:600 11px var(--mono); letter-spacing:.08em; text-transform:uppercase; margin-right:6px; }
+  .see b.l { color:#4B5C39; } .warn b.l { color:var(--rust); } .tip b.l { color:var(--clay-d); }
+
+  /* PR compare mock */
+  .pr-mock { display:grid; grid-template-columns:minmax(0,1fr) 44px minmax(0,1fr); gap:0; align-items:stretch; margin:12px 0; }
+  .pr-mock .half { background:#fff; border:var(--border); border-radius:10px; padding:12px 14px; }
+  .pr-mock .half .t { font:600 11px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--gray-500); margin-bottom:6px; }
+  .pr-mock .half .r { font:12.5px var(--mono); margin:2px 0; word-break:break-all; }
+  .pr-mock .half .r i { font-style:normal; color:var(--gray-500); margin-right:6px; }
+  .pr-mock .arr { display:flex; align-items:center; justify-content:center; font:22px var(--mono); color:var(--clay); }
+  .pr-mock .half.base { border-color:var(--clay); background:#FBF1EC; }
+  .mock-cap { font-size:13px; color:var(--gray-500); margin:0 0 12px; }
+
+  .gh-tabs { display:flex; gap:0; border-bottom:1.5px solid var(--gray-300); margin:12px 0; overflow-x:auto; }
+  .gh-tabs span { padding:8px 16px; font-size:13.5px; color:var(--gray-500); white-space:nowrap; }
+  .gh-tabs span.on { color:var(--slate); box-shadow:inset 0 -2px 0 var(--clay); font-weight:600; }
+  .gh-tabs span small { font:11px var(--mono); margin-left:6px; color:var(--gray-500); }
+
+  /* diff */
+  .diff { font:12.5px/1.7 var(--mono); background:#fff; border:var(--border); border-radius:8px; overflow-x:auto; margin:12px 0 0; }
+  .diff-row { display:grid; grid-template-columns:44px 18px minmax(max-content,1fr); white-space:pre; padding-right:14px; }
+  .diff-row .ln { color:var(--gray-500); text-align:right; padding-right:10px; user-select:none; }
+  .diff-row.add { background:rgba(120,140,93,.12); } .diff-row.add .mark { color:var(--olive); font-weight:600; }
+  .diff-row.del { background:rgba(176,74,63,.10); } .diff-row.del .mark { color:var(--rust); font-weight:600; }
+  .bubble { background:#fff; border:var(--border); border-left:4px solid var(--olive); border-radius:8px; padding:10px 14px; margin:8px 0 0 44px; font-size:13px; max-width:560px; }
+  .bubble .who { font:600 11px var(--mono); color:var(--gray-500); display:block; margin-bottom:2px; }
+
+  /* lifecycle */
+  .stages { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; margin:18px 0 16px; }
+  .stages button { text-align:left; font-family:var(--sans); border-radius:10px; padding:11px 12px; background:#fff; border:var(--border); color:var(--gray-700); font-size:13px; display:flex; flex-direction:column; gap:6px; }
+  .stages button:hover { border-color:var(--gray-500); }
+  .stages button.on { border-color:var(--clay); background:#FBF1EC; }
+  .stages button .si { font:11px var(--mono); color:var(--gray-500); }
+  .badge { font:600 11px var(--mono); padding:2px 9px; border-radius:999px; align-self:flex-start; }
+  .badge.ok { background:rgba(120,140,93,.18); color:#4B5C39; }
+  .badge.warn { background:rgba(217,119,87,.18); color:var(--clay-d); }
+  .badge.done { background:var(--slate); color:var(--ivory); }
+  .two { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+  .two .panel h3 { display:flex; align-items:center; gap:8px; }
+  .two ul { margin:8px 0 0; padding-left:20px; color:var(--gray-700); }
+  .two li { margin-bottom:6px; }
+  .stage-nav { display:flex; gap:10px; margin-top:16px; }
+
+  /* details */
+  details { border:var(--border); border-radius:10px; background:#fff; margin:12px 0; overflow:hidden; }
+  summary { list-style:none; cursor:pointer; padding:14px 16px; font:17px/1.4 var(--serif); display:flex; align-items:baseline; gap:10px; }
+  summary::-webkit-details-marker { display:none; }
+  summary::before { content:"▸"; color:var(--gray-500); transition:transform .12s; flex:none; }
+  details[open] > summary::before { transform:rotate(90deg); }
+  details > .body { padding:0 18px 16px; border-top:1px solid var(--gray-300); padding-top:14px; }
+  details > .body > :last-child { margin-bottom:0; }
+
+  .habits { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+  .habits ul { margin:8px 0 0; padding-left:20px; color:var(--gray-700); }
+  .habits li { margin-bottom:6px; }
+  .export { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:8px; padding-top:20px; border-top:1px solid var(--gray-300); }
+  .export span { font-size:13px; color:var(--gray-500); }
+
+  /* progress + toc active */
+  .progress { position:fixed; top:0; left:0; right:0; height:3px; z-index:60; }
+  .progress span { display:block; height:100%; width:0; background:var(--clay); }
+  nav.toc a.active { color:var(--clay-d); font-weight:600; }
+
+  /* route switch */
+  .route-switch { display:flex; gap:6px; flex-wrap:wrap; background:var(--gray-100); padding:5px; border-radius:12px; width:max-content; max-width:100%; margin:16px 0; }
+  .route-switch button { border:0; background:transparent; border-radius:9px; color:var(--gray-500); font:13px var(--sans); padding:9px 14px; }
+  .route-switch button[aria-pressed="true"] { background:#fff; color:var(--slate); box-shadow:inset 0 -2px 0 var(--clay); }
+  .route-steps { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; margin:14px 0; }
+  .route-step { border:var(--border); border-radius:10px; background:#fff; padding:10px 12px; }
+  .route-step.new { border-color:var(--clay); background:#FBF1EC; }
+  .route-step i { font:600 11px var(--mono); color:var(--gray-500); font-style:normal; }
+  .route-step b { display:block; font-size:14px; margin:2px 0; }
+  .route-step small { display:block; font-size:12.5px; color:var(--gray-700); line-height:1.5; }
+  .route-note { font-size:13px; color:var(--gray-500); margin:0 0 4px; }
+
+  /* practice */
+  .sim { margin-bottom:16px; }
+  .sim h3 { margin-bottom:4px; }
+  .sim-buttons { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0; }
+  .sim-buttons button, .answer { font:14px var(--sans); border-radius:10px; border:var(--border); background:#fff; color:var(--gray-700); padding:10px 14px; text-align:left; }
+  .sim-buttons button:hover, .answer:hover:not(:disabled) { border-color:var(--gray-500); }
+  .sim-buttons button.selected { border-color:var(--clay); background:#FBF1EC; color:var(--slate); }
+  .sim-result { background:var(--gray-100); border-radius:10px; padding:12px 14px; font-size:14px; min-height:52px; color:var(--gray-700); }
+  .quiz-top { display:flex; justify-content:space-between; gap:10px; align-items:baseline; flex-wrap:wrap; }
+  .quiz-top .count { font:12px var(--mono); color:var(--gray-500); }
+  .question { font:500 18px/1.45 var(--serif); margin:14px 0 12px; }
+  .answers { display:grid; gap:8px; }
+  .answer { display:flex; gap:10px; align-items:flex-start; }
+  .answer .letter { width:22px; height:22px; flex:none; border-radius:6px; background:var(--gray-100); font:600 11px/22px var(--mono); text-align:center; }
+  .answer:disabled { cursor:default; }
+  .answer.correct { border-color:var(--olive); background:rgba(120,140,93,.12); }
+  .answer.wrong { border-color:var(--rust); background:rgba(176,74,63,.10); }
+  .feedback { display:none; margin-top:12px; padding:12px 14px; border-radius:10px; font-size:14px; border:var(--border); border-left-width:4px; background:#fff; }
+  .feedback.show { display:block; } .feedback.good { border-left-color:var(--olive); } .feedback.bad { border-left-color:var(--clay); }
+  .quiz-foot { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:14px; }
+  .quiz-foot span { font-size:13px; color:var(--gray-500); }
+  .checks { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  .check-item { display:flex; gap:10px; align-items:flex-start; padding:11px 13px; border:var(--border); border-radius:10px; background:#fff; font-size:14px; color:var(--gray-700); cursor:pointer; }
+  .check-item input { accent-color:var(--clay); margin-top:5px; flex:none; }
+  .check-item.done { background:rgba(120,140,93,.10); border-color:rgba(120,140,93,.45); }
+  .bar { height:6px; border-radius:999px; background:var(--gray-100); overflow:hidden; margin-top:8px; }
+  .bar span { display:block; height:100%; width:0; background:var(--olive); transition:width .2s; }
+  .check-progress { font-size:13px; color:var(--gray-500); margin-top:12px; }
+  .resources { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  .resource { display:block; padding:12px 14px; border:var(--border); border-radius:10px; background:#fff; color:var(--slate); text-decoration:none; }
+  .resource:hover { border-color:var(--clay); }
+  .resource b { display:block; font-size:14px; } .resource small { font:12px var(--mono); color:var(--gray-500); }
+  .warn ul { margin:6px 0 0; padding-left:20px; }
+  .foot { font-size:13px; color:var(--gray-500); border-top:1px solid var(--gray-300); padding-top:18px; }
+
+  @media (max-width: 920px) {
+    .layout { grid-template-columns:minmax(0,1fr); gap:24px; }
+    nav.toc { position:static; display:flex; flex-wrap:wrap; gap:4px 16px; }
+    nav.toc .label { width:100%; margin-bottom:2px; }
+    .fill { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .stages { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .two, .habits, .orient, .role-tabs, .legend, .checks, .resources { grid-template-columns:minmax(0,1fr); }
+    .route-steps { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  }
+  @media (max-width: 720px) {
+    body { padding:32px 16px 80px; }
+    .step { grid-template-columns:minmax(0,1fr); }
+    .num { margin-bottom:8px; }
+    .pr-mock { grid-template-columns:minmax(0,1fr); }
+    .pr-mock .arr { transform:rotate(90deg); height:32px; }
+  }
+  /* site nav */
+  .crumb { margin:0 0 18px; font:12px var(--mono); }
+  .crumb a { color:var(--gray-500); text-decoration:none; }
+  .crumb a:hover { color:var(--clay); }
+  .pager { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-top:40px; }
+  .pager a { display:block; padding:14px 18px; border:var(--border); border-radius:12px; background:#fff; color:var(--slate); text-decoration:none; }
+  .pager a:hover { border-color:var(--clay); }
+  .pager small { display:block; font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--gray-500); }
+  .pager b { font:500 17px/1.4 var(--serif); }
+  .pager .next { text-align:right; grid-column:2; }
+  .pager .prev { grid-column:1; }
+  @media (max-width:720px){ .pager{grid-template-columns:minmax(0,1fr);} .pager .next,.pager .prev{grid-column:1;text-align:left;} }
+  @media (prefers-reduced-motion: reduce) { * { transition:none !important; scroll-behavior:auto !important; } }
+
+  .skip { position:absolute; left:12px; top:-60px; z-index:100; background:var(--slate); color:var(--ivory);
+          padding:10px 16px; border-radius:8px; font-size:14px; text-decoration:none; }
+  .skip:focus { top:12px; outline:2px solid var(--clay); outline-offset:2px; }
+  main:focus { outline:none; }
+
+  .fill.f4 { grid-template-columns:repeat(4,minmax(0,1fr)); }
+  .fill.f3 { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .fill.f2 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  @media (max-width: 920px) { .fill.f4, .fill.f3 { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  @media (max-width: 520px) { .fill.f4, .fill.f3, .fill.f2 { grid-template-columns:minmax(0,1fr); } }
+  .badge.bad { background:rgba(176,74,63,.15); color:var(--rust); }
+  .dec-out { background:var(--gray-100); border-radius:10px; padding:12px 14px; font-size:14px; color:var(--gray-700); margin-top:12px; }
+
+  /* ===== algo widgets (datastruct 主題) ===== */
+  .algo-w { background:var(--white); border:var(--border); border-radius:12px; padding:16px 18px; margin:14px 0; }
+  .algo-form { display:flex; flex-wrap:wrap; gap:10px 14px; align-items:flex-end; margin-bottom:14px; }
+  .algo-f[hidden] { display:none; }
+  .algo-f label { display:block; font:11px var(--mono); letter-spacing:.06em; color:var(--gray-500); margin-bottom:4px; }
+  .algo-form select, .algo-form input, .algo-ctl select { font:13px var(--mono); padding:7px 10px; border:var(--border); border-radius:8px; background:#fff; color:var(--slate); min-width:0; }
+  .algo-form input[type=number] { width:84px; }
+  .algo-form input[type=text] { width:220px; max-width:100%; }
+  .algo-main { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.15fr); gap:16px; align-items:start; }
+  .algo-main.nocode { grid-template-columns:minmax(0,1fr); }
+  .algo-left { min-width:0; border-radius:10px; }
+  .algo-left:focus-visible { outline:2px solid var(--clay); outline-offset:3px; }
+  .algo-stage { min-height:170px; background:var(--gray-100); border-radius:10px; padding:14px; overflow-x:auto; }
+  .algo-msg { margin-top:10px; padding:10px 12px; border-radius:8px; background:#fff; border:1px solid var(--gray-300); font-size:14px; min-height:3.4em; }
+  .algo-msg.err { border-color:var(--rust); color:var(--rust); }
+  .algo-ctl { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:10px; }
+  .algo-ctl button { padding:6px 12px; }
+  .algo-ctl button:disabled { opacity:.45; cursor:not-allowed; }
+  .algo-ctl input[type=range] { flex:1 1 110px; min-width:90px; accent-color:var(--clay); }
+  .algo-step { font:12px var(--mono); color:var(--gray-500); white-space:nowrap; }
+  .algo-code { margin:0; }
+  .algo-code pre { padding-right:18px; font-size:12px; max-height:440px; overflow:auto; position:relative; }
+  @media (max-width:920px) { .algo-main { grid-template-columns:minmax(0,1fr); } }
+
+  /* C++ 程式碼:行號、語法色、逐行高亮 */
+  pre[data-cpp], .algo-code pre { counter-reset:ln; }
+  pre .l { display:block; counter-increment:ln; border-left:3px solid transparent; padding-left:6px; }
+  pre .l::before { content:counter(ln); display:inline-block; width:2em; margin-right:.9em; text-align:right; color:var(--gray-500); user-select:none; }
+  pre .l.on { background:rgba(217,119,87,.24); border-left-color:var(--clay); }
+  pre .xk { color:#F2B49E; } pre .xt { color:#B7C99B; } pre .xs { color:#E3DACC; font-style:italic; }
+  pre .xn { color:#E6C98F; } pre .xp { color:#C9A8D6; } pre .xc { color:var(--gray-500); }
+  .cmd.out pre { color:var(--oat); padding-right:18px; }
+  .cmd.out .cap { color:var(--olive); }
+  @media (prefers-reduced-motion: reduce) { .algo-w * { animation:none !important; transition:none !important; } }
+
+  .gt.g4 .row { grid-template-columns:120px minmax(0,1.2fr) minmax(0,1fr) minmax(0,1.1fr); }
+  .algo-code .cap, .cmd.out .cap { text-transform:none; }
+
+  /* 格子繪圖器(陣列 / vector) */
+  .cells { display:flex; flex-wrap:wrap; gap:8px; align-items:flex-start; }
+  .cells + .cells, .rowlab + .cells { margin-top:6px; }
+  .rowlab { font:11px var(--mono); letter-spacing:.06em; color:var(--gray-500); margin:12px 0 6px; }
+  .rowlab:first-child { margin-top:0; }
+  .cells .cell { width:46px; text-align:center; }
+  .cells .cell .b { height:46px; display:flex; align-items:center; justify-content:center; border:1.5px solid var(--gray-700); border-radius:8px; background:#fff; font:600 15px var(--mono); }
+  .cells .cell .i { display:block; font:11px var(--mono); color:var(--gray-500); margin-top:3px; }
+  .cells .cell .t { display:block; height:12px; font:600 11px var(--mono); color:var(--clay-d); }
+  .cells .cell.cur .b { border-color:var(--clay); background:#FBF1EC; }
+  .cells .cell.mv .b { border-color:var(--clay); background:rgba(217,119,87,.2); }
+  .cells .cell.mvr .b { animation:cellR .45s ease; } .cells .cell.mvl .b { animation:cellL .45s ease; }
+  .cells .cell.new .b { border-color:var(--olive); background:rgba(120,140,93,.18); animation:cellPop .4s ease; }
+  .cells .cell.del .b { border-color:var(--rust); background:rgba(176,74,63,.12); text-decoration:line-through; }
+  .cells .cell.dim .b { opacity:.4; }
+  .cells .cell.ok .b { border-color:var(--olive); background:rgba(120,140,93,.1); }
+  .cells .cell.empty .b { border-style:dashed; border-color:var(--gray-300); background:transparent; color:transparent; }
+  .kv { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+  .kv span { font:12px var(--mono); background:#fff; border:1px solid var(--gray-300); border-radius:999px; padding:3px 11px; color:var(--gray-700); }
+  .kv b { color:var(--slate); font-weight:600; }
+  @keyframes cellR { from { transform:translateX(-54px); } to { transform:none; } }
+  @keyframes cellL { from { transform:translateX(54px); } to { transform:none; } }
+  @keyframes cellPop { from { transform:scale(.6); } to { transform:none; } }
+  @media (max-width:520px) { .cells .cell { width:38px; } .cells .cell .b { height:38px; font-size:13px; } .cells { gap:6px; } }
+
+  /* 二元樹 / 呼叫樹 繪圖器(SVG,寬度固定,窄螢幕在動畫區內橫向捲動) */
+  .tr svg { display:block; max-width:none; }
+  .tr text { font:600 12px var(--mono); fill:var(--slate); }
+  .tr .ed { stroke:var(--gray-500); stroke-width:1.5; fill:none; }
+  .tr .tn rect { fill:#fff; stroke:var(--gray-700); stroke-width:1.5; }
+  .tr .tn.ok rect { fill:rgba(120,140,93,.2); stroke:var(--olive); }
+  .tr .tn.cur rect { fill:#FBF1EC; stroke:var(--clay); stroke-width:2.4; }
+  .tr .tn.dup rect { stroke:var(--rust); stroke-dasharray:4 3; stroke-width:2; }
+  .tr .tn.new rect { fill:rgba(120,140,93,.2); stroke:var(--olive); stroke-width:2.2; }
+  .tr .tn.del rect { fill:rgba(176,74,63,.1); stroke:var(--rust); stroke-dasharray:4 3; }
+  .tr .tn.dim { opacity:.4; }
+  .stk { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-bottom:10px; }
+  .stk .lab { font:11px var(--mono); color:var(--gray-500); margin-right:4px; }
+  .stk span.f { font:600 12px var(--mono); background:#fff; border:1px solid var(--gray-300); border-radius:6px; padding:3px 8px; }
+  .stk span.f.top { border-color:var(--clay); background:#FBF1EC; }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">跳到主要內容</a>
+<div class="progress" aria-hidden="true"><span id="readBar"></span></div>
+<div class="page">
+
+<header>
+  <nav class="crumb" aria-label="站內導覽"><a href="../index.html#datastruct">← 回教學首頁</a></nav>
+  <div class="eyebrow">C++ 演算法 · 第 7 篇 · 遞迴</div>
+  <h1>遞迴就是把問題縮小，直到小到能直接回答</h1>
+  <p class="sub">函式在裡面呼叫自己。這一篇用呼叫堆疊與呼叫樹的動畫，看階乘與費氏數列怎麼一層層展開、再一層層回來，也看為什麼天真的 fib 會慢。</p>
+  <div class="tldr"><b>TL;DR</b> 遞迴三要素：<b>基底條件</b>（何時停）、<b>縮小問題</b>、<b>相信子呼叫</b>。每次呼叫佔呼叫堆疊一層，太深會爆；天真的 <code>fib</code> 因為重複計算是指數時間。<br><small>先備：第 5 篇堆疊的概念。預估 15 分鐘。難度：基礎。</small></div>
+</header>
+
+<div class="layout">
+<nav class="toc" aria-label="本頁目錄">
+  <div class="label">On this page</div>
+  <a href="#what">1. 直覺與三要素</a>
+  <a href="#play">2. 呼叫堆疊與呼叫樹</a>
+  <a href="#code">3. 完整程式</a>
+  <a href="#why">4. fib 為什麼慢</a>
+  <a href="#bs">5. 遞迴二分搜尋</a>
+  <a href="#cost">6. 複雜度小表</a>
+  <a href="#gotchas">7. 常見錯誤</a>
+  <a href="#practice">8. 動手寫與測驗</a>
+</nav>
+
+<main id="main" tabindex="-1">
+<section id="what">
+  <h2>遞迴：把大問題變成「同樣形狀的小問題」</h2>
+  <hr class="rule">
+<div class="panel"><h3>想像一組俄羅斯娃娃</h3><p>要數有幾個娃娃：打開最外面一個，剩下的是「一組比較小的娃娃」，而數它的方法跟原本一樣。一直打開，直到打開後裡面是空的，就知道數完了。</p><p style="margin-bottom:0">寫成程式就是：<strong>函式在裡面呼叫自己</strong>，每次處理的問題都比上一次小，小到不能再小時停下來。</p></div>
+<h3 style="margin-top:26px">寫遞迴只要記住三件事</h3>
+<div class="table-wrap"><div class="gt g2"><div class="row"><div class="cell head">要素</div><div class="cell head">說明</div></div><div class="row"><div class="cell term">基底條件</div><div class="cell">問題小到可以直接回答的時候（例如 <code>n == 0</code>）。<b>沒有它就會無限呼叫下去。</b></div></div><div class="row"><div class="cell term">縮小問題</div><div class="cell">每次呼叫自己時，參數要更靠近基底條件（例如 <code>n - 1</code>）。</div></div><div class="row"><div class="cell term">相信子呼叫</div><div class="cell">寫的時候假設 <code>f(n - 1)</code> 已經算對了，你只負責「用它的答案算出 <code>f(n)</code>」。</div></div></div></div>
+<p style="margin-top:18px">先看最簡單的例子，倒數計時：</p>
+<div class="cmd"><div class="cap">main.cpp</div><pre data-cpp>#include &lt;iostream&gt;
+
+void countdown(int n) {
+    if (n == 0) {
+        std::cout &lt;&lt; "liftoff\n";             // 基底條件:不再呼叫自己
+        return;
+    }
+    std::cout &lt;&lt; n &lt;&lt; " ";
+    countdown(n - 1);                        // 呼叫自己,但問題變小了
+}
+
+int main() {
+    countdown(3);
+}</pre><button type="button" class="copy">Copy</button></div>
+<div class="cmd out"><div class="cap">執行結果</div><pre>3 2 1 liftoff</pre></div>
+<div class="see"><b class="l">你會看到</b><code>countdown(3)</code> 印 3，呼叫 <code>countdown(2)</code>，印 2，呼叫 <code>countdown(1)</code>，印 1，呼叫 <code>countdown(0)</code>，碰到基底條件印出 liftoff 後一路返回。</div>
+</section>
+
+<section id="play">
+  <h2>動手玩：看呼叫堆疊與呼叫樹</h2>
+  <hr class="rule">
+<p class="sub" style="margin-bottom:14px">每呼叫一次函式，上方的<b>呼叫堆疊</b>就多一層（和第 5 篇的 stack 一樣，後進先出）；下方的<b>呼叫樹</b>記錄誰呼叫了誰。節點旁邊的「=數字」是它回傳的結果。</p>
+<ol class="ops"><li>選 <code>fact</code>、n = 4：看呼叫一路往下到基底條件，再一路往回乘出答案。</li><li>選 <code>fib</code>、n = 4，再改成 n = 6：樹長成什麼樣？</li><li>注意虛線框的節點：它們是「已經算過的 fib(k) 又被重新算一遍」。</li></ol>
+<div id="w-rec" role="group" aria-label="遞迴呼叫動畫"></div>
+<div class="panel sim" data-simgroup>
+<h3>猜猜看：這一步會發生什麼？</h3>
+<p style="margin:6px 0 0;color:var(--gray-700)"><code>fact(4)</code> 一共會呼叫 <code>fact</code> 這個函式幾次（包含最外層那次）？</p>
+<div class="sim-buttons" role="group" aria-label="選擇做法"><button type="button" data-sim="a1">3 次</button><button type="button" data-sim="a2">4 次</button><button type="button" data-sim="a3">24 次</button></div>
+<div class="sim-result" aria-live="polite">選一個做法，看看對不對。</div>
+</div>
+</section>
+
+<section id="code">
+  <h2>完整程式：階乘與費氏數列</h2>
+  <hr class="rule">
+<p class="sub" style="margin-bottom:14px"><code>fact(n)</code> = n × (n − 1) × … × 1;<code>fib(n)</code> 每一項是前兩項的和（0, 1, 1, 2, 3, 5, 8…）。兩個函式都符合「三要素」。</p>
+<div class="cmd"><div class="cap">main.cpp</div><pre data-cpp>#include &lt;iostream&gt;
+
+int fact(int n) {
+    if (n &lt;= 1) {
+        return 1;
+    }
+    return n * fact(n - 1);
+}
+
+int fib(int n) {
+    if (n &lt;= 1) {
+        return n;
+    }
+    return fib(n - 1) + fib(n - 2);
+}
+
+int main() {
+    std::cout &lt;&lt; fact(5) &lt;&lt; " " &lt;&lt; fib(6) &lt;&lt; "\n";
+}</pre><button type="button" class="copy">Copy</button></div>
+<div class="cmd out"><div class="cap">執行結果(fact(5)、fib(6))</div><pre>120 8</pre></div>
+<p>記得這個順序：<code>fact(5)</code> 先往下呼叫到 <code>fact(1)</code>（基底條件），<b>回傳時才開始乘</b>。每一層都在等下一層的答案，所以呼叫堆疊上同時有很多層。</p>
+</section>
+
+<section id="why">
+  <h2>為什麼 fib 會慢？重複計算</h2>
+  <hr class="rule">
+<p class="sub" style="margin-bottom:14px">回頭看 <code>fib(6)</code> 的呼叫樹：<code>fib(3)</code> 出現了好幾次，每次都從頭算。n 一大，重複的次數爆炸成長。下面是用真正的程式數出來的呼叫次數：</p>
+<div class="cmd"><div class="cap">main.cpp</div><pre data-cpp>#include &lt;iostream&gt;
+
+long long calls = 0;
+
+int fib(int n) {
+    ++calls;
+    if (n &lt;= 1) {
+        return n;
+    }
+    return fib(n - 1) + fib(n - 2);
+}
+
+int main() {
+    for (int n : {10, 20, 30}) {
+        calls = 0;
+        int result = fib(n);
+        std::cout &lt;&lt; "fib(" &lt;&lt; n &lt;&lt; ") = " &lt;&lt; result &lt;&lt; ", calls = " &lt;&lt; calls &lt;&lt; "\n";
+    }
+}</pre><button type="button" class="copy">Copy</button></div>
+<div class="cmd out"><div class="cap">執行結果（呼叫次數）</div><pre>fib(10) = 55, calls = 177
+fib(20) = 6765, calls = 21891
+fib(30) = 832040, calls = 2692537</pre></div>
+<div class="warn"><b class="l">n 每加 10，次數約變成 120 倍</b>這是<b>指數成長</b>(大約 O(1.6ⁿ)，常簡化說成 O(2ⁿ))。n = 50 時，你的電腦可能算好幾個小時。第 16 篇「動態規劃」會教你把算過的結果記下來，讓 <code>fib</code> 變成 O(n)。</div>
+</section>
+
+<section id="bs">
+  <h2>遞迴的第二個例子：二分搜尋</h2>
+  <hr class="rule">
+<p class="sub" style="margin-bottom:14px">上一篇的二分搜尋也能寫成遞迴：每次只留下一半，「在剩下一半裡搜尋」就是一個一模一樣、但更小的問題。這裡有<b>兩個基底條件</b>：範圍空了（沒找到）、找到了。</p>
+<div class="cmd"><div class="cap">main.cpp</div><pre data-cpp>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+int search(const std::vector&lt;int&gt;&amp; v, int target, int lo, int hi) {
+    if (lo &gt; hi) {
+        return -1;                           // 基底條件 1:範圍空了
+    }
+    int mid = lo + (hi - lo) / 2;
+    if (v[mid] == target) {
+        return mid;                          // 基底條件 2:找到了
+    }
+    if (v[mid] &lt; target) {
+        return search(v, target, mid + 1, hi);   // 只剩右半邊
+    }
+    return search(v, target, lo, mid - 1);       // 只剩左半邊
+}
+
+int main() {
+    std::vector&lt;int&gt; v = {2, 5, 8, 12, 16, 23, 38, 56, 72, 91};
+    int n = static_cast&lt;int&gt;(v.size());
+    std::cout &lt;&lt; search(v, 23, 0, n - 1) &lt;&lt; " " &lt;&lt; search(v, 7, 0, n - 1) &lt;&lt; "\n";
+}</pre><button type="button" class="copy">Copy</button></div>
+<div class="cmd out"><div class="cap">執行結果</div><pre>5 -1</pre></div>
+</section>
+
+<section id="cost">
+  <h2>複雜度小表：時間與呼叫堆疊</h2>
+  <hr class="rule">
+<p class="sub" style="margin-bottom:14px">遞迴的「空間」要把<b>呼叫堆疊的深度</b>算進去：每一層都佔一點記憶體。</p>
+<div class="table-wrap"><div class="gt g3"><div class="row"><div class="cell head">函式</div><div class="cell head">時間</div><div class="cell head">空間（堆疊深度）</div></div><div class="row"><div class="cell term"><code>fact(n)</code></div><div class="cell">O(n)</div><div class="cell">O(n)：最深有 n 層</div></div><div class="row"><div class="cell term"><code>fib(n)</code>（上面的寫法）</div><div class="cell">指數，約 O(2ⁿ)</div><div class="cell">O(n)：最深是從 n 一路減到 1</div></div><div class="row"><div class="cell term">遞迴二分搜尋</div><div class="cell">O(log n)</div><div class="cell">O(log n)：每層砍一半</div></div></div></div>
+</section>
+
+<section id="gotchas">
+  <h2>初學者最常卡住的三個地方</h2>
+  <hr class="rule">
+<details><summary>忘了寫基底條件：無限遞迴</summary><div class="body"><p>少了基底條件，函式永遠不會停，一直呼叫下去，直到呼叫堆疊用光、程式當掉。連編譯器都看得出來，會警告你：</p><div class="cmd"><div class="cap">錯誤示範（不要執行）</div><pre data-cpp>// 錯誤示範:少了基底條件。編譯器會警告,執行會一直往下呼叫直到當掉
+int badFact(int n) {
+    return n * badFact(n - 1);
+}</pre></div><div class="cmd out"><div class="cap">g++ -Wall 的警告（實際輸出）</div><pre>warning: infinite recursion detected [-Winfinite-recursion]</pre></div></div></details>
+<details><summary>遞迴太深：呼叫堆疊爆掉（stack overflow）</summary><div class="body"><p>每一層呼叫都要佔一小塊記憶體。一般電腦大約幾萬到幾十萬層就會用完，所以 <code>sumTo(1000000)</code> 這種寫法很可能直接當掉。層數可能很深的時候，改用迴圈。</p></div></details>
+<details><summary>遞迴一定比迴圈好嗎？</summary><div class="body"><p>不一定。像 <code>fact</code> 用迴圈寫更省空間。遞迴的優勢是：遇到「問題裡面有同樣形狀的小問題」時（樹的走訪、排列組合、分治法），寫起來特別自然。後面的二元樹、合併排序、回溯都會用到。</p></div></details>
+</section>
+
+<section id="practice">
+  <h2>動手演練：確認你真的懂了</h2>
+  <hr class="rule">
+<h3 style="margin-top:30px">動手寫（兩題）</h3><div class="panel"><h3>第 1 題：補上基底條件</h3><p><code>sumTo(n)</code> 要回傳 1 + 2 + … + n。目前缺基底條件，執行會當掉。補上它，輸出應該是 <code>15 0</code>。</p><div class="cmd"><div class="cap">main.cpp</div><pre data-cpp>#include &lt;iostream&gt;
+
+// 回傳 1 + 2 + ... + n
+int sumTo(int n) {
+    // 在這裡補上基底條件:n 是 0 的時候,總和是多少?
+    return n + sumTo(n - 1);
+}
+
+int main() {
+    std::cout &lt;&lt; sumTo(5) &lt;&lt; " " &lt;&lt; sumTo(0) &lt;&lt; "\n";   // 預期輸出 15 0
+}</pre><button type="button" class="copy">Copy</button></div><details><summary>參考答案</summary><div class="body"><p>n 等於 0 的時候總和是 0，直接回傳。其他情況用 <code>n + sumTo(n - 1)</code>。</p><div class="cmd"><div class="cap">完整答案</div><pre data-cpp>#include &lt;iostream&gt;
+
+int sumTo(int n) {
+    if (n == 0) {
+        return 0;
+    }
+    return n + sumTo(n - 1);
+}
+
+int main() {
+    std::cout &lt;&lt; sumTo(5) &lt;&lt; " " &lt;&lt; sumTo(0) &lt;&lt; "\n";
+}</pre><button type="button" class="copy">Copy</button></div><div class="cmd out"><div class="cap">執行結果</div><pre>15 0</pre></div></div></details></div><div class="panel" style="margin-top:14px"><h3>第 2 題：用遞迴寫 power</h3><p>完成 <code>power(base, exp)</code>。輸出應該是 <code>8 1</code>。想想三要素：基底條件是什麼？怎麼縮小問題？</p><div class="cmd"><div class="cap">main.cpp</div><pre data-cpp>#include &lt;iostream&gt;
+
+// 回傳 base 的 exp 次方(exp 是 0 或正整數)。用遞迴寫:
+// base^exp = base * base^(exp - 1),而 base^0 = 1
+int power(int base, int exp) {
+    (void)base;
+    (void)exp;
+    return 0;
+}
+
+int main() {
+    std::cout &lt;&lt; power(2, 3) &lt;&lt; " " &lt;&lt; power(5, 0) &lt;&lt; "\n";   // 預期輸出 8 1
+}</pre><button type="button" class="copy">Copy</button></div><details><summary>參考答案</summary><div class="body"><p>基底條件：<code>exp == 0</code> 時回傳 1。縮小問題：<code>base × power(base, exp - 1)</code>。時間是 O(exp)。</p><div class="cmd"><div class="cap">完整答案</div><pre data-cpp>#include &lt;iostream&gt;
+
+int power(int base, int exp) {
+    if (exp == 0) {
+        return 1;
+    }
+    return base * power(base, exp - 1);
+}
+
+int main() {
+    std::cout &lt;&lt; power(2, 3) &lt;&lt; " " &lt;&lt; power(5, 0) &lt;&lt; "\n";
+}</pre><button type="button" class="copy">Copy</button></div><div class="cmd out"><div class="cap">執行結果</div><pre>8 1</pre></div></div></details></div>
+<div class="panel" id="quiz">
+    <div class="quiz-top"><h3 style="margin:0">快速測驗</h3><span class="count" id="quizCount">1 / 1</span></div>
+    <div class="question" id="quizQ"></div>
+    <div class="answers" id="quizAns"></div>
+    <div class="feedback" id="quizFb" aria-live="polite"></div>
+    <div class="quiz-foot"><span id="quizScore">答對 0 題</span><button type="button" class="primary" id="quizNext" disabled>下一題 →</button></div>
+  </div>
+<h3 style="margin-top:30px">學完之後，對照這張清單</h3>
+<div class="panel">
+<div class="checks" id="checks"><label class="check-item"><input type="checkbox"><span>我能說出遞迴三要素：基底條件、縮小問題、相信子呼叫。</span></label><label class="check-item"><input type="checkbox"><span>我看得懂 fact 與 fib 的呼叫堆疊和呼叫樹。</span></label><label class="check-item"><input type="checkbox"><span>我知道忘記基底條件會無限遞迴，編譯器甚至會警告。</span></label><label class="check-item"><input type="checkbox"><span>我知道遞迴太深會讓呼叫堆疊爆掉。</span></label><label class="check-item"><input type="checkbox"><span>我知道 fib 慢的原因是重複計算，之後會用動態規劃解決。</span></label><label class="check-item"><input type="checkbox"><span>我能把「二分搜尋」寫成遞迴，並找出它的兩個基底條件。</span></label></div>
+<div class="check-progress" id="checkProgress">已完成 0 / 6 項</div>
+<div class="bar"><span id="checkBar"></span></div>
+</div>
+</section>
+</main>
+</div>
+
+<p class="foot" style="margin-top:28px">範例以 g++ 13、<code>-std=c++17 -Wall -Wextra</code> 實際編譯執行驗證（零警告）；動畫為教學示意，資料量固定很小。cppreference 連結已逐條開啟確認。查證日期：2026-11-18。</p>
+
+<nav class="pager" aria-label="上一篇與下一篇">
+  <a class="prev" href="datastruct-search-guide.html"><small>上一篇</small><b>搜尋：線性與二分</b></a>
+  <a class="next" href="datastruct-sortbasic-guide.html"><small>下一篇</small><b>基礎排序：氣泡、選擇、插入</b></a>
+</nav>
+</div>
+
+<script>window.PAGE = {"sim": {"a1": "<b>不是。</b>要數到 <code>fact(1)</code> 才是基底條件：fact(4)、fact(3)、fact(2)、fact(1) 共 4 次。回到動畫選 fact、n = 4 數一數。", "a2": "<b>正確！</b>fact(4) 呼叫 fact(3),fact(3) 呼叫 fact(2),fact(2) 呼叫 fact(1)，共 4 次。一般來說 fact(n) 會呼叫 n 次，所以時間是 O(n)。", "a3": "<b>不是。</b>24 是 fact(4) 的<b>答案</b>(4×3×2×1)，不是呼叫次數。"}, "quiz": [{"q": "遞迴函式一定要有什麼，才不會無限呼叫下去？", "a": ["迴圈", "基底條件", "全域變數"], "c": 1, "why": "基底條件是「不再呼叫自己」的出口。"}, {"q": "<code>fact(4)</code> 一共會呼叫 <code>fact</code> 幾次？", "a": ["3 次", "24 次", "4 次"], "c": 2, "why": "fact(4)、fact(3)、fact(2)、fact(1) 共 4 次。"}, {"q": "遞迴太深可能導致什麼？", "a": ["呼叫堆疊用光，程式當掉", "硬碟變滿", "網路斷線"], "c": 0, "why": "每層呼叫都佔呼叫堆疊的空間。"}, {"q": "未加優化的 <code>fib(30)</code> 為什麼很慢？", "a": ["因為 fib 的公式很複雜", "因為 int 太小", "同樣的子問題被重複計算很多次"], "c": 2, "why": "例如 fib(3) 在樹裡出現很多次，每次都從頭算。"}, {"q": "下面哪一項<b>不是</b>遞迴三要素？", "a": ["基底條件", "一定要用 vector 存資料", "每次呼叫讓問題變小"], "c": 1, "why": "遞迴和用什麼容器無關。"}]};</script>
+<script>
+(function () {
+  "use strict";
+  var CFG = window.PAGE || {};
+  function $(id){ return document.getElementById(id); }
+  function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+  window.PAGE_UTIL = { copyText: function(t, b){ copyText(t, b); }, esc: esc };
+  function copyText(text, btn){
+    var orig = btn.textContent;
+    function flash(){
+      btn.textContent = "Copied ✓"; btn.classList.add("copied");
+      setTimeout(function(){ btn.textContent = orig; btn.classList.remove("copied"); }, 1200);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(flash, flash);
+    } else {
+      var ta = document.createElement("textarea"); ta.value = text;
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); } catch(e){}
+      document.body.removeChild(ta); flash();
+    }
+  }
+
+  /* ---------- fill-in template values ---------- */
+  var DEF = CFG.fill || {};
+  var vals = {};
+  var RE = /\{([A-Za-z0-9_]+)\}/g;
+  function val(k){ return vals[k] || DEF[k]; }
+  function resolvePlain(t){ return t.replace(RE, function(m, k){ return (k in DEF) ? val(k) : m; }); }
+  function resolveHtml(t){
+    var out = "", last = 0, m;
+    RE.lastIndex = 0;
+    while ((m = RE.exec(t))){
+      if (!(m[1] in DEF)) continue;
+      out += esc(t.slice(last, m.index)) + '<span class="slot">' + esc(val(m[1])) + "</span>";
+      last = RE.lastIndex;
+    }
+    return out + esc(t.slice(last));
+  }
+  function lineHtml(line, cpp){
+    if (cpp){
+      var j = line.indexOf("//");
+      if (j > -1) return resolveHtml(line.slice(0, j)) + '<span class="cm">' + resolveHtml(line.slice(j)) + "</span>";
+      return resolveHtml(line);
+    }
+    if (line.trim().indexOf("# ") === 0) return '<span class="cm">' + resolveHtml(line) + "</span>";
+    var i = line.indexOf("  # ");
+    if (i > -1) return resolveHtml(line.slice(0, i)) + '<span class="cm">' + resolveHtml(line.slice(i)) + "</span>";
+    return resolveHtml(line);
+  }
+  var tplEls = Array.prototype.slice.call(document.querySelectorAll("[data-tpl]"));
+  tplEls.forEach(function(el){ el._tpl = el.textContent; });
+  function renderTpl(){
+    tplEls.forEach(function(el){
+      if (el.tagName === "PRE") el.innerHTML = el._tpl.split("\n").map(function(l){ return lineHtml(l, el.hasAttribute("data-cpp")); }).join("\n");
+      else el.innerHTML = resolveHtml(el._tpl);
+    });
+  }
+  var inputs = Array.prototype.slice.call(document.querySelectorAll(".fill input"));
+  inputs.forEach(function(inp){
+    inp.placeholder = DEF[inp.dataset.k] || "";
+    inp.addEventListener("input", function(){
+      var v = inp.value;
+      if (!inp.dataset.ns){ v = v.replace(/\s+/g, "-"); if (v !== inp.value) inp.value = v; }
+      vals[inp.dataset.k] = v;
+      renderTpl();
+    });
+  });
+  var rb = $("resetBtn");
+  if (rb) rb.addEventListener("click", function(){
+    inputs.forEach(function(inp){ inp.value = ""; vals[inp.dataset.k] = ""; });
+    renderTpl();
+  });
+  document.querySelectorAll(".cmd .copy").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var pre = btn.parentNode.querySelector("pre");
+      copyText(pre._tpl !== undefined ? resolvePlain(pre._tpl) : pre.textContent, btn);
+    });
+  });
+
+  /* ---------- reading progress + toc spy ---------- */
+  var readBar = $("readBar");
+  function updateBar(){
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    readBar.style.width = (max > 0 ? Math.min(100, window.scrollY / max * 100) : 0) + "%";
+  }
+  window.addEventListener("scroll", updateBar, { passive: true });
+  window.addEventListener("resize", updateBar);
+  updateBar();
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll("nav.toc a"));
+  if ("IntersectionObserver" in window){
+    var spy = new IntersectionObserver(function(es){
+      es.forEach(function(en){
+        if (en.isIntersecting) tocLinks.forEach(function(a){ a.classList.toggle("active", a.getAttribute("href") === "#" + en.target.id); });
+      });
+    }, { rootMargin: "-15% 0px -70% 0px" });
+    tocLinks.forEach(function(a){ var sec = document.querySelector(a.getAttribute("href")); if (sec) spy.observe(sec); });
+  }
+
+  /* ---------- scenario simulators ---------- */
+  var SIM = CFG.sim || {};
+  document.querySelectorAll("[data-simgroup]").forEach(function(group){
+    var btns = Array.prototype.slice.call(group.querySelectorAll("[data-sim]"));
+    var out = group.querySelector(".sim-result");
+    btns.forEach(function(btn){
+      btn.addEventListener("click", function(){
+        btns.forEach(function(b){ b.classList.toggle("selected", b === btn); });
+        out.innerHTML = SIM[btn.dataset.sim] || "";
+      });
+    });
+  });
+
+  /* ---------- quiz ---------- */
+  var QUIZ = CFG.quiz || [];
+  if (QUIZ.length && $("quiz")){
+    var qi = 0, qScore = 0, qDone = false;
+    var qCount = $("quizCount"), qQ = $("quizQ"), qAns = $("quizAns"), qFb = $("quizFb"), qNext = $("quizNext"), qScoreEl = $("quizScore");
+    var renderQuiz = function(){
+      var item = QUIZ[qi]; qDone = false;
+      qCount.textContent = (qi + 1) + " / " + QUIZ.length;
+      qQ.innerHTML = item.q;
+      qAns.innerHTML = "";
+      qFb.className = "feedback"; qFb.textContent = "";
+      qNext.disabled = true;
+      qNext.textContent = qi === QUIZ.length - 1 ? "重新測驗 ↻" : "下一題 →";
+      item.a.forEach(function(text, i){
+        var b = document.createElement("button");
+        b.type = "button"; b.className = "answer";
+        b.innerHTML = '<span class="letter">' + String.fromCharCode(65 + i) + "</span><span>" + esc(text) + "</span>";
+        b.addEventListener("click", function(){ pick(i); });
+        qAns.appendChild(b);
+      });
+    };
+    var pick = function(i){
+      if (qDone) return; qDone = true;
+      var item = QUIZ[qi], good = i === item.c;
+      Array.prototype.forEach.call(qAns.querySelectorAll("button"), function(b, n){
+        b.disabled = true;
+        if (n === item.c) b.classList.add("correct");
+        if (n === i && !good) b.classList.add("wrong");
+      });
+      if (good) qScore++;
+      qFb.className = "feedback show " + (good ? "good" : "bad");
+      qFb.innerHTML = "<b>" + (good ? "答對了！" : "再記一下這個觀念。") + "</b> " + esc(item.why);
+      qScoreEl.textContent = "答對 " + qScore + " / " + (qi + 1) + " 題";
+      qNext.disabled = false;
+    };
+    qNext.addEventListener("click", function(){
+      if (qi === QUIZ.length - 1){ qi = 0; qScore = 0; } else { qi++; }
+      renderQuiz();
+      qScoreEl.textContent = "答對 " + qScore + " 題";
+    });
+    renderQuiz();
+  }
+
+  /* ---------- checklist ---------- */
+  var checks = Array.prototype.slice.call(document.querySelectorAll("#checks input"));
+  function updateChecks(){
+    var n = checks.filter(function(c){ return c.checked; }).length;
+    $("checkProgress").textContent = "已完成 " + n + " / " + checks.length + " 項";
+    $("checkBar").style.width = (n / checks.length * 100) + "%";
+    checks.forEach(function(c){ c.closest(".check-item").classList.toggle("done", c.checked); });
+  }
+  checks.forEach(function(c){ c.addEventListener("change", updateChecks); });
+
+  /* ---------- role tabs (dual-view pages) ---------- */
+  var roleBtns = Array.prototype.slice.call(document.querySelectorAll("[data-role]"));
+  var rolePanels = Array.prototype.slice.call(document.querySelectorAll("[data-panel]"));
+  function setRole(r, focus){
+    roleBtns.forEach(function(b){
+      var on = b.dataset.role === r;
+      b.classList.toggle("on", on);
+      b.setAttribute("aria-selected", on ? "true" : "false");
+      b.tabIndex = on ? 0 : -1;
+      if (on && focus) b.focus();
+    });
+    rolePanels.forEach(function(p){ p.hidden = p.dataset.panel !== r; });
+  }
+  roleBtns.forEach(function(b){
+    b.addEventListener("click", function(){ setRole(b.dataset.role); });
+    b.addEventListener("keydown", function(e){
+      if (e.key === "ArrowLeft" || e.key === "ArrowRight"){
+        e.preventDefault(); setRole(b.dataset.role === "c" ? "o" : "c", true);
+      }
+    });
+  });
+  if (roleBtns.length) setRole("c");
+
+  /* ---------- stage stepper (two columns) ---------- */
+  var STAGES = CFG.stages || [];
+  if (STAGES.length && $("stages")){
+    var stage = 0;
+    var stagesEl = $("stages");
+    var renderStages = function(){
+      stagesEl.innerHTML = STAGES.map(function(s, i){
+        return '<button type="button" data-i="' + i + '" class="' + (i === stage ? "on" : "") + '" aria-pressed="' + (i === stage) + '">' +
+          '<span class="si">階段 ' + (i + 1) + "</span><span>" + s.label + '</span><span class="badge ' + s.tone + '">' + s.badge + "</span></button>";
+      }).join("");
+      var s = STAGES[stage];
+      $("c-h").textContent = s.c.h; $("o-h").textContent = s.o.h;
+      $("c-list").innerHTML = s.c.items.map(function(t){ return "<li>" + t + "</li>"; }).join("");
+      $("o-list").innerHTML = s.o.items.map(function(t){ return "<li>" + t + "</li>"; }).join("");
+      $("prevStage").disabled = stage === 0;
+      $("nextStage").disabled = stage === STAGES.length - 1;
+    };
+    stagesEl.addEventListener("click", function(e){
+      var b = e.target.closest("button[data-i]"); if (!b) return;
+      stage = +b.dataset.i; renderStages();
+    });
+    $("prevStage").addEventListener("click", function(){ if (stage > 0){ stage--; renderStages(); } });
+    $("nextStage").addEventListener("click", function(){ if (stage < STAGES.length - 1){ stage++; renderStages(); } });
+    renderStages();
+  }
+
+  /* ---------- decision picker ---------- */
+  var DECIDE = CFG.decide || [];
+  if (DECIDE.length && $("decideBtns")){
+    var decBtns = $("decideBtns"), decOut = $("decideOut");
+    decBtns.innerHTML = DECIDE.map(function(d, i){
+      return '<button type="button" data-d="' + i + '">' + d.label + "</button>";
+    }).join("");
+    decBtns.addEventListener("click", function(e){
+      var b = e.target.closest("button[data-d]"); if (!b) return;
+      var d = DECIDE[+b.dataset.d];
+      Array.prototype.forEach.call(decBtns.querySelectorAll("button"), function(x){ x.classList.toggle("selected", x === b); });
+      var tone = d.risk === "高" ? "bad" : (d.risk === "中" ? "warn" : "ok");
+      decOut.innerHTML = '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px"><b>建議做法</b><span class="badge ' + tone + '">風險：' + d.risk + "</span></div>" +
+        '<div class="cmd" style="margin:8px 0"><pre></pre><button type="button" class="copy">Copy</button></div><div>' + d.why + "</div>";
+      decOut.querySelector("pre").textContent = d.cmd;
+      decOut.querySelector(".copy").addEventListener("click", function(ev){ copyText(d.cmd, ev.currentTarget); });
+    });
+  }
+
+  renderTpl();
+  if (checks.length) updateChecks();
+})();
+
+</script>
+<script>
+
+/* ---- core ---- */
+(function (G) {
+  "use strict";
+  var A = G.Algo = G.Algo || {};
+  function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+  A.esc = esc;
+
+  /* ---------- 極簡 C++ 語法上色(每行一個 <span class="l">,換行字元保留在 span 內,複製時不會掉) ---------- */
+  var KW = /^(?:auto|break|case|const|constexpr|continue|default|delete|do|else|enum|false|for|if|namespace|new|nullptr|operator|private|public|return|sizeof|static|static_cast|struct|switch|template|this|true|typedef|using|while|class|void|int|long|short|unsigned|signed|char|bool|float|double)$/;
+  var TY = /^(?:vector|string|size_t|cout|cin|cerr|endl|array|list|stack|queue|deque|map|set|unordered_map|unordered_set|priority_queue|pair|sort|swap|min|max|begin|end|int64_t)$/;
+  var RE = /(\/\/[^\n]*)|("(?:\\.|[^"\\\n])*")|('(?:\\.|[^'\\\n])+')|(^[ \t]*#[^\n]*)|(\b\d+(?:\.\d+)?\b)|(\b[A-Za-z_]\w*\b)/g;
+  function hlInline(line){
+    var out = "", last = 0, m; RE.lastIndex = 0;
+    while ((m = RE.exec(line))){
+      out += esc(line.slice(last, m.index));
+      var t = m[0], c = null;
+      if (m[1]) c = "c"; else if (m[2] || m[3]) c = "s"; else if (m[4]) c = "p"; else if (m[5]) c = "n";
+      else if (KW.test(t)) c = "k"; else if (TY.test(t)) c = "t";
+      out += c ? '<span class="x' + c + '">' + esc(t) + "</span>" : esc(t);
+      last = RE.lastIndex;
+    }
+    return out + esc(line.slice(last));
+  }
+  A.hlCpp = function (code) {
+    return code.replace(/\n$/, "").split("\n").map(function (ln) {
+      return '<span class="l">' + hlInline(ln) + "\n</span>";
+    }).join("");
+  };
+  A.highlightAll = function () {
+    if (typeof document === "undefined") return;
+    Array.prototype.forEach.call(document.querySelectorAll("pre[data-cpp]"), function (pre) {
+      pre.innerHTML = A.hlCpp(pre.textContent);
+    });
+  };
+
+  /* ---------- 通用播放器 widget ----------
+     o = { form:[{id,label,type:'select'|'number'|'text',options,value,min,max,showIf}], runLabel,
+           init():base, idle(base):frame, make(vals, base):{frames,result}|{error},
+           render(frame):html, code:string|null, code_cap:string }
+     frame = { msg, line:number|[number], ...(由 render 決定其餘欄位) }                                 */
+  var SPEEDS = { slow: 1400, mid: 800, fast: 350 };
+  A.widget = function (id, o) {
+    if (typeof document === "undefined") return null;
+    var root = document.getElementById(id); if (!root) return null;
+    root.classList.add("algo-w");
+    var form = (o.form || []).map(function (f) {
+      var inner;
+      if (f.type === "select") inner = '<select id="' + id + "-" + f.id + '">' + f.options.map(function (op) {
+        return '<option value="' + esc(op[0]) + '"' + (op[0] === f.value ? " selected" : "") + ">" + esc(op[1]) + "</option>"; }).join("") + "</select>";
+      else inner = '<input id="' + id + "-" + f.id + '" type="' + (f.type || "text") + '" value="' + esc(f.value === undefined ? "" : f.value) + '"' +
+        (f.min !== undefined ? ' min="' + f.min + '"' : "") + (f.max !== undefined ? ' max="' + f.max + '"' : "") + ' autocomplete="off">';
+      return '<div class="algo-f" data-f="' + f.id + '"><label for="' + id + "-" + f.id + '">' + esc(f.label) + "</label>" + inner + "</div>";
+    }).join("");
+    var extra = (o.buttons || []).map(function (b, i) { return '<button type="button" class="ghost" data-x="' + i + '">' + esc(b.label) + "</button>"; }).join("");
+    root.innerHTML =
+      '<div class="algo-form">' + form + '<button type="button" class="primary" data-a="run">' + esc(o.runLabel || "執行") + "</button>" + extra +
+      '<button type="button" class="ghost" data-a="reset">Reset</button></div>' +
+      '<div class="algo-main' + (o.code ? "" : " nocode") + '">' +
+      '<div class="algo-left" tabindex="0" aria-label="動畫區：按左右方向鍵逐步，空白鍵播放或暫停">' +
+        '<div class="algo-stage"></div><div class="algo-msg" aria-live="polite"></div>' +
+        '<div class="algo-ctl"><button type="button" class="ghost" data-a="first" title="回到第一步">⏮</button>' +
+        '<button type="button" class="ghost" data-a="prev">← 上一步</button>' +
+        '<button type="button" class="primary" data-a="next">下一步 →</button>' +
+        '<button type="button" class="ghost" data-a="play">▶ 播放</button>' +
+        '<select data-a="speed" aria-label="播放速度"><option value="slow">慢</option><option value="mid" selected>中</option><option value="fast">快</option></select>' +
+        '<input type="range" data-a="seek" min="0" max="0" value="0" aria-label="步驟"><span class="algo-step"></span></div></div>' +
+      (o.code ? '<div class="cmd algo-code"><div class="cap">' + esc(o.code_cap || "程式碼（目前執行的那一行會亮起來）") + "</div><pre>" + A.hlCpp(o.code) + "</pre></div>" : "") +
+      "</div>";
+    var $ = function (s) { return root.querySelector(s); };
+    var stage = $(".algo-stage"), msg = $(".algo-msg"), step = $(".algo-step"), seek = $('[data-a="seek"]'),
+        btnPrev = $('[data-a="prev"]'), btnNext = $('[data-a="next"]'), btnPlay = $('[data-a="play"]'), btnFirst = $('[data-a="first"]');
+    var lines = o.code ? Array.prototype.slice.call(root.querySelectorAll(".algo-code .l")) : [];
+    var base = o.init(), frames = [o.idle(base)], idx = 0, timer = null;
+
+    function vals() {
+      var v = {}; (o.form || []).forEach(function (f) {
+        var el = document.getElementById(id + "-" + f.id); v[f.id] = f.type === "number" ? (el.value === "" ? NaN : +el.value) : el.value; });
+      return v;
+    }
+    function showIf() {
+      var v = vals();
+      (o.form || []).forEach(function (f) {
+        if (!f.showIf) return;
+        var ok = Object.keys(f.showIf).every(function (k) { return [].concat(f.showIf[k]).map(String).indexOf(String(v[k])) !== -1; });
+        $('[data-f="' + f.id + '"]').hidden = !ok;
+      });
+    }
+    function stop() { if (timer) { clearInterval(timer); timer = null; } btnPlay.textContent = "▶ 播放"; }
+    function show() {
+      var f = frames[idx];
+      stage.innerHTML = o.render(f);
+      msg.className = "algo-msg"; msg.innerHTML = f.msg || "";
+      var on = f.line === undefined ? [] : [].concat(f.line);
+      lines.forEach(function (l, i) { l.classList.toggle("on", on.indexOf(i + 1) !== -1); });
+      if (on.length && lines[on[0] - 1]) { var el = lines[on[0] - 1], pre = el.parentNode;
+        if (el.offsetTop < pre.scrollTop || el.offsetTop + el.offsetHeight > pre.scrollTop + pre.clientHeight) pre.scrollTop = Math.max(0, el.offsetTop - pre.clientHeight / 3); }
+      var last = frames.length - 1;
+      seek.max = last; seek.value = idx; seek.disabled = last === 0;
+      step.textContent = last === 0 ? "尚未執行" : "步驟 " + (idx + 1) + " / " + frames.length;
+      btnPrev.disabled = idx === 0; btnFirst.disabled = idx === 0;
+      btnNext.disabled = idx >= last; btnPlay.disabled = last === 0;
+    }
+    function go(i) { idx = Math.max(0, Math.min(frames.length - 1, i)); show(); }
+    function play() {
+      if (timer) { stop(); return; }
+      if (idx >= frames.length - 1) go(0);
+      btnPlay.textContent = "⏸ 暫停";
+      timer = setInterval(function () { if (idx >= frames.length - 1) { stop(); return; } go(idx + 1); if (idx >= frames.length - 1) stop(); },
+        SPEEDS[$('[data-a="speed"]').value] || 800);
+    }
+    function run(v) {
+      stop();
+      var r = o.make(v, base);
+      if (r.error) { msg.className = "algo-msg err"; msg.textContent = r.error; return false; }
+      frames = r.frames; base = r.result; go(0); return true;
+    }
+    function reset() { stop(); base = o.init(); frames = [o.idle(base)]; idx = 0; show(); }
+
+    root.addEventListener("click", function (e) {
+      var b = e.target.closest("button[data-a],button[data-x]"); if (!b || !root.contains(b)) return;
+      if (b.dataset.x !== undefined) { var bx = o.buttons[+b.dataset.x]; if (bx.run) { bx.run(vals(), { base: base, setBase: function (b) { stop(); base = b; frames = [o.idle(base)]; idx = 0; show(); }, set: function (k, val) { document.getElementById(id + "-" + k).value = val; showIf(); }, run: function () { run(vals()); } }); } return; }
+      var a = b.dataset.a;
+      if (a === "run") run(vals()); else if (a === "reset") reset();
+      else if (a === "next") { stop(); go(idx + 1); } else if (a === "prev") { stop(); go(idx - 1); }
+      else if (a === "first") { stop(); go(0); } else if (a === "play") play();
+    });
+    seek.addEventListener("input", function () { stop(); go(+seek.value); });
+    root.addEventListener("change", function (e) { if (e.target.closest(".algo-form")) showIf(); });
+    $(".algo-left").addEventListener("keydown", function (e) {
+      if (e.key === "ArrowRight") { e.preventDefault(); stop(); go(idx + 1); }
+      else if (e.key === "ArrowLeft") { e.preventDefault(); stop(); go(idx - 1); }
+      else if (e.key === " ") { e.preventDefault(); play(); }
+    });
+    showIf(); show();
+    var api = { run: run, reset: reset, go: go, frames: function () { return frames; }, base: function () { return base; } };
+    root._algo = api; return api;
+  };
+  if (typeof document !== "undefined") A.highlightAll();
+})(typeof window !== "undefined" ? window : globalThis);
+
+/* ---- cells ---- */
+(function (G) {
+  "use strict";
+  var A = G.Algo = G.Algo || {};
+  var esc = A.esc || function (s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); };
+  function row(cells, empty) {
+    var h = '<div class="cells">';
+    (cells || []).forEach(function (c, i) {
+      h += '<div class="cell ' + (c.cls || "") + '"><span class="t">' + esc(c.t || "") + '</span><div class="b">' +
+        (c.v === null || c.v === undefined ? "" : esc(c.v)) + '</div><span class="i">' + i + "</span></div>";
+    });
+    var n = (cells || []).length;
+    for (var e = 0; e < (empty || 0); e++) h += '<div class="cell empty"><span class="t"></span><div class="b">0</div><span class="i">' + (n + e) + "</span></div>";
+    return h + "</div>";
+  }
+  /* frame = { cells:[{v,cls,t}], empty:n, chips:[[label,value]] }  或  { rows:[{label,cells,empty}], chips } */
+  A.cellsHtml = function (f) {
+    var h = "";
+    if (f.rows) f.rows.forEach(function (r) { h += (r.label ? '<div class="rowlab">' + esc(r.label) + "</div>" : "") + row(r.cells, r.empty); });
+    else h = row(f.cells, f.empty);
+    if (f.chips && f.chips.length) h += '<div class="kv">' + f.chips.map(function (c) { return "<span>" + esc(c[0]) + " <b>" + esc(c[1]) + "</b></span>"; }).join("") + "</div>";
+    return h;
+  };
+})(typeof window !== "undefined" ? window : globalThis);
+
+/* ---- tree ---- */
+(function (G) {
+  "use strict";
+  var A = G.Algo = G.Algo || {};
+  var esc = A.esc;
+  /* f.tree = { root:id|null, nodes:{ id:{label,l,r,cls} } }  ;  f.chips = [[label,value]] */
+  A.treeHtml = function (f) {
+    var T = f.tree;
+    if (!T || !T.root) return '<div class="memnote">（還沒有內容，按「執行」開始）</div>' + chipsHtml(f);
+    var pos = {}, leaf = 0, maxD = 0, SX = 76, SY = 58, X0 = 40, Y0 = 26;
+    (function lay(id, d) {
+      var n = T.nodes[id]; if (d > maxD) maxD = d;
+      var kids = [n.l, n.r].filter(function (k) { return k && T.nodes[k]; });
+      if (!kids.length) { pos[id] = { x: leaf++, d: d }; return pos[id].x; }
+      var xs = kids.map(function (k) { return lay(k, d + 1); });
+      var onlyL = xs.length === 1 && T.bst && n.l && T.nodes[n.l];
+      pos[id] = { x: xs.length === 1 ? (T.bst ? xs[0] + (onlyL ? 0.4 : -0.4) : xs[0]) : (xs[0] + xs[1]) / 2, d: d }; return pos[id].x;
+    })(T.root, 0);
+    var minX = 0, maxX = Math.max(leaf - 1, 0);
+    Object.keys(pos).forEach(function (id) { if (pos[id].x < minX) minX = pos[id].x; if (pos[id].x > maxX) maxX = pos[id].x; });
+    if (minX < 0) Object.keys(pos).forEach(function (id) { pos[id].x -= minX; });
+    var W = Math.max((maxX - minX + 1) * SX + 20, 340), H = (maxD + 1) * SY + 16, s = '<div class="tr"><svg width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="樹狀示意圖">';
+    function px(id) { return X0 + pos[id].x * SX; } function py(id) { return Y0 + pos[id].d * SY; }
+    Object.keys(pos).forEach(function (id) {
+      var n = T.nodes[id];
+      [n.l, n.r].forEach(function (k) { if (k && pos[k]) s += '<line class="ed" x1="' + px(id) + '" y1="' + (py(id) + 13) + '" x2="' + px(k) + '" y2="' + (py(k) - 13) + '"/>'; });
+    });
+    Object.keys(pos).forEach(function (id) {
+      var n = T.nodes[id], w = Math.max(40, String(n.label).length * 7.4 + 16);
+      s += '<g class="tn ' + (n.cls || "") + '"><rect x="' + (px(id) - w / 2) + '" y="' + (py(id) - 13) + '" width="' + w + '" height="26" rx="13"/><text x="' + px(id) + '" y="' + (py(id) + 4) + '" text-anchor="middle">' + esc(n.label) + "</text></g>";
+    });
+    return s + "</svg></div>" + chipsHtml(f);
+  };
+  function chipsHtml(f) { return f.chips && f.chips.length ? '<div class="kv">' + f.chips.map(function (c) { return "<span>" + esc(c[0]) + " <b>" + esc(c[1]) + "</b></span>"; }).join("") + "</div>" : ""; }
+  A.stackHtml = function (f) {
+    var st = f.stack || [];
+    return '<div class="stk"><span class="lab">呼叫堆疊（右邊是目前執行的）</span>' + (st.length ? st.map(function (x, i) { return '<span class="f' + (i === st.length - 1 ? " top" : "") + '">' + esc(x) + "</span>"; }).join("") : '<span class="lab">（空）</span>') + "</div>";
+  };
+})(typeof window !== "undefined" ? window : globalThis);
+
+/* ---- alg_rec ---- */
+(function (G) {
+  "use strict";
+  var A = G.Algo = G.Algo || {};
+  var CODE_REC = [
+    "int fact(int n) {", "    if (n <= 1) {", "        return 1;", "    }", "    return n * fact(n - 1);", "}", "",
+    "int fib(int n) {", "    if (n <= 1) {", "        return n;", "    }", "    return fib(n - 1) + fib(n - 2);", "}"].join("\n");
+  var LIM = { fact: [1, 8], fib: [1, 6] };
+  function isInt(x) { return typeof x === "number" && isFinite(x) && Math.floor(x) === x; }
+  function fibCalls(n) { var a = 1, b = 1; if (n <= 1) return 1; for (var i = 2; i <= n; i++) { var c = a + b + 1; a = b; b = c; } return b; }
+  function run(fn, n) {
+    if (!LIM[fn]) return { error: "請選 fact 或 fib。" };
+    if (!isInt(n) || n < LIM[fn][0] || n > LIM[fn][1]) return { error: fn + " 的 n 請輸入 " + LIM[fn][0] + " 到 " + LIM[fn][1] + " 的整數（再大，圖就看不清楚了）。" };
+    var nodes = {}, cnt = 0, stack = [], fr = [], calls = 0, seen = {}, dups = 0, rootId = null;
+    function lab(id) { var nd = nodes[id]; return nd.name + "(" + nd.n + ")" + (nd.val !== undefined ? "=" + nd.val : ""); }
+    function snap(line, msg, cur) {
+      var tn = {};
+      Object.keys(nodes).forEach(function (id) {
+        var nd = nodes[id], cls = nd.val !== undefined ? "ok" : ""; if (id === cur) cls = "cur"; if (nd.dup) cls += " dup";
+        tn[id] = { label: lab(id), l: nd.l, r: nd.r, cls: cls };
+      });
+      var chips = [["呼叫次數", calls], ["目前深度", stack.length]]; if (fn === "fib") chips.push(["重複計算的呼叫", dups]);
+      fr.push({ tree: { root: rootId, nodes: tn }, stack: stack.map(lab), chips: chips, line: line, msg: msg });
+    }
+    function call(nv, parent, side) {
+      var id = "c" + (cnt++), nd = { name: fn, n: nv, l: null, r: null, val: undefined, dup: false }; calls++;
+      if (fn === "fib") { if (seen[nv]) { nd.dup = true; dups++; } seen[nv] = 1; }
+      nodes[id] = nd; if (parent) nodes[parent][side] = id; else rootId = id;
+      stack.push(id);
+      snap(fn === "fact" ? [1, 2] : [8, 9], "進入 <code>" + fn + "(" + nv + ")</code>。" + (nv <= 1 ? "n ≤ 1，是<b>基底條件</b>。" : "n &gt; 1，還不是基底條件，要繼續呼叫。") + (nd.dup ? "<b>這個呼叫之前已經算過了（虛線框）。</b>" : ""), id);
+      var val;
+      if (nv <= 1) { val = fn === "fact" ? 1 : nv; nd.val = val; snap(fn === "fact" ? 3 : 10, "基底條件：直接回傳 <b>" + val + "</b>，不再呼叫自己。", id); }
+      else if (fn === "fact") { var r = call(nv - 1, id, "l"); val = nv * r; nd.val = val; snap(5, "<code>fact(" + (nv - 1) + ")</code> 回傳了 " + r + ",所以 <code>fact(" + nv + ")</code> = " + nv + " × " + r + " = <b>" + val + "</b>。", id); }
+      else {
+        var a = call(nv - 1, id, "l"); snap(12, "<code>fib(" + (nv - 1) + ")</code> 回來了(= " + a + ")，接著算 <code>fib(" + (nv - 2) + ")</code>。", id);
+        var b = call(nv - 2, id, "r"); val = a + b; nd.val = val; snap(12, "<code>fib(" + (nv - 1) + ") + fib(" + (nv - 2) + ")</code> = " + a + " + " + b + " = <b>" + val + "</b>。", id);
+      }
+      stack.pop(); return val;
+    }
+    var value = call(n, null, null);
+    snap(fn === "fact" ? 5 : 12, "最外層的 <code>" + fn + "(" + n + ")</code> 回傳 <b>" + value + "</b>。一共呼叫了 <b>" + calls + "</b> 次函式" + (fn === "fib" ? ",其中 " + dups + " 次是重複算已經算過的" : "") + "。", null);
+    return { frames: fr, result: null, value: value, calls: calls, dups: dups };
+  }
+  A.rec = { CODE_REC: CODE_REC, LIM: LIM, run: run, fibCalls: fibCalls };
+  if (typeof module !== "undefined" && module.exports) module.exports = A;
+})(typeof window !== "undefined" ? window : globalThis);
+
+</script>
+<script>
+(function(){
+"use strict";
+
+var R = Algo.rec;
+function render(f) { return Algo.stackHtml(f) + Algo.treeHtml(f); }
+Algo.widget("w-rec", {
+  form: [{ id: "fn", label: "函式", type: "select", value: "fact", options: [["fact", "fact(n) 階乘"], ["fib", "fib(n) 費氏數列"]] },
+         { id: "n", label: "n", type: "number", min: 1, max: 8, value: 4 }],
+  buttons: [
+    { label: "fact(4)", run: function (v, c) { c.set("fn", "fact"); c.set("n", 4); c.run(); } },
+    { label: "fib(4)", run: function (v, c) { c.set("fn", "fib"); c.set("n", 4); c.run(); } },
+    { label: "fib(6)", run: function (v, c) { c.set("fn", "fib"); c.set("n", 6); c.run(); } }
+  ],
+  init: function () { return null; },
+  idle: function () { return { tree: null, stack: [], chips: [], msg: "選函式與 n，按「執行」。fact 的 n 最大 8,fib 的 n 最大 6（再大樹就太寬了）。" }; },
+  make: function (v) { return R.run(v.fn, v.n); },
+  render: render, code: R.CODE_REC, code_cap: "fact 與 fib（亮起來的行 = 目前執行到的地方）"
+});
+
+})();
+</script>
+</body>
+</html>

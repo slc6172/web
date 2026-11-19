@@ -3,6 +3,7 @@
   var CFG = window.PAGE || {};
   function $(id){ return document.getElementById(id); }
   function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+  window.PAGE_UTIL = { copyText: function(t, b){ copyText(t, b); }, esc: esc };
   function copyText(text, btn){
     var orig = btn.textContent;
     function flash(){

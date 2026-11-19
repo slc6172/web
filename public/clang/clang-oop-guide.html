@@ -1,0 +1,1420 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>封裝、繼承、多型：繼承共用程式，virtual 讓同一呼叫有不同行為</title>
+<meta name="description" content="繼承讓子類別自動擁有基底類別的成員；protected 讓子類別能用、外面不能碰。">
+<meta name="theme-color" content="#FAF9F5">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='8'%20fill='%23FAF9F5'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='8'%20fill='%23D97757'/%3E%3C/svg%3E">
+<link rel="canonical" href="https://www.slc6172.workers.dev/clang/clang-oop-guide">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:site_name" content="自學教學站">
+<meta property="og:title" content="封裝、繼承、多型：繼承共用程式，virtual 讓同一呼叫有不同行為">
+<meta property="og:description" content="繼承讓子類別自動擁有基底類別的成員；protected 讓子類別能用、外面不能碰。">
+<meta property="og:url" content="https://www.slc6172.workers.dev/clang/clang-oop-guide">
+<meta name="twitter:card" content="summary">
+<style>
+  :root {
+    --ivory:#FAF9F5; --white:#FFFFFF; --slate:#141413;
+    --clay:#D97757; --clay-d:#B85C3E; --oat:#E3DACC; --olive:#788C5D; --rust:#B04A3F;
+    --gray-100:#F0EEE6; --gray-300:#D1CFC5; --gray-500:#87867F; --gray-700:#3D3D3A;
+    --serif: ui-serif, Georgia, "Times New Roman", "Noto Serif TC", "Songti TC", "PMingLiU", serif;
+    --sans:  system-ui, -apple-system, "Segoe UI", Roboto, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", Helvetica, Arial, sans-serif;
+    --mono:  ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
+    --border: 1.5px solid var(--gray-300);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  [hidden] { display:none !important; }
+  body { margin:0; padding:56px 24px 120px; background:var(--ivory); color:var(--slate);
+         font-family:var(--sans); font-size:15px; line-height:1.65; -webkit-font-smoothing:antialiased; }
+  .page { max-width:1100px; margin:0 auto; }
+  .page > header { margin-bottom:36px; }
+  .layout { display:grid; grid-template-columns:190px minmax(0,1fr); gap:48px; }
+  .layout > * { min-width:0; }
+  main > section { margin-bottom:56px; scroll-margin-top:24px; }
+
+  .eyebrow { font:12px var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--gray-500);
+             display:flex; align-items:center; gap:12px; margin-bottom:18px; }
+  .eyebrow::before { content:""; width:24px; height:1.5px; background:var(--clay); }
+  h1 { font:500 clamp(30px,4.6vw,42px)/1.18 var(--serif); letter-spacing:-.012em; margin:0 0 12px; }
+  h2 { font:500 25px/1.28 var(--serif); letter-spacing:-.01em; margin:0 0 6px; }
+  h3 { font:500 18px/1.35 var(--serif); margin:0 0 6px; }
+  .sub { color:var(--gray-700); max-width:680px; margin:0 0 4px; }
+  hr.rule { border:0; border-top:1px solid var(--gray-300); margin:10px 0 22px; }
+  p { margin:0 0 12px; }
+  code { font:12.5px var(--mono); background:var(--gray-100); padding:1px 5px; border-radius:4px; }
+  .slot { background:rgba(217,119,87,.14); color:var(--clay-d); border-radius:4px; padding:0 3px; }
+  pre .slot { background:rgba(217,119,87,.22); color:#F2B49E; }
+
+  .panel { background:var(--white); border:var(--border); border-radius:12px; padding:20px 22px; }
+  .tldr { border:var(--border); border-left:3px solid var(--clay); border-radius:10px; background:#fff; padding:16px 18px; margin-top:22px; max-width:820px; }
+  .tldr b { font:600 11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--clay-d); margin-right:6px; }
+
+  /* toc */
+  nav.toc { position:sticky; top:32px; align-self:start; font-size:13px; }
+  nav.toc .label { font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--gray-500); margin-bottom:8px; }
+  nav.toc a { display:block; padding:5px 0; color:var(--gray-700); text-decoration:none; }
+  nav.toc a:hover { color:var(--clay); }
+
+  /* buttons */
+  button { font:12px var(--mono); cursor:pointer; border-radius:999px; padding:9px 16px; transition:background .14s ease, transform .08s ease; }
+  button.primary { background:var(--slate); color:var(--ivory); border:1.5px solid var(--slate); }
+  button.primary:hover:not(:disabled) { background:var(--gray-700); }
+  button.primary:disabled { background:var(--gray-300); border-color:var(--gray-300); cursor:not-allowed; }
+  button.primary.copied { background:var(--olive); border-color:var(--olive); }
+  button.ghost { background:transparent; color:var(--gray-700); border:var(--border); }
+  button.ghost:hover { border-color:var(--gray-500); }
+  button:focus-visible, a:focus-visible, summary:focus-visible, input:focus-visible { outline:2px solid var(--clay); outline-offset:2px; }
+
+  /* tables (grid style) */
+  .table-wrap { overflow-x:auto; border:var(--border); border-radius:12px; background:#fff; }
+  .gt { min-width:560px; }
+  .gt .row { display:grid; gap:0; }
+  .gt .cell { padding:11px 14px; border-top:1px solid var(--gray-300); font-size:13.5px; }
+  .gt .row:first-child .cell { border-top:0; }
+  .gt .cell.head { font:11px var(--sans); text-transform:uppercase; letter-spacing:.06em; color:var(--gray-500); background:var(--gray-100); }
+  .gt .cell.term { font:600 12.5px var(--mono); }
+  .gt.g3 .row { grid-template-columns:150px minmax(0,1fr) minmax(0,1fr); }
+  .gt.g2 .row { grid-template-columns:140px minmax(0,1fr); }
+  .gt.g3b .row { grid-template-columns:170px minmax(0,1.2fr) minmax(0,1fr); }
+
+  /* code blocks */
+  .cmd { position:relative; background:var(--slate); border-radius:12px; margin:10px 0 12px; }
+  .cmd pre { margin:0; padding:16px 78px 16px 18px; font:12.5px/1.7 var(--mono); color:var(--ivory); overflow-x:auto; white-space:pre; }
+  .cmd .cm { color:var(--gray-500); }
+  .cmd button { position:absolute; top:9px; right:9px; padding:5px 11px; font-size:11px; color:var(--ivory);
+                background:rgba(250,249,245,.08); border:1px solid rgba(250,249,245,.28); }
+  .cmd button:hover { background:rgba(250,249,245,.18); }
+  .cmd button.copied { background:var(--olive); border-color:var(--olive); color:#fff; }
+  .cmd .cap { font:11px var(--mono); letter-spacing:.06em; color:var(--gray-500); padding:10px 18px 0; text-transform:uppercase; }
+  .cmd .cap + pre { padding-top:6px; }
+
+  /* diagram */
+  .canvas { background:#fff; border:var(--border); border-radius:12px; padding:14px; overflow-x:auto; }
+  .canvas svg { display:block; width:100%; height:auto; min-width:640px; }
+  .legend { list-style:none; margin:16px 0 0; padding:0; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 24px; }
+  .legend li { display:grid; grid-template-columns:26px minmax(0,1fr); gap:8px; font-size:13.5px; color:var(--gray-700); }
+  .legend .n { width:22px; height:22px; border-radius:50%; background:var(--clay); color:#fff; font:600 12px/22px var(--mono); text-align:center; }
+  .legend .n.k { background:var(--slate); }
+  .role { font:600 10.5px var(--mono); padding:1px 7px; border-radius:999px; margin-left:6px; white-space:nowrap; }
+  .role.c { background:rgba(217,119,87,.14); color:var(--clay-d); border:1px solid rgba(217,119,87,.45); }
+  .role.o { background:var(--oat); color:var(--slate); border:1px solid #CFC3AE; }
+
+  /* fill form */
+  .fill { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:12px; align-items:end; }
+  .fill label { display:block; font:11px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--gray-500); margin-bottom:5px; }
+  .fill input { width:100%; font:13px var(--mono); padding:9px 11px; border:var(--border); border-radius:8px; background:var(--gray-100); color:var(--slate); }
+  .fill-foot { display:flex; gap:12px; align-items:center; margin-top:14px; flex-wrap:wrap; }
+  .fill-foot span { font-size:13px; color:var(--gray-500); }
+
+  /* role tabs */
+  .role-tabs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin:18px 0 26px; }
+  .role-tabs button { text-align:left; font-family:var(--sans); font-size:14px; border-radius:12px; padding:16px 18px; background:#fff;
+                      border:var(--border); color:var(--gray-700); display:flex; flex-direction:column; gap:2px; }
+  .role-tabs button .rt { font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--gray-500); }
+  .role-tabs button b { font:500 20px/1.3 var(--serif); color:var(--slate); }
+  .role-tabs button:hover { border-color:var(--gray-500); }
+  .role-tabs button.on { border-color:var(--clay); background:#FBF1EC; }
+  .role-tabs button.on .rt { color:var(--clay-d); }
+
+  .orient { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-bottom:8px; }
+  .orient .panel { padding:14px 18px; font-size:13.5px; }
+  .orient .k { font:600 11px var(--mono); letter-spacing:.08em; text-transform:uppercase; display:block; margin-bottom:4px; }
+  .orient .known .k { color:#4B5C39; } .orient .new .k { color:var(--clay-d); }
+
+  /* steps */
+  .step { display:grid; grid-template-columns:40px minmax(0,1fr); gap:0 16px; padding:26px 0; border-top:1px solid var(--gray-300); }
+  .steps > .step:first-child { border-top:0; }
+  .step > * { min-width:0; }
+  .num { width:34px; height:34px; border-radius:50%; background:var(--oat); display:flex; align-items:center; justify-content:center; font:600 14px var(--mono); margin-top:2px; }
+  .step h3 { font-size:20px; margin:2px 0 6px; }
+  .why { color:var(--gray-700); margin:0 0 12px; }
+  .ops { margin:0 0 12px; padding-left:22px; color:var(--gray-700); }
+  .ops li { margin-bottom:5px; }
+  .see, .warn, .tip { border:var(--border); border-radius:8px; background:#fff; padding:10px 14px; font-size:13.5px; margin:12px 0; color:var(--gray-700); }
+  .see { border-left:3px solid var(--olive); } .warn { border-left:3px solid var(--rust); } .tip { border-left:3px solid var(--clay); }
+  .see b.l, .warn b.l, .tip b.l { font:600 11px var(--mono); letter-spacing:.08em; text-transform:uppercase; margin-right:6px; }
+  .see b.l { color:#4B5C39; } .warn b.l { color:var(--rust); } .tip b.l { color:var(--clay-d); }
+
+  /* PR compare mock */
+  .pr-mock { display:grid; grid-template-columns:minmax(0,1fr) 44px minmax(0,1fr); gap:0; align-items:stretch; margin:12px 0; }
+  .pr-mock .half { background:#fff; border:var(--border); border-radius:10px; padding:12px 14px; }
+  .pr-mock .half .t { font:600 11px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--gray-500); margin-bottom:6px; }
+  .pr-mock .half .r { font:12.5px var(--mono); margin:2px 0; word-break:break-all; }
+  .pr-mock .half .r i { font-style:normal; color:var(--gray-500); margin-right:6px; }
+  .pr-mock .arr { display:flex; align-items:center; justify-content:center; font:22px var(--mono); color:var(--clay); }
+  .pr-mock .half.base { border-color:var(--clay); background:#FBF1EC; }
+  .mock-cap { font-size:13px; color:var(--gray-500); margin:0 0 12px; }
+
+  .gh-tabs { display:flex; gap:0; border-bottom:1.5px solid var(--gray-300); margin:12px 0; overflow-x:auto; }
+  .gh-tabs span { padding:8px 16px; font-size:13.5px; color:var(--gray-500); white-space:nowrap; }
+  .gh-tabs span.on { color:var(--slate); box-shadow:inset 0 -2px 0 var(--clay); font-weight:600; }
+  .gh-tabs span small { font:11px var(--mono); margin-left:6px; color:var(--gray-500); }
+
+  /* diff */
+  .diff { font:12.5px/1.7 var(--mono); background:#fff; border:var(--border); border-radius:8px; overflow-x:auto; margin:12px 0 0; }
+  .diff-row { display:grid; grid-template-columns:44px 18px minmax(max-content,1fr); white-space:pre; padding-right:14px; }
+  .diff-row .ln { color:var(--gray-500); text-align:right; padding-right:10px; user-select:none; }
+  .diff-row.add { background:rgba(120,140,93,.12); } .diff-row.add .mark { color:var(--olive); font-weight:600; }
+  .diff-row.del { background:rgba(176,74,63,.10); } .diff-row.del .mark { color:var(--rust); font-weight:600; }
+  .bubble { background:#fff; border:var(--border); border-left:4px solid var(--olive); border-radius:8px; padding:10px 14px; margin:8px 0 0 44px; font-size:13px; max-width:560px; }
+  .bubble .who { font:600 11px var(--mono); color:var(--gray-500); display:block; margin-bottom:2px; }
+
+  /* lifecycle */
+  .stages { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; margin:18px 0 16px; }
+  .stages button { text-align:left; font-family:var(--sans); border-radius:10px; padding:11px 12px; background:#fff; border:var(--border); color:var(--gray-700); font-size:13px; display:flex; flex-direction:column; gap:6px; }
+  .stages button:hover { border-color:var(--gray-500); }
+  .stages button.on { border-color:var(--clay); background:#FBF1EC; }
+  .stages button .si { font:11px var(--mono); color:var(--gray-500); }
+  .badge { font:600 11px var(--mono); padding:2px 9px; border-radius:999px; align-self:flex-start; }
+  .badge.ok { background:rgba(120,140,93,.18); color:#4B5C39; }
+  .badge.warn { background:rgba(217,119,87,.18); color:var(--clay-d); }
+  .badge.done { background:var(--slate); color:var(--ivory); }
+  .two { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+  .two .panel h3 { display:flex; align-items:center; gap:8px; }
+  .two ul { margin:8px 0 0; padding-left:20px; color:var(--gray-700); }
+  .two li { margin-bottom:6px; }
+  .stage-nav { display:flex; gap:10px; margin-top:16px; }
+
+  /* details */
+  details { border:var(--border); border-radius:10px; background:#fff; margin:12px 0; overflow:hidden; }
+  summary { list-style:none; cursor:pointer; padding:14px 16px; font:17px/1.4 var(--serif); display:flex; align-items:baseline; gap:10px; }
+  summary::-webkit-details-marker { display:none; }
+  summary::before { content:"▸"; color:var(--gray-500); transition:transform .12s; flex:none; }
+  details[open] > summary::before { transform:rotate(90deg); }
+  details > .body { padding:0 18px 16px; border-top:1px solid var(--gray-300); padding-top:14px; }
+  details > .body > :last-child { margin-bottom:0; }
+
+  .habits { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+  .habits ul { margin:8px 0 0; padding-left:20px; color:var(--gray-700); }
+  .habits li { margin-bottom:6px; }
+  .export { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:8px; padding-top:20px; border-top:1px solid var(--gray-300); }
+  .export span { font-size:13px; color:var(--gray-500); }
+
+  /* progress + toc active */
+  .progress { position:fixed; top:0; left:0; right:0; height:3px; z-index:60; }
+  .progress span { display:block; height:100%; width:0; background:var(--clay); }
+  nav.toc a.active { color:var(--clay-d); font-weight:600; }
+
+  /* route switch */
+  .route-switch { display:flex; gap:6px; flex-wrap:wrap; background:var(--gray-100); padding:5px; border-radius:12px; width:max-content; max-width:100%; margin:16px 0; }
+  .route-switch button { border:0; background:transparent; border-radius:9px; color:var(--gray-500); font:13px var(--sans); padding:9px 14px; }
+  .route-switch button[aria-pressed="true"] { background:#fff; color:var(--slate); box-shadow:inset 0 -2px 0 var(--clay); }
+  .route-steps { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; margin:14px 0; }
+  .route-step { border:var(--border); border-radius:10px; background:#fff; padding:10px 12px; }
+  .route-step.new { border-color:var(--clay); background:#FBF1EC; }
+  .route-step i { font:600 11px var(--mono); color:var(--gray-500); font-style:normal; }
+  .route-step b { display:block; font-size:14px; margin:2px 0; }
+  .route-step small { display:block; font-size:12.5px; color:var(--gray-700); line-height:1.5; }
+  .route-note { font-size:13px; color:var(--gray-500); margin:0 0 4px; }
+
+  /* practice */
+  .sim { margin-bottom:16px; }
+  .sim h3 { margin-bottom:4px; }
+  .sim-buttons { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0; }
+  .sim-buttons button, .answer { font:14px var(--sans); border-radius:10px; border:var(--border); background:#fff; color:var(--gray-700); padding:10px 14px; text-align:left; }
+  .sim-buttons button:hover, .answer:hover:not(:disabled) { border-color:var(--gray-500); }
+  .sim-buttons button.selected { border-color:var(--clay); background:#FBF1EC; color:var(--slate); }
+  .sim-result { background:var(--gray-100); border-radius:10px; padding:12px 14px; font-size:14px; min-height:52px; color:var(--gray-700); }
+  .quiz-top { display:flex; justify-content:space-between; gap:10px; align-items:baseline; flex-wrap:wrap; }
+  .quiz-top .count { font:12px var(--mono); color:var(--gray-500); }
+  .question { font:500 18px/1.45 var(--serif); margin:14px 0 12px; }
+  .answers { display:grid; gap:8px; }
+  .answer { display:flex; gap:10px; align-items:flex-start; }
+  .answer .letter { width:22px; height:22px; flex:none; border-radius:6px; background:var(--gray-100); font:600 11px/22px var(--mono); text-align:center; }
+  .answer:disabled { cursor:default; }
+  .answer.correct { border-color:var(--olive); background:rgba(120,140,93,.12); }
+  .answer.wrong { border-color:var(--rust); background:rgba(176,74,63,.10); }
+  .feedback { display:none; margin-top:12px; padding:12px 14px; border-radius:10px; font-size:14px; border:var(--border); border-left-width:4px; background:#fff; }
+  .feedback.show { display:block; } .feedback.good { border-left-color:var(--olive); } .feedback.bad { border-left-color:var(--clay); }
+  .quiz-foot { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:14px; }
+  .quiz-foot span { font-size:13px; color:var(--gray-500); }
+  .checks { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  .check-item { display:flex; gap:10px; align-items:flex-start; padding:11px 13px; border:var(--border); border-radius:10px; background:#fff; font-size:14px; color:var(--gray-700); cursor:pointer; }
+  .check-item input { accent-color:var(--clay); margin-top:5px; flex:none; }
+  .check-item.done { background:rgba(120,140,93,.10); border-color:rgba(120,140,93,.45); }
+  .bar { height:6px; border-radius:999px; background:var(--gray-100); overflow:hidden; margin-top:8px; }
+  .bar span { display:block; height:100%; width:0; background:var(--olive); transition:width .2s; }
+  .check-progress { font-size:13px; color:var(--gray-500); margin-top:12px; }
+  .resources { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  .resource { display:block; padding:12px 14px; border:var(--border); border-radius:10px; background:#fff; color:var(--slate); text-decoration:none; }
+  .resource:hover { border-color:var(--clay); }
+  .resource b { display:block; font-size:14px; } .resource small { font:12px var(--mono); color:var(--gray-500); }
+  .warn ul { margin:6px 0 0; padding-left:20px; }
+  .foot { font-size:13px; color:var(--gray-500); border-top:1px solid var(--gray-300); padding-top:18px; }
+
+  @media (max-width: 920px) {
+    .layout { grid-template-columns:minmax(0,1fr); gap:24px; }
+    nav.toc { position:static; display:flex; flex-wrap:wrap; gap:4px 16px; }
+    nav.toc .label { width:100%; margin-bottom:2px; }
+    .fill { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .stages { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .two, .habits, .orient, .role-tabs, .legend, .checks, .resources { grid-template-columns:minmax(0,1fr); }
+    .route-steps { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  }
+  @media (max-width: 720px) {
+    body { padding:32px 16px 80px; }
+    .step { grid-template-columns:minmax(0,1fr); }
+    .num { margin-bottom:8px; }
+    .pr-mock { grid-template-columns:minmax(0,1fr); }
+    .pr-mock .arr { transform:rotate(90deg); height:32px; }
+  }
+  /* site nav */
+  .crumb { margin:0 0 18px; font:12px var(--mono); }
+  .crumb a { color:var(--gray-500); text-decoration:none; }
+  .crumb a:hover { color:var(--clay); }
+  .pager { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-top:40px; }
+  .pager a { display:block; padding:14px 18px; border:var(--border); border-radius:12px; background:#fff; color:var(--slate); text-decoration:none; }
+  .pager a:hover { border-color:var(--clay); }
+  .pager small { display:block; font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--gray-500); }
+  .pager b { font:500 17px/1.4 var(--serif); }
+  .pager .next { text-align:right; grid-column:2; }
+  .pager .prev { grid-column:1; }
+  @media (max-width:720px){ .pager{grid-template-columns:minmax(0,1fr);} .pager .next,.pager .prev{grid-column:1;text-align:left;} }
+  @media (prefers-reduced-motion: reduce) { * { transition:none !important; scroll-behavior:auto !important; } }
+
+  .skip { position:absolute; left:12px; top:-60px; z-index:100; background:var(--slate); color:var(--ivory);
+          padding:10px 16px; border-radius:8px; font-size:14px; text-decoration:none; }
+  .skip:focus { top:12px; outline:2px solid var(--clay); outline-offset:2px; }
+  main:focus { outline:none; }
+
+  .fill.f4 { grid-template-columns:repeat(4,minmax(0,1fr)); }
+  .fill.f3 { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .fill.f2 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  @media (max-width: 920px) { .fill.f4, .fill.f3 { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  @media (max-width: 520px) { .fill.f4, .fill.f3, .fill.f2 { grid-template-columns:minmax(0,1fr); } }
+  .badge.bad { background:rgba(176,74,63,.15); color:var(--rust); }
+  .dec-out { background:var(--gray-100); border-radius:10px; padding:12px 14px; font-size:14px; color:var(--gray-700); margin-top:12px; }
+
+  /* ===== C++ 主題專用元件(tokens 與 PR 樣板一致)===== */
+  .code { position:relative; background:var(--slate); border-radius:12px; margin:10px 0 12px; }
+  .code.has-notes { margin-bottom:0; border-bottom-left-radius:0; border-bottom-right-radius:0; }
+  .code .cap { font:11px var(--mono); letter-spacing:.06em; color:var(--gray-500); padding:10px 84px 0 18px; text-transform:uppercase; }
+  .code .cap em { font-style:normal; color:#C9D6B2; }
+  .code pre { margin:0; padding:8px 0 14px; font:12.5px/1.7 var(--mono); color:var(--ivory); overflow-x:auto; counter-reset:l; }
+  .code .ln { display:block; counter-increment:l; white-space:pre; min-width:max-content; padding-right:84px; border-left:3px solid transparent; }
+  .code .ln::before { content:counter(l); display:inline-block; width:42px; padding-right:14px; text-align:right; color:var(--gray-500); user-select:none; }
+  .code .ln.add { background:rgba(120,140,93,.24); border-left-color:var(--olive); }
+  .code .ln.has-note { cursor:pointer; }
+  .code .ln.has-note::after { content:"ⓘ"; margin-left:16px; color:#F2B49E; font-family:var(--sans); }
+  .code .ln.has-note:hover, .code .ln.sel { background:rgba(217,119,87,.22); border-left-color:var(--clay); }
+  .code .ln.has-note:focus-visible { outline:2px solid var(--clay); outline-offset:-2px; }
+  .code .k { color:#F2B49E; } .code .s { color:#C9D6B2; } .code .c { color:var(--gray-500); } .code .p { color:var(--oat); }
+  .code button.copy { position:absolute; top:9px; right:9px; padding:5px 11px; font-size:11px; color:var(--ivory); background:rgba(250,249,245,.08); border:1px solid rgba(250,249,245,.28); }
+  .code button.copy:hover { background:rgba(250,249,245,.18); }
+  .code button.copy.copied { background:var(--olive); border-color:var(--olive); color:#fff; }
+  .code-note { background:#fff; border:var(--border); border-top:0; border-radius:0 0 12px 12px; padding:11px 16px; font-size:13.5px; color:var(--gray-700); margin:0 0 12px; min-height:46px; }
+  .code-note b { font:600 11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--clay-d); margin-right:8px; }
+
+  .term { border:var(--border); border-radius:12px; background:#fff; margin:0 0 14px; overflow:hidden; }
+  .term .cap { font:11px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--gray-500); padding:7px 14px; background:var(--gray-100); border-bottom:1px solid var(--gray-300); }
+  .term pre { margin:0; padding:10px 14px; font:12.5px/1.7 var(--mono); overflow-x:auto; white-space:pre; }
+  .term .none { color:var(--gray-500); font-family:var(--sans); }
+  .term .in { background:rgba(217,119,87,.14); color:var(--clay-d); }
+  .term.err { border-color:rgba(176,74,63,.55); }
+  .term.err .cap { background:rgba(176,74,63,.10); color:var(--rust); }
+
+  .flow { background:#fff; border:var(--border); border-radius:12px; padding:16px; }
+  .flow-row { display:flex; align-items:stretch; flex-wrap:wrap; gap:6px 0; }
+  .flow-node { flex:1 1 130px; min-width:0; text-align:left; font-family:var(--sans); font-size:14px; border-radius:10px; padding:10px 12px; background:#fff; border:var(--border); color:var(--gray-700); }
+  .flow-node b { display:block; font:500 16px/1.35 var(--serif); color:var(--slate); }
+  .flow-node small { display:block; font:11px var(--mono); color:var(--gray-500); margin-top:2px; }
+  .flow-node:hover { border-color:var(--gray-500); }
+  .flow-node.done { border-color:rgba(120,140,93,.5); background:rgba(120,140,93,.10); }
+  .flow-node.on { border-color:var(--clay); background:#FBF1EC; }
+  .flow-node.fail { border-color:var(--rust); background:rgba(176,74,63,.10); }
+  .flow-node.skip { opacity:.45; }
+  .flow-arrow { align-self:center; color:var(--gray-500); padding:0 7px; font:16px var(--mono); }
+  .flow-detail { background:var(--gray-100); border-radius:10px; padding:12px 14px; margin-top:14px; font-size:14px; color:var(--gray-700); min-height:76px; }
+  .flow-detail.bad { background:rgba(176,74,63,.10); }
+  .flow-ctl { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:12px; }
+  .flow-ctl label { margin-left:auto; display:flex; gap:7px; align-items:center; font-size:13px; color:var(--gray-700); cursor:pointer; }
+  .flow-ctl input { accent-color:var(--clay); }
+  .two .ops { margin-top:8px; }
+  @media (max-width:720px) {
+    .flow-row { flex-direction:column; } .flow-arrow { transform:rotate(90deg); padding:2px 0; align-self:flex-start; margin-left:20px; }
+    .flow-ctl label { margin-left:0; width:100%; }
+  }
+
+  .stp { background:#fff; border:var(--border); border-radius:12px; padding:14px; margin:12px 0; }
+  .stp-grid { display:grid; grid-template-columns:minmax(0,1.25fr) minmax(0,1fr); gap:14px; align-items:start; }
+  .stp .code { margin:0; } .stp .term { margin:0; }
+  .stp .code .ln { padding-right:14px; }
+  .code .ln.cur { background:rgba(217,119,87,.30); border-left-color:var(--clay); }
+  .stp-side { display:grid; gap:12px; min-width:0; }
+  .stp-vars { display:grid; grid-template-columns:repeat(auto-fill,minmax(96px,1fr)); gap:8px; }
+  .stp-var { border:var(--border); border-radius:10px; padding:8px 10px; background:#fff; min-width:0; }
+  .stp-var small { display:block; font:11px var(--mono); color:var(--gray-500); overflow-wrap:anywhere; }
+  .stp-var b { display:block; font:600 17px/1.4 var(--mono); overflow-wrap:anywhere; }
+  .stp-var.chg { border-color:var(--clay); background:#FBF1EC; }
+  .stp-var.none { border-style:dashed; color:var(--gray-500); }
+  .stp-out pre { min-height:52px; }
+  .stp-note { background:var(--gray-100); border-radius:10px; padding:10px 14px; margin-top:12px; font-size:14px; color:var(--gray-700); min-height:44px; }
+  .stp-count { font:12px var(--mono); color:var(--gray-500); margin-left:auto; }
+  @media (max-width:720px) { .stp-grid { grid-template-columns:minmax(0,1fr); } }
+
+  .calc { background:#fff; border:var(--border); border-radius:12px; padding:16px; margin:12px 0; }
+  .calc-row { display:flex; gap:12px; flex-wrap:wrap; align-items:end; }
+  .calc label { display:block; font:11px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--gray-500); margin-bottom:5px; }
+  .calc input, .calc select { font:13px var(--mono); padding:9px 11px; border:var(--border); border-radius:8px; background:var(--gray-100); color:var(--slate); max-width:100%; }
+  .calc-pre { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0; }
+  .calc-pre button { padding:6px 12px; font-size:11.5px; }
+  .calc-out { background:var(--gray-100); border-radius:10px; padding:12px 14px; font-size:14px; color:var(--gray-700); overflow-wrap:anywhere; }
+  .calc-foot { font-size:12.5px; color:var(--gray-500); margin:10px 0 0; }
+  .calc-chk { display:flex !important; gap:6px; align-items:center; font:12px var(--mono) !important; text-transform:none !important; letter-spacing:0 !important; color:var(--gray-700) !important; margin:0 0 9px !important; cursor:pointer; }
+  .calc-chk input { accent-color:var(--clay); }
+  .calc-pre2 { margin:6px 0 0; padding:8px 12px; background:#fff; border:var(--border); border-radius:8px; font:14px/1.6 var(--mono); overflow-x:auto; white-space:pre; }
+  .term .in { border-radius:3px; padding:0 2px; }
+  .ev-steps { margin:0 0 10px; padding:0; list-style:none; counter-reset:s; display:grid; gap:6px; }
+  .ev-steps li { counter-increment:s; display:grid; grid-template-columns:28px minmax(0,1fr); gap:2px 8px; align-items:baseline; }
+  .ev-steps li::before { content:counter(s); font:600 11px var(--mono); color:var(--gray-500); grid-row:span 2; padding-top:3px; }
+  .ev-steps code { background:#fff; border:1px solid var(--gray-300); padding:3px 8px; overflow-wrap:anywhere; width:max-content; max-width:100%; }
+  .ev-steps mark { background:rgba(217,119,87,.28); color:var(--slate); border-radius:3px; padding:0 2px; }
+  .ev-steps span { font-size:13px; color:var(--gray-700); }
+  .ev-res { font-size:15px; padding-top:4px; } .ev-res.bad { color:var(--rust); }
+  .calc-pre button { white-space:nowrap; }
+  .ld-rows { display:grid; gap:8px; margin:12px 0; }
+  .ld-row { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:10px; align-items:stretch; }
+  .ld-c, .ld-a { border:var(--border); border-radius:10px; padding:9px 12px; background:#fff; min-width:0; overflow-wrap:anywhere; }
+  .ld-c small { display:block; font:11px var(--mono); color:var(--gray-500); margin-top:3px; }
+  .ld-a { font:13px/1.6 var(--mono); color:var(--gray-700); }
+  .ld-row.yes .ld-c, .ld-row.yes .ld-a { border-color:var(--olive); background:rgba(120,140,93,.14); }
+  .ld-row.yes .ld-c small { color:var(--olive); font-weight:600; }
+  .ld-row.no .ld-c { border-color:var(--gray-300); background:var(--gray-100); }
+  .ld-row.no .ld-a { opacity:.4; }
+  .ld-row.skip { opacity:.45; }
+  @media (max-width:520px) { .ld-row { grid-template-columns:minmax(0,1fr); gap:4px; } }
+  .lp-tbl { width:100%; border-collapse:collapse; margin:10px 0; font:13px var(--mono); background:#fff; }
+  .lp-tbl th, .lp-tbl td { border:1px solid var(--gray-300); padding:5px 10px; text-align:left; }
+  .lp-tbl th { background:var(--gray-100); font:600 11px var(--mono); letter-spacing:.05em; color:var(--gray-500); }
+  .tbl-wrap { overflow-x:auto; }
+  .mem-row { display:flex; gap:6px; flex-wrap:wrap; }
+  .mem-cell { width:68px; text-align:center; }
+  .mem-v { border:2px solid var(--slate); border-radius:8px; background:#fff; padding:10px 0; font:600 16px var(--mono); }
+  .mem-i { font:11px var(--mono); color:var(--gray-500); margin-top:4px; }
+  .mem-cell.hl .mem-v { border-color:var(--clay); background:#FBF1EC; }
+  .mem-cell.ghost .mem-v { border:2px dashed var(--gray-300); background:var(--gray-100); color:var(--gray-500); }
+  .mem-cell.ghost.hl .mem-v { border-color:var(--rust); background:rgba(176,74,63,.10); color:var(--rust); }
+  .mem-out b.bad, .ba-hist b.bad { color:var(--rust); }
+  .ba-now { margin:12px 0; font-size:14px; }
+  .ba-cells { display:inline-flex; flex-wrap:wrap; gap:4px; vertical-align:middle; }
+  .ba-cells i { font:600 13px var(--mono); font-style:normal; border:1.5px solid var(--slate); border-radius:6px; background:#fff; padding:3px 9px; }
+  .ba-cells.old i { border-color:var(--gray-300); color:var(--gray-500); }
+  .ba-cells em { font-style:normal; font-size:12px; color:var(--gray-500); padding:3px 4px; }
+  .ba-size { margin-left:12px; color:var(--gray-700); }
+  .ba-hist { display:grid; gap:8px; }
+  .ba-row { background:var(--gray-100); border-radius:10px; padding:9px 12px; display:grid; gap:5px; }
+  .ba-row small { color:var(--gray-700); font-size:12.5px; }
+  .stp-vars.frames { display:flex; flex-direction:column; gap:6px; }
+  .stp-frame { border:var(--border); border-radius:10px; background:#fff; padding:8px 10px; }
+  .stp-frame.top { border-color:var(--clay); background:#FBF1EC; }
+  .stp-fh { font:600 13px var(--mono); }
+  .stp-ret { font:600 11px var(--sans); color:var(--olive); background:rgba(120,140,93,.14); border-radius:6px; padding:1px 7px; margin-left:6px; }
+  .stp-fv { display:flex; gap:12px; flex-wrap:wrap; margin-top:4px; }
+  .stp-fv small { font:11px var(--mono); color:var(--gray-500); margin-right:5px; }
+  .stp-fv b { font:600 15px var(--mono); }
+  .stp-base { font:11px var(--mono); color:var(--gray-500); text-align:center; border-top:2px solid var(--gray-300); padding-top:4px; }
+  .stp-vars.mem { display:block; overflow-x:auto; }
+  .mm-wrap { position:relative; min-width:max-content; }
+  .mm-svg { display:block; }
+  .mm-row { display:flex; gap:10px; align-items:flex-start; }
+  .mm-cell { min-width:84px; border:2px solid var(--slate); border-radius:10px; background:#fff; padding:6px 10px; text-align:center; }
+  .mm-cell.ptr { border-style:dashed; border-color:var(--clay); background:#FBF1EC; }
+  .mm-n { font:600 12px var(--mono); }
+  .mm-v { font:600 18px var(--mono); padding:3px 0; }
+  .mm-t { font:10.5px var(--mono); color:var(--gray-500); }
+  .dg { background:#fff; border:var(--border); border-radius:12px; padding:16px; margin:12px 0; }
+  .dg-canvas { position:relative; overflow-x:auto; }
+  .dg-svg { position:absolute; left:0; top:0; pointer-events:none; }
+  .dg-rows { position:relative; display:flex; flex-direction:column; gap:42px; align-items:center; min-width:max-content; }
+  .dg-row { display:flex; gap:28px; justify-content:center; }
+  .dg-box { border:2px solid var(--slate); border-radius:10px; background:#fff; min-width:210px; overflow:hidden; }
+  .dg-name { font:600 15px var(--mono); text-align:center; padding:8px 12px; background:var(--oat); border-bottom:2px solid var(--slate); }
+  .dg-name small { display:block; font:11px var(--sans); color:var(--gray-700); font-weight:400; }
+  .dg-sec { padding:4px 0; } .dg-sec + .dg-sec { border-top:1px solid var(--gray-300); }
+  .dg-sec:empty { display:none; }
+  .dg-m { display:block; width:100%; text-align:left; font:12.5px var(--mono); padding:4px 12px; border:0; border-radius:0; background:transparent; color:var(--slate); cursor:pointer; }
+  .dg-m:hover { background:var(--gray-100); }
+  .dg-m.pri { background:rgba(176,74,63,.07); }
+  .dg-m.sel { background:rgba(217,119,87,.18); }
+  .dg-m.hit { background:rgba(120,140,93,.30); font-weight:600; }
+  .dg-v { display:inline-block; width:12px; font-weight:700; color:var(--gray-500); }
+  .dg-m.pri .dg-v { color:var(--rust); }
+  .dg-legend { display:flex; gap:16px; flex-wrap:wrap; font-size:12px; color:var(--gray-700); margin-top:12px; }
+  .dg-note { background:var(--gray-100); border-radius:10px; padding:10px 14px; margin-top:12px; font-size:14px; color:var(--gray-700); min-height:44px; }
+  .dg-tests-h { font:600 12px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--gray-500); margin:16px 0 8px; }
+  .dg-res { border-radius:10px; padding:11px 14px; font-size:14px; background:var(--gray-100); color:var(--gray-700); }
+  .dg-res:empty { display:none; }
+  .dg-res.ok { background:rgba(120,140,93,.14); color:var(--slate); }
+  .dg-res.bad { background:rgba(176,74,63,.10); color:var(--rust); }
+  .dg-m.hit.badhit { background:rgba(176,74,63,.22); }
+  .mm-wrap2 { position:relative; display:grid; gap:34px; }
+  .mm-svg2 { position:absolute; left:0; top:0; pointer-events:none; }
+  .mm-reg { position:relative; border:1px dashed var(--gray-300); border-radius:10px; padding:8px 10px 10px; background:#fff; }
+  .mm-reg.heap { background:var(--gray-100); }
+  .mm-reg > b { display:block; font:600 11px var(--mono); letter-spacing:.04em; color:var(--gray-500); margin-bottom:6px; }
+  .mm-empty { font-size:12.5px; color:var(--gray-500); }
+  .mm-cell.freed { border-style:dashed; border-color:var(--gray-500); background:var(--gray-100); color:var(--gray-500); }
+  .mm-cell.leak { border-color:var(--rust); background:rgba(176,74,63,.10); }
+  .mm-cell.leak .mm-t { color:var(--rust); font-weight:600; }
+  .gt.g3w .row { grid-template-columns:minmax(0,1.6fr) minmax(0,1.1fr) 84px; }
+  .gt.g3w .cell { overflow-wrap:anywhere; word-break:break-word; }
+  .gt.g3w .cell code { font-size:11.5px; white-space:normal; }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">跳到主要內容</a>
+<div class="progress" aria-hidden="true"><span id="readBar"></span></div>
+<div class="page">
+
+<header>
+  <nav class="crumb" aria-label="站內導覽"><a href="../index.html#clang">← 回教學首頁</a></nav>
+  <div class="eyebrow">C++ 入門 · 第 15 篇 · 封裝、繼承、多型</div>
+  <h1>繼承共用程式，<code>virtual</code> 讓同一呼叫有不同行為</h1>
+  <p class="sub">從繼承開始，到最重要的多型：用關係圖和可切換的 <code>virtual</code>，親眼看到「同一個呼叫，執行誰的版本」是怎麼決定的。</p>
+  <div class="tldr"><b>TL;DR</b> <strong>繼承</strong>讓子類別自動擁有基底類別的成員；<code>protected</code> 讓子類別能用、外面不能碰。<strong>多型</strong>：基底類別函式加 <code>virtual</code>、子類別加 <code>override</code>，透過基底指標呼叫時，執行的是<strong>物件真正類別的版本</strong>。忘了 <code>virtual</code> 就會用到基底版本。</div>
+</header>
+
+<div class="layout">
+<nav class="toc" aria-label="本頁目錄">
+  <div class="label">On this page</div>
+  <a href="#what">1. 三個想法</a>
+  <a href="#steps">2. 四個步驟</a>
+  <a href="#stuck">3. 常見卡關</a>
+  <a href="#practice">4. 演練與延伸閱讀</a>
+</nav>
+
+<main id="main" tabindex="-1">
+<section id="what">
+  <h2>三個物件導向的關鍵想法</h2>
+  <hr class="rule">
+<div class="panel"><h3>封裝、繼承、多型</h3><p><b>封裝</b>：把資料藏在類別裡，只開放必要的入口（第 14 篇的 <code>private</code> 加 getter / setter）。</p><p><b>繼承</b>：新的類別可以「繼承」既有類別的成員，不用重寫。狗是一種動物，所以 <code>Dog</code> 繼承 <code>Animal</code>，自動擁有動物共有的東西。</p><p style="margin-bottom:0"><b>多型</b>：用「動物」這個通用的稱呼去操作各種動物，<b>執行時再依真正的種類做對的事</b>。這是物件導向最強、也最難一次想通的地方。</p></div>
+<h3 style="margin-top:26px">七個名詞</h3>
+<div class="table-wrap"><div class="gt g2"><div class="row"><div class="cell head">名詞</div><div class="cell head">白話說明</div></div><div class="row"><div class="cell term">基底類別 / 子類別</div><div class="cell">被繼承的叫基底類別（父類別），繼承它的叫子類別。</div></div><div class="row"><div class="cell term"><code>class Dog : public Animal</code></div><div class="cell">Dog 繼承 Animal。冒號後面的 <code>public</code> 先照寫。</div></div><div class="row"><div class="cell term"><code>protected</code></div><div class="cell">外面不能碰，但子類別可以用。介於 public 與 private 之間。</div></div><div class="row"><div class="cell term">覆寫</div><div class="cell">子類別重新寫一個和基底類別同名、同參數的函式。</div></div><div class="row"><div class="cell term"><code>virtual</code> / <code>override</code></div><div class="cell">基底類別用 virtual 表示「執行時決定用誰的版本」；子類別用 override 明確表示覆寫。</div></div><div class="row"><div class="cell term">多型</div><div class="cell">同一個呼叫，依物件真正的類別有不同的行為。</div></div><div class="row"><div class="cell term"><code>-&gt;</code></div><div class="cell">透過指標呼叫成員：<code>a-&gt;speak()</code> 等於 <code>(*a).speak()</code>。</div></div></div></div>
+</section>
+
+<section id="steps">
+  <h2>照著做：四個步驟</h2>
+  <hr class="rule">
+<div class="steps">
+<div class="step"><div class="num">1</div><div>
+<h3>繼承：子類別自動擁有父類別的成員</h3>
+<p class="why"><code>Dog</code> 沒有自己寫 <code>getName()</code>，卻能呼叫它；也能直接使用 <code>protected</code> 的 <code>name</code>。點 ⓘ 看說明。</p>
+<div class="code has-notes"><div class="cap">main.cpp · 點有 ⓘ 的行看說明</div><pre><span class="ln"><span class="p">#include &lt;iostream&gt;</span></span><span class="ln"><span class="p">#include &lt;string&gt;</span></span><span class="ln"><span class="k">using</span> <span class="k">namespace</span> std;</span><span class="ln"></span><span class="ln has-note" data-note="基底類別(父類別):放所有動物共同的東西。" tabindex="0" role="button"><span class="k">class</span> Animal {</span><span class="ln has-note" data-note="protected:外面不能碰,但「子類別」可以使用。" tabindex="0" role="button"><span class="k">protected</span>:</span><span class="ln">    string name;</span><span class="ln"><span class="k">public</span>:</span><span class="ln">    Animal(string n) {</span><span class="ln">        name = n;</span><span class="ln">    }</span><span class="ln">    string getName() {</span><span class="ln">        <span class="k">return</span> name;</span><span class="ln">    }</span><span class="ln">};</span><span class="ln"></span><span class="ln has-note" data-note="冒號加 public Animal:Dog「繼承」Animal,自動擁有 name 與 getName()。" tabindex="0" role="button"><span class="k">class</span> Dog : <span class="k">public</span> Animal {</span><span class="ln"><span class="k">public</span>:</span><span class="ln has-note" data-note="冒號後面:先呼叫基底類別的建構子,把名字交給它。" tabindex="0" role="button">    Dog(string n) : Animal(n) {}</span><span class="ln">    <span class="k">void</span> bark() {</span><span class="ln has-note" data-note="子類別可以直接使用 protected 的 name。" tabindex="0" role="button">        cout &lt;&lt; name &lt;&lt; <span class="s">": 汪汪!"</span> &lt;&lt; endl;</span><span class="ln">    }</span><span class="ln">};</span><span class="ln"></span><span class="ln"><span class="k">int</span> main() {</span><span class="ln">    Dog d(<span class="s">"Rex"</span>);</span><span class="ln has-note" data-note="getName 是從 Animal 繼承來的,Dog 沒有自己寫,卻能呼叫。" tabindex="0" role="button">    cout &lt;&lt; d.getName() &lt;&lt; endl;</span><span class="ln">    d.bark();</span><span class="ln">    <span class="k">return</span> 0;</span><span class="ln">}</span></pre><button type="button" class="copy">Copy</button></div><div class="code-note" aria-live="polite">點程式碼中有 ⓘ 的那一行，這裡會說明它在做什麼。</div>
+<div class="term"><div class="cap">執行結果</div><pre>Rex
+Rex: 汪汪!</pre></div>
+<p>但 <code>protected</code> 在類別<b>外面</b>仍然不能碰：</p>
+<div class="code"><div class="cap">main.cpp</div><pre><span class="ln"><span class="p">#include &lt;iostream&gt;</span></span><span class="ln"><span class="p">#include &lt;string&gt;</span></span><span class="ln"><span class="k">using</span> <span class="k">namespace</span> std;</span><span class="ln"></span><span class="ln"><span class="k">class</span> Animal {</span><span class="ln"><span class="k">protected</span>:</span><span class="ln">    string name;</span><span class="ln"><span class="k">public</span>:</span><span class="ln">    Animal(string n) { name = n; }</span><span class="ln">};</span><span class="ln"></span><span class="ln"><span class="k">int</span> main() {</span><span class="ln">    Animal a(<span class="s">"Rex"</span>);</span><span class="ln">    cout &lt;&lt; a.name &lt;&lt; endl;</span><span class="ln">    <span class="k">return</span> 0;</span><span class="ln">}</span></pre><button type="button" class="copy">Copy</button></div>
+<div class="term err"><div class="cap">編譯器的回應（g++）</div><pre>main.cpp: In function ‘int main()’:
+main.cpp:14:15: error: ‘std::string Animal::name’ is protected within this context
+   14 |     cout &lt;&lt; a.name &lt;&lt; endl;
+      |               ^~~~</pre></div>
+<div class="tip"><b class="l">小技巧</b>三種權限一次整理：<code>public</code> 人人能用；<code>protected</code> 自己與子類別能用；<code>private</code> 只有自己能用。</div>
+</div></div>
+<div class="step"><div class="num">2</div><div>
+<h3>覆寫：子類別有自己的版本——但有個陷阱</h3>
+<p class="why"><code>Dog</code> 自己寫了一個 <code>speak()</code>。直接用 Dog 呼叫沒問題；但<b>透過 Animal 指標</b>呼叫時，結果出乎意料：</p>
+<div class="code has-notes"><div class="cap">main.cpp · 點有 ⓘ 的行看說明</div><pre><span class="ln"><span class="p">#include &lt;iostream&gt;</span></span><span class="ln"><span class="k">using</span> <span class="k">namespace</span> std;</span><span class="ln"></span><span class="ln"><span class="k">class</span> Animal {</span><span class="ln"><span class="k">public</span>:</span><span class="ln">    <span class="k">void</span> speak() {</span><span class="ln">        cout &lt;&lt; <span class="s">"(某種聲音)"</span> &lt;&lt; endl;</span><span class="ln">    }</span><span class="ln">};</span><span class="ln"></span><span class="ln"><span class="k">class</span> Dog : <span class="k">public</span> Animal {</span><span class="ln"><span class="k">public</span>:</span><span class="ln has-note" data-note="子類別自己寫了一個同名的 speak。" tabindex="0" role="button">    <span class="k">void</span> speak() {</span><span class="ln">        cout &lt;&lt; <span class="s">"汪汪!"</span> &lt;&lt; endl;</span><span class="ln">    }</span><span class="ln">};</span><span class="ln"></span><span class="ln"><span class="k">int</span> main() {</span><span class="ln">    Dog d;</span><span class="ln">    d.speak();</span><span class="ln has-note" data-note="用「Animal 指標」指著一隻 Dog。這是合法的:狗也是一種動物。" tabindex="0" role="button">    Animal* a = &amp;d;</span><span class="ln has-note" data-note="-&gt; 是「透過指標呼叫成員」,等於 (*a).speak()。" tabindex="0" role="button">    a-&gt;speak();</span><span class="ln">    <span class="k">return</span> 0;</span><span class="ln">}</span></pre><button type="button" class="copy">Copy</button></div><div class="code-note" aria-live="polite">點程式碼中有 ⓘ 的那一行，這裡會說明它在做什麼。</div>
+<div class="term"><div class="cap">執行結果</div><pre>汪汪!
+(某種聲音)</pre></div>
+<div class="warn"><b class="l">陷阱</b>明明指著一隻狗，卻印出「（某種聲音）」！因為沒有 <code>virtual</code>，編譯器只看「指標的型態」(Animal)，就決定用 Animal 的版本。</div>
+</div></div>
+<div class="step"><div class="num">3</div><div>
+<h3>virtual：讓執行時決定</h3>
+<p class="why">在基底類別的函式加上 <code>virtual</code>，子類別加上 <code>override</code>。新增或改過的行用綠色底標出。</p>
+<div class="code has-notes"><div class="cap">main.cpp · <em>綠色底 = 這一步新增或改過的行</em> · 點有 ⓘ 的行看說明</div><pre><span class="ln"><span class="p">#include &lt;iostream&gt;</span></span><span class="ln"><span class="k">using</span> <span class="k">namespace</span> std;</span><span class="ln"></span><span class="ln"><span class="k">class</span> Animal {</span><span class="ln"><span class="k">public</span>:</span><span class="ln add has-note" data-note="virtual:告訴編譯器「這個函式,執行時要依物件真正的類別來決定」。" tabindex="0" role="button">    <span class="k">virtual</span> <span class="k">void</span> speak() {</span><span class="ln">        cout &lt;&lt; <span class="s">"(某種聲音)"</span> &lt;&lt; endl;</span><span class="ln">    }</span><span class="ln">};</span><span class="ln"></span><span class="ln"><span class="k">class</span> Dog : <span class="k">public</span> Animal {</span><span class="ln"><span class="k">public</span>:</span><span class="ln add has-note" data-note="override:明確表示「我要覆寫基底類別的 virtual 函式」。寫錯名字時編譯器會提醒。" tabindex="0" role="button">    <span class="k">void</span> speak() <span class="k">override</span> {</span><span class="ln">        cout &lt;&lt; <span class="s">"汪汪!"</span> &lt;&lt; endl;</span><span class="ln">    }</span><span class="ln">};</span><span class="ln"></span><span class="ln"><span class="k">int</span> main() {</span><span class="ln">    Dog d;</span><span class="ln">    d.speak();</span><span class="ln">    Animal* a = &amp;d;</span><span class="ln has-note" data-note="現在 a 雖然是 Animal 指標,實際指著 Dog,所以執行 Dog 的版本。這就是多型。" tabindex="0" role="button">    a-&gt;speak();</span><span class="ln">    <span class="k">return</span> 0;</span><span class="ln">}</span></pre><button type="button" class="copy">Copy</button></div><div class="code-note" aria-live="polite">點程式碼中有 ⓘ 的那一行，這裡會說明它在做什麼。</div>
+<div class="term"><div class="cap">執行結果</div><pre>汪汪!
+汪汪!</pre></div>
+<div class="see"><b class="l">你會看到</b>同樣的 <code>a-&gt;speak()</code>，這次執行的是 <b>Dog 的版本</b>。編譯器改成在「執行時」看物件真正的種類——這就是多型。</div>
+</div></div>
+<div class="step"><div class="num">4</div><div>
+<h3>多型的威力：一個迴圈處理所有動物</h3>
+<p class="why">把不同種類的動物放進同一個 <code>Animal*</code> 陣列。<b>新增一種動物，迴圈完全不用改</b>。</p>
+<div class="code has-notes"><div class="cap">main.cpp · 點有 ⓘ 的行看說明</div><pre><span class="ln"><span class="p">#include &lt;iostream&gt;</span></span><span class="ln"><span class="k">using</span> <span class="k">namespace</span> std;</span><span class="ln"></span><span class="ln"><span class="k">class</span> Animal {</span><span class="ln"><span class="k">public</span>:</span><span class="ln">    <span class="k">virtual</span> <span class="k">void</span> speak() {</span><span class="ln">        cout &lt;&lt; <span class="s">"(某種聲音)"</span> &lt;&lt; endl;</span><span class="ln">    }</span><span class="ln">};</span><span class="ln"></span><span class="ln"><span class="k">class</span> Dog : <span class="k">public</span> Animal {</span><span class="ln"><span class="k">public</span>:</span><span class="ln">    <span class="k">void</span> speak() <span class="k">override</span> {</span><span class="ln">        cout &lt;&lt; <span class="s">"汪汪!"</span> &lt;&lt; endl;</span><span class="ln">    }</span><span class="ln">};</span><span class="ln"></span><span class="ln"><span class="k">class</span> Cat : <span class="k">public</span> Animal {</span><span class="ln"><span class="k">public</span>:</span><span class="ln">    <span class="k">void</span> speak() <span class="k">override</span> {</span><span class="ln">        cout &lt;&lt; <span class="s">"喵喵!"</span> &lt;&lt; endl;</span><span class="ln">    }</span><span class="ln">};</span><span class="ln"></span><span class="ln"><span class="k">int</span> main() {</span><span class="ln">    Dog d;</span><span class="ln">    Cat c;</span><span class="ln has-note" data-note="一個 Animal 指標的陣列,裝著不同種類的動物。" tabindex="0" role="button">    Animal* zoo[2] = {&amp;d, &amp;c};</span><span class="ln">    <span class="k">for</span> (Animal* a : zoo) {</span><span class="ln has-note" data-note="同一行程式、同一個呼叫,依每隻動物真正的種類,做不同的事。" tabindex="0" role="button">        a-&gt;speak();</span><span class="ln">    }</span><span class="ln">    <span class="k">return</span> 0;</span><span class="ln">}</span></pre><button type="button" class="copy">Copy</button></div><div class="code-note" aria-live="polite">點程式碼中有 ⓘ 的那一行，這裡會說明它在做什麼。</div>
+<div class="term"><div class="cap">執行結果</div><pre>汪汪!
+喵喵!</pre></div>
+<p>下面的關係圖可以<b>切換 <code>virtual</code></b>，並按程式碼看實際會執行誰的 <code>speak()</code>：</p>
+<div style="margin-top:12px"><div data-diagram="zoo"></div></div>
+</div></div>
+</div>
+</section>
+
+<section id="stuck">
+  <h2>初學者最常卡住的四個地方</h2>
+  <hr class="rule">
+<details><summary>透過基底類別的指標呼叫，卻執行到基底的版本</summary><div class="body"><p>忘了在<b>基底類別</b>的函式前加 <code>virtual</code>（第 2 步的陷阱）。有 <code>virtual</code> 才會依物件真正的類別決定。</p></div></details>
+<details><summary><code>override</code> 寫了卻編譯失敗</summary><div class="body"><p><code>override</code> 要求基底類別真的有同名、同參數的 <code>virtual</code> 函式。常見原因是函式名稱或參數拼錯了。這正是 <code>override</code> 的用處：幫你抓出「以為覆寫了，其實沒有」的錯。</p></div></details>
+<details><summary>子類別建構子要怎麼把參數交給基底類別</summary><div class="body"><p>在子類別的建構子後面加冒號呼叫：<code>Dog(string n) : Animal(n) {}</code>。基底類別會先被建立，再輪到子類別。</p></div></details>
+<details><summary>有 <code>virtual</code> 函式的類別，解構子也要 <code>virtual</code></summary><div class="body"><p>當你用「基底類別的指標」去 <code>delete</code> 動態建立的子類別物件時（第 17 篇會學），基底類別的解構子必須是 <code>virtual</code>，否則子類別的清理不會被執行。現在先知道有這件事。</p></div></details>
+</section>
+
+<section id="practice">
+  <h2>動手演練：繼承與多型</h2>
+  <hr class="rule">
+<p class="sub" style="margin-bottom:18px">每題先自己寫，再展開看參考解答。</p>
+<details><summary>練習 1：圖形面積</summary><div class="body"><p>設計基底類別 <code>Shape</code>(<code>virtual double area()</code>)，子類別 <code>Circle</code>（半徑 2）與 <code>Rectangle</code>(3 × 4)。放進同一個 <code>Shape*</code> 陣列，用迴圈印出各自的面積。</p><details><summary>看參考解答（先自己寫再看）</summary><div class="body"><div class="code"><div class="cap">main.cpp</div><pre><span class="ln"><span class="p">#include &lt;iostream&gt;</span></span><span class="ln"><span class="k">using</span> <span class="k">namespace</span> std;</span><span class="ln"></span><span class="ln"><span class="k">class</span> Shape {</span><span class="ln"><span class="k">public</span>:</span><span class="ln">    <span class="k">virtual</span> <span class="k">double</span> area() {</span><span class="ln">        <span class="k">return</span> 0;</span><span class="ln">    }</span><span class="ln">};</span><span class="ln"></span><span class="ln"><span class="k">class</span> Circle : <span class="k">public</span> Shape {</span><span class="ln"><span class="k">private</span>:</span><span class="ln">    <span class="k">double</span> r;</span><span class="ln"><span class="k">public</span>:</span><span class="ln">    Circle(<span class="k">double</span> radius) { r = radius; }</span><span class="ln">    <span class="k">double</span> area() <span class="k">override</span> {</span><span class="ln">        <span class="k">return</span> 3.14159 * r * r;</span><span class="ln">    }</span><span class="ln">};</span><span class="ln"></span><span class="ln"><span class="k">class</span> Rectangle : <span class="k">public</span> Shape {</span><span class="ln"><span class="k">private</span>:</span><span class="ln">    <span class="k">double</span> w, h;</span><span class="ln"><span class="k">public</span>:</span><span class="ln">    Rectangle(<span class="k">double</span> width, <span class="k">double</span> height) { w = width; h = height; }</span><span class="ln">    <span class="k">double</span> area() <span class="k">override</span> {</span><span class="ln">        <span class="k">return</span> w * h;</span><span class="ln">    }</span><span class="ln">};</span><span class="ln"></span><span class="ln"><span class="k">int</span> main() {</span><span class="ln">    Circle c(2);</span><span class="ln">    Rectangle r(3, 4);</span><span class="ln">    Shape* shapes[2] = {&amp;c, &amp;r};</span><span class="ln">    <span class="k">for</span> (Shape* s : shapes) {</span><span class="ln">        cout &lt;&lt; <span class="s">"面積:"</span> &lt;&lt; s-&gt;area() &lt;&lt; endl;</span><span class="ln">    }</span><span class="ln">    <span class="k">return</span> 0;</span><span class="ln">}</span></pre><button type="button" class="copy">Copy</button></div><div class="term"><div class="cap">執行結果</div><pre>面積:12.5664
+面積:12</pre></div><p style='margin-top:8px'>圓面積 <code>3.14159 × r × r</code>。注意子類別的建構子要把半徑或長寬存起來。</p></div></details></div></details>
+<details><summary>練習 2：新增一種動物</summary><div class="body"><p>在第 4 步的動物園裡，新增 <code>Cow</code>（叫聲「哞~」），並放進陣列。<b>迴圈本身不需要修改</b>。</p><details><summary>看參考解答（先自己寫再看）</summary><div class="body"><div class="code"><div class="cap">main.cpp</div><pre><span class="ln"><span class="p">#include &lt;iostream&gt;</span></span><span class="ln"><span class="k">using</span> <span class="k">namespace</span> std;</span><span class="ln"></span><span class="ln"><span class="k">class</span> Animal {</span><span class="ln"><span class="k">public</span>:</span><span class="ln">    <span class="k">virtual</span> <span class="k">void</span> speak() {</span><span class="ln">        cout &lt;&lt; <span class="s">"(某種聲音)"</span> &lt;&lt; endl;</span><span class="ln">    }</span><span class="ln">};</span><span class="ln"></span><span class="ln"><span class="k">class</span> Dog : <span class="k">public</span> Animal {</span><span class="ln"><span class="k">public</span>:</span><span class="ln">    <span class="k">void</span> speak() <span class="k">override</span> { cout &lt;&lt; <span class="s">"汪汪!"</span> &lt;&lt; endl; }</span><span class="ln">};</span><span class="ln"></span><span class="ln"><span class="k">class</span> Cat : <span class="k">public</span> Animal {</span><span class="ln"><span class="k">public</span>:</span><span class="ln">    <span class="k">void</span> speak() <span class="k">override</span> { cout &lt;&lt; <span class="s">"喵喵!"</span> &lt;&lt; endl; }</span><span class="ln">};</span><span class="ln"></span><span class="ln"><span class="k">class</span> Cow : <span class="k">public</span> Animal {</span><span class="ln"><span class="k">public</span>:</span><span class="ln">    <span class="k">void</span> speak() <span class="k">override</span> { cout &lt;&lt; <span class="s">"哞~"</span> &lt;&lt; endl; }</span><span class="ln">};</span><span class="ln"></span><span class="ln"><span class="k">int</span> main() {</span><span class="ln">    Dog d;</span><span class="ln">    Cat c;</span><span class="ln">    Cow w;</span><span class="ln">    Animal* zoo[3] = {&amp;d, &amp;c, &amp;w};</span><span class="ln">    <span class="k">for</span> (Animal* a : zoo) {</span><span class="ln">        a-&gt;speak();</span><span class="ln">    }</span><span class="ln">    <span class="k">return</span> 0;</span><span class="ln">}</span></pre><button type="button" class="copy">Copy</button></div><div class="term"><div class="cap">執行結果</div><pre>汪汪!
+喵喵!
+哞~</pre></div><p style='margin-top:8px'>這就是多型的好處：對「新增」開放，但不用改動原本處理所有動物的程式。</p></div></details></div></details>
+<details><summary>練習 3：呼叫基底建構子</summary><div class="body"><p>設計 <code>Person</code>（名字、年齡）與繼承它的 <code>Student</code>（多一個學校）。<code>Student</code> 的 <code>introduce()</code> 要先呼叫 <code>Person::introduce()</code> 再印出學校。</p><details><summary>看參考解答（先自己寫再看）</summary><div class="body"><div class="code"><div class="cap">main.cpp</div><pre><span class="ln"><span class="p">#include &lt;iostream&gt;</span></span><span class="ln"><span class="p">#include &lt;string&gt;</span></span><span class="ln"><span class="k">using</span> <span class="k">namespace</span> std;</span><span class="ln"></span><span class="ln"><span class="k">class</span> Person {</span><span class="ln"><span class="k">protected</span>:</span><span class="ln">    string name;</span><span class="ln">    <span class="k">int</span> age;</span><span class="ln"><span class="k">public</span>:</span><span class="ln">    Person(string n, <span class="k">int</span> a) {</span><span class="ln">        name = n;</span><span class="ln">        age = a;</span><span class="ln">    }</span><span class="ln">    <span class="k">void</span> introduce() {</span><span class="ln">        cout &lt;&lt; <span class="s">"我是 "</span> &lt;&lt; name &lt;&lt; <span class="s">",今年 "</span> &lt;&lt; age &lt;&lt; <span class="s">" 歲"</span> &lt;&lt; endl;</span><span class="ln">    }</span><span class="ln">};</span><span class="ln"></span><span class="ln"><span class="k">class</span> Student : <span class="k">public</span> Person {</span><span class="ln"><span class="k">private</span>:</span><span class="ln">    string school;</span><span class="ln"><span class="k">public</span>:</span><span class="ln">    Student(string n, <span class="k">int</span> a, string s) : Person(n, a) {</span><span class="ln">        school = s;</span><span class="ln">    }</span><span class="ln">    <span class="k">void</span> introduce() {</span><span class="ln">        Person::introduce();</span><span class="ln">        cout &lt;&lt; <span class="s">"就讀 "</span> &lt;&lt; school &lt;&lt; endl;</span><span class="ln">    }</span><span class="ln">};</span><span class="ln"></span><span class="ln"><span class="k">int</span> main() {</span><span class="ln">    Student s(<span class="s">"Mina"</span>, 20, <span class="s">"台北大學"</span>);</span><span class="ln">    s.introduce();</span><span class="ln">    <span class="k">return</span> 0;</span><span class="ln">}</span></pre><button type="button" class="copy">Copy</button></div><div class="term"><div class="cap">執行結果</div><pre>我是 Mina,今年 20 歲
+就讀 台北大學</pre></div><p style='margin-top:8px'><code>Person::introduce()</code> 是明確指定「呼叫基底類別版本」的寫法。</p></div></details></div></details>
+<div class="panel" id="quiz">
+    <div class="quiz-top"><h3 style="margin:0">快速測驗</h3><span class="count" id="quizCount">1 / 1</span></div>
+    <div class="question" id="quizQ"></div>
+    <div class="answers" id="quizAns"></div>
+    <div class="feedback" id="quizFb" aria-live="polite"></div>
+    <div class="quiz-foot"><span id="quizScore">答對 0 題</span><button type="button" class="primary" id="quizNext" disabled>下一題 →</button></div>
+  </div>
+<h3 style="margin-top:30px">學完之後，對照這張清單</h3>
+<div class="panel">
+<div class="checks" id="checks"><label class="check-item"><input type="checkbox"><span>我能說出封裝、繼承、多型各是什麼。</span></label><label class="check-item"><input type="checkbox"><span>我會用 <code>class Dog : public Animal</code> 寫繼承，並呼叫基底類別的建構子。</span></label><label class="check-item"><input type="checkbox"><span>我分得出 public、protected、private。</span></label><label class="check-item"><input type="checkbox"><span>我知道沒有 <code>virtual</code> 時，透過基底指標呼叫會用到基底版本。</span></label><label class="check-item"><input type="checkbox"><span>我會用 <code>virtual</code> 加 <code>override</code> 寫出多型。</span></label><label class="check-item"><input type="checkbox"><span>我知道多型讓新增子類別時，不必修改處理基底類別的程式。</span></label></div>
+<div class="check-progress" id="checkProgress">已完成 0 / 6 項</div>
+<div class="bar"><span id="checkBar"></span></div>
+</div>
+<h3 style="margin-top:30px">延伸閱讀（外部連結）</h3>
+<div class="resources"><a class="resource" href="https://en.cppreference.com/cpp/language/derived_class" target="_blank" rel="noopener"><b>cppreference：繼承</b><small>cppreference.com</small></a><a class="resource" href="https://en.cppreference.com/cpp/language/virtual" target="_blank" rel="noopener"><b>cppreference:virtual 函式</b><small>cppreference.com</small></a></div>
+</section>
+</main>
+</div>
+
+<p class="foot" style="margin-top:28px">範例程式皆以 g++ 13、<code>-std=c++17</code> 實測，頁面上的輸出就是實際執行的結果（編譯錯誤訊息的引號在你的環境可能是 <code>'</code>）。外部網站連結已於 2026-11-18 抽查（非逐條驗證）；安裝步驟未逐一對照官方文件；若連結失效，請搜尋「C++ online compiler」。製作日期：2026-11-12。</p>
+
+<nav class="pager" aria-label="上一篇與下一篇">
+  <a class="prev" href="clang-class-guide.html"><small>上一篇</small><b>struct 與 class</b></a>
+</nav>
+</div>
+
+<script>window.PAGE = {"diagram": {"zoo": {"rows": [["animal"], ["dog", "cat"]], "arrows": [{"from": "dog", "to": "animal"}, {"from": "cat", "to": "animal"}], "boxes": {"animal": {"name": "Animal", "sub": "基底類別", "fields": [{"t": "string", "n": "name", "v": "pro", "note": "名字。protected：子類別可以用，外面不能碰。"}], "methods": [{"t": "", "n": "Animal(string n)", "v": "pub", "note": "建構子。子類別會用 : Animal(n) 呼叫它。"}, {"t": "string", "n": "getName()", "v": "pub", "note": "取得名字。Dog 與 Cat 都繼承了它，不用重寫。"}, {"t": "virtual void", "n": "speak()", "v": "pub", "note": "發出聲音。「virtual」讓執行時依物件真正的類別決定用誰的版本（用上面的勾選切換）。"}]}, "dog": {"name": "Dog", "sub": "子類別", "methods": [{"t": "void", "n": "speak() override", "v": "pub", "note": "覆寫：狗叫「汪汪！」。"}]}, "cat": {"name": "Cat", "sub": "子類別", "methods": [{"t": "void", "n": "speak() override", "v": "pub", "note": "覆寫：貓叫「喵喵！」。"}]}}, "toggle": {"label": "基底類別的 speak() 有加 virtual", "on": true}, "testsTitle": "試試看：按下面的程式碼，看會執行誰的 speak()", "tests": [{"code": "Dog d; d.speak();", "ok": true, "msg": "直接用 Dog 物件呼叫：執行 Dog 的版本，印出「汪汪！」。", "hl": "dog.speak() override"}, {"code": "Animal* a = &d; a->speak();", "on": {"ok": true, "msg": "有 virtual：執行時看物件真正的類別（Dog），執行 Dog 的版本，印出「汪汪！」。這是多型。", "hl": "dog.speak() override"}, "off": {"ok": false, "msg": "沒有 virtual：編譯器只看指標的型態（Animal），執行 Animal 的版本，印出「（某種聲音）」。通常這不是你要的！", "hl": "animal.speak()"}}, {"code": "Animal* a = &c; a->speak();", "on": {"ok": true, "msg": "有 virtual：物件真正是 Cat，執行 Cat 的版本，印出「喵喵！」。", "hl": "cat.speak() override"}, "off": {"ok": false, "msg": "沒有 virtual：一樣只看指標的型態，執行 Animal 的版本，印出「（某種聲音）」。", "hl": "animal.speak()"}}, {"code": "cout << d.getName();", "ok": true, "msg": "可以。getName 是 public,Dog 從 Animal 繼承而來。", "hl": "animal.getName()"}, {"code": "cout << d.name;", "ok": false, "msg": "編譯失敗：<code>‘std::string Animal::name’ is protected within this context</code>。name 是 protected，類別外面不能直接碰。", "hl": "animal.name"}]}}, "quiz": [{"q": "<code>class Dog : public Animal</code> 的意思是？", "a": ["Dog 繼承 Animal", "Animal 繼承 Dog", "Dog 與 Animal 無關"], "c": 0, "why": "冒號後面是被繼承的基底類別。"}, {"q": "<code>protected</code> 成員可以被誰存取？", "a": ["自己與子類別", "任何人", "只有自己"], "c": 0, "why": "protected 介於 public 與 private 之間。"}, {"q": "<code>Animal* a = &amp;dog; a-&gt;speak();</code>,Animal 的 speak 沒有 virtual，會執行誰的？", "a": ["Animal 的版本", "Dog 的版本", "編譯失敗"], "c": 0, "why": "沒有 virtual 時，編譯器依指標的型態（Animal）決定。"}, {"q": "多型指的是？", "a": ["同一個呼叫，依物件真正的類別有不同行為", "一個類別有很多個物件", "一個函式有很多個參數"], "c": 0, "why": "多型讓通用的程式碼能處理各種不同的子類別。"}, {"q": "子類別覆寫基底類別的 virtual 函式時，建議在子類別函式後加？", "a": ["override", "final", "static"], "c": 0, "why": "override 讓編譯器幫你檢查是不是真的覆寫了。"}]};</script>
+<script>
+(function () {
+  "use strict";
+  var CFG = window.PAGE || {};
+  function $(id){ return document.getElementById(id); }
+  function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+  window.PAGE_UTIL = { copyText: function(t, b){ copyText(t, b); }, esc: esc };
+  function copyText(text, btn){
+    var orig = btn.textContent;
+    function flash(){
+      btn.textContent = "Copied ✓"; btn.classList.add("copied");
+      setTimeout(function(){ btn.textContent = orig; btn.classList.remove("copied"); }, 1200);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(flash, flash);
+    } else {
+      var ta = document.createElement("textarea"); ta.value = text;
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); } catch(e){}
+      document.body.removeChild(ta); flash();
+    }
+  }
+
+  /* ---------- fill-in template values ---------- */
+  var DEF = CFG.fill || {};
+  var vals = {};
+  var RE = /\{([A-Za-z0-9_]+)\}/g;
+  function val(k){ return vals[k] || DEF[k]; }
+  function resolvePlain(t){ return t.replace(RE, function(m, k){ return (k in DEF) ? val(k) : m; }); }
+  function resolveHtml(t){
+    var out = "", last = 0, m;
+    RE.lastIndex = 0;
+    while ((m = RE.exec(t))){
+      if (!(m[1] in DEF)) continue;
+      out += esc(t.slice(last, m.index)) + '<span class="slot">' + esc(val(m[1])) + "</span>";
+      last = RE.lastIndex;
+    }
+    return out + esc(t.slice(last));
+  }
+  function lineHtml(line, cpp){
+    if (cpp){
+      var j = line.indexOf("//");
+      if (j > -1) return resolveHtml(line.slice(0, j)) + '<span class="cm">' + resolveHtml(line.slice(j)) + "</span>";
+      return resolveHtml(line);
+    }
+    if (line.trim().indexOf("# ") === 0) return '<span class="cm">' + resolveHtml(line) + "</span>";
+    var i = line.indexOf("  # ");
+    if (i > -1) return resolveHtml(line.slice(0, i)) + '<span class="cm">' + resolveHtml(line.slice(i)) + "</span>";
+    return resolveHtml(line);
+  }
+  var tplEls = Array.prototype.slice.call(document.querySelectorAll("[data-tpl]"));
+  tplEls.forEach(function(el){ el._tpl = el.textContent; });
+  function renderTpl(){
+    tplEls.forEach(function(el){
+      if (el.tagName === "PRE") el.innerHTML = el._tpl.split("\n").map(function(l){ return lineHtml(l, el.hasAttribute("data-cpp")); }).join("\n");
+      else el.innerHTML = resolveHtml(el._tpl);
+    });
+  }
+  var inputs = Array.prototype.slice.call(document.querySelectorAll(".fill input"));
+  inputs.forEach(function(inp){
+    inp.placeholder = DEF[inp.dataset.k] || "";
+    inp.addEventListener("input", function(){
+      var v = inp.value;
+      if (!inp.dataset.ns){ v = v.replace(/\s+/g, "-"); if (v !== inp.value) inp.value = v; }
+      vals[inp.dataset.k] = v;
+      renderTpl();
+    });
+  });
+  var rb = $("resetBtn");
+  if (rb) rb.addEventListener("click", function(){
+    inputs.forEach(function(inp){ inp.value = ""; vals[inp.dataset.k] = ""; });
+    renderTpl();
+  });
+  document.querySelectorAll(".cmd .copy").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var pre = btn.parentNode.querySelector("pre");
+      copyText(pre._tpl !== undefined ? resolvePlain(pre._tpl) : pre.textContent, btn);
+    });
+  });
+
+  /* ---------- reading progress + toc spy ---------- */
+  var readBar = $("readBar");
+  function updateBar(){
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    readBar.style.width = (max > 0 ? Math.min(100, window.scrollY / max * 100) : 0) + "%";
+  }
+  window.addEventListener("scroll", updateBar, { passive: true });
+  window.addEventListener("resize", updateBar);
+  updateBar();
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll("nav.toc a"));
+  if ("IntersectionObserver" in window){
+    var spy = new IntersectionObserver(function(es){
+      es.forEach(function(en){
+        if (en.isIntersecting) tocLinks.forEach(function(a){ a.classList.toggle("active", a.getAttribute("href") === "#" + en.target.id); });
+      });
+    }, { rootMargin: "-15% 0px -70% 0px" });
+    tocLinks.forEach(function(a){ var sec = document.querySelector(a.getAttribute("href")); if (sec) spy.observe(sec); });
+  }
+
+  /* ---------- scenario simulators ---------- */
+  var SIM = CFG.sim || {};
+  document.querySelectorAll("[data-simgroup]").forEach(function(group){
+    var btns = Array.prototype.slice.call(group.querySelectorAll("[data-sim]"));
+    var out = group.querySelector(".sim-result");
+    btns.forEach(function(btn){
+      btn.addEventListener("click", function(){
+        btns.forEach(function(b){ b.classList.toggle("selected", b === btn); });
+        out.innerHTML = SIM[btn.dataset.sim] || "";
+      });
+    });
+  });
+
+  /* ---------- quiz ---------- */
+  var QUIZ = CFG.quiz || [];
+  if (QUIZ.length && $("quiz")){
+    var qi = 0, qScore = 0, qDone = false;
+    var qCount = $("quizCount"), qQ = $("quizQ"), qAns = $("quizAns"), qFb = $("quizFb"), qNext = $("quizNext"), qScoreEl = $("quizScore");
+    var renderQuiz = function(){
+      var item = QUIZ[qi]; qDone = false;
+      qCount.textContent = (qi + 1) + " / " + QUIZ.length;
+      qQ.innerHTML = item.q;
+      qAns.innerHTML = "";
+      qFb.className = "feedback"; qFb.textContent = "";
+      qNext.disabled = true;
+      qNext.textContent = qi === QUIZ.length - 1 ? "重新測驗 ↻" : "下一題 →";
+      item.a.forEach(function(text, i){
+        var b = document.createElement("button");
+        b.type = "button"; b.className = "answer";
+        b.innerHTML = '<span class="letter">' + String.fromCharCode(65 + i) + "</span><span>" + esc(text) + "</span>";
+        b.addEventListener("click", function(){ pick(i); });
+        qAns.appendChild(b);
+      });
+    };
+    var pick = function(i){
+      if (qDone) return; qDone = true;
+      var item = QUIZ[qi], good = i === item.c;
+      Array.prototype.forEach.call(qAns.querySelectorAll("button"), function(b, n){
+        b.disabled = true;
+        if (n === item.c) b.classList.add("correct");
+        if (n === i && !good) b.classList.add("wrong");
+      });
+      if (good) qScore++;
+      qFb.className = "feedback show " + (good ? "good" : "bad");
+      qFb.innerHTML = "<b>" + (good ? "答對了！" : "再記一下這個觀念。") + "</b> " + esc(item.why);
+      qScoreEl.textContent = "答對 " + qScore + " / " + (qi + 1) + " 題";
+      qNext.disabled = false;
+    };
+    qNext.addEventListener("click", function(){
+      if (qi === QUIZ.length - 1){ qi = 0; qScore = 0; } else { qi++; }
+      renderQuiz();
+      qScoreEl.textContent = "答對 " + qScore + " 題";
+    });
+    renderQuiz();
+  }
+
+  /* ---------- checklist ---------- */
+  var checks = Array.prototype.slice.call(document.querySelectorAll("#checks input"));
+  function updateChecks(){
+    var n = checks.filter(function(c){ return c.checked; }).length;
+    $("checkProgress").textContent = "已完成 " + n + " / " + checks.length + " 項";
+    $("checkBar").style.width = (n / checks.length * 100) + "%";
+    checks.forEach(function(c){ c.closest(".check-item").classList.toggle("done", c.checked); });
+  }
+  checks.forEach(function(c){ c.addEventListener("change", updateChecks); });
+
+  /* ---------- role tabs (dual-view pages) ---------- */
+  var roleBtns = Array.prototype.slice.call(document.querySelectorAll("[data-role]"));
+  var rolePanels = Array.prototype.slice.call(document.querySelectorAll("[data-panel]"));
+  function setRole(r, focus){
+    roleBtns.forEach(function(b){
+      var on = b.dataset.role === r;
+      b.classList.toggle("on", on);
+      b.setAttribute("aria-selected", on ? "true" : "false");
+      b.tabIndex = on ? 0 : -1;
+      if (on && focus) b.focus();
+    });
+    rolePanels.forEach(function(p){ p.hidden = p.dataset.panel !== r; });
+  }
+  roleBtns.forEach(function(b){
+    b.addEventListener("click", function(){ setRole(b.dataset.role); });
+    b.addEventListener("keydown", function(e){
+      if (e.key === "ArrowLeft" || e.key === "ArrowRight"){
+        e.preventDefault(); setRole(b.dataset.role === "c" ? "o" : "c", true);
+      }
+    });
+  });
+  if (roleBtns.length) setRole("c");
+
+  /* ---------- stage stepper (two columns) ---------- */
+  var STAGES = CFG.stages || [];
+  if (STAGES.length && $("stages")){
+    var stage = 0;
+    var stagesEl = $("stages");
+    var renderStages = function(){
+      stagesEl.innerHTML = STAGES.map(function(s, i){
+        return '<button type="button" data-i="' + i + '" class="' + (i === stage ? "on" : "") + '" aria-pressed="' + (i === stage) + '">' +
+          '<span class="si">階段 ' + (i + 1) + "</span><span>" + s.label + '</span><span class="badge ' + s.tone + '">' + s.badge + "</span></button>";
+      }).join("");
+      var s = STAGES[stage];
+      $("c-h").textContent = s.c.h; $("o-h").textContent = s.o.h;
+      $("c-list").innerHTML = s.c.items.map(function(t){ return "<li>" + t + "</li>"; }).join("");
+      $("o-list").innerHTML = s.o.items.map(function(t){ return "<li>" + t + "</li>"; }).join("");
+      $("prevStage").disabled = stage === 0;
+      $("nextStage").disabled = stage === STAGES.length - 1;
+    };
+    stagesEl.addEventListener("click", function(e){
+      var b = e.target.closest("button[data-i]"); if (!b) return;
+      stage = +b.dataset.i; renderStages();
+    });
+    $("prevStage").addEventListener("click", function(){ if (stage > 0){ stage--; renderStages(); } });
+    $("nextStage").addEventListener("click", function(){ if (stage < STAGES.length - 1){ stage++; renderStages(); } });
+    renderStages();
+  }
+
+  /* ---------- decision picker ---------- */
+  var DECIDE = CFG.decide || [];
+  if (DECIDE.length && $("decideBtns")){
+    var decBtns = $("decideBtns"), decOut = $("decideOut");
+    decBtns.innerHTML = DECIDE.map(function(d, i){
+      return '<button type="button" data-d="' + i + '">' + d.label + "</button>";
+    }).join("");
+    decBtns.addEventListener("click", function(e){
+      var b = e.target.closest("button[data-d]"); if (!b) return;
+      var d = DECIDE[+b.dataset.d];
+      Array.prototype.forEach.call(decBtns.querySelectorAll("button"), function(x){ x.classList.toggle("selected", x === b); });
+      var tone = d.risk === "高" ? "bad" : (d.risk === "中" ? "warn" : "ok");
+      decOut.innerHTML = '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px"><b>建議做法</b><span class="badge ' + tone + '">風險：' + d.risk + "</span></div>" +
+        '<div class="cmd" style="margin:8px 0"><pre></pre><button type="button" class="copy">Copy</button></div><div>' + d.why + "</div>";
+      decOut.querySelector("pre").textContent = d.cmd;
+      decOut.querySelector(".copy").addEventListener("click", function(ev){ copyText(d.cmd, ev.currentTarget); });
+    });
+  }
+
+  renderTpl();
+  if (checks.length) updateChecks();
+})();
+
+(function () {
+  "use strict";
+  var U = window.PAGE_UTIL || {}, CFG = window.PAGE || {};
+  function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+
+  /* ---------- 程式碼區塊:複製 + 點選逐行說明 ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll(".code"), function (box) {
+    var pre = box.querySelector("pre"), btn = box.querySelector("button.copy");
+    var note = box.nextElementSibling && box.nextElementSibling.classList.contains("code-note") ? box.nextElementSibling : null;
+    var lines = Array.prototype.slice.call(pre.querySelectorAll(".ln"));
+    if (btn) btn.addEventListener("click", function () {
+      U.copyText(lines.map(function (l) { return l.textContent; }).join("\n") + "\n", btn);
+    });
+    if (!note) return;
+    function show(l) {
+      lines.forEach(function (x) { x.classList.toggle("sel", x === l); });
+      note.innerHTML = "<b>第 " + (lines.indexOf(l) + 1) + " 行</b>";
+      note.appendChild(document.createTextNode(l.dataset.note));
+    }
+    lines.forEach(function (l) {
+      if (!l.dataset.note) return;
+      l.addEventListener("click", function () { show(l); });
+      l.addEventListener("keydown", function (ev) { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); show(l); } });
+    });
+  });
+
+  /* ---------- Flow 引擎:節點依序播放,可選擇讓某一步失敗 ---------- */
+  var FL = CFG.flow || {};
+  Array.prototype.forEach.call(document.querySelectorAll("[data-flow]"), function (el) {
+    var f = FL[el.dataset.flow]; if (!f) return;
+    var i = 0, fail = false, n = f.nodes.length, hasFail = typeof f.failAt === "number";
+    el.classList.add("flow");
+    el.innerHTML = '<div class="flow-row" role="group" aria-label="流程"></div><div class="flow-detail" aria-live="polite"></div>' +
+      '<div class="flow-ctl"><button type="button" class="ghost" data-a="prev">← 上一步</button><button type="button" class="primary" data-a="next">下一步 →</button>' +
+      '<button type="button" class="ghost" data-a="reset">Reset</button>' +
+      (hasFail ? '<label><input type="checkbox" data-a="fail">假設' + esc(f.failLabel || "這一步出錯") + '</label>' : "") + "</div>";
+    var row = el.querySelector(".flow-row"), det = el.querySelector(".flow-detail");
+    var bPrev = el.querySelector('[data-a="prev"]'), bNext = el.querySelector('[data-a="next"]');
+    function limit(){ return fail ? f.failAt : n - 1; }
+    function render() {
+      if (i > limit()) i = limit();
+      row.innerHTML = f.nodes.map(function (nd, k) {
+        var cls = "";
+        if (fail && k > f.failAt) cls = "skip";
+        else if (fail && k === f.failAt && i >= k) cls = "fail";
+        else if (k < i) cls = "done"; else if (k === i) cls = "on";
+        return (k ? '<span class="flow-arrow" aria-hidden="true">→</span>' : "") +
+          '<button type="button" class="flow-node ' + cls + '" data-k="' + k + '"><b>' + nd.t + "</b><small>" + nd.s + "</small></button>";
+      }).join("");
+      var bad = fail && i === f.failAt;
+      det.classList.toggle("bad", bad);
+      det.innerHTML = bad ? f.failText : f.nodes[i].d;
+      bPrev.disabled = i === 0; bNext.disabled = i >= limit();
+    }
+    row.addEventListener("click", function (ev) { var b = ev.target.closest("[data-k]"); if (b){ i = +b.dataset.k; render(); } });
+    el.addEventListener("click", function (ev) {
+      var a = ev.target.closest("[data-a]"); if (!a) return;
+      if (a.dataset.a === "prev" && i > 0) i--;
+      else if (a.dataset.a === "next" && i < limit()) i++;
+      else if (a.dataset.a === "reset"){ i = 0; fail = false; var c = el.querySelector('[data-a="fail"]'); if (c) c.checked = false; }
+      else if (a.dataset.a === "fail"){ fail = a.checked; }
+      render();
+    });
+    render();
+  });
+
+
+  /* 記憶體格子:cells = [{id, names[], v, t, a, p(指向的格子 id)}];箭頭由 SVG 依格子位置畫出 */
+  function drawMem(box, cells) {
+    box.innerHTML = '<div class="mm-wrap"><svg class="mm-svg" aria-hidden="true"></svg><div class="mm-row"></div></div><div class="stp-base">位址為示意，實際數字每台電腦、每次執行都不同</div>';
+    var wrap = box.querySelector(".mm-wrap"), row = box.querySelector(".mm-row"), svg = box.querySelector(".mm-svg");
+    row.innerHTML = cells.map(function (c) {
+      return '<div class="mm-cell' + (c.p ? " ptr" : "") + '" data-id="' + esc(c.id) + '"><div class="mm-n">' + c.names.map(esc).join(" / ") + '</div><div class="mm-v">' + esc(c.v) + '</div><div class="mm-t">' + esc((c.t || "") + (c.a ? " @" + c.a : "")) + "</div></div>";
+    }).join("");
+    var W = row.scrollWidth, H = 54, p = "";
+    svg.setAttribute("width", W); svg.setAttribute("height", H); svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+    cells.forEach(function (c) {
+      if (!c.p) return;
+      var a = row.querySelector('[data-id="' + c.id + '"]'), b = row.querySelector('[data-id="' + c.p + '"]'); if (!a || !b) return;
+      var x1 = a.offsetLeft + a.offsetWidth / 2, x2 = b.offsetLeft + b.offsetWidth / 2, y = H;
+      p += '<path d="M' + x1 + " " + y + " C" + x1 + " " + (y - 46) + " " + x2 + " " + (y - 46) + " " + x2 + " " + (y - 9) + '" fill="none" stroke="#D97757" stroke-width="2"/>' +
+        '<path d="M' + (x2 - 5) + " " + (y - 9) + " L" + (x2 + 5) + " " + (y - 9) + " L" + x2 + " " + (y - 1) + ' Z" fill="#D97757"/>';
+    });
+    svg.innerHTML = p;
+  }
+
+
+  /* stack / heap 兩區的記憶體圖:cells 帶 r:"heap" 的畫在下方;leak=洩漏、free=已歸還、dangling=懸空箭頭(虛線) */
+  function drawMem2(box, cells) {
+    function cell(c) {
+      return '<div class="mm-cell' + (c.p ? " ptr" : "") + (c.free ? " freed" : "") + (c.leak ? " leak" : "") + '" data-id="' + esc(c.id) + '"><div class="mm-n">' + c.names.map(esc).join(" / ") + '</div><div class="mm-v">' + esc(c.free ? "已歸還" : c.v) + '</div><div class="mm-t">' + esc((c.t || "") + (c.a ? " @" + c.a : "")) + (c.leak ? " · 洩漏" : "") + "</div></div>";
+    }
+    var st = cells.filter(function (c) { return c.r !== "heap"; }), hp = cells.filter(function (c) { return c.r === "heap"; });
+    box.innerHTML = '<div class="mm-wrap2"><svg class="mm-svg2" aria-hidden="true"></svg>' +
+      '<div class="mm-reg"><b>stack（函式結束自動收回）</b><div class="mm-row">' + st.map(cell).join("") + '</div></div>' +
+      '<div class="mm-reg heap"><b>heap（用 new 要的，要自己還）</b><div class="mm-row">' + (hp.length ? hp.map(cell).join("") : '<span class="mm-empty">（目前沒有）</span>') + "</div></div></div>";
+    var wrap = box.querySelector(".mm-wrap2"), svg = box.querySelector(".mm-svg2"), w = wrap.getBoundingClientRect(), p = "";
+    svg.setAttribute("width", w.width); svg.setAttribute("height", w.height); svg.setAttribute("viewBox", "0 0 " + w.width + " " + w.height);
+    cells.forEach(function (c) {
+      if (!c.p) return;
+      var a = wrap.querySelector('[data-id="' + c.id + '"]'), b = wrap.querySelector('[data-id="' + c.p + '"]'); if (!a || !b) return;
+      var ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect(), x1 = ra.left + ra.width / 2 - w.left, y1 = ra.bottom - w.top, x2 = rb.left + rb.width / 2 - w.left, y2 = rb.top - w.top;
+      var col = c.dangling ? "#B04A3F" : "#D97757", dash = c.dangling ? ' stroke-dasharray="5 4"' : "";
+      p += '<path d="M' + x1 + " " + y1 + " C" + x1 + " " + (y1 + 34) + " " + x2 + " " + (y2 - 34) + " " + x2 + " " + (y2 - 9) + '" fill="none" stroke="' + col + '" stroke-width="2"' + dash + "/>" +
+        '<path d="M' + (x2 - 5) + " " + (y2 - 9) + " L" + (x2 + 5) + " " + (y2 - 9) + " L" + x2 + " " + (y2 - 1) + ' Z" fill="' + col + '"/>';
+    });
+    svg.innerHTML = p;
+  }
+
+  /* ---------- Stepper 引擎:逐行執行,顯示變數盒子與輸出 ---------- */
+  var ST = CFG.stepper || {};
+  Array.prototype.forEach.call(document.querySelectorAll("[data-stepper]"), function (el) {
+    var f = ST[el.dataset.stepper]; if (!f) return;
+    var steps = f.steps, i = -1, lines = Array.prototype.slice.call(el.querySelectorAll(".ln"));
+    var vars = el.querySelector(".stp-vars"), outp = el.querySelector(".stp-out pre"), note = el.querySelector(".stp-note"), cnt = el.querySelector(".stp-count");
+    var bPrev = el.querySelector('[data-a="prev"]'), bNext = el.querySelector('[data-a="next"]');
+    function render() {
+      lines.forEach(function (l, k) { l.classList.toggle("cur", i >= 0 && steps[i].l === k); });
+      if (i >= 0 && steps[i].m) {   // 記憶體格子與箭頭模式
+        vars.className = "stp-vars mem"; if (steps[i].m.some(function (c) { return c.r; })) drawMem2(vars, steps[i].m); else drawMem(vars, steps[i].m);
+      } else if (i < 0 && f.mem) { vars.className = "stp-vars mem"; vars.innerHTML = '<div class="stp-base">記憶體（還沒開始）</div>';
+      } else if (i >= 0 && steps[i].f) {   // 呼叫堆疊模式:最上面是目前正在執行的函式
+        vars.className = "stp-vars frames";
+        vars.innerHTML = steps[i].f.slice().reverse().map(function (fr, k) {
+          return '<div class="stp-frame' + (k === 0 ? " top" : "") + '"><div class="stp-fh">' + esc(fr.t) + (fr.r ? ' <span class="stp-ret">回傳 ' + esc(fr.r) + "</span>" : "") + "</div><div class=\"stp-fv\">" +
+            Object.keys(fr.v).map(function (nm) { return "<span><small>" + esc(nm) + "</small><b>" + esc(fr.v[nm]) + "</b></span>"; }).join("") + "</div></div>";
+        }).join("") + '<div class="stp-base">呼叫堆疊（上面是最新呼叫）</div>';
+      } else if (f.frames) { vars.className = "stp-vars frames"; vars.innerHTML = '<div class="stp-base">呼叫堆疊（還沒開始）</div>'; }
+      else {
+      vars.className = "stp-vars";
+      var cur = i >= 0 ? steps[i].v : {}, prv = i > 0 ? steps[i - 1].v : {};
+      vars.innerHTML = f.names.map(function (nm) {
+        var has = Object.prototype.hasOwnProperty.call(cur, nm);
+        return '<div class="stp-var' + (has ? (cur[nm] !== prv[nm] ? " chg" : "") : " none") + '"><small>' + esc((f.types && f.types[nm] ? f.types[nm] + " " : "") + nm) + "</small><b>" + (has ? esc(cur[nm]) : "—") + "</b></div>";
+      }).join("");
+      }
+      outp.textContent = steps.slice(0, i + 1).map(function (s) { return s.o || ""; }).join("");
+      note.textContent = i >= 0 ? (steps[i].n || "") : "按「下一步」，程式會一行一行執行。";
+      cnt.textContent = (i + 1) + " / " + steps.length;
+      bPrev.disabled = i < 0; bNext.disabled = i >= steps.length - 1;
+    }
+    el.addEventListener("click", function (ev) {
+      var a = ev.target.closest("[data-a]"); if (!a) return;
+      if (a.dataset.a === "next" && i < steps.length - 1) i++;
+      else if (a.dataset.a === "prev" && i >= 0) i--;
+      else if (a.dataset.a === "reset") i = -1;
+      render();
+    });
+    render();
+  });
+
+  /* ---------- Calc 引擎(overflow):輸入整數,看存進某個型態之後變成多少 ---------- */
+  var CA = CFG.calc || {};
+  var TYPES = [["char", 8, true], ["short", 16, true], ["int", 32, true], ["long long", 64, true], ["unsigned char", 8, false], ["unsigned int", 32, false]];
+  Array.prototype.forEach.call(document.querySelectorAll("[data-calc]"), function (el) {
+    var f = CA[el.dataset.calc]; if (!f || f.kind !== "overflow" || typeof BigInt === "undefined") return;
+    el.classList.add("calc");
+    el.innerHTML = '<div class="calc-row"><div><label for="cT">型態</label><select id="cT">' + TYPES.map(function (t, k) { return '<option value="' + k + '"' + (k === 2 ? " selected" : "") + ">" + t[0] + "</option>"; }).join("") +
+      '</select></div><div><label for="cV">要存進去的整數</label><input id="cV" inputmode="numeric" value="2147483648" autocomplete="off"></div><button type="button" class="ghost" data-a="reset">Reset</button></div>' +
+      '<div class="calc-pre"></div><div class="calc-out" aria-live="polite"></div><p class="calc-foot">這裡示範「把超出範圍的數字存進變數」的常見結果：會像時鐘一樣繞一圈。<code>char</code> 是否有號由平台決定，這裡以常見的有號版本計算。</p>';
+    var sel = el.querySelector("#cT"), inp = el.querySelector("#cV"), out = el.querySelector(".calc-out"), pre = el.querySelector(".calc-pre");
+    var PRESETS = [["int 最大值", 2, "2147483647"], ["int 最大值 + 1", 2, "2147483648"], ["200 存進 char", 0, "200"], ["−1 存進 unsigned int", 5, "-1"]];
+    pre.innerHTML = PRESETS.map(function (p, k) { return '<button type="button" class="ghost" data-p="' + k + '">' + p[0] + "</button>"; }).join("");
+    function render() {
+      var t = TYPES[+sel.value], bits = BigInt(t[1]), s = inp.value.trim();
+      var ONE = BigInt(1), lo = t[2] ? -(ONE << (bits - ONE)) : BigInt(0), hi = t[2] ? (ONE << (bits - ONE)) - ONE : (ONE << bits) - ONE;
+      var rng = "<b>" + t[0] + "</b> 能存的範圍：<code>" + lo + " ~ " + hi + "</code>(" + t[1] + " 位元)";
+      if (!/^-?\d{1,25}$/.test(s)) { out.innerHTML = rng + "<br>請輸入整數（最多 25 位）。"; return; }
+      var v = BigInt(s), w = t[2] ? BigInt.asIntN(t[1], v) : BigInt.asUintN(t[1], v), fits = v >= lo && v <= hi;
+      out.innerHTML = rng + '<br>你輸入 <code>' + v + "</code>，存進去之後是 <b><code>" + w + "</code></b> " +
+        (fits ? '<span class="badge ok">在範圍內</span>' : '<span class="badge warn">超出範圍，繞了一圈</span>');
+    }
+    el.addEventListener("input", render);
+    el.addEventListener("click", function (ev) {
+      var b = ev.target.closest("button"); if (!b) return;
+      if (b.dataset.p !== undefined) { var p = PRESETS[+b.dataset.p]; sel.value = p[1]; inp.value = p[2]; }
+      else if (b.dataset.a === "reset") { sel.value = 2; inp.value = "2147483648"; }
+      render();
+    });
+    render();
+  });
+
+  /* ---------- Calc 引擎(format):模擬 cout 的 fixed / setprecision / setw / left ---------- */
+  function gfmt(x, P) {
+    if (P === 0) P = 1; if (x === 0) return "0";
+    var m = x.toExponential(P - 1).split("e"), X = parseInt(m[1], 10);
+    if (X < -4 || X >= P) {
+      var mant = m[0].indexOf(".") >= 0 ? m[0].replace(/0+$/, "").replace(/\.$/, "") : m[0], a = Math.abs(X);
+      return mant + "e" + (X < 0 ? "-" : "+") + (a < 10 ? "0" + a : a);
+    }
+    var f = x.toFixed(Math.max(0, P - 1 - X));
+    return f.indexOf(".") >= 0 ? f.replace(/0+$/, "").replace(/\.$/, "") : f;
+  }
+  function cfmt(x, p, fixed, w, left) {
+    var s = fixed ? x.toFixed(p) : gfmt(x, p);
+    while (s.length < w) s = left ? s + " " : " " + s;
+    return s;
+  }
+  window.CLANG_FMT = cfmt;
+  Array.prototype.forEach.call(document.querySelectorAll("[data-calc]"), function (el) {
+    var f = CA[el.dataset.calc]; if (!f || f.kind !== "format") return;
+    var VALS = ["3.14159265", "2.71828", "1234.5678", "0.000123456", "100"];
+    el.classList.add("calc");
+    el.innerHTML = '<div class="calc-row"><div><label for="fV">要輸出的數字</label><select id="fV">' + VALS.map(function (v) { return "<option>" + v + "</option>"; }).join("") + "</select></div>" +
+      '<div><label for="fP">setprecision</label><input id="fP" type="number" min="0" max="10" value="6" style="width:84px"></div>' +
+      '<div><label for="fW">setw</label><input id="fW" type="number" min="0" max="16" value="0" style="width:84px"></div>' +
+      '<label class="calc-chk"><input id="fF" type="checkbox">fixed</label><label class="calc-chk"><input id="fL" type="checkbox">left</label><button type="button" class="ghost" data-a="reset">Reset</button></div>' +
+      '<div class="calc-out" aria-live="polite"></div><p class="calc-foot">不加 <code>fixed</code> 時，<code>setprecision(n)</code> 代表「總共 n 位有效數字」；加了 <code>fixed</code> 就變成「小數點後 n 位」。<code>setw</code> 只影響緊接著的那一個輸出。</p>';
+    var $v = el.querySelector("#fV"), $p = el.querySelector("#fP"), $w = el.querySelector("#fW"), $f = el.querySelector("#fF"), $l = el.querySelector("#fL"), out = el.querySelector(".calc-out");
+    function clamp(n, lo, hi) { n = parseInt(n, 10); return isNaN(n) ? lo : Math.max(lo, Math.min(hi, n)); }
+    function render() {
+      var p = clamp($p.value, 0, 10), w = clamp($w.value, 0, 16), fx = $f.checked, lf = $l.checked;
+      var code = "cout &lt;&lt; " + (fx ? "fixed &lt;&lt; " : "") + "setprecision(" + p + ") &lt;&lt; " + (lf ? "left &lt;&lt; " : "") + (w ? "setw(" + w + ") &lt;&lt; " : "") + $v.value + ";";
+      out.innerHTML = "<code>" + code + "</code><br>輸出（<code>|</code> 是邊界記號）：<pre class=\"calc-pre2\">|" + esc(cfmt(parseFloat($v.value), p, fx, w, lf)) + "|</pre>";
+    }
+    el.addEventListener("input", render);
+    el.addEventListener("click", function (ev) { var b = ev.target.closest('[data-a="reset"]'); if (!b) return; $v.selectedIndex = 0; $p.value = 6; $w.value = 0; $f.checked = false; $l.checked = false; render(); });
+    render();
+  });
+
+  /* ---------- 運算式求值追蹤器:依 C++ 優先序,一次只算一個運算 ---------- */
+  var LEVELS = [["*", "/", "%"], ["+", "-"], ["<", ">", "<=", ">="], ["==", "!="], ["&&"], ["||"]];
+  function show(toks, a, b) {
+    var out = "";
+    toks.forEach(function (t, k) {
+      var s = t.n !== undefined ? String(t.n) : t.o, p = toks[k - 1];
+      if (k === a) s = "<mark>" + s; if (k === b) s += "</mark>";
+      out += (k === 0 || (p && (p.u || p.o === "(")) || t.o === ")" ? "" : " ") + s;
+    });
+    return out;
+  }
+  function evalSteps(src) {
+    var s = src.replace(/\s+/g, ""), toks = [], i = 0, m, re = /^(\d+|<=|>=|==|!=|&&|\|\||[-+*\/%<>!()])/;
+    if (!s) return { err: "請輸入一個運算式。" };
+    if (/\+\+|--/.test(src)) return { err: "這裡不支援 ++ 與 --（它們只能用在變數上）。要連續兩個負號，請中間加空格或括號。" };
+    while (i < s.length) {
+      m = re.exec(s.slice(i));
+      if (!m) return { err: "看不懂「" + s[i] + "」。這裡只支援整數與 + - * / % < > <= >= == != && || ! ( )" };
+      i += m[0].length; toks.push(/^\d/.test(m[0]) ? { n: parseInt(m[0], 10) } : { o: m[0] });
+    }
+    toks.forEach(function (t, k) {
+      if (t.o === "!") t.u = true;
+      if (t.o === "-") { var p = toks[k - 1]; if (!p || (p.o && p.o !== ")")) t.u = true; }
+    });
+    var steps = [], guard = 0;
+    while (guard++ < 200) {
+      if (toks.length === 1 && toks[0].n !== undefined) return { ok: true, value: toks[0].n, steps: steps };
+      var open = -1, close = -1, k;
+      for (k = 0; k < toks.length; k++) { if (toks[k].o === "(") open = k; else if (toks[k].o === ")") { close = k; break; } }
+      if (close > -1 && open < 0 || close < 0 && open > -1) return { err: "括號沒有成對。", steps: steps };
+      var lo = close > -1 ? open + 1 : 0, hi = close > -1 ? close : toks.length;
+      if (close > -1 && hi - lo === 1 && toks[lo].n !== undefined) {
+        steps.push({ h: show(toks, open, close), t: "括號裡只剩一個數字，把括號拿掉。" }); toks.splice(close, 1); toks.splice(open, 1); continue;
+      }
+      var done = false;
+      for (k = hi - 2; k >= lo && !done; k--) {   // 單元運算子:! 與負號
+        if (toks[k].u && toks[k + 1].n !== undefined) {
+          var x = toks[k + 1].n, v = toks[k].o === "!" ? (x ? 0 : 1) : 0 - x;
+          steps.push({ h: show(toks, k, k + 1), t: toks[k].o === "!" ? "! 把真假反過來：" + (x ? "非 0 是真" : "0 是假") + ",所以得到 " + v + "。" : "負號：得到 " + v + "。" });
+          toks.splice(k, 2, { n: v }); done = true;
+        }
+      }
+      for (var L = 0; L < LEVELS.length && !done; L++) {
+        for (k = lo + 1; k < hi - 1 && !done; k++) {
+          var t = toks[k];
+          if (!t.o || t.u || LEVELS[L].indexOf(t.o) < 0 || toks[k - 1].n === undefined || toks[k + 1].n === undefined) continue;
+          var l = toks[k - 1].n, r = toks[k + 1].n, v2, note = "";
+          switch (t.o) {
+            case "*": v2 = l * r; note = "乘法。"; break;
+            case "/": if (r === 0) return { err: "除以 0：這在 C++ 裡不能算（整數除以 0 會讓程式當掉）。", steps: steps }; v2 = Math.trunc(l / r); note = (l % r !== 0) ? "整數除法：小數部分直接捨去，不是四捨五入。" : "整除，沒有餘數。"; break;
+            case "%": if (r === 0) return { err: "對 0 取餘數：這在 C++ 裡不能算。", steps: steps }; v2 = l % r; note = "取餘數：結果的正負號跟著左邊的數。"; break;
+            case "+": v2 = l + r; note = "加法。"; break;
+            case "-": v2 = l - r; note = "減法。"; break;
+            case "<": v2 = l < r ? 1 : 0; note = "比較的結果：成立是 1(true)，不成立是 0(false)。"; break;
+            case ">": v2 = l > r ? 1 : 0; note = "比較的結果：成立是 1(true)，不成立是 0(false)。"; break;
+            case "<=": v2 = l <= r ? 1 : 0; note = "比較的結果：成立是 1(true)，不成立是 0(false)。"; break;
+            case ">=": v2 = l >= r ? 1 : 0; note = "比較的結果：成立是 1(true)，不成立是 0(false)。"; break;
+            case "==": v2 = l === r ? 1 : 0; note = "是否相等：成立是 1，不成立是 0。"; break;
+            case "!=": v2 = l !== r ? 1 : 0; note = "是否不相等：成立是 1，不成立是 0。"; break;
+            case "&&": v2 = (l && r) ? 1 : 0; note = "而且：兩邊都不是 0 才是 1。"; break;
+            case "||": v2 = (l || r) ? 1 : 0; note = "或者：只要有一邊不是 0 就是 1。"; break;
+          }
+          v2 = v2 + 0;   // 避免出現 -0
+          if (Math.abs(v2) > 2147483647) note += "（注意：超出 int 的範圍，真實程式會溢位。）";
+          steps.push({ h: show(toks, k - 1, k + 1), t: l + " " + t.o + " " + r + " = " + v2 + "。" + note });
+          toks.splice(k - 1, 3, { n: v2 }); done = true;
+        }
+      }
+      if (!done) return { err: "運算式不完整或寫法不對，例如少了數字或運算子。", steps: steps };
+    }
+    return { err: "運算式太長了。" };
+  }
+  window.CLANG_EVAL = evalSteps;
+  Array.prototype.forEach.call(document.querySelectorAll("[data-calc]"), function (el) {
+    var f = CA[el.dataset.calc]; if (!f || f.kind !== "eval") return;
+    var P = f.presets || [];
+    el.classList.add("calc");
+    el.innerHTML = '<div class="calc-row"><div style="flex:1 1 260px"><label for="eX">輸入一個整數運算式</label><input id="eX" value="' + esc(P[0] || "2 + 3 * 4") + '" autocomplete="off" spellcheck="false" style="width:100%"></div><button type="button" class="ghost" data-a="reset">Reset</button></div>' +
+      '<div class="calc-pre">' + P.map(function (p, k) { return '<button type="button" class="ghost" data-p="' + k + '">' + esc(p) + "</button>"; }).join("") + '</div><div class="calc-out ev-out" aria-live="polite"></div>' +
+      '<p class="calc-foot">支援整數與 <code>+ - * / % &lt; &gt; &lt;= &gt;= == != &amp;&amp; || ! ( )</code>。比較與邏輯運算的結果用 1(true)與 0(false)表示，和 C++ 印出來的一樣。</p>';
+    var inp = el.querySelector("#eX"), out = el.querySelector(".ev-out");
+    function render() {
+      var r = evalSteps(inp.value), h = "";
+      if (r.steps && r.steps.length) h += "<ol class=\"ev-steps\">" + r.steps.map(function (s) { return "<li><code>" + s.h + "</code><span>" + esc(s.t) + "</span></li>"; }).join("") + "</ol>";
+      h += r.err ? '<div class="ev-res bad">' + esc(r.err) + "</div>" : '<div class="ev-res">結果：<b><code>' + r.value + "</code></b></div>";
+      out.innerHTML = h;
+    }
+    el.addEventListener("input", render);
+    el.addEventListener("click", function (ev) {
+      var b = ev.target.closest("button"); if (!b) return;
+      if (b.dataset.p !== undefined) inp.value = P[+b.dataset.p]; else if (b.dataset.a === "reset") inp.value = P[0] || "";
+      render();
+    });
+    render();
+  });
+
+  /* ---------- Ladder 引擎:if / else if / else 與 switch 的選分支追蹤 ---------- */
+  var LD = CFG.ladder || {};
+  Array.prototype.forEach.call(document.querySelectorAll("[data-ladder]"), function (el) {
+    var f = LD[el.dataset.ladder]; if (!f) return;
+    var sw = f.mode === "switch", id = el.dataset.ladder;
+    el.classList.add("calc");
+    el.innerHTML = '<div class="calc-row"><div><label for="l' + id + '">' + esc(f.label) + '</label><input id="l' + id + '" type="number" step="1" value="' + f.value + '" style="width:120px"></div>' +
+      (sw ? '<label class="calc-chk"><input type="checkbox" data-brk checked>每個 case 結尾都有 break</label>' : "") + '<button type="button" class="ghost" data-a="reset">Reset</button></div>' +
+      '<div class="calc-pre">' + (f.presets || []).map(function (p) { return '<button type="button" class="ghost" data-p="' + p + '">' + esc(f.label) + " = " + p + "</button>"; }).join("") + '</div>' +
+      '<div class="ld-rows"></div><div class="calc-out ld-sum" aria-live="polite"></div>';
+    var inp = el.querySelector("input[type=number]"), rows = el.querySelector(".ld-rows"), sum = el.querySelector(".ld-sum"), brk = el.querySelector("[data-brk]");
+    function render() {
+      var raw = inp.value.trim(), v = parseInt(raw, 10), html = "", s = "";
+      if (!/^-?\d+$/.test(raw) || isNaN(v)) { rows.innerHTML = ""; sum.textContent = "請輸入一個整數。"; return; }
+      var n = f.rows.length, st = [], tag = [], i, m = -1;
+      if (!sw) {
+        var matched = false, log = [];
+        for (i = 0; i < n; i++) {
+          if (matched) { st.push("skip"); tag.push("（不再檢查）"); continue; }
+          var r = window.CLANG_EVAL(f.rows[i].c.replace(new RegExp("\\b" + f.label + "\\b", "g"), "(" + v + ")"));
+          if (r.ok && r.value) { st.push("yes"); tag.push("成立 → 執行"); matched = true; log.push(f.rows[i].c + " 成立"); }
+          else { st.push("no"); tag.push("不成立 ↓"); log.push(f.rows[i].c + " 不成立"); }
+        }
+        st.push(matched ? "skip" : "yes"); tag.push(matched ? "（不執行）" : "前面都不成立 → 執行");
+        s = "依序檢查：" + log.join(";") + "。" + (matched ? "只有第一個成立的分支會執行，後面的分支完全不會被檢查。" : "所有條件都不成立，執行最後的 else。");
+      } else {
+        for (i = 0; i < n; i++) if (String(f.rows[i].c) === String(v)) { m = i; break; }
+        if (m < 0) m = n;
+        var go = brk.checked ? [m] : null, ran = [];
+        for (i = 0; i <= n; i++) {
+          var run = brk.checked ? i === m : i >= m;
+          st.push(run ? "yes" : "skip"); tag.push(run ? "執行" : (i < m ? "（跳過）" : "（沒有執行）"));
+          if (run) ran.push(i === n ? "default" : "case " + f.rows[i].c);
+        }
+        s = "switch 依值直接跳到 " + (m === n ? "default" : "case " + f.rows[m].c) + "。執行：" + ran.join(" → ") + "。" +
+          (brk.checked ? "遇到 break 就跳出，後面的 case 不會執行。" : "沒有 break，所以會一路「穿透」往下做，直到 switch 結束。");
+      }
+      for (i = 0; i <= n; i++) {
+        var head = sw ? (i < n ? "case " + f.rows[i].c + ":" : "default:") : (i === 0 ? "if (" + f.rows[0].c + ")" : i < n ? "else if (" + f.rows[i].c + ")" : "else");
+        html += '<div class="ld-row ' + st[i] + '"><div class="ld-c"><code>' + esc(head) + '</code><small>' + esc(tag[i]) + '</small></div><div class="ld-a">' + esc(i < n ? f.rows[i].a : f.other) + (sw && brk.checked && i < n ? "<br>break;" : "") + "</div></div>";
+      }
+      rows.innerHTML = html; sum.textContent = s;
+    }
+    el.addEventListener("input", render);
+    el.addEventListener("click", function (ev) {
+      var b = ev.target.closest("button"); if (!b) return;
+      if (b.dataset.p !== undefined) inp.value = b.dataset.p; else if (b.dataset.a === "reset") { inp.value = f.value; if (brk) brk.checked = true; }
+      render();
+    });
+    render();
+  });
+
+  /* ---------- Loop 追蹤表:for (int i = S; i OP E; i += STEP) { sum += i; } ---------- */
+  var CMP = { "<": function (a, b) { return a < b; }, "<=": function (a, b) { return a <= b; }, ">": function (a, b) { return a > b; }, ">=": function (a, b) { return a >= b; } };
+  function loopSim(s, e, st, op) {
+    var i = s, sum = 0, rows = [], inf = false;
+    while (CMP[op](i, e)) {
+      sum += i; rows.push({ k: rows.length + 1, i: i, sum: sum });
+      i += st;
+      if (rows.length > 300) { inf = true; break; }
+    }
+    return { rows: rows, count: rows.length, sum: sum, inf: inf, last: i };
+  }
+  window.CLANG_LOOP = loopSim;
+  Array.prototype.forEach.call(document.querySelectorAll("[data-calc]"), function (el) {
+    var f = CA[el.dataset.calc]; if (!f || f.kind !== "loop") return;
+    var P = f.presets;
+    el.classList.add("calc");
+    el.innerHTML = '<div class="calc-row"><div><label for="lS">起點 i =</label><input id="lS" type="number" value="1" style="width:84px"></div>' +
+      '<div><label for="lO">條件 i …</label><select id="lO"><option>&lt;=</option><option>&lt;</option><option>&gt;=</option><option>&gt;</option></select></div>' +
+      '<div><label for="lE">終點</label><input id="lE" type="number" value="5" style="width:84px"></div>' +
+      '<div><label for="lT">每圈 i +=</label><input id="lT" type="number" value="1" style="width:84px"></div><button type="button" class="ghost" data-a="reset">Reset</button></div>' +
+      '<div class="calc-pre">' + P.map(function (p, k) { return '<button type="button" class="ghost" data-p="' + k + '">' + esc(p[0]) + "</button>"; }).join("") + '</div><div class="calc-out lp-out" aria-live="polite"></div>' +
+      '<p class="calc-foot">每一圈的主體都是 <code>sum += i;</code>。數字限制在 −99 到 99，超過 300 圈會判定為停不下來。</p>';
+    var $S = el.querySelector("#lS"), $O = el.querySelector("#lO"), $E = el.querySelector("#lE"), $T = el.querySelector("#lT"), out = el.querySelector(".lp-out");
+    function num(x) { var n = parseInt(x.value, 10); return isNaN(n) ? 0 : Math.max(-99, Math.min(99, n)); }
+    function render() {
+      var s = num($S), e = num($E), t = num($T), op = $O.value, r = loopSim(s, e, t, op);
+      var h = "<code>for (int i = " + s + "; i " + esc(op) + " " + e + "; i += " + t + ") { sum += i; }</code>";
+      if (r.count) {
+        var shown = r.rows.slice(0, 15);
+        h += '<div class="tbl-wrap"><table class="lp-tbl"><thead><tr><th>第幾圈</th><th>進入時 i</th><th>加完後 sum</th></tr></thead><tbody>' +
+          shown.map(function (x) { return "<tr><td>" + x.k + "</td><td>" + x.i + "</td><td>" + x.sum + "</td></tr>"; }).join("") +
+          (r.count > 15 ? '<tr><td colspan="3">⋯（後面省略）</td></tr>' : "") + "</tbody></table></div>";
+      }
+      h += r.inf ? '<div class="ev-res bad">這個迴圈<b>停不下來</b>：i 一直離終點越來越遠，條件永遠成立。（超過 300 圈，這裡強制停止。）</div>'
+        : r.count === 0 ? '<div class="ev-res bad">一圈都沒有執行：第一次檢查條件就不成立，sum 維持 0。</div>'
+        : '<div class="ev-res">共執行 <b>' + r.count + "</b> 圈，結束時 <code>sum = " + r.sum + "</code>，最後 <code>i = " + r.last + "</code>（它讓條件不成立，所以迴圈停了）。</div>";
+      out.innerHTML = h;
+    }
+    el.addEventListener("input", render);
+    el.addEventListener("click", function (ev) {
+      var b = ev.target.closest("button"); if (!b) return;
+      if (b.dataset.p !== undefined) { var p = P[+b.dataset.p]; $S.value = p[1]; $O.value = p[2]; $E.value = p[3]; $T.value = p[4]; }
+      else if (b.dataset.a === "reset") { var q = P[0]; $S.value = q[1]; $O.value = q[2]; $E.value = q[3]; $T.value = q[4]; }
+      render();
+    });
+    render();
+  });
+
+  /* ---------- Memory 引擎(array):一排有索引的格子,讀、寫,以及越界 ---------- */
+  var MM = CFG.memory || {};
+  Array.prototype.forEach.call(document.querySelectorAll("[data-mem]"), function (el) {
+    var f = MM[el.dataset.mem]; if (!f) return;
+    var vals = f.values.slice(), n = vals.length, ghost = f.ghost || 2, hl = -1, msg = "";
+    var nm = f.name;
+    el.classList.add("calc");
+    el.innerHTML = '<div class="mem-row" role="group" aria-label="' + esc(nm) + ' 的格子"></div>' +
+      '<div class="calc-row" style="margin-top:12px"><div><label for="mI' + el.dataset.mem + '">索引 i</label><input id="mI' + el.dataset.mem + '" type="number" step="1" value="2" style="width:84px"></div>' +
+      '<div><label for="mV' + el.dataset.mem + '">要寫入的' + (f.chars ? "字元" : "值") + '</label><input id="mV' + el.dataset.mem + '" ' + (f.chars ? 'type="text" maxlength="1" value="X"' : 'type="number" step="1" value="99"') + ' style="width:96px"></div>' +
+      '<button type="button" class="primary" data-a="read">讀取 ' + esc(nm) + '[i]</button><button type="button" class="primary" data-a="write">寫入 ' + esc(nm) + '[i] = 值</button><button type="button" class="ghost" data-a="reset">Reset</button></div>' +
+      '<div class="calc-out mem-out" aria-live="polite"></div>';
+    var row = el.querySelector(".mem-row"), out = el.querySelector(".mem-out"), $i = el.querySelector("input"), $v = el.querySelectorAll("input")[1];
+    function draw() {
+      var h = "";
+      for (var k = 0; k < n + ghost; k++) {
+        var g = k >= n;
+        h += '<div class="mem-cell' + (g ? " ghost" : "") + (k === hl ? " hl" : "") + '"><div class="mem-v">' + (g ? "?" : vals[k]) + '</div><div class="mem-i">' + (g ? "[" + k + "] 界外" : "[" + k + "]") + "</div></div>";
+      }
+      row.innerHTML = h; out.innerHTML = msg || "輸入索引，按「讀取」或「寫入」。試試索引 " + n + " 或 −1。";
+    }
+    function idx() { var s = $i.value.trim(); return /^-?\d+$/.test(s) ? parseInt(s, 10) : null; }
+    el.addEventListener("click", function (ev) {
+      var b = ev.target.closest("button"); if (!b) return; var i = idx(), a = b.dataset.a;
+      if (a === "reset") { vals = f.values.slice(); hl = -1; msg = ""; $i.value = 2; $v.value = f.chars ? "X" : 99; draw(); return; }
+      if (i === null) { msg = "請輸入整數索引。"; hl = -1; draw(); return; }
+      var inr = i >= 0 && i < n;
+      if (a === "read") {
+        hl = inr ? i : (i >= n && i < n + ghost ? i : -1);
+        msg = inr ? "<code>" + esc(nm) + "[" + i + "]</code> 的值是 <b>" + (f.chars ? "'" + esc(vals[i]) + "'" : vals[i]) + "</b>" + (f.chars && vals[i] === "\\0" ? "（結束記號，字串到這裡結束）" : "") + "。" :
+          '<b class="bad">越界！</b><code>' + esc(nm) + "[" + i + "]</code> 在陣列範圍(0 到 " + (n - 1) + ")之外。C++ 不會替你檢查：它會去讀那個位置上剛好有的任何資料，結果沒有保證（未定義行為）。";
+      } else {
+        var v = f.chars ? $v.value : parseInt($v.value, 10); if (f.chars ? v.length !== 1 : isNaN(v)) { msg = f.chars ? "請輸入剛好一個字元。" : "請輸入要寫入的整數。"; draw(); return; }
+        if (inr) { vals[i] = f.chars ? v : v; hl = i; msg = "已執行 <code>" + esc(nm) + "[" + i + "] = " + (f.chars ? "'" + esc(v) + "'" : v) + ";</code>。"; }
+        else { hl = -1; msg = '<b class="bad">危險！</b>寫入 <code>' + esc(nm) + "[" + i + "]</code> 會改到陣列以外、不屬於它的記憶體，可能默默弄壞別的變數，也可能讓程式當掉。這裡不會真的寫入。"; }
+      }
+      draw();
+    });
+    draw();
+  });
+
+  /* ---------- BeforeAfter 引擎(vector):每個操作前後的內容對照 ---------- */
+  var BA = CFG.beforeafter || {};
+  Array.prototype.forEach.call(document.querySelectorAll("[data-ba]"), function (el) {
+    var f = BA[el.dataset.ba]; if (!f || (f.kind && f.kind !== "vector")) return;
+    var cur = f.init.slice(), hist = [], nm = f.name, id = el.dataset.ba;
+    el.classList.add("calc");
+    el.innerHTML = '<div class="calc-row"><div><label for="bV' + id + '">值 x</label><input id="bV' + id + '" type="number" step="1" value="10" style="width:84px"></div>' +
+      '<div><label for="bI' + id + '">索引 i</label><input id="bI' + id + '" type="number" step="1" value="0" style="width:84px"></div></div>' +
+      '<div class="calc-pre"><button type="button" class="primary" data-op="push">' + esc(nm) + '.push_back(x)</button><button type="button" class="primary" data-op="pop">' + esc(nm) + '.pop_back()</button>' +
+      '<button type="button" class="primary" data-op="set">' + esc(nm) + '[i] = x</button><button type="button" class="primary" data-op="clear">' + esc(nm) + '.clear()</button><button type="button" class="ghost" data-op="reset">Reset</button></div>' +
+      '<div class="ba-now"></div><div class="ba-hist" aria-live="polite"></div>';
+    var $x = el.querySelector("#bV" + id), $i = el.querySelector("#bI" + id), now = el.querySelector(".ba-now"), hist$ = el.querySelector(".ba-hist");
+    function cells(a, cls) { return '<span class="ba-cells ' + (cls || "") + '">' + (a.length ? a.map(function (x) { return "<i>" + x + "</i>"; }).join("") : "<em>（空）</em>") + "</span>"; }
+    function draw() {
+      now.innerHTML = "<code>" + esc(nm) + "</code> 現在：" + cells(cur) + ' <span class="ba-size"><code>' + esc(nm) + ".size()</code> = <b>" + cur.length + "</b></span>";
+      hist$.innerHTML = hist.slice(-6).reverse().map(function (h) {
+        return '<div class="ba-row"><code>' + esc(h.code) + "</code><div>" + cells(h.before, "old") + " → " + cells(h.after) + "</div>" + (h.note ? "<small>" + esc(h.note) + "</small>" : "") + "</div>";
+      }).join("");
+    }
+    el.addEventListener("click", function (ev) {
+      var b = ev.target.closest("[data-op]"); if (!b) return;
+      var op = b.dataset.op, x = parseInt($x.value, 10), i = parseInt($i.value, 10), before = cur.slice(), code, note = "";
+      if (op === "reset") { cur = f.init.slice(); hist = []; draw(); return; }
+      if (op === "push") { if (isNaN(x)) return; cur.push(x); code = nm + ".push_back(" + x + ");"; note = "加到最後面，長度加 1。"; }
+      else if (op === "pop") { code = nm + ".pop_back();"; if (!cur.length) { note = "已經是空的了：對空的 vector 呼叫 pop_back 是未定義行為，這裡不會執行。"; hist.push({ code: code, before: before, after: cur.slice(), note: note }); draw(); return; } cur.pop(); note = "移除最後一個，長度減 1。"; }
+      else if (op === "set") { if (isNaN(x) || isNaN(i)) return; code = nm + "[" + i + "] = " + x + ";"; if (i < 0 || i >= cur.length) { note = "索引 " + i + " 超出範圍(0 到 " + (cur.length - 1) + ")：這是越界，這裡不會執行。"; hist.push({ code: code, before: before, after: cur.slice(), note: note }); draw(); return; } cur[i] = x; note = "只改那一格，長度不變。"; }
+      else if (op === "clear") { cur = []; code = nm + ".clear();"; note = "全部移除，長度變 0。"; }
+      hist.push({ code: code, before: before, after: cur.slice(), note: note }); draw();
+    });
+    draw();
+  });
+
+  /* ---------- BeforeAfter 引擎(set / map):自動排序、不重複、[] 會順手新增 ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll("[data-ba]"), function (el) {
+    var f = BA[el.dataset.ba]; if (!f || (f.kind !== "set" && f.kind !== "map")) return;
+    var isMap = f.kind === "map", nm = f.name, id = el.dataset.ba, hist = [];
+    var cur = isMap ? JSON.parse(JSON.stringify(f.init)) : f.init.slice();
+    function sorted(c) { return isMap ? Object.keys(c).sort().map(function (k) { return k + ": " + c[k]; }) : c.slice().sort(function (a, b) { return a - b; }); }
+    el.classList.add("calc");
+    el.innerHTML = (isMap
+      ? '<div class="calc-row"><div><label for="bK' + id + '">鍵 key</label><input id="bK' + id + '" value="kiwi" style="width:120px" autocomplete="off"></div><div><label for="bV' + id + '">值 value</label><input id="bV' + id + '" type="number" value="4" style="width:84px"></div></div>' +
+        '<div class="calc-pre"><button type="button" class="primary" data-op="put">' + esc(nm) + '[key] = value</button><button type="button" class="primary" data-op="read">' + esc(nm) + '[key]（讀取）</button><button type="button" class="primary" data-op="erase">' + esc(nm) + '.erase(key)</button><button type="button" class="primary" data-op="count">' + esc(nm) + '.count(key)</button><button type="button" class="ghost" data-op="reset">Reset</button></div>'
+      : '<div class="calc-row"><div><label for="bV' + id + '">值 x</label><input id="bV' + id + '" type="number" value="2" style="width:84px"></div></div>' +
+        '<div class="calc-pre"><button type="button" class="primary" data-op="insert">' + esc(nm) + '.insert(x)</button><button type="button" class="primary" data-op="erase">' + esc(nm) + '.erase(x)</button><button type="button" class="primary" data-op="count">' + esc(nm) + '.count(x)</button><button type="button" class="ghost" data-op="reset">Reset</button></div>') +
+      '<div class="ba-now"></div><div class="ba-hist" aria-live="polite"></div>';
+    var $k = el.querySelector("#bK" + id), $v = el.querySelector("#bV" + id), now = el.querySelector(".ba-now"), hist$ = el.querySelector(".ba-hist");
+    function cells(a, cls) { return '<span class="ba-cells ' + (cls || "") + '">' + (a.length ? a.map(function (x) { return "<i>" + esc(x) + "</i>"; }).join("") : "<em>（空）</em>") + "</span>"; }
+    function size() { return isMap ? Object.keys(cur).length : cur.length; }
+    function draw() {
+      now.innerHTML = "<code>" + esc(nm) + "</code> 現在（自動由小到大排好）：" + cells(sorted(cur)) + ' <span class="ba-size"><code>' + esc(nm) + ".size()</code> = <b>" + size() + "</b></span>";
+      hist$.innerHTML = hist.slice(-6).reverse().map(function (h) {
+        return '<div class="ba-row"><code>' + esc(h.code) + "</code><div>" + cells(h.before, "old") + " → " + cells(h.after) + "</div><small>" + esc(h.note) + "</small></div>";
+      }).join("");
+    }
+    el.addEventListener("click", function (ev) {
+      var b = ev.target.closest("[data-op]"); if (!b) return; var op = b.dataset.op;
+      if (op === "reset") { cur = isMap ? JSON.parse(JSON.stringify(f.init)) : f.init.slice(); hist = []; draw(); return; }
+      var before = sorted(cur), code, note, v = parseInt($v.value, 10), key = isMap ? $k.value.trim() : null;
+      if (isMap) { if (!key || /\s/.test(key)) { now.insertAdjacentHTML("beforeend", ""); return; } if (isNaN(v) && op === "put") return; }
+      else if (isNaN(v)) return;
+      if (!isMap) {
+        var has = cur.indexOf(v) >= 0;
+        if (op === "insert") { code = nm + ".insert(" + v + ");"; if (has) note = v + " 已經在裡面了：set 不會重複，所以什麼都沒變。"; else { cur.push(v); note = "加入 " + v + ",並自動排在正確的位置。"; } }
+        else if (op === "erase") { code = nm + ".erase(" + v + ");"; if (has) { cur.splice(cur.indexOf(v), 1); note = "移除了 " + v + "。"; } else note = "裡面沒有 " + v + ",沒有任何改變（不會出錯）。"; }
+        else { code = nm + ".count(" + v + ");"; note = "回傳 " + (has ? 1 : 0) + "(" + (has ? "有" : "沒有") + ")，只是查詢，內容不變。"; }
+      } else {
+        var k = JSON.stringify(key), has2 = Object.prototype.hasOwnProperty.call(cur, key);
+        if (op === "put") { code = nm + "[" + k + "] = " + v + ";"; note = has2 ? "鍵已存在，把值更新成 " + v + "。" : "鍵不存在，新增一筆。"; cur[key] = v; }
+        else if (op === "read") { code = "cout << " + nm + "[" + k + "];"; if (has2) note = "印出 " + cur[key] + "。"; else { cur[key] = 0; note = "印出 0。陷阱：鍵不存在，[] 讀取時會「順手新增」這個鍵（值為 0），所以 map 變大了！"; } }
+        else if (op === "erase") { code = nm + ".erase(" + k + ");"; if (has2) { delete cur[key]; note = "移除了這一筆。"; } else note = "沒有這個鍵，沒有任何改變。"; }
+        else { code = nm + ".count(" + k + ");"; note = "回傳 " + (has2 ? 1 : 0) + ",只是查詢，不會改動 map。"; }
+      }
+      hist.push({ code: code, before: before, after: sorted(cur), note: note }); draw();
+    });
+    draw();
+  });
+
+  /* ---------- Diagram 引擎:類別方塊圖、存取權限測試、繼承箭頭 ---------- */
+  var DG = CFG.diagram || {};
+  Array.prototype.forEach.call(document.querySelectorAll("[data-diagram]"), function (el) {
+    var f = DG[el.dataset.diagram]; if (!f) return;
+    var on = f.toggle ? !!f.toggle.on : true, VIS = { pub: "+", pri: "-", pro: "#" };
+    function mem(b, m, kind) {
+      var id = b.id + "." + m.n;
+      return '<button type="button" class="dg-m ' + m.v + '" data-m="' + esc(id) + '" data-note="' + esc(m.note || "") + '"><span class="dg-v">' + VIS[m.v] + "</span> " + esc(kind === "f" ? m.t + " " + m.n : m.t + " " + m.n) + "</button>";
+    }
+    el.classList.add("dg");
+    el.innerHTML = '<div class="dg-canvas"><svg class="dg-svg" aria-hidden="true"></svg><div class="dg-rows">' +
+      f.rows.map(function (row) {
+        return '<div class="dg-row">' + row.map(function (bid) {
+          var b = f.boxes[bid]; b.id = bid;
+          return '<div class="dg-box" data-b="' + esc(bid) + '"><div class="dg-name">' + esc(b.name) + (b.sub ? "<small>" + esc(b.sub) + "</small>" : "") + "</div>" +
+            '<div class="dg-sec">' + (b.fields || []).map(function (m) { return mem(b, m, "f"); }).join("") + "</div>" +
+            '<div class="dg-sec">' + (b.methods || []).map(function (m) { return mem(b, m, "m"); }).join("") + "</div></div>";
+        }).join("") + "</div>";
+      }).join("") + "</div></div>" +
+      '<div class="dg-legend"><span><b>+</b> public（外面能用）</span><span><b>−</b> private（只有類別自己能用）</span>' + (f.boxes && JSON.stringify(f.boxes).indexOf('"pro"') > 0 ? "<span><b>#</b> protected（自己與子類別）</span>" : "") + "</div>" +
+      '<div class="dg-note" aria-live="polite">點方塊裡的成員，看它的說明。</div>' +
+      (f.toggle ? '<label class="calc-chk" style="margin:12px 0 0 !important"><input type="checkbox" data-tog ' + (on ? "checked" : "") + ">" + esc(f.toggle.label) + "</label>" : "") +
+      (f.tests ? '<div class="dg-tests-h">' + esc(f.testsTitle || "試試看：執行這些程式碼") + '</div><div class="calc-pre">' + f.tests.map(function (t, k) { return '<button type="button" class="ghost" data-t="' + k + '"><code>' + esc(t.code) + "</code></button>"; }).join("") + '</div><div class="dg-res" aria-live="polite"></div>' : "");
+    var canvas = el.querySelector(".dg-canvas"), svg = el.querySelector(".dg-svg"), note = el.querySelector(".dg-note"), res = el.querySelector(".dg-res");
+    function arrows() {
+      var c = canvas.getBoundingClientRect(), p = "";
+      svg.setAttribute("width", c.width); svg.setAttribute("height", c.height);
+      (f.arrows || []).forEach(function (a) {
+        var from = el.querySelector('[data-b="' + a.from + '"]'), to = el.querySelector('[data-b="' + a.to + '"]'); if (!from || !to) return;
+        var r1 = from.getBoundingClientRect(), r2 = to.getBoundingClientRect(), x1 = r1.left + r1.width / 2 - c.left, y1 = r1.top - c.top, x2 = r2.left + r2.width / 2 - c.left, y2 = r2.bottom - c.top;
+        p += '<path d="M' + x1 + " " + y1 + " L" + x2 + " " + (y2 + 12) + '" stroke="#3D3D3A" stroke-width="1.6" fill="none"/>' +
+          '<path d="M' + x2 + " " + y2 + " L" + (x2 - 7) + " " + (y2 + 12) + " L" + (x2 + 7) + " " + (y2 + 12) + ' Z" fill="#fff" stroke="#3D3D3A" stroke-width="1.6"/>';
+      });
+      svg.innerHTML = p;
+    }
+    function pick(t) { return t.on !== undefined || t.off !== undefined ? (on ? t.on : t.off) : t; }
+    el.addEventListener("click", function (ev) {
+      var m = ev.target.closest(".dg-m"), t = ev.target.closest("[data-t]");
+      if (m) {
+        Array.prototype.forEach.call(el.querySelectorAll(".dg-m"), function (x) { x.classList.toggle("sel", x === m); });
+        note.textContent = m.dataset.note || "（沒有額外說明）";
+      }
+      if (t) {
+        var d = pick(f.tests[+t.dataset.t]);
+        Array.prototype.forEach.call(el.querySelectorAll(".dg-m"), function (x) { x.classList.toggle("hit", x.dataset.m === d.hl); x.classList.toggle("badhit", x.dataset.m === d.hl && !d.ok); });
+        res.className = "dg-res " + (d.ok ? "ok" : "bad");
+        res.innerHTML = (d.ok ? "✓ " : "✗ ") + d.msg;
+      }
+    });
+    var tg = el.querySelector("[data-tog]");
+    if (tg) tg.addEventListener("change", function () { on = tg.checked; res.className = "dg-res"; res.textContent = "已切換，請重新按一次上面的程式碼。"; });
+    window.addEventListener("resize", arrows); arrows(); setTimeout(arrows, 60);
+  });
+})();
+
+</script>
+</body>
+</html>

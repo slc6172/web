@@ -11,7 +11,7 @@ CLEAN_URLS = True                               # Cloudflare 會把 /x.html 轉�
 ANALYTICS_TOKEN = ""                            # 選用:Cloudflare Web Analytics 的 token;留空 = 不輸出任何外部資源(預設)
 SITE_NAME = "自學教學站"
 THEME_COLOR = "#FAF9F5"
-INDEX_DESC = "繁體中文的單頁自學教學站：GitHub、Arduino、微電影分鏡。每篇都有演練、測驗與檢查表，可離線開啟。"
+INDEX_DESC = "繁體中文的單頁自學教學站：GitHub、Arduino、微電影分鏡、C++。每篇都有演練、測驗與檢查表，可離線開啟。"
 
 SKIP_CSS = """
   .skip { position:absolute; left:12px; top:-60px; z-index:100; background:var(--slate); color:var(--ivory);

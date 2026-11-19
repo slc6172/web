@@ -1,0 +1,18 @@
+  /* 節點圖、鄰接矩陣、鄰接表 */
+  .gv { margin:0 0 10px; overflow-x:auto; } .gv svg { display:block; width:100%; height:auto; }
+  .gv .ge { stroke:var(--gray-500); stroke-width:2; } .gv .ge.cur { stroke:var(--clay); stroke-width:4; } .gv .ge.ok { stroke:var(--olive); stroke-width:4; } .gv .ge.dim { opacity:.35; }
+  .gv .gw { font:600 12px var(--mono); fill:var(--gray-700); paint-order:stroke; stroke:#fff; stroke-width:4px; text-anchor:middle; dominant-baseline:central; }
+  .gv .gn circle { fill:#fff; stroke:var(--gray-700); stroke-width:2; } .gv .gn text { font:600 14px var(--mono); fill:var(--slate); text-anchor:middle; dominant-baseline:central; }
+  .gv .gn.cur circle { stroke:var(--clay); fill:#FBF1EC; stroke-width:3; } .gv .gn.ok circle { stroke:var(--olive); fill:rgba(120,140,93,.2); stroke-width:3; }
+  .gv .gn.new circle { stroke:var(--olive); fill:rgba(120,140,93,.18); } .gv .gn.dim { opacity:.4; }
+  .gv .gs { font:600 11px var(--mono); fill:var(--clay-d); text-anchor:middle; dominant-baseline:central; }
+  .gtri { display:flex; flex-wrap:wrap; gap:16px 28px; align-items:flex-start; }
+  .gtri .gcol { min-width:0; }
+  .gmat { border-collapse:separate; border-spacing:3px; font:600 13px var(--mono); }
+  .gmat th { color:var(--gray-500); font-weight:600; width:28px; height:22px; text-align:center; }
+  .gmat td { width:28px; height:28px; text-align:center; border:1.5px solid var(--gray-300); border-radius:5px; background:#fff; color:var(--gray-500); }
+  .gmat td.on { color:var(--slate); border-color:var(--gray-700); } .gmat td.hl { background:#FBF1EC; border-color:var(--clay); color:var(--slate); }
+  .gadj { font:13px var(--mono); } .gadj .gr { display:flex; flex-wrap:wrap; align-items:center; gap:4px; margin:0 0 5px; min-height:28px; }
+  .gadj .gk { width:26px; font-weight:700; color:var(--slate); } .gadj .gi { border:1.5px solid var(--gray-700); border-radius:5px; padding:2px 8px; background:#fff; }
+  .gadj .gi.hl { border-color:var(--clay); background:#FBF1EC; } .gadj .ga { color:var(--gray-500); } .gadj .ge0 { color:var(--gray-500); }
+  .gcap { font:11px var(--mono); letter-spacing:.06em; color:var(--gray-500); margin:0 0 6px; }

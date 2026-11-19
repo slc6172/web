@@ -1,0 +1,22 @@
+
+  /* 記憶體繪圖器(變數、指標、heap 節點) */
+  .mem { display:grid; grid-template-columns:minmax(0,1fr); gap:14px; }
+  .mem.two { grid-template-columns:minmax(0,1fr) minmax(0,1fr); }
+  @media (max-width:520px) { .mem.two { grid-template-columns:minmax(0,1fr); } }
+  .mem .col { min-width:0; }
+  .mem .rowlab { margin-top:0; }
+  .mv, .mn { background:#fff; border:1.5px solid var(--gray-700); border-radius:10px; padding:8px 12px; margin-bottom:8px; display:grid; grid-template-columns:auto minmax(0,1fr) auto; gap:2px 12px; align-items:center; }
+  .mv b { font:600 14px var(--mono); }
+  .mv i, .mn i { font:11px var(--mono); color:var(--gray-500); font-style:normal; }
+  .mv .v { font:600 16px var(--mono); text-align:right; }
+  .mv .to { grid-column:1 / -1; font:11px var(--mono); color:var(--clay-d); }
+  .mv.ref { border-style:dashed; background:var(--gray-100); }
+  .mv.tgt, .mn.tgt { border-color:var(--clay); background:#FBF1EC; }
+  .mv.chg, .mn.chg { border-color:var(--olive); background:rgba(120,140,93,.16); }
+  .mv.new, .mn.new { animation:cellPop .4s ease; }
+  .mn { grid-template-columns:minmax(0,1fr) minmax(0,1fr); }
+  .mn i { grid-column:1 / -1; }
+  .mn span { font:600 13px var(--mono); border:1px solid var(--gray-300); border-radius:6px; padding:4px 8px; background:var(--gray-100); }
+  .mn.freed { border-style:dashed; border-color:var(--rust); background:rgba(176,74,63,.08); opacity:.75; }
+  .mn.freed::after { content:"已 delete(還給系統)"; grid-column:1 / -1; font:11px var(--mono); color:var(--rust); }
+  .memnote { font:12px var(--mono); color:var(--gray-500); margin-top:6px; }

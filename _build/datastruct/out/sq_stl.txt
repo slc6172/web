@@ -1,0 +1,4 @@
+stack top = 3
+stack top = 2
+queue front = 1, back = 3
+queue front = 2, size = 2

@@ -1,0 +1,1536 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>進階排序：合併排序、快速排序與 std::sort</title>
+<meta name="description" content="合併排序：切一半、各自排好、合併，永遠 O(n log n)，要 O(n) 額外空間。">
+<meta name="theme-color" content="#FAF9F5">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='8'%20fill='%23FAF9F5'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='8'%20fill='%23D97757'/%3E%3C/svg%3E">
+<link rel="canonical" href="https://www.slc6172.workers.dev/datastruct/datastruct-sortadv-guide">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:site_name" content="自學教學站">
+<meta property="og:title" content="進階排序：合併排序、快速排序與 std::sort">
+<meta property="og:description" content="合併排序：切一半、各自排好、合併，永遠 O(n log n)，要 O(n) 額外空間。">
+<meta property="og:url" content="https://www.slc6172.workers.dev/datastruct/datastruct-sortadv-guide">
+<meta name="twitter:card" content="summary">
+<style>
+  :root {
+    --ivory:#FAF9F5; --white:#FFFFFF; --slate:#141413;
+    --clay:#D97757; --clay-d:#B85C3E; --oat:#E3DACC; --olive:#788C5D; --rust:#B04A3F;
+    --gray-100:#F0EEE6; --gray-300:#D1CFC5; --gray-500:#87867F; --gray-700:#3D3D3A;
+    --serif: ui-serif, Georgia, "Times New Roman", "Noto Serif TC", "Songti TC", "PMingLiU", serif;
+    --sans:  system-ui, -apple-system, "Segoe UI", Roboto, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", Helvetica, Arial, sans-serif;
+    --mono:  ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
+    --border: 1.5px solid var(--gray-300);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  [hidden] { display:none !important; }
+  body { margin:0; padding:56px 24px 120px; background:var(--ivory); color:var(--slate);
+         font-family:var(--sans); font-size:15px; line-height:1.65; -webkit-font-smoothing:antialiased; }
+  .page { max-width:1100px; margin:0 auto; }
+  .page > header { margin-bottom:36px; }
+  .layout { display:grid; grid-template-columns:190px minmax(0,1fr); gap:48px; }
+  .layout > * { min-width:0; }
+  main > section { margin-bottom:56px; scroll-margin-top:24px; }
+
+  .eyebrow { font:12px var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--gray-500);
+             display:flex; align-items:center; gap:12px; margin-bottom:18px; }
+  .eyebrow::before { content:""; width:24px; height:1.5px; background:var(--clay); }
+  h1 { font:500 clamp(30px,4.6vw,42px)/1.18 var(--serif); letter-spacing:-.012em; margin:0 0 12px; }
+  h2 { font:500 25px/1.28 var(--serif); letter-spacing:-.01em; margin:0 0 6px; }
+  h3 { font:500 18px/1.35 var(--serif); margin:0 0 6px; }
+  .sub { color:var(--gray-700); max-width:680px; margin:0 0 4px; }
+  hr.rule { border:0; border-top:1px solid var(--gray-300); margin:10px 0 22px; }
+  p { margin:0 0 12px; }
+  code { font:12.5px var(--mono); background:var(--gray-100); padding:1px 5px; border-radius:4px; }
+  .slot { background:rgba(217,119,87,.14); color:var(--clay-d); border-radius:4px; padding:0 3px; }
+  pre .slot { background:rgba(217,119,87,.22); color:#F2B49E; }
+
+  .panel { background:var(--white); border:var(--border); border-radius:12px; padding:20px 22px; }
+  .tldr { border:var(--border); border-left:3px solid var(--clay); border-radius:10px; background:#fff; padding:16px 18px; margin-top:22px; max-width:820px; }
+  .tldr b { font:600 11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--clay-d); margin-right:6px; }
+
+  /* toc */
+  nav.toc { position:sticky; top:32px; align-self:start; font-size:13px; }
+  nav.toc .label { font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--gray-500); margin-bottom:8px; }
+  nav.toc a { display:block; padding:5px 0; color:var(--gray-700); text-decoration:none; }
+  nav.toc a:hover { color:var(--clay); }
+
+  /* buttons */
+  button { font:12px var(--mono); cursor:pointer; border-radius:999px; padding:9px 16px; transition:background .14s ease, transform .08s ease; }
+  button.primary { background:var(--slate); color:var(--ivory); border:1.5px solid var(--slate); }
+  button.primary:hover:not(:disabled) { background:var(--gray-700); }
+  button.primary:disabled { background:var(--gray-300); border-color:var(--gray-300); cursor:not-allowed; }
+  button.primary.copied { background:var(--olive); border-color:var(--olive); }
+  button.ghost { background:transparent; color:var(--gray-700); border:var(--border); }
+  button.ghost:hover { border-color:var(--gray-500); }
+  button:focus-visible, a:focus-visible, summary:focus-visible, input:focus-visible { outline:2px solid var(--clay); outline-offset:2px; }
+
+  /* tables (grid style) */
+  .table-wrap { overflow-x:auto; border:var(--border); border-radius:12px; background:#fff; }
+  .gt { min-width:560px; }
+  .gt .row { display:grid; gap:0; }
+  .gt .cell { padding:11px 14px; border-top:1px solid var(--gray-300); font-size:13.5px; }
+  .gt .row:first-child .cell { border-top:0; }
+  .gt .cell.head { font:11px var(--sans); text-transform:uppercase; letter-spacing:.06em; color:var(--gray-500); background:var(--gray-100); }
+  .gt .cell.term { font:600 12.5px var(--mono); }
+  .gt.g3 .row { grid-template-columns:150px minmax(0,1fr) minmax(0,1fr); }
+  .gt.g2 .row { grid-template-columns:140px minmax(0,1fr); }
+  .gt.g3b .row { grid-template-columns:170px minmax(0,1.2fr) minmax(0,1fr); }
+
+  /* code blocks */
+  .cmd { position:relative; background:var(--slate); border-radius:12px; margin:10px 0 12px; }
+  .cmd pre { margin:0; padding:16px 78px 16px 18px; font:12.5px/1.7 var(--mono); color:var(--ivory); overflow-x:auto; white-space:pre; }
+  .cmd .cm { color:var(--gray-500); }
+  .cmd button { position:absolute; top:9px; right:9px; padding:5px 11px; font-size:11px; color:var(--ivory);
+                background:rgba(250,249,245,.08); border:1px solid rgba(250,249,245,.28); }
+  .cmd button:hover { background:rgba(250,249,245,.18); }
+  .cmd button.copied { background:var(--olive); border-color:var(--olive); color:#fff; }
+  .cmd .cap { font:11px var(--mono); letter-spacing:.06em; color:var(--gray-500); padding:10px 18px 0; text-transform:uppercase; }
+  .cmd .cap + pre { padding-top:6px; }
+
+  /* diagram */
+  .canvas { background:#fff; border:var(--border); border-radius:12px; padding:14px; overflow-x:auto; }
+  .canvas svg { display:block; width:100%; height:auto; min-width:640px; }
+  .legend { list-style:none; margin:16px 0 0; padding:0; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 24px; }
+  .legend li { display:grid; grid-template-columns:26px minmax(0,1fr); gap:8px; font-size:13.5px; color:var(--gray-700); }
+  .legend .n { width:22px; height:22px; border-radius:50%; background:var(--clay); color:#fff; font:600 12px/22px var(--mono); text-align:center; }
+  .legend .n.k { background:var(--slate); }
+  .role { font:600 10.5px var(--mono); padding:1px 7px; border-radius:999px; margin-left:6px; white-space:nowrap; }
+  .role.c { background:rgba(217,119,87,.14); color:var(--clay-d); border:1px solid rgba(217,119,87,.45); }
+  .role.o { background:var(--oat); color:var(--slate); border:1px solid #CFC3AE; }
+
+  /* fill form */
+  .fill { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:12px; align-items:end; }
+  .fill label { display:block; font:11px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--gray-500); margin-bottom:5px; }
+  .fill input { width:100%; font:13px var(--mono); padding:9px 11px; border:var(--border); border-radius:8px; background:var(--gray-100); color:var(--slate); }
+  .fill-foot { display:flex; gap:12px; align-items:center; margin-top:14px; flex-wrap:wrap; }
+  .fill-foot span { font-size:13px; color:var(--gray-500); }
+
+  /* role tabs */
+  .role-tabs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin:18px 0 26px; }
+  .role-tabs button { text-align:left; font-family:var(--sans); font-size:14px; border-radius:12px; padding:16px 18px; background:#fff;
+                      border:var(--border); color:var(--gray-700); display:flex; flex-direction:column; gap:2px; }
+  .role-tabs button .rt { font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--gray-500); }
+  .role-tabs button b { font:500 20px/1.3 var(--serif); color:var(--slate); }
+  .role-tabs button:hover { border-color:var(--gray-500); }
+  .role-tabs button.on { border-color:var(--clay); background:#FBF1EC; }
+  .role-tabs button.on .rt { color:var(--clay-d); }
+
+  .orient { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-bottom:8px; }
+  .orient .panel { padding:14px 18px; font-size:13.5px; }
+  .orient .k { font:600 11px var(--mono); letter-spacing:.08em; text-transform:uppercase; display:block; margin-bottom:4px; }
+  .orient .known .k { color:#4B5C39; } .orient .new .k { color:var(--clay-d); }
+
+  /* steps */
+  .step { display:grid; grid-template-columns:40px minmax(0,1fr); gap:0 16px; padding:26px 0; border-top:1px solid var(--gray-300); }
+  .steps > .step:first-child { border-top:0; }
+  .step > * { min-width:0; }
+  .num { width:34px; height:34px; border-radius:50%; background:var(--oat); display:flex; align-items:center; justify-content:center; font:600 14px var(--mono); margin-top:2px; }
+  .step h3 { font-size:20px; margin:2px 0 6px; }
+  .why { color:var(--gray-700); margin:0 0 12px; }
+  .ops { margin:0 0 12px; padding-left:22px; color:var(--gray-700); }
+  .ops li { margin-bottom:5px; }
+  .see, .warn, .tip { border:var(--border); border-radius:8px; background:#fff; padding:10px 14px; font-size:13.5px; margin:12px 0; color:var(--gray-700); }
+  .see { border-left:3px solid var(--olive); } .warn { border-left:3px solid var(--rust); } .tip { border-left:3px solid var(--clay); }
+  .see b.l, .warn b.l, .tip b.l { font:600 11px var(--mono); letter-spacing:.08em; text-transform:uppercase; margin-right:6px; }
+  .see b.l { color:#4B5C39; } .warn b.l { color:var(--rust); } .tip b.l { color:var(--clay-d); }
+
+  /* PR compare mock */
+  .pr-mock { display:grid; grid-template-columns:minmax(0,1fr) 44px minmax(0,1fr); gap:0; align-items:stretch; margin:12px 0; }
+  .pr-mock .half { background:#fff; border:var(--border); border-radius:10px; padding:12px 14px; }
+  .pr-mock .half .t { font:600 11px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--gray-500); margin-bottom:6px; }
+  .pr-mock .half .r { font:12.5px var(--mono); margin:2px 0; word-break:break-all; }
+  .pr-mock .half .r i { font-style:normal; color:var(--gray-500); margin-right:6px; }
+  .pr-mock .arr { display:flex; align-items:center; justify-content:center; font:22px var(--mono); color:var(--clay); }
+  .pr-mock .half.base { border-color:var(--clay); background:#FBF1EC; }
+  .mock-cap { font-size:13px; color:var(--gray-500); margin:0 0 12px; }
+
+  .gh-tabs { display:flex; gap:0; border-bottom:1.5px solid var(--gray-300); margin:12px 0; overflow-x:auto; }
+  .gh-tabs span { padding:8px 16px; font-size:13.5px; color:var(--gray-500); white-space:nowrap; }
+  .gh-tabs span.on { color:var(--slate); box-shadow:inset 0 -2px 0 var(--clay); font-weight:600; }
+  .gh-tabs span small { font:11px var(--mono); margin-left:6px; color:var(--gray-500); }
+
+  /* diff */
+  .diff { font:12.5px/1.7 var(--mono); background:#fff; border:var(--border); border-radius:8px; overflow-x:auto; margin:12px 0 0; }
+  .diff-row { display:grid; grid-template-columns:44px 18px minmax(max-content,1fr); white-space:pre; padding-right:14px; }
+  .diff-row .ln { color:var(--gray-500); text-align:right; padding-right:10px; user-select:none; }
+  .diff-row.add { background:rgba(120,140,93,.12); } .diff-row.add .mark { color:var(--olive); font-weight:600; }
+  .diff-row.del { background:rgba(176,74,63,.10); } .diff-row.del .mark { color:var(--rust); font-weight:600; }
+  .bubble { background:#fff; border:var(--border); border-left:4px solid var(--olive); border-radius:8px; padding:10px 14px; margin:8px 0 0 44px; font-size:13px; max-width:560px; }
+  .bubble .who { font:600 11px var(--mono); color:var(--gray-500); display:block; margin-bottom:2px; }
+
+  /* lifecycle */
+  .stages { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; margin:18px 0 16px; }
+  .stages button { text-align:left; font-family:var(--sans); border-radius:10px; padding:11px 12px; background:#fff; border:var(--border); color:var(--gray-700); font-size:13px; display:flex; flex-direction:column; gap:6px; }
+  .stages button:hover { border-color:var(--gray-500); }
+  .stages button.on { border-color:var(--clay); background:#FBF1EC; }
+  .stages button .si { font:11px var(--mono); color:var(--gray-500); }
+  .badge { font:600 11px var(--mono); padding:2px 9px; border-radius:999px; align-self:flex-start; }
+  .badge.ok { background:rgba(120,140,93,.18); color:#4B5C39; }
+  .badge.warn { background:rgba(217,119,87,.18); color:var(--clay-d); }
+  .badge.done { background:var(--slate); color:var(--ivory); }
+  .two { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+  .two .panel h3 { display:flex; align-items:center; gap:8px; }
+  .two ul { margin:8px 0 0; padding-left:20px; color:var(--gray-700); }
+  .two li { margin-bottom:6px; }
+  .stage-nav { display:flex; gap:10px; margin-top:16px; }
+
+  /* details */
+  details { border:var(--border); border-radius:10px; background:#fff; margin:12px 0; overflow:hidden; }
+  summary { list-style:none; cursor:pointer; padding:14px 16px; font:17px/1.4 var(--serif); display:flex; align-items:baseline; gap:10px; }
+  summary::-webkit-details-marker { display:none; }
+  summary::before { content:"▸"; color:var(--gray-500); transition:transform .12s; flex:none; }
+  details[open] > summary::before { transform:rotate(90deg); }
+  details > .body { padding:0 18px 16px; border-top:1px solid var(--gray-300); padding-top:14px; }
+  details > .body > :last-child { margin-bottom:0; }
+
+  .habits { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+  .habits ul { margin:8px 0 0; padding-left:20px; color:var(--gray-700); }
+  .habits li { margin-bottom:6px; }
+  .export { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:8px; padding-top:20px; border-top:1px solid var(--gray-300); }
+  .export span { font-size:13px; color:var(--gray-500); }
+
+  /* progress + toc active */
+  .progress { position:fixed; top:0; left:0; right:0; height:3px; z-index:60; }
+  .progress span { display:block; height:100%; width:0; background:var(--clay); }
+  nav.toc a.active { color:var(--clay-d); font-weight:600; }
+
+  /* route switch */
+  .route-switch { display:flex; gap:6px; flex-wrap:wrap; background:var(--gray-100); padding:5px; border-radius:12px; width:max-content; max-width:100%; margin:16px 0; }
+  .route-switch button { border:0; background:transparent; border-radius:9px; color:var(--gray-500); font:13px var(--sans); padding:9px 14px; }
+  .route-switch button[aria-pressed="true"] { background:#fff; color:var(--slate); box-shadow:inset 0 -2px 0 var(--clay); }
+  .route-steps { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; margin:14px 0; }
+  .route-step { border:var(--border); border-radius:10px; background:#fff; padding:10px 12px; }
+  .route-step.new { border-color:var(--clay); background:#FBF1EC; }
+  .route-step i { font:600 11px var(--mono); color:var(--gray-500); font-style:normal; }
+  .route-step b { display:block; font-size:14px; margin:2px 0; }
+  .route-step small { display:block; font-size:12.5px; color:var(--gray-700); line-height:1.5; }
+  .route-note { font-size:13px; color:var(--gray-500); margin:0 0 4px; }
+
+  /* practice */
+  .sim { margin-bottom:16px; }
+  .sim h3 { margin-bottom:4px; }
+  .sim-buttons { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0; }
+  .sim-buttons button, .answer { font:14px var(--sans); border-radius:10px; border:var(--border); background:#fff; color:var(--gray-700); padding:10px 14px; text-align:left; }
+  .sim-buttons button:hover, .answer:hover:not(:disabled) { border-color:var(--gray-500); }
+  .sim-buttons button.selected { border-color:var(--clay); background:#FBF1EC; color:var(--slate); }
+  .sim-result { background:var(--gray-100); border-radius:10px; padding:12px 14px; font-size:14px; min-height:52px; color:var(--gray-700); }
+  .quiz-top { display:flex; justify-content:space-between; gap:10px; align-items:baseline; flex-wrap:wrap; }
+  .quiz-top .count { font:12px var(--mono); color:var(--gray-500); }
+  .question { font:500 18px/1.45 var(--serif); margin:14px 0 12px; }
+  .answers { display:grid; gap:8px; }
+  .answer { display:flex; gap:10px; align-items:flex-start; }
+  .answer .letter { width:22px; height:22px; flex:none; border-radius:6px; background:var(--gray-100); font:600 11px/22px var(--mono); text-align:center; }
+  .answer:disabled { cursor:default; }
+  .answer.correct { border-color:var(--olive); background:rgba(120,140,93,.12); }
+  .answer.wrong { border-color:var(--rust); background:rgba(176,74,63,.10); }
+  .feedback { display:none; margin-top:12px; padding:12px 14px; border-radius:10px; font-size:14px; border:var(--border); border-left-width:4px; background:#fff; }
+  .feedback.show { display:block; } .feedback.good { border-left-color:var(--olive); } .feedback.bad { border-left-color:var(--clay); }
+  .quiz-foot { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:14px; }
+  .quiz-foot span { font-size:13px; color:var(--gray-500); }
+  .checks { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  .check-item { display:flex; gap:10px; align-items:flex-start; padding:11px 13px; border:var(--border); border-radius:10px; background:#fff; font-size:14px; color:var(--gray-700); cursor:pointer; }
+  .check-item input { accent-color:var(--clay); margin-top:5px; flex:none; }
+  .check-item.done { background:rgba(120,140,93,.10); border-color:rgba(120,140,93,.45); }
+  .bar { height:6px; border-radius:999px; background:var(--gray-100); overflow:hidden; margin-top:8px; }
+  .bar span { display:block; height:100%; width:0; background:var(--olive); transition:width .2s; }
+  .check-progress { font-size:13px; color:var(--gray-500); margin-top:12px; }
+  .resources { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  .resource { display:block; padding:12px 14px; border:var(--border); border-radius:10px; background:#fff; color:var(--slate); text-decoration:none; }
+  .resource:hover { border-color:var(--clay); }
+  .resource b { display:block; font-size:14px; } .resource small { font:12px var(--mono); color:var(--gray-500); }
+  .warn ul { margin:6px 0 0; padding-left:20px; }
+  .foot { font-size:13px; color:var(--gray-500); border-top:1px solid var(--gray-300); padding-top:18px; }
+
+  @media (max-width: 920px) {
+    .layout { grid-template-columns:minmax(0,1fr); gap:24px; }
+    nav.toc { position:static; display:flex; flex-wrap:wrap; gap:4px 16px; }
+    nav.toc .label { width:100%; margin-bottom:2px; }
+    .fill { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .stages { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .two, .habits, .orient, .role-tabs, .legend, .checks, .resources { grid-template-columns:minmax(0,1fr); }
+    .route-steps { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  }
+  @media (max-width: 720px) {
+    body { padding:32px 16px 80px; }
+    .step { grid-template-columns:minmax(0,1fr); }
+    .num { margin-bottom:8px; }
+    .pr-mock { grid-template-columns:minmax(0,1fr); }
+    .pr-mock .arr { transform:rotate(90deg); height:32px; }
+  }
+  /* site nav */
+  .crumb { margin:0 0 18px; font:12px var(--mono); }
+  .crumb a { color:var(--gray-500); text-decoration:none; }
+  .crumb a:hover { color:var(--clay); }
+  .pager { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-top:40px; }
+  .pager a { display:block; padding:14px 18px; border:var(--border); border-radius:12px; background:#fff; color:var(--slate); text-decoration:none; }
+  .pager a:hover { border-color:var(--clay); }
+  .pager small { display:block; font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--gray-500); }
+  .pager b { font:500 17px/1.4 var(--serif); }
+  .pager .next { text-align:right; grid-column:2; }
+  .pager .prev { grid-column:1; }
+  @media (max-width:720px){ .pager{grid-template-columns:minmax(0,1fr);} .pager .next,.pager .prev{grid-column:1;text-align:left;} }
+  @media (prefers-reduced-motion: reduce) { * { transition:none !important; scroll-behavior:auto !important; } }
+
+  .skip { position:absolute; left:12px; top:-60px; z-index:100; background:var(--slate); color:var(--ivory);
+          padding:10px 16px; border-radius:8px; font-size:14px; text-decoration:none; }
+  .skip:focus { top:12px; outline:2px solid var(--clay); outline-offset:2px; }
+  main:focus { outline:none; }
+
+  .fill.f4 { grid-template-columns:repeat(4,minmax(0,1fr)); }
+  .fill.f3 { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .fill.f2 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  @media (max-width: 920px) { .fill.f4, .fill.f3 { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  @media (max-width: 520px) { .fill.f4, .fill.f3, .fill.f2 { grid-template-columns:minmax(0,1fr); } }
+  .badge.bad { background:rgba(176,74,63,.15); color:var(--rust); }
+  .dec-out { background:var(--gray-100); border-radius:10px; padding:12px 14px; font-size:14px; color:var(--gray-700); margin-top:12px; }
+
+  /* ===== algo widgets (datastruct 主題) ===== */
+  .algo-w { background:var(--white); border:var(--border); border-radius:12px; padding:16px 18px; margin:14px 0; }
+  .algo-form { display:flex; flex-wrap:wrap; gap:10px 14px; align-items:flex-end; margin-bottom:14px; }
+  .algo-f[hidden] { display:none; }
+  .algo-f label { display:block; font:11px var(--mono); letter-spacing:.06em; color:var(--gray-500); margin-bottom:4px; }
+  .algo-form select, .algo-form input, .algo-ctl select { font:13px var(--mono); padding:7px 10px; border:var(--border); border-radius:8px; background:#fff; color:var(--slate); min-width:0; }
+  .algo-form input[type=number] { width:84px; }
+  .algo-form input[type=text] { width:220px; max-width:100%; }
+  .algo-main { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.15fr); gap:16px; align-items:start; }
+  .algo-main.nocode { grid-template-columns:minmax(0,1fr); }
+  .algo-left { min-width:0; border-radius:10px; }
+  .algo-left:focus-visible { outline:2px solid var(--clay); outline-offset:3px; }
+  .algo-stage { min-height:170px; background:var(--gray-100); border-radius:10px; padding:14px; overflow-x:auto; }
+  .algo-msg { margin-top:10px; padding:10px 12px; border-radius:8px; background:#fff; border:1px solid var(--gray-300); font-size:14px; min-height:3.4em; }
+  .algo-msg.err { border-color:var(--rust); color:var(--rust); }
+  .algo-ctl { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:10px; }
+  .algo-ctl button { padding:6px 12px; }
+  .algo-ctl button:disabled { opacity:.45; cursor:not-allowed; }
+  .algo-ctl input[type=range] { flex:1 1 110px; min-width:90px; accent-color:var(--clay); }
+  .algo-step { font:12px var(--mono); color:var(--gray-500); white-space:nowrap; }
+  .algo-code { margin:0; }
+  .algo-code pre { padding-right:18px; font-size:12px; max-height:440px; overflow:auto; position:relative; }
+  @media (max-width:920px) { .algo-main { grid-template-columns:minmax(0,1fr); } }
+
+  /* C++ 程式碼:行號、語法色、逐行高亮 */
+  pre[data-cpp], .algo-code pre { counter-reset:ln; }
+  pre .l { display:block; counter-increment:ln; border-left:3px solid transparent; padding-left:6px; }
+  pre .l::before { content:counter(ln); display:inline-block; width:2em; margin-right:.9em; text-align:right; color:var(--gray-500); user-select:none; }
+  pre .l.on { background:rgba(217,119,87,.24); border-left-color:var(--clay); }
+  pre .xk { color:#F2B49E; } pre .xt { color:#B7C99B; } pre .xs { color:#E3DACC; font-style:italic; }
+  pre .xn { color:#E6C98F; } pre .xp { color:#C9A8D6; } pre .xc { color:var(--gray-500); }
+  .cmd.out pre { color:var(--oat); padding-right:18px; }
+  .cmd.out .cap { color:var(--olive); }
+  @media (prefers-reduced-motion: reduce) { .algo-w * { animation:none !important; transition:none !important; } }
+
+  .gt.g4 .row { grid-template-columns:120px minmax(0,1.2fr) minmax(0,1fr) minmax(0,1.1fr); }
+  .algo-code .cap, .cmd.out .cap { text-transform:none; }
+
+  /* 格子繪圖器(陣列 / vector) */
+  .cells { display:flex; flex-wrap:wrap; gap:8px; align-items:flex-start; }
+  .cells + .cells, .rowlab + .cells { margin-top:6px; }
+  .rowlab { font:11px var(--mono); letter-spacing:.06em; color:var(--gray-500); margin:12px 0 6px; }
+  .rowlab:first-child { margin-top:0; }
+  .cells .cell { width:46px; text-align:center; }
+  .cells .cell .b { height:46px; display:flex; align-items:center; justify-content:center; border:1.5px solid var(--gray-700); border-radius:8px; background:#fff; font:600 15px var(--mono); }
+  .cells .cell .i { display:block; font:11px var(--mono); color:var(--gray-500); margin-top:3px; }
+  .cells .cell .t { display:block; height:12px; font:600 11px var(--mono); color:var(--clay-d); }
+  .cells .cell.cur .b { border-color:var(--clay); background:#FBF1EC; }
+  .cells .cell.mv .b { border-color:var(--clay); background:rgba(217,119,87,.2); }
+  .cells .cell.mvr .b { animation:cellR .45s ease; } .cells .cell.mvl .b { animation:cellL .45s ease; }
+  .cells .cell.new .b { border-color:var(--olive); background:rgba(120,140,93,.18); animation:cellPop .4s ease; }
+  .cells .cell.del .b { border-color:var(--rust); background:rgba(176,74,63,.12); text-decoration:line-through; }
+  .cells .cell.dim .b { opacity:.4; }
+  .cells .cell.ok .b { border-color:var(--olive); background:rgba(120,140,93,.1); }
+  .cells .cell.empty .b { border-style:dashed; border-color:var(--gray-300); background:transparent; color:transparent; }
+  .kv { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+  .kv span { font:12px var(--mono); background:#fff; border:1px solid var(--gray-300); border-radius:999px; padding:3px 11px; color:var(--gray-700); }
+  .kv b { color:var(--slate); font-weight:600; }
+  @keyframes cellR { from { transform:translateX(-54px); } to { transform:none; } }
+  @keyframes cellL { from { transform:translateX(54px); } to { transform:none; } }
+  @keyframes cellPop { from { transform:scale(.6); } to { transform:none; } }
+  @media (max-width:520px) { .cells .cell { width:38px; } .cells .cell .b { height:38px; font-size:13px; } .cells { gap:6px; } }
+
+  /* 長條圖繪圖器(排序) */
+  .bars { display:flex; align-items:flex-end; gap:6px; height:200px; padding-top:6px; }
+  .sbar { flex:1 1 0; max-width:56px; min-width:0; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; }
+  .sbar .t { font:600 10.5px var(--mono); color:var(--clay-d); min-height:13px; white-space:nowrap; }
+  .sbar .col { width:100%; background:var(--gray-300); border-radius:6px 6px 0 0; transition:height .2s; }
+  .sbar .v { font:600 12px var(--mono); margin-top:4px; }
+  .sbar.cur .col { background:var(--clay); }
+  .sbar.mv .col { background:#EBAE96; }
+  .sbar.ok .col { background:var(--olive); opacity:.75; }
+  .sbar.new .col { background:var(--olive); }
+  .sbar.key .col { background:var(--slate); }
+  .sbar.dim .col { opacity:.4; }
+  .sbar.min .col { background:#7A8FB5; }
+  @media (prefers-reduced-motion: reduce) { .sbar .col { transition:none; } }
+  .bars.sm { height:120px; }
+  .sbar.empty .col { background:transparent; border:1.5px dashed var(--gray-300); border-bottom:0; }
+  .sbar.tgt .col { background:#7A8FB5; }
+
+  /* 成長曲線圖 */
+  .cv { background:var(--white); border:var(--border); border-radius:12px; padding:16px 18px; margin:14px 0; }
+  .cv-top { display:flex; flex-wrap:wrap; align-items:center; gap:10px 16px; margin-bottom:12px; }
+  .cv-top label { font:12px var(--mono); letter-spacing:.06em; color:var(--gray-500); text-transform:uppercase; }
+  .cv-top input[type=range] { flex:1 1 200px; min-width:140px; accent-color:var(--clay); }
+  .cv-n { font:600 22px var(--serif); min-width:3.2em; }
+  .cv-main { display:grid; grid-template-columns:minmax(0,1.2fr) minmax(0,1fr); gap:16px; align-items:start; }
+  @media (max-width:920px) { .cv-main { grid-template-columns:minmax(0,1fr); } }
+  .cv-chart { background:var(--gray-100); border-radius:10px; padding:8px; overflow-x:auto; }
+  .cv-chart svg { display:block; width:100%; height:auto; min-width:300px; }
+  .cv-chart text { font:11px var(--mono); fill:var(--gray-700); }
+  .cv-tbl { width:100%; border-collapse:collapse; font-size:13px; }
+  .cv-tbl th { font:11px var(--sans); text-transform:uppercase; letter-spacing:.06em; color:var(--gray-500); text-align:left; padding:6px 8px; background:var(--gray-100); }
+  .cv-tbl td { padding:7px 8px; border-top:1px solid var(--gray-300); font-family:var(--mono); vertical-align:top; }
+  .cv-tbl td:first-child { white-space:nowrap; }
+  .cv-tbl .sw { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px; }
+  .cv-note { font-size:12.5px; color:var(--gray-500); margin:10px 0 0; }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">跳到主要內容</a>
+<div class="progress" aria-hidden="true"><span id="readBar"></span></div>
+<div class="page">
+
+<header>
+  <nav class="crumb" aria-label="站內導覽"><a href="../index.html#datastruct">← 回教學首頁</a></nav>
+  <div class="eyebrow">C++ 演算法 · 第 9 篇 · 進階排序</div>
+  <h1>切一半再處理，排序從 O(n²) 降到 O(n log n)</h1>
+  <p class="sub">合併排序「分了再合」，快速排序「分區再遞迴」。這一篇用動畫看分治法怎麼運作，用實驗看差距有多大，並認識實務上的 std::sort。</p>
+  <div class="tldr"><b>TL;DR</b> <b>合併排序</b>：切一半、各自排好、合併，永遠 <code>O(n log n)</code>，要 <code>O(n)</code> 額外空間。<b>快速排序</b>：挑 pivot 分區再遞迴，平均 <code>O(n log n)</code>,pivot 選很偏時最壞 <code>O(n²)</code>。實務上用 <code>std::sort</code>。<br><small>先備：第 7 篇遞迴、第 8 篇基礎排序。預估 18 分鐘。難度：進階。</small></div>
+</header>
+
+<div class="layout">
+<nav class="toc" aria-label="本頁目錄">
+  <div class="label">On this page</div>
+  <a href="#what">1. 分治法的直覺</a>
+  <a href="#play">2. 分與合</a>
+  <a href="#race">3. 五種排序賽跑</a>
+  <a href="#code">4. 完整程式</a>
+  <a href="#stl">5. std::sort</a>
+  <a href="#cost">6. 複雜度小表</a>
+  <a href="#gotchas">7. 常見錯誤</a>
+  <a href="#practice">8. 動手寫與測驗</a>
+</nav>
+
+<main id="main" tabindex="-1">
+<section id="what">
+  <h2>分治法：大問題切一半，各自解決再合起來</h2>
+  <hr class="rule">
+<div class="panel"><h3>整理一大疊考卷</h3><p><strong>合併排序</strong>：把考卷分成兩半，請兩個人各自排好，最後把兩疊「已排好的」合併。合併很容易：兩疊最上面各看一張，每次取分數較小的那張。</p><p style="margin-bottom:0"><strong>快速排序</strong>：隨便抽一張當基準（pivot），把比它低分的放左邊、高分的放右邊，基準就定位了；再對左右兩堆各自重複。</p></div>
+<h3 style="margin-top:26px">為什麼會變快？</h3>
+<p>基礎排序要花 O(n²)，因為每個元素都和很多別的元素比較。分治法每次把問題<b>切成一半</b>，切到底只要約 <b>log₂ n 層</b>；每一層全部元素加起來只做約 n 次工作。所以總共是 <b>n × log n</b>。n = 100 萬時：n² 是 1 兆次，n log n 只有約 2 千萬次。</p>
+<div class="table-wrap"><div class="gt g2"><div class="row"><div class="cell head">名詞</div><div class="cell head">白話說明</div></div><div class="row"><div class="cell term">分治法</div><div class="cell">把問題切成更小的同類問題，各自解決，再把答案合起來。遞迴（第 7 篇）的典型應用。</div></div><div class="row"><div class="cell term">合併（merge）</div><div class="cell">把兩個已排序的序列合成一個已排序的序列，只要從頭各看一個，取小的。</div></div><div class="row"><div class="cell term">基準（pivot）</div><div class="cell">快速排序挑出來的那一個。分區之後，它的位置就確定了。</div></div><div class="row"><div class="cell term">穩定排序</div><div class="cell">值相同的元素，排序後維持原本的先後順序。</div></div></div></div>
+</section>
+
+<section id="play">
+  <h2>動手玩：看「分」與「合」，看分區</h2>
+  <hr class="rule">
+<p class="sub" style="margin-bottom:14px">選合併排序時，上面是要排的陣列 <code>v</code>，下面是合併時用的暫存區 <code>tmp</code>；選快速排序時，藍色是「已確認比 pivot 小」的區域。灰色淡掉的部分是目前沒在處理的範圍。</p>
+<ol class="ops"><li>用合併排序，先看它怎麼一路「分」到只剩 1 個，再一層層「合」回來。</li><li>改用快速排序，看 pivot（深色）怎麼被換到最後的位置。</li><li>按「已排序」，分別用兩種排序跑一次：比較次數有什麼不同？</li></ol>
+<div id="w-adv" role="group" aria-label="進階排序動畫"></div>
+<div class="panel sim" data-simgroup>
+<h3>猜猜看：這一步會發生什麼？</h3>
+<p style="margin:6px 0 0;color:var(--gray-700)">快速排序用「最後一個」當 pivot，如果資料<b>已經排好了</b>，會發生什麼事？</p>
+<div class="sim-buttons" role="group" aria-label="選擇做法"><button type="button" data-sim="a1">最快：什麼都不用做</button><button type="button" data-sim="a2">最慢：每次分區都只切掉 1 個，變成 O(n²)</button><button type="button" data-sim="a3">和隨機資料一樣</button></div>
+<div class="sim-result" aria-live="polite">選一個做法，看看對不對。</div>
+</div>
+</section>
+
+<section id="race">
+  <h2>做實驗：五種排序賽跑</h2>
+  <hr class="rule">
+<p class="sub" style="margin-bottom:14px">不播動畫，直接數五種排序在同一份資料上的<b>比較次數</b>。把 n 拉大、換不同的資料排列，看誰輸誰贏。（綠色是最少的。）</p>
+<div id="w-race" role="group" aria-label="五種排序比較次數"></div>
+<p style="margin-top:12px">試試「已排序」搭配快速排序：它從天才變成最慢的。這就是下面「常見錯誤」第一項。</p>
+</section>
+
+<section id="code">
+  <h2>完整程式：合併排序與快速排序</h2>
+  <hr class="rule">
+<p class="sub" style="margin-bottom:14px">兩個都是遞迴。<code>merge</code> 負責合併，<code>partition</code> 負責分區（回傳 pivot 最後的位置）。</p>
+<div class="cmd"><div class="cap">main.cpp</div><pre data-cpp>#include &lt;iostream&gt;
+#include &lt;utility&gt;
+#include &lt;vector&gt;
+
+void merge(std::vector&lt;int&gt;&amp; v, std::vector&lt;int&gt;&amp; tmp, int lo, int mid, int hi) {
+    int i = lo;
+    int j = mid + 1;
+    int k = lo;
+    while (i &lt;= mid &amp;&amp; j &lt;= hi) {
+        if (v[i] &lt;= v[j]) {
+            tmp[k++] = v[i++];
+        } else {
+            tmp[k++] = v[j++];
+        }
+    }
+    while (i &lt;= mid) {
+        tmp[k++] = v[i++];
+    }
+    while (j &lt;= hi) {
+        tmp[k++] = v[j++];
+    }
+    for (int p = lo; p &lt;= hi; ++p) {
+        v[p] = tmp[p];
+    }
+}
+
+void mergeSort(std::vector&lt;int&gt;&amp; v, std::vector&lt;int&gt;&amp; tmp, int lo, int hi) {
+    if (lo &gt;= hi) {
+        return;
+    }
+    int mid = lo + (hi - lo) / 2;
+    mergeSort(v, tmp, lo, mid);
+    mergeSort(v, tmp, mid + 1, hi);
+    merge(v, tmp, lo, mid, hi);
+}
+
+int partition(std::vector&lt;int&gt;&amp; v, int lo, int hi) {
+    int pivot = v[hi];
+    int i = lo;
+    for (int j = lo; j &lt; hi; ++j) {
+        if (v[j] &lt; pivot) {
+            std::swap(v[i], v[j]);
+            ++i;
+        }
+    }
+    std::swap(v[i], v[hi]);
+    return i;
+}
+
+void quickSort(std::vector&lt;int&gt;&amp; v, int lo, int hi) {
+    if (lo &gt;= hi) {
+        return;
+    }
+    int p = partition(v, lo, hi);
+    quickSort(v, lo, p - 1);
+    quickSort(v, p + 1, hi);
+}
+
+void print(const std::vector&lt;int&gt;&amp; v) {
+    for (int x : v) {
+        std::cout &lt;&lt; x &lt;&lt; " ";
+    }
+    std::cout &lt;&lt; "\n";
+}
+
+int main() {
+    std::vector&lt;int&gt; data = {38, 27, 43, 3, 9, 82, 10};
+    int n = static_cast&lt;int&gt;(data.size());
+
+    std::vector&lt;int&gt; a = data;
+    std::vector&lt;int&gt; tmp(a.size());
+    mergeSort(a, tmp, 0, n - 1);
+    print(a);
+
+    std::vector&lt;int&gt; b = data;
+    quickSort(b, 0, n - 1);
+    print(b);
+}</pre><button type="button" class="copy">Copy</button></div>
+<div class="cmd out"><div class="cap">執行結果（合併、快速）</div><pre>3 9 10 27 38 43 82 
+3 9 10 27 38 43 82 </pre></div>
+<div class="cmd"><div class="cap">編譯並執行（g++ 或 clang++ 皆可）</div><pre>g++ -std=c++17 -Wall -Wextra -o main main.cpp
+./main</pre><button type="button" class="copy">Copy</button></div>
+<h3 style="margin-top:22px">實測：n = 2000 時的比較次數</h3>
+<p>下面這份程式用固定的偽亂數資料，數出四種情況的比較次數（程式碼在你的電腦上也會得到一樣的數字）：</p>
+<div class="cmd"><div class="cap">main.cpp（節錄：各排序前面加了 ++cmp）</div><pre data-cpp>#include &lt;iostream&gt;
+#include &lt;utility&gt;
+#include &lt;vector&gt;
+
+long long cmp = 0;                           // 數比較次數
+
+void bubbleSort(std::vector&lt;int&gt;&amp; v) {
+    int n = static_cast&lt;int&gt;(v.size());
+    for (int i = 0; i &lt; n - 1; ++i) {
+        for (int j = 0; j &lt; n - 1 - i; ++j) {
+            ++cmp;
+            if (v[j] &gt; v[j + 1]) {
+                std::swap(v[j], v[j + 1]);
+            }
+        }
+    }
+}
+
+void merge(std::vector&lt;int&gt;&amp; v, std::vector&lt;int&gt;&amp; tmp, int lo, int mid, int hi) {
+    int i = lo, j = mid + 1, k = lo;
+    while (i &lt;= mid &amp;&amp; j &lt;= hi) {
+        ++cmp;
+        tmp[k++] = (v[i] &lt;= v[j]) ? v[i++] : v[j++];
+    }
+    while (i &lt;= mid) {
+        tmp[k++] = v[i++];
+    }
+    while (j &lt;= hi) {
+        tmp[k++] = v[j++];
+    }
+    for (int p = lo; p &lt;= hi; ++p) {
+        v[p] = tmp[p];
+    }
+}
+
+void mergeSort(std::vector&lt;int&gt;&amp; v, std::vector&lt;int&gt;&amp; tmp, int lo, int hi) {
+    if (lo &gt;= hi) {
+        return;
+    }
+    int mid = lo + (hi - lo) / 2;
+    mergeSort(v, tmp, lo, mid);
+    mergeSort(v, tmp, mid + 1, hi);
+    merge(v, tmp, lo, mid, hi);
+}
+
+void quickSort(std::vector&lt;int&gt;&amp; v, int lo, int hi) {
+    if (lo &gt;= hi) {
+        return;
+    }
+    int pivot = v[hi];
+    int i = lo;
+    for (int j = lo; j &lt; hi; ++j) {
+        ++cmp;
+        if (v[j] &lt; pivot) {
+            std::swap(v[i], v[j]);
+            ++i;
+        }
+    }
+    std::swap(v[i], v[hi]);
+    quickSort(v, lo, i - 1);
+    quickSort(v, i + 1, hi);
+}
+
+std::vector&lt;int&gt; makeData(int n, bool sorted) {
+    std::vector&lt;int&gt; v(n);
+    unsigned int x = 12345;
+    for (int i = 0; i &lt; n; ++i) {
+        x = x * 1103515245u + 12345u;        // 簡單的偽亂數(固定種子,結果每次一樣)
+        v[i] = sorted ? i : static_cast&lt;int&gt;((x &gt;&gt; 16) % 10000);
+    }
+    return v;
+}
+
+int main() {
+    const int n = 2000;
+    std::vector&lt;int&gt; tmp(n);
+
+    std::vector&lt;int&gt; a = makeData(n, false);
+    cmp = 0;
+    bubbleSort(a);
+    std::cout &lt;&lt; "bubble (random)  : " &lt;&lt; cmp &lt;&lt; "\n";
+
+    a = makeData(n, false);
+    cmp = 0;
+    mergeSort(a, tmp, 0, n - 1);
+    std::cout &lt;&lt; "merge  (random)  : " &lt;&lt; cmp &lt;&lt; "\n";
+
+    a = makeData(n, false);
+    cmp = 0;
+    quickSort(a, 0, n - 1);
+    std::cout &lt;&lt; "quick  (random)  : " &lt;&lt; cmp &lt;&lt; "\n";
+
+    a = makeData(n, true);
+    cmp = 0;
+    quickSort(a, 0, n - 1);
+    std::cout &lt;&lt; "quick  (sorted)  : " &lt;&lt; cmp &lt;&lt; "\n";
+}</pre></div>
+<div class="cmd out"><div class="cap">執行結果</div><pre>bubble (random)  : 1999000
+merge  (random)  : 19413
+quick  (random)  : 24235
+quick  (sorted)  : 1999000</pre></div>
+<div class="see"><b class="l">你會看到</b>隨機資料時，氣泡排序比了約 200 萬次，合併與快速只要約 2 萬次，差了 100 倍。但快速排序遇到「已排序」的資料，也掉到 200 萬次。</div>
+</section>
+
+<section id="stl">
+  <h2>實務上：std::sort 與 std::stable_sort</h2>
+  <hr class="rule">
+<p class="sub" style="margin-bottom:14px"><code>std::sort</code> 是快速排序、堆積排序與插入排序的混合體（introsort）：平常像快速排序一樣快，遇到會退化的情況就自動換方法，所以<b>最壞也保證 O(n log n)</b>。需要「相同的值維持原本順序」（穩定）時，用 <code>std::stable_sort</code>（以合併排序為基礎）。</p>
+<div class="cmd"><div class="cap">main.cpp</div><pre data-cpp>#include &lt;algorithm&gt;
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+
+struct Player {
+    std::string name;
+    int score;
+};
+
+int main() {
+    std::vector&lt;Player&gt; players = {{"A", 90}, {"B", 85}, {"C", 90}, {"D", 85}};
+    std::stable_sort(players.begin(), players.end(),
+                     [](const Player&amp; a, const Player&amp; b) { return a.score &gt; b.score; });
+    for (const Player&amp; p : players) {
+        std::cout &lt;&lt; p.name &lt;&lt; ":" &lt;&lt; p.score &lt;&lt; " ";
+    }
+    std::cout &lt;&lt; "\n";
+}</pre><button type="button" class="copy">Copy</button></div>
+<div class="cmd out"><div class="cap">執行結果（分數相同者維持原本的 A、C 與 B、D 順序）</div><pre>A:90 C:90 B:85 D:85 </pre></div>
+</section>
+
+<section id="cost">
+  <h2>複雜度小表</h2>
+  <hr class="rule">
+<div class="table-wrap"><div class="gt g4"><div class="row"><div class="cell head">排序法</div><div class="cell head">時間</div><div class="cell head">額外空間</div><div class="cell head">穩定？</div></div><div class="row"><div class="cell term">合併排序</div><div class="cell">永遠 O(n log n)</div><div class="cell">O(n)（tmp 暫存區）</div><div class="cell">是</div></div><div class="row"><div class="cell term">快速排序</div><div class="cell">平均 O(n log n)；最壞 O(n²)</div><div class="cell">O(log n)（遞迴堆疊）</div><div class="cell">否</div></div><div class="row"><div class="cell term"><code>std::sort</code></div><div class="cell">最壞 O(n log n)</div><div class="cell">O(log n)</div><div class="cell">否</div></div><div class="row"><div class="cell term"><code>std::stable_sort</code></div><div class="cell">O(n log n)</div><div class="cell">最多 O(n)</div><div class="cell">是</div></div></div></div>
+</section>
+
+<section id="gotchas">
+  <h2>初學者最常卡住的三個地方</h2>
+  <hr class="rule">
+<details><summary>快速排序遇到已排序的資料變成 O(n²)</summary><div class="body"><p>如果每次都用最後一個當 pivot，而資料已經排好，pivot 永遠是最大的，每次分區只切掉 1 個，遞迴深度變成 n。上面實測就是 200 萬次。解法是<b>隨機挑 pivot</b>，或取頭、中、尾三個的中位數。<code>std::sort</code> 已經處理好了。</p></div></details>
+<details><summary>合併排序需要額外的 <code>tmp</code> 空間</summary><div class="body"><p>合併時不能直接在原陣列裡覆蓋（會蓋掉還沒比較的元素），所以要借一塊同樣大小的暫存區。這是合併排序穩定、永遠 n log n 的代價：空間 O(n)。</p></div></details>
+<details><summary>邊界差一：<code>lo &gt;= hi</code>、<code>mid + 1</code>、<code>p - 1</code></summary><div class="body"><p>遞迴的範圍是「閉區間」[lo, hi]。左半是 <code>[lo, mid]</code>，右半是 <code>[mid + 1, hi]</code>；快速排序在 pivot 位置 p 切開後，左邊是 <code>[lo, p - 1]</code>、右邊是 <code>[p + 1, hi]</code>（p 本身已定位）。少了 ±1 會無限遞迴或漏排。</p></div></details>
+</section>
+
+<section id="practice">
+  <h2>動手演練：確認你真的懂了</h2>
+  <hr class="rule">
+<h3 style="margin-top:30px">動手寫（兩題）</h3><div class="panel"><h3>第 1 題：合併兩個已排序的 vector</h3><p>完成 <code>mergeTwo</code>：這就是合併排序裡 <code>merge</code> 的核心。輸出應該是 <code>1 2 3 4 7 9 10</code>。</p><div class="cmd"><div class="cap">main.cpp</div><pre data-cpp>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+// 把兩個「已排序」的 vector 合併成一個新的、也是已排序的 vector。
+// 這就是合併排序裡 merge 的核心:兩個指標 i、j 各指著 a 和 b 的最前面,每次取較小的。
+std::vector&lt;int&gt; mergeTwo(const std::vector&lt;int&gt;&amp; a, const std::vector&lt;int&gt;&amp; b) {
+    std::vector&lt;int&gt; result;
+    (void)a;
+    (void)b;
+    return result;
+}
+
+int main() {
+    std::vector&lt;int&gt; r = mergeTwo({1, 4, 7}, {2, 3, 9, 10});
+    for (int x : r) {
+        std::cout &lt;&lt; x &lt;&lt; " ";
+    }
+    std::cout &lt;&lt; "\n";                       // 預期輸出 1 2 3 4 7 9 10
+}</pre><button type="button" class="copy">Copy</button></div><details><summary>參考答案</summary><div class="body"><p>兩個指標 i、j 各指著 a 和 b 的最前面，每次取較小的；一邊用完後，另一邊剩下的直接接上去。時間 O(n),n 是兩個加起來的長度。</p><div class="cmd"><div class="cap">完整答案</div><pre data-cpp>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+std::vector&lt;int&gt; mergeTwo(const std::vector&lt;int&gt;&amp; a, const std::vector&lt;int&gt;&amp; b) {
+    std::vector&lt;int&gt; result;
+    int na = static_cast&lt;int&gt;(a.size());
+    int nb = static_cast&lt;int&gt;(b.size());
+    int i = 0;
+    int j = 0;
+    while (i &lt; na &amp;&amp; j &lt; nb) {
+        if (a[i] &lt;= b[j]) {
+            result.push_back(a[i++]);
+        } else {
+            result.push_back(b[j++]);
+        }
+    }
+    while (i &lt; na) {
+        result.push_back(a[i++]);
+    }
+    while (j &lt; nb) {
+        result.push_back(b[j++]);
+    }
+    return result;
+}
+
+int main() {
+    std::vector&lt;int&gt; r = mergeTwo({1, 4, 7}, {2, 3, 9, 10});
+    for (int x : r) {
+        std::cout &lt;&lt; x &lt;&lt; " ";
+    }
+    std::cout &lt;&lt; "\n";
+}</pre><button type="button" class="copy">Copy</button></div><div class="cmd out"><div class="cap">執行結果</div><pre>1 2 3 4 7 9 10 </pre></div></div></details></div><div class="panel" style="margin-top:14px"><h3>第 2 題：用 lambda 做「多重條件」排序</h3><p>完成 lambda：分數高的在前；分數相同時，名字小的在前。輸出應該是 <code>Ann Dan Bob Cara</code>。</p><div class="cmd"><div class="cap">main.cpp</div><pre data-cpp>#include &lt;algorithm&gt;
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+
+struct Player {
+    std::string name;
+    int score;
+};
+
+int main() {
+    std::vector&lt;Player&gt; players = {{"Cara", 80}, {"Ann", 90}, {"Bob", 80}, {"Dan", 90}};
+    // 用 std::sort 排:分數高的在前;分數相同時,名字照字母順序(小的在前)。
+    // 提示:在 lambda 裡先比分數,分數相同再比名字。
+    std::sort(players.begin(), players.end(), [](const Player&amp; a, const Player&amp; b) {
+        (void)a;
+        (void)b;
+        return false;
+    });
+    for (const Player&amp; p : players) {
+        std::cout &lt;&lt; p.name &lt;&lt; " ";
+    }
+    std::cout &lt;&lt; "\n";                       // 預期輸出 Ann Dan Bob Cara
+}</pre><button type="button" class="copy">Copy</button></div><details><summary>參考答案</summary><div class="body"><p>先比分數；分數不同就用分數決定順序，分數相同再用名字決定。lambda 回傳「a 是否該排在 b 前面」。</p><div class="cmd"><div class="cap">完整答案</div><pre data-cpp>#include &lt;algorithm&gt;
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+
+struct Player {
+    std::string name;
+    int score;
+};
+
+int main() {
+    std::vector&lt;Player&gt; players = {{"Cara", 80}, {"Ann", 90}, {"Bob", 80}, {"Dan", 90}};
+    std::sort(players.begin(), players.end(), [](const Player&amp; a, const Player&amp; b) {
+        if (a.score != b.score) {
+            return a.score &gt; b.score;
+        }
+        return a.name &lt; b.name;
+    });
+    for (const Player&amp; p : players) {
+        std::cout &lt;&lt; p.name &lt;&lt; " ";
+    }
+    std::cout &lt;&lt; "\n";
+}</pre><button type="button" class="copy">Copy</button></div><div class="cmd out"><div class="cap">執行結果</div><pre>Ann Dan Bob Cara </pre></div></div></details></div>
+<div class="panel" id="quiz">
+    <div class="quiz-top"><h3 style="margin:0">快速測驗</h3><span class="count" id="quizCount">1 / 1</span></div>
+    <div class="question" id="quizQ"></div>
+    <div class="answers" id="quizAns"></div>
+    <div class="feedback" id="quizFb" aria-live="polite"></div>
+    <div class="quiz-foot"><span id="quizScore">答對 0 題</span><button type="button" class="primary" id="quizNext" disabled>下一題 →</button></div>
+  </div>
+<h3 style="margin-top:30px">學完之後，對照這張清單</h3>
+<div class="panel">
+<div class="checks" id="checks"><label class="check-item"><input type="checkbox"><span>我能說出分治法的概念：切、各自解決、合起來。</span></label><label class="check-item"><input type="checkbox"><span>我知道合併排序永遠 O(n log n)，但要 O(n) 的額外空間。</span></label><label class="check-item"><input type="checkbox"><span>我知道快速排序平均 O(n log n)，最壞 O(n²)，以及什麼時候最壞。</span></label><label class="check-item"><input type="checkbox"><span>我看得懂 <code>merge</code> 與 <code>partition</code> 在做什麼。</span></label><label class="check-item"><input type="checkbox"><span>我知道「穩定」是什麼意思，以及何時用 <code>std::stable_sort</code>。</span></label><label class="check-item"><input type="checkbox"><span>我知道實務上直接用 <code>std::sort</code>。</span></label></div>
+<div class="check-progress" id="checkProgress">已完成 0 / 6 項</div>
+<div class="bar"><span id="checkBar"></span></div>
+</div>
+<h3 style="margin-top:30px">cppreference 參考頁面</h3>
+<div class="resources"><a class="resource" href="https://en.cppreference.com/cpp/algorithm/sort" target="_blank" rel="noopener"><b>std::sort</b><small>cppreference · std::sort</small></a><a class="resource" href="https://en.cppreference.com/cpp/algorithm/stable_sort" target="_blank" rel="noopener"><b>std::stable_sort</b><small>cppreference · std::stable_sort</small></a></div>
+</section>
+</main>
+</div>
+
+<p class="foot" style="margin-top:28px">範例以 g++ 13、<code>-std=c++17 -Wall -Wextra</code> 實際編譯執行驗證（零警告）；動畫為教學示意，資料量固定很小。cppreference 連結已逐條開啟確認。查證日期：2026-11-18。</p>
+
+<nav class="pager" aria-label="上一篇與下一篇">
+  <a class="prev" href="datastruct-sortbasic-guide.html"><small>上一篇</small><b>基礎排序：氣泡、選擇、插入</b></a>
+  <a class="next" href="datastruct-hash-guide.html"><small>下一篇</small><b>雜湊表</b></a>
+</nav>
+</div>
+
+<script>window.PAGE = {"sim": {"a1": "<b>不是。</b>資料已排好反而是快速排序的壞情況。用「已排序」按鈕與快速排序跑一次，看每次分區只切掉 1 個。", "a2": "<b>正確！</b>pivot 是最大的，所有元素都「比它小」，分區後右邊是空的，問題只少了 1 個，遞迴深度變成 n，總共約 n²/2 次比較。實測 n = 2000 就是 1,999,000 次。", "a3": "<b>不是。</b>隨機資料時 pivot 通常落在中間附近，差很多；已排序時反而是最壞情況。"}, "quiz": [{"q": "合併排序的時間複雜度是？", "a": ["平均 O(n log n)，最壞 O(n²)", "永遠 O(n log n)", "O(n²)"], "c": 1, "why": "每次都切一半、合併是 O(n)，和資料內容無關。"}, {"q": "快速排序的最壞情況是什麼時候？", "a": ["資料量是奇數", "資料有重複", "每次 pivot 都剛好是最大或最小，變成 O(n²)"], "c": 2, "why": "pivot 選得很偏，每次只切掉 1 個。"}, {"q": "合併排序的 <code>merge</code> 為什麼只要 O(n)?", "a": ["兩半都已排序，各用一個指標從頭比，每個元素只處理一次", "因為用了 std::sort", "因為用了雜湊表"], "c": 0, "why": "兩個指標只會往前，不會回頭。"}, {"q": "想讓分數相同的人維持原本順序，應該用？", "a": ["std::sort", "兩個一樣", "std::stable_sort"], "c": 2, "why": "stable_sort 保證穩定；sort 不保證。"}, {"q": "實務上要排序一個 vector，最好？", "a": ["自己寫合併排序", "用 std::sort", "自己寫氣泡排序"], "c": 1, "why": "又快又正確，而且最壞也保證 O(n log n)。"}]};</script>
+<script>
+(function () {
+  "use strict";
+  var CFG = window.PAGE || {};
+  function $(id){ return document.getElementById(id); }
+  function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+  window.PAGE_UTIL = { copyText: function(t, b){ copyText(t, b); }, esc: esc };
+  function copyText(text, btn){
+    var orig = btn.textContent;
+    function flash(){
+      btn.textContent = "Copied ✓"; btn.classList.add("copied");
+      setTimeout(function(){ btn.textContent = orig; btn.classList.remove("copied"); }, 1200);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(flash, flash);
+    } else {
+      var ta = document.createElement("textarea"); ta.value = text;
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); } catch(e){}
+      document.body.removeChild(ta); flash();
+    }
+  }
+
+  /* ---------- fill-in template values ---------- */
+  var DEF = CFG.fill || {};
+  var vals = {};
+  var RE = /\{([A-Za-z0-9_]+)\}/g;
+  function val(k){ return vals[k] || DEF[k]; }
+  function resolvePlain(t){ return t.replace(RE, function(m, k){ return (k in DEF) ? val(k) : m; }); }
+  function resolveHtml(t){
+    var out = "", last = 0, m;
+    RE.lastIndex = 0;
+    while ((m = RE.exec(t))){
+      if (!(m[1] in DEF)) continue;
+      out += esc(t.slice(last, m.index)) + '<span class="slot">' + esc(val(m[1])) + "</span>";
+      last = RE.lastIndex;
+    }
+    return out + esc(t.slice(last));
+  }
+  function lineHtml(line, cpp){
+    if (cpp){
+      var j = line.indexOf("//");
+      if (j > -1) return resolveHtml(line.slice(0, j)) + '<span class="cm">' + resolveHtml(line.slice(j)) + "</span>";
+      return resolveHtml(line);
+    }
+    if (line.trim().indexOf("# ") === 0) return '<span class="cm">' + resolveHtml(line) + "</span>";
+    var i = line.indexOf("  # ");
+    if (i > -1) return resolveHtml(line.slice(0, i)) + '<span class="cm">' + resolveHtml(line.slice(i)) + "</span>";
+    return resolveHtml(line);
+  }
+  var tplEls = Array.prototype.slice.call(document.querySelectorAll("[data-tpl]"));
+  tplEls.forEach(function(el){ el._tpl = el.textContent; });
+  function renderTpl(){
+    tplEls.forEach(function(el){
+      if (el.tagName === "PRE") el.innerHTML = el._tpl.split("\n").map(function(l){ return lineHtml(l, el.hasAttribute("data-cpp")); }).join("\n");
+      else el.innerHTML = resolveHtml(el._tpl);
+    });
+  }
+  var inputs = Array.prototype.slice.call(document.querySelectorAll(".fill input"));
+  inputs.forEach(function(inp){
+    inp.placeholder = DEF[inp.dataset.k] || "";
+    inp.addEventListener("input", function(){
+      var v = inp.value;
+      if (!inp.dataset.ns){ v = v.replace(/\s+/g, "-"); if (v !== inp.value) inp.value = v; }
+      vals[inp.dataset.k] = v;
+      renderTpl();
+    });
+  });
+  var rb = $("resetBtn");
+  if (rb) rb.addEventListener("click", function(){
+    inputs.forEach(function(inp){ inp.value = ""; vals[inp.dataset.k] = ""; });
+    renderTpl();
+  });
+  document.querySelectorAll(".cmd .copy").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var pre = btn.parentNode.querySelector("pre");
+      copyText(pre._tpl !== undefined ? resolvePlain(pre._tpl) : pre.textContent, btn);
+    });
+  });
+
+  /* ---------- reading progress + toc spy ---------- */
+  var readBar = $("readBar");
+  function updateBar(){
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    readBar.style.width = (max > 0 ? Math.min(100, window.scrollY / max * 100) : 0) + "%";
+  }
+  window.addEventListener("scroll", updateBar, { passive: true });
+  window.addEventListener("resize", updateBar);
+  updateBar();
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll("nav.toc a"));
+  if ("IntersectionObserver" in window){
+    var spy = new IntersectionObserver(function(es){
+      es.forEach(function(en){
+        if (en.isIntersecting) tocLinks.forEach(function(a){ a.classList.toggle("active", a.getAttribute("href") === "#" + en.target.id); });
+      });
+    }, { rootMargin: "-15% 0px -70% 0px" });
+    tocLinks.forEach(function(a){ var sec = document.querySelector(a.getAttribute("href")); if (sec) spy.observe(sec); });
+  }
+
+  /* ---------- scenario simulators ---------- */
+  var SIM = CFG.sim || {};
+  document.querySelectorAll("[data-simgroup]").forEach(function(group){
+    var btns = Array.prototype.slice.call(group.querySelectorAll("[data-sim]"));
+    var out = group.querySelector(".sim-result");
+    btns.forEach(function(btn){
+      btn.addEventListener("click", function(){
+        btns.forEach(function(b){ b.classList.toggle("selected", b === btn); });
+        out.innerHTML = SIM[btn.dataset.sim] || "";
+      });
+    });
+  });
+
+  /* ---------- quiz ---------- */
+  var QUIZ = CFG.quiz || [];
+  if (QUIZ.length && $("quiz")){
+    var qi = 0, qScore = 0, qDone = false;
+    var qCount = $("quizCount"), qQ = $("quizQ"), qAns = $("quizAns"), qFb = $("quizFb"), qNext = $("quizNext"), qScoreEl = $("quizScore");
+    var renderQuiz = function(){
+      var item = QUIZ[qi]; qDone = false;
+      qCount.textContent = (qi + 1) + " / " + QUIZ.length;
+      qQ.innerHTML = item.q;
+      qAns.innerHTML = "";
+      qFb.className = "feedback"; qFb.textContent = "";
+      qNext.disabled = true;
+      qNext.textContent = qi === QUIZ.length - 1 ? "重新測驗 ↻" : "下一題 →";
+      item.a.forEach(function(text, i){
+        var b = document.createElement("button");
+        b.type = "button"; b.className = "answer";
+        b.innerHTML = '<span class="letter">' + String.fromCharCode(65 + i) + "</span><span>" + esc(text) + "</span>";
+        b.addEventListener("click", function(){ pick(i); });
+        qAns.appendChild(b);
+      });
+    };
+    var pick = function(i){
+      if (qDone) return; qDone = true;
+      var item = QUIZ[qi], good = i === item.c;
+      Array.prototype.forEach.call(qAns.querySelectorAll("button"), function(b, n){
+        b.disabled = true;
+        if (n === item.c) b.classList.add("correct");
+        if (n === i && !good) b.classList.add("wrong");
+      });
+      if (good) qScore++;
+      qFb.className = "feedback show " + (good ? "good" : "bad");
+      qFb.innerHTML = "<b>" + (good ? "答對了！" : "再記一下這個觀念。") + "</b> " + esc(item.why);
+      qScoreEl.textContent = "答對 " + qScore + " / " + (qi + 1) + " 題";
+      qNext.disabled = false;
+    };
+    qNext.addEventListener("click", function(){
+      if (qi === QUIZ.length - 1){ qi = 0; qScore = 0; } else { qi++; }
+      renderQuiz();
+      qScoreEl.textContent = "答對 " + qScore + " 題";
+    });
+    renderQuiz();
+  }
+
+  /* ---------- checklist ---------- */
+  var checks = Array.prototype.slice.call(document.querySelectorAll("#checks input"));
+  function updateChecks(){
+    var n = checks.filter(function(c){ return c.checked; }).length;
+    $("checkProgress").textContent = "已完成 " + n + " / " + checks.length + " 項";
+    $("checkBar").style.width = (n / checks.length * 100) + "%";
+    checks.forEach(function(c){ c.closest(".check-item").classList.toggle("done", c.checked); });
+  }
+  checks.forEach(function(c){ c.addEventListener("change", updateChecks); });
+
+  /* ---------- role tabs (dual-view pages) ---------- */
+  var roleBtns = Array.prototype.slice.call(document.querySelectorAll("[data-role]"));
+  var rolePanels = Array.prototype.slice.call(document.querySelectorAll("[data-panel]"));
+  function setRole(r, focus){
+    roleBtns.forEach(function(b){
+      var on = b.dataset.role === r;
+      b.classList.toggle("on", on);
+      b.setAttribute("aria-selected", on ? "true" : "false");
+      b.tabIndex = on ? 0 : -1;
+      if (on && focus) b.focus();
+    });
+    rolePanels.forEach(function(p){ p.hidden = p.dataset.panel !== r; });
+  }
+  roleBtns.forEach(function(b){
+    b.addEventListener("click", function(){ setRole(b.dataset.role); });
+    b.addEventListener("keydown", function(e){
+      if (e.key === "ArrowLeft" || e.key === "ArrowRight"){
+        e.preventDefault(); setRole(b.dataset.role === "c" ? "o" : "c", true);
+      }
+    });
+  });
+  if (roleBtns.length) setRole("c");
+
+  /* ---------- stage stepper (two columns) ---------- */
+  var STAGES = CFG.stages || [];
+  if (STAGES.length && $("stages")){
+    var stage = 0;
+    var stagesEl = $("stages");
+    var renderStages = function(){
+      stagesEl.innerHTML = STAGES.map(function(s, i){
+        return '<button type="button" data-i="' + i + '" class="' + (i === stage ? "on" : "") + '" aria-pressed="' + (i === stage) + '">' +
+          '<span class="si">階段 ' + (i + 1) + "</span><span>" + s.label + '</span><span class="badge ' + s.tone + '">' + s.badge + "</span></button>";
+      }).join("");
+      var s = STAGES[stage];
+      $("c-h").textContent = s.c.h; $("o-h").textContent = s.o.h;
+      $("c-list").innerHTML = s.c.items.map(function(t){ return "<li>" + t + "</li>"; }).join("");
+      $("o-list").innerHTML = s.o.items.map(function(t){ return "<li>" + t + "</li>"; }).join("");
+      $("prevStage").disabled = stage === 0;
+      $("nextStage").disabled = stage === STAGES.length - 1;
+    };
+    stagesEl.addEventListener("click", function(e){
+      var b = e.target.closest("button[data-i]"); if (!b) return;
+      stage = +b.dataset.i; renderStages();
+    });
+    $("prevStage").addEventListener("click", function(){ if (stage > 0){ stage--; renderStages(); } });
+    $("nextStage").addEventListener("click", function(){ if (stage < STAGES.length - 1){ stage++; renderStages(); } });
+    renderStages();
+  }
+
+  /* ---------- decision picker ---------- */
+  var DECIDE = CFG.decide || [];
+  if (DECIDE.length && $("decideBtns")){
+    var decBtns = $("decideBtns"), decOut = $("decideOut");
+    decBtns.innerHTML = DECIDE.map(function(d, i){
+      return '<button type="button" data-d="' + i + '">' + d.label + "</button>";
+    }).join("");
+    decBtns.addEventListener("click", function(e){
+      var b = e.target.closest("button[data-d]"); if (!b) return;
+      var d = DECIDE[+b.dataset.d];
+      Array.prototype.forEach.call(decBtns.querySelectorAll("button"), function(x){ x.classList.toggle("selected", x === b); });
+      var tone = d.risk === "高" ? "bad" : (d.risk === "中" ? "warn" : "ok");
+      decOut.innerHTML = '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px"><b>建議做法</b><span class="badge ' + tone + '">風險：' + d.risk + "</span></div>" +
+        '<div class="cmd" style="margin:8px 0"><pre></pre><button type="button" class="copy">Copy</button></div><div>' + d.why + "</div>";
+      decOut.querySelector("pre").textContent = d.cmd;
+      decOut.querySelector(".copy").addEventListener("click", function(ev){ copyText(d.cmd, ev.currentTarget); });
+    });
+  }
+
+  renderTpl();
+  if (checks.length) updateChecks();
+})();
+
+</script>
+<script>
+
+/* ---- core ---- */
+(function (G) {
+  "use strict";
+  var A = G.Algo = G.Algo || {};
+  function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+  A.esc = esc;
+
+  /* ---------- 極簡 C++ 語法上色(每行一個 <span class="l">,換行字元保留在 span 內,複製時不會掉) ---------- */
+  var KW = /^(?:auto|break|case|const|constexpr|continue|default|delete|do|else|enum|false|for|if|namespace|new|nullptr|operator|private|public|return|sizeof|static|static_cast|struct|switch|template|this|true|typedef|using|while|class|void|int|long|short|unsigned|signed|char|bool|float|double)$/;
+  var TY = /^(?:vector|string|size_t|cout|cin|cerr|endl|array|list|stack|queue|deque|map|set|unordered_map|unordered_set|priority_queue|pair|sort|swap|min|max|begin|end|int64_t)$/;
+  var RE = /(\/\/[^\n]*)|("(?:\\.|[^"\\\n])*")|('(?:\\.|[^'\\\n])+')|(^[ \t]*#[^\n]*)|(\b\d+(?:\.\d+)?\b)|(\b[A-Za-z_]\w*\b)/g;
+  function hlInline(line){
+    var out = "", last = 0, m; RE.lastIndex = 0;
+    while ((m = RE.exec(line))){
+      out += esc(line.slice(last, m.index));
+      var t = m[0], c = null;
+      if (m[1]) c = "c"; else if (m[2] || m[3]) c = "s"; else if (m[4]) c = "p"; else if (m[5]) c = "n";
+      else if (KW.test(t)) c = "k"; else if (TY.test(t)) c = "t";
+      out += c ? '<span class="x' + c + '">' + esc(t) + "</span>" : esc(t);
+      last = RE.lastIndex;
+    }
+    return out + esc(line.slice(last));
+  }
+  A.hlCpp = function (code) {
+    return code.replace(/\n$/, "").split("\n").map(function (ln) {
+      return '<span class="l">' + hlInline(ln) + "\n</span>";
+    }).join("");
+  };
+  A.highlightAll = function () {
+    if (typeof document === "undefined") return;
+    Array.prototype.forEach.call(document.querySelectorAll("pre[data-cpp]"), function (pre) {
+      pre.innerHTML = A.hlCpp(pre.textContent);
+    });
+  };
+
+  /* ---------- 通用播放器 widget ----------
+     o = { form:[{id,label,type:'select'|'number'|'text',options,value,min,max,showIf}], runLabel,
+           init():base, idle(base):frame, make(vals, base):{frames,result}|{error},
+           render(frame):html, code:string|null, code_cap:string }
+     frame = { msg, line:number|[number], ...(由 render 決定其餘欄位) }                                 */
+  var SPEEDS = { slow: 1400, mid: 800, fast: 350 };
+  A.widget = function (id, o) {
+    if (typeof document === "undefined") return null;
+    var root = document.getElementById(id); if (!root) return null;
+    root.classList.add("algo-w");
+    var form = (o.form || []).map(function (f) {
+      var inner;
+      if (f.type === "select") inner = '<select id="' + id + "-" + f.id + '">' + f.options.map(function (op) {
+        return '<option value="' + esc(op[0]) + '"' + (op[0] === f.value ? " selected" : "") + ">" + esc(op[1]) + "</option>"; }).join("") + "</select>";
+      else inner = '<input id="' + id + "-" + f.id + '" type="' + (f.type || "text") + '" value="' + esc(f.value === undefined ? "" : f.value) + '"' +
+        (f.min !== undefined ? ' min="' + f.min + '"' : "") + (f.max !== undefined ? ' max="' + f.max + '"' : "") + ' autocomplete="off">';
+      return '<div class="algo-f" data-f="' + f.id + '"><label for="' + id + "-" + f.id + '">' + esc(f.label) + "</label>" + inner + "</div>";
+    }).join("");
+    var extra = (o.buttons || []).map(function (b, i) { return '<button type="button" class="ghost" data-x="' + i + '">' + esc(b.label) + "</button>"; }).join("");
+    root.innerHTML =
+      '<div class="algo-form">' + form + '<button type="button" class="primary" data-a="run">' + esc(o.runLabel || "執行") + "</button>" + extra +
+      '<button type="button" class="ghost" data-a="reset">Reset</button></div>' +
+      '<div class="algo-main' + (o.code ? "" : " nocode") + '">' +
+      '<div class="algo-left" tabindex="0" aria-label="動畫區：按左右方向鍵逐步，空白鍵播放或暫停">' +
+        '<div class="algo-stage"></div><div class="algo-msg" aria-live="polite"></div>' +
+        '<div class="algo-ctl"><button type="button" class="ghost" data-a="first" title="回到第一步">⏮</button>' +
+        '<button type="button" class="ghost" data-a="prev">← 上一步</button>' +
+        '<button type="button" class="primary" data-a="next">下一步 →</button>' +
+        '<button type="button" class="ghost" data-a="play">▶ 播放</button>' +
+        '<select data-a="speed" aria-label="播放速度"><option value="slow">慢</option><option value="mid" selected>中</option><option value="fast">快</option></select>' +
+        '<input type="range" data-a="seek" min="0" max="0" value="0" aria-label="步驟"><span class="algo-step"></span></div></div>' +
+      (o.code ? '<div class="cmd algo-code"><div class="cap">' + esc(o.code_cap || "程式碼（目前執行的那一行會亮起來）") + "</div><pre>" + A.hlCpp(o.code) + "</pre></div>" : "") +
+      "</div>";
+    var $ = function (s) { return root.querySelector(s); };
+    var stage = $(".algo-stage"), msg = $(".algo-msg"), step = $(".algo-step"), seek = $('[data-a="seek"]'),
+        btnPrev = $('[data-a="prev"]'), btnNext = $('[data-a="next"]'), btnPlay = $('[data-a="play"]'), btnFirst = $('[data-a="first"]');
+    var lines = o.code ? Array.prototype.slice.call(root.querySelectorAll(".algo-code .l")) : [];
+    var base = o.init(), frames = [o.idle(base)], idx = 0, timer = null;
+
+    function vals() {
+      var v = {}; (o.form || []).forEach(function (f) {
+        var el = document.getElementById(id + "-" + f.id); v[f.id] = f.type === "number" ? (el.value === "" ? NaN : +el.value) : el.value; });
+      return v;
+    }
+    function showIf() {
+      var v = vals();
+      (o.form || []).forEach(function (f) {
+        if (!f.showIf) return;
+        var ok = Object.keys(f.showIf).every(function (k) { return [].concat(f.showIf[k]).map(String).indexOf(String(v[k])) !== -1; });
+        $('[data-f="' + f.id + '"]').hidden = !ok;
+      });
+    }
+    function stop() { if (timer) { clearInterval(timer); timer = null; } btnPlay.textContent = "▶ 播放"; }
+    function show() {
+      var f = frames[idx];
+      stage.innerHTML = o.render(f);
+      msg.className = "algo-msg"; msg.innerHTML = f.msg || "";
+      var on = f.line === undefined ? [] : [].concat(f.line);
+      lines.forEach(function (l, i) { l.classList.toggle("on", on.indexOf(i + 1) !== -1); });
+      if (on.length && lines[on[0] - 1]) { var el = lines[on[0] - 1], pre = el.parentNode;
+        if (el.offsetTop < pre.scrollTop || el.offsetTop + el.offsetHeight > pre.scrollTop + pre.clientHeight) pre.scrollTop = Math.max(0, el.offsetTop - pre.clientHeight / 3); }
+      var last = frames.length - 1;
+      seek.max = last; seek.value = idx; seek.disabled = last === 0;
+      step.textContent = last === 0 ? "尚未執行" : "步驟 " + (idx + 1) + " / " + frames.length;
+      btnPrev.disabled = idx === 0; btnFirst.disabled = idx === 0;
+      btnNext.disabled = idx >= last; btnPlay.disabled = last === 0;
+    }
+    function go(i) { idx = Math.max(0, Math.min(frames.length - 1, i)); show(); }
+    function play() {
+      if (timer) { stop(); return; }
+      if (idx >= frames.length - 1) go(0);
+      btnPlay.textContent = "⏸ 暫停";
+      timer = setInterval(function () { if (idx >= frames.length - 1) { stop(); return; } go(idx + 1); if (idx >= frames.length - 1) stop(); },
+        SPEEDS[$('[data-a="speed"]').value] || 800);
+    }
+    function run(v) {
+      stop();
+      var r = o.make(v, base);
+      if (r.error) { msg.className = "algo-msg err"; msg.textContent = r.error; return false; }
+      frames = r.frames; base = r.result; go(0); return true;
+    }
+    function reset() { stop(); base = o.init(); frames = [o.idle(base)]; idx = 0; show(); }
+
+    root.addEventListener("click", function (e) {
+      var b = e.target.closest("button[data-a],button[data-x]"); if (!b || !root.contains(b)) return;
+      if (b.dataset.x !== undefined) { var bx = o.buttons[+b.dataset.x]; if (bx.run) { bx.run(vals(), { base: base, setBase: function (b) { stop(); base = b; frames = [o.idle(base)]; idx = 0; show(); }, set: function (k, val) { document.getElementById(id + "-" + k).value = val; showIf(); }, run: function () { run(vals()); } }); } return; }
+      var a = b.dataset.a;
+      if (a === "run") run(vals()); else if (a === "reset") reset();
+      else if (a === "next") { stop(); go(idx + 1); } else if (a === "prev") { stop(); go(idx - 1); }
+      else if (a === "first") { stop(); go(0); } else if (a === "play") play();
+    });
+    seek.addEventListener("input", function () { stop(); go(+seek.value); });
+    root.addEventListener("change", function (e) { if (e.target.closest(".algo-form")) showIf(); });
+    $(".algo-left").addEventListener("keydown", function (e) {
+      if (e.key === "ArrowRight") { e.preventDefault(); stop(); go(idx + 1); }
+      else if (e.key === "ArrowLeft") { e.preventDefault(); stop(); go(idx - 1); }
+      else if (e.key === " ") { e.preventDefault(); play(); }
+    });
+    showIf(); show();
+    var api = { run: run, reset: reset, go: go, frames: function () { return frames; }, base: function () { return base; } };
+    root._algo = api; return api;
+  };
+  if (typeof document !== "undefined") A.highlightAll();
+})(typeof window !== "undefined" ? window : globalThis);
+
+/* ---- cells ---- */
+(function (G) {
+  "use strict";
+  var A = G.Algo = G.Algo || {};
+  var esc = A.esc || function (s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); };
+  function row(cells, empty) {
+    var h = '<div class="cells">';
+    (cells || []).forEach(function (c, i) {
+      h += '<div class="cell ' + (c.cls || "") + '"><span class="t">' + esc(c.t || "") + '</span><div class="b">' +
+        (c.v === null || c.v === undefined ? "" : esc(c.v)) + '</div><span class="i">' + i + "</span></div>";
+    });
+    var n = (cells || []).length;
+    for (var e = 0; e < (empty || 0); e++) h += '<div class="cell empty"><span class="t"></span><div class="b">0</div><span class="i">' + (n + e) + "</span></div>";
+    return h + "</div>";
+  }
+  /* frame = { cells:[{v,cls,t}], empty:n, chips:[[label,value]] }  或  { rows:[{label,cells,empty}], chips } */
+  A.cellsHtml = function (f) {
+    var h = "";
+    if (f.rows) f.rows.forEach(function (r) { h += (r.label ? '<div class="rowlab">' + esc(r.label) + "</div>" : "") + row(r.cells, r.empty); });
+    else h = row(f.cells, f.empty);
+    if (f.chips && f.chips.length) h += '<div class="kv">' + f.chips.map(function (c) { return "<span>" + esc(c[0]) + " <b>" + esc(c[1]) + "</b></span>"; }).join("") + "</div>";
+    return h;
+  };
+})(typeof window !== "undefined" ? window : globalThis);
+
+/* ---- bars ---- */
+(function (G) {
+  "use strict";
+  var A = G.Algo = G.Algo || {};
+  var esc = A.esc;
+  /* f = { vals, cls, tags, chips }  或  { rows:[{label,vals,cls,tags}], chips };vals 內的 null 代表空槽 */
+  function row(f, vals, cls, tags, mx, sm) {
+    return '<div class="bars' + (sm ? " sm" : "") + '">' + vals.map(function (v, i) {
+      var empty = v === null || v === undefined;
+      return '<div class="sbar ' + ((cls && cls[i]) || "") + (empty ? " empty" : "") + '"><span class="t">' + esc((tags && tags[i]) || "") + '</span><div class="col" style="height:' + (empty ? 10 : (14 + Math.round(v / mx * (sm ? 78 : 138)))) + 'px"></div><span class="v">' + (empty ? "" : esc(v)) + "</span></div>";
+    }).join("") + "</div>";
+  }
+  A.barsHtml = function (f) {
+    var h = "", all;
+    if (f.rows) {
+      all = [].concat.apply([], f.rows.map(function (r) { return r.vals; })).filter(function (x) { return x !== null && x !== undefined; });
+      var mx2 = Math.max.apply(null, all.concat([1]));
+      f.rows.forEach(function (r) { h += '<div class="rowlab">' + esc(r.label) + "</div>" + row(f, r.vals, r.cls, r.tags, mx2, true); });
+    } else { var vals = f.vals || []; h = row(f, vals, f.cls, f.tags, Math.max.apply(null, vals.concat([1])), false); }
+    if (f.chips && f.chips.length) h += '<div class="kv">' + f.chips.map(function (c) { return "<span>" + esc(c[0]) + " <b>" + esc(c[1]) + "</b></span>"; }).join("") + "</div>";
+    return h;
+  };
+})(typeof window !== "undefined" ? window : globalThis);
+
+/* ---- alg_sort ---- */
+(function (G) {
+  "use strict";
+  var A = G.Algo = G.Algo || {};
+  var MAXN = 10;
+  var CODE_SORT = [
+    "void bubbleSort(std::vector<int>& v) {", "    int n = static_cast<int>(v.size());", "    for (int i = 0; i < n - 1; ++i) {", "        bool swapped = false;", "        for (int j = 0; j < n - 1 - i; ++j) {",
+    "            if (v[j] > v[j + 1]) {", "                std::swap(v[j], v[j + 1]);", "                swapped = true;", "            }", "        }", "        if (!swapped) {", "            break;", "        }", "    }", "}", "",
+    "void selectionSort(std::vector<int>& v) {", "    int n = static_cast<int>(v.size());", "    for (int i = 0; i < n - 1; ++i) {", "        int minIdx = i;", "        for (int j = i + 1; j < n; ++j) {",
+    "            if (v[j] < v[minIdx]) {", "                minIdx = j;", "            }", "        }", "        std::swap(v[i], v[minIdx]);", "    }", "}", "",
+    "void insertionSort(std::vector<int>& v) {", "    int n = static_cast<int>(v.size());", "    for (int i = 1; i < n; ++i) {", "        int key = v[i];", "        int j = i - 1;",
+    "        while (j >= 0 && v[j] > key) {", "            v[j + 1] = v[j];", "            --j;", "        }", "        v[j + 1] = key;", "    }", "}"].join("\n");
+  var NAMES = { bubble: "氣泡排序", selection: "選擇排序", insertion: "插入排序" };
+
+  /* 單一實作:record=true 時產生 frame;record=false 只統計(給「實驗」用) */
+  function sorter(alg, input, record) {
+    var a = input.slice(), n = a.length, cmp = 0, swp = 0, fr = [];
+    function emit(line, msg, cls, tags, extra) {
+      if (!record) return;
+      var c = [], t = [], i; for (i = 0; i < n; i++) { c.push((cls && cls[i]) || ""); t.push((tags && tags[i]) || ""); }
+      fr.push({ vals: a.slice(), cls: c, tags: t, chips: [["比較次數", cmp], [alg === "insertion" ? "搬動次數" : "交換次數", swp]].concat(extra || []), line: line, msg: msg });
+    }
+    function mark(map, from, to, cls) { for (var q = from; q <= to; q++) if (q >= 0 && q < n) map[q] = cls; }
+    var o, i, j;
+    if (alg === "bubble") {
+      emit([2, 3], "氣泡排序：每一輪從左到右，比較相鄰兩個，<b>左邊比右邊大就交換</b>。一輪下來，最大的會「浮」到最右邊。");
+      for (i = 0; i < n - 1; i++) {
+        var swapped = false;
+        for (j = 0; j < n - 1 - i; j++) {
+          cmp++; o = {}; mark(o, n - i, n - 1, "ok"); o[j] = "cur"; o[j + 1] = "cur";
+          var gt = a[j] > a[j + 1];
+          emit([5, 6], "比較 v[" + j + "] = " + a[j] + " 和 v[" + (j + 1) + "] = " + a[j + 1] + (gt ? ":左邊比較大，要交換。" : ":順序正確，不動。"), o);
+          if (gt) { var t = a[j]; a[j] = a[j + 1]; a[j + 1] = t; swp++; swapped = true; o = {}; mark(o, n - i, n - 1, "ok"); o[j] = "mv"; o[j + 1] = "mv"; emit([7, 8], "交換：" + a[j + 1] + " 往右移了一格。", o); }
+        }
+        if (!swapped) { o = {}; mark(o, 0, n - 1, "ok"); emit([11, 12], "這一輪<b>一次都沒有交換</b>，代表已經排好，提早結束（<code>break</code>）。", o); return { frames: fr, result: a, cmp: cmp, swp: swp }; }
+      }
+    } else if (alg === "selection") {
+      emit([18, 19], "選擇排序：每一輪從「還沒排好的部分」挑出<b>最小的</b>，和該部分的第一個交換。");
+      for (i = 0; i < n - 1; i++) {
+        var mi = i; o = {}; mark(o, 0, i - 1, "ok"); o[i] = "cur"; var tg = {}; tg[i] = "min";
+        emit(20, "第 " + i + " 輪：先假設位置 " + i + " 的 " + a[i] + " 是最小的(<code>minIdx = " + i + "</code>)。", o, tg);
+        for (j = i + 1; j < n; j++) {
+          cmp++; var less = a[j] < a[mi]; o = {}; mark(o, 0, i - 1, "ok"); o[mi] = "min"; o[j] = "cur"; tg = {}; tg[mi] = "min"; tg[j] = "j";
+          emit([21, 22], "比較 v[" + j + "] = " + a[j] + " 和目前最小的 v[" + mi + "] = " + a[mi] + (less ? ":更小，要更新最小的位置。" : ":沒有更小。"), o, tg);
+          if (less) { mi = j; o = {}; mark(o, 0, i - 1, "ok"); o[mi] = "min"; tg = {}; tg[mi] = "min"; emit(23, "<code>minIdx = " + j + "</code>：新的最小值是 " + a[mi] + "。", o, tg); }
+        }
+        if (mi !== i) { var t2 = a[i]; a[i] = a[mi]; a[mi] = t2; swp++; }
+        o = {}; mark(o, 0, i, "ok"); if (mi !== i) o[mi] = "mv";
+        emit(26, mi !== i ? "把最小的 " + a[i] + " 和位置 " + i + " 交換，位置 " + i + " 就排好了。" : "最小的本來就在位置 " + i + ",不用動。位置 " + i + " 排好了。", o);
+      }
+    } else {
+      emit([31, 32], "插入排序：像整理手上的撲克牌。左邊一段已經排好，每次拿下一張，<b>插進左邊正確的位置</b>。");
+      for (i = 1; i < n; i++) {
+        var key = a[i]; j = i - 1; o = {}; mark(o, 0, i - 1, "ok"); o[i] = "key"; tg = {}; tg[i] = "key";
+        emit([33, 34], "拿起 v[" + i + "] = <b>" + key + "</b>（叫它 key），從左邊已排好的部分的最後面往前找位置。", o, tg, [["key", key]]);
+        while (j >= 0) {
+          cmp++; var big = a[j] > key; o = {}; mark(o, 0, i, "ok"); o[j] = "cur"; o[j + 1] = "key";
+          emit(35, "比較 v[" + j + "] = " + a[j] + " 和 key = " + key + (big ? ":比 key 大，要往右讓位。" : ":不比 key 大，位置找到了。"), o, null, [["key", key]]);
+          if (!big) break;
+          a[j + 1] = a[j]; swp++; o = {}; mark(o, 0, i, "ok"); o[j + 1] = "mv"; emit([36, 37], "<code>v[" + (j + 1) + "] = v[" + j + "]</code>:" + a[j + 1] + " 往右搬一格。", o, null, [["key", key]]);
+          j--;
+        }
+        a[j + 1] = key; o = {}; mark(o, 0, i, "ok"); o[j + 1] = "new";
+        emit(39, "<code>v[" + (j + 1) + "] = key</code>：把 " + key + " 放進空出來的位置。左邊 " + (i + 1) + " 個都排好了。", o);
+      }
+    }
+    o = {}; mark(o, 0, n - 1, "ok");
+    emit(alg === "bubble" ? 15 : alg === "selection" ? 28 : 41, "排序完成！一共比較 <b>" + cmp + "</b> 次，" + (alg === "insertion" ? "搬動" : "交換") + " <b>" + swp + "</b> 次。", o);
+    return { frames: fr, result: a, cmp: cmp, swp: swp };
+  }
+  function parse(text) {
+    var parts = String(text).split(/[\s,]+/).filter(function (x) { return x !== ""; });
+    if (parts.length < 2 || parts.length > MAXN) return { error: "請輸入 2 到 " + MAXN + " 個數字，用逗號或空白分隔。" };
+    var vals = parts.map(Number);
+    if (!vals.every(function (x) { return isFinite(x) && Math.floor(x) === x && x >= 1 && x <= 99; })) return { error: "每個數字請是 1 到 99 的整數。" };
+    return { vals: vals };
+  }
+  function run(alg, text) {
+    var p = parse(text); if (p.error) return p; if (!NAMES[alg]) return { error: "請選一種排序法。" };
+    var r = sorter(alg, p.vals, true); r.result = null; return r;
+  }
+  function stats(alg, arr) { var r = sorter(alg, arr, false); return { cmp: r.cmp, swp: r.swp, sorted: r.result }; }
+  function make(kind, n, rnd) {
+    rnd = rnd || Math.random; var a = [], i;
+    for (i = 0; i < n; i++) a.push(1 + Math.floor(rnd() * 99));
+    if (kind === "sorted" || kind === "reverse" || kind === "nearly") a.sort(function (x, y) { return x - y; });
+    if (kind === "reverse") a.reverse();
+    if (kind === "nearly") for (i = 0; i + 1 < n; i += Math.max(3, Math.floor(n / 6))) { var t = a[i]; a[i] = a[i + 1]; a[i + 1] = t; }
+    return a;
+  }
+  A.sort = { MAXN: MAXN, CODE_SORT: CODE_SORT, NAMES: NAMES, run: run, stats: stats, parse: parse, make: make };
+  if (typeof module !== "undefined" && module.exports) module.exports = A;
+})(typeof window !== "undefined" ? window : globalThis);
+
+/* ---- alg_sortadv ---- */
+(function (G) {
+  "use strict";
+  var A = G.Algo = G.Algo || {};
+  var CODE_ADV = [
+    "void merge(std::vector<int>& v, std::vector<int>& tmp, int lo, int mid, int hi) {", "    int i = lo;", "    int j = mid + 1;", "    int k = lo;", "    while (i <= mid && j <= hi) {",
+    "        if (v[i] <= v[j]) {", "            tmp[k++] = v[i++];", "        } else {", "            tmp[k++] = v[j++];", "        }", "    }", "    while (i <= mid) {", "        tmp[k++] = v[i++];", "    }",
+    "    while (j <= hi) {", "        tmp[k++] = v[j++];", "    }", "    for (int p = lo; p <= hi; ++p) {", "        v[p] = tmp[p];", "    }", "}", "",
+    "void mergeSort(std::vector<int>& v, std::vector<int>& tmp, int lo, int hi) {", "    if (lo >= hi) {", "        return;", "    }", "    int mid = lo + (hi - lo) / 2;", "    mergeSort(v, tmp, lo, mid);", "    mergeSort(v, tmp, mid + 1, hi);", "    merge(v, tmp, lo, mid, hi);", "}", "",
+    "int partition(std::vector<int>& v, int lo, int hi) {", "    int pivot = v[hi];", "    int i = lo;", "    for (int j = lo; j < hi; ++j) {", "        if (v[j] < pivot) {", "            std::swap(v[i], v[j]);", "            ++i;", "        }", "    }",
+    "    std::swap(v[i], v[hi]);", "    return i;", "}", "", "void quickSort(std::vector<int>& v, int lo, int hi) {", "    if (lo >= hi) {", "        return;", "    }", "    int p = partition(v, lo, hi);",
+    "    quickSort(v, lo, p - 1);", "    quickSort(v, p + 1, hi);", "}"].join("\n");
+  var NAMES = { merge: "合併排序", quick: "快速排序" };
+
+  function mergeSorter(input, record) {
+    var v = input.slice(), n = v.length, tmp = [], cmp = 0, wr = 0, fr = [], sorted = [], i;
+    for (i = 0; i < n; i++) { tmp.push(null); sorted.push(false); }
+    function emit(line, msg, o) {
+      if (!record) return; o = o || {};
+      var vc = [], vt = [], tc = [], tt = [];
+      for (var q = 0; q < n; q++) {
+        var base = sorted[q] ? "ok" : (o.lo !== undefined && (q < o.lo || q > o.hi) ? "dim" : "");
+        vc.push((o.vcls && o.vcls[q]) || base); vt.push((o.vtags && o.vtags[q]) || ""); tc.push((o.tcls && o.tcls[q]) || ""); tt.push("");
+      }
+      fr.push({ rows: [{ label: "v（要排序的陣列）", vals: v.slice(), cls: vc, tags: vt }, { label: "tmp（合併用的暫存區）", vals: tmp.slice(), cls: tc, tags: tt }], chips: [["比較次數", cmp], ["寫入 tmp", wr]], line: line, msg: msg });
+    }
+    function merge(lo, mid, hi) {
+      var i = lo, j = mid + 1, k = lo, tcls = {};
+      emit(30, "左右兩半 <b>[" + lo + ".." + mid + "]</b> 和 <b>[" + (mid + 1) + ".." + hi + "]</b> 都各自排好了，現在把它們合併成一個排好的區段。", { lo: lo, hi: hi });
+      function placed() { var c = {}; for (var q = lo; q < k; q++) c[q] = "ok"; c[k - 1] = "new"; return c; }
+      while (i <= mid && j <= hi) {
+        cmp++; var left = v[i] <= v[j], x = left ? v[i] : v[j]; tmp[k] = x; wr++; var vc = {}; vc[i] = "cur"; vc[j] = "cur"; k++;
+        emit(left ? [5, 6, 7] : [5, 6, 9], "比較 v[" + i + "] = " + v[i] + " 和 v[" + j + "] = " + v[j] + ":" + (left ? "左邊 " + v[i] + " ≤ 右邊，取左邊" : "右邊 " + v[j] + " 比較小，取右邊") + ",放進 tmp[" + (k - 1) + "]。", { lo: lo, hi: hi, vcls: vc, tcls: placed() });
+        if (left) i++; else j++;
+      }
+      while (i <= mid) { tmp[k] = v[i]; wr++; var vc2 = {}; vc2[i] = "cur"; k++; emit([12, 13], "右邊已經用完，左邊剩下的 " + v[i] + " 直接放進 tmp[" + (k - 1) + "]。", { lo: lo, hi: hi, vcls: vc2, tcls: placed() }); i++; }
+      while (j <= hi) { tmp[k] = v[j]; wr++; var vc3 = {}; vc3[j] = "cur"; k++; emit([15, 16], "左邊已經用完，右邊剩下的 " + v[j] + " 直接放進 tmp[" + (k - 1) + "]。", { lo: lo, hi: hi, vcls: vc3, tcls: placed() }); j++; }
+      for (var p = lo; p <= hi; p++) { v[p] = tmp[p]; sorted[p] = true; }
+      var tc = {}; for (p = lo; p <= hi; p++) tc[p] = "ok";
+      emit([18, 19], "把 tmp[" + lo + ".." + hi + "] 複製回 v：這一段排好了。", { lo: lo, hi: hi, tcls: tc });
+      for (p = lo; p <= hi; p++) tmp[p] = null;
+    }
+    function ms(lo, hi) {
+      if (lo >= hi) { sorted[lo] = true; emit([23, 24, 25], "<code>mergeSort(" + lo + ".." + hi + ")</code>：只有 1 個元素，本來就排好了，直接返回。", { lo: lo, hi: hi }); return; }
+      var mid = lo + Math.floor((hi - lo) / 2), vt = {}; vt[mid] = "mid";
+      emit([23, 27], "<code>mergeSort(" + lo + ".." + hi + ")</code>：有 " + (hi - lo + 1) + " 個元素。<b>分</b>：切成左 [" + lo + ".." + mid + "] 與右 [" + (mid + 1) + ".." + hi + "]。", { lo: lo, hi: hi, vtags: vt });
+      ms(lo, mid); ms(mid + 1, hi); merge(lo, mid, hi);
+    }
+    if (record) emit(23, "合併排序：<b>分</b>（切成一半）再<b>合</b>（把兩個排好的合併）。先一路切到只剩 1 個。", {});
+    if (n > 0) ms(0, n - 1);
+    emit(31, "排序完成！一共比較 <b>" + cmp + "</b> 次。", {});
+    return { frames: fr, result: v, cmp: cmp, swp: wr };
+  }
+
+  function quickSorter(input, record) {
+    var v = input.slice(), n = v.length, cmp = 0, swp = 0, fr = [], fin = [], i;
+    for (i = 0; i < n; i++) fin.push(false);
+    function emit(line, msg, o) {
+      if (!record) return; o = o || {};
+      var c = [], t = [];
+      for (var q = 0; q < n; q++) { c.push((o.cls && o.cls[q]) || (fin[q] ? "ok" : (o.lo !== undefined && (q < o.lo || q > o.hi) ? "dim" : ""))); t.push((o.tags && o.tags[q]) || ""); }
+      fr.push({ vals: v.slice(), cls: c, tags: t, chips: [["比較次數", cmp], ["交換次數", swp]], line: line, msg: msg });
+    }
+    function qs(lo, hi) {
+      if (lo > hi) return;
+      if (lo === hi) { fin[lo] = true; emit([46, 47, 48], "<code>quickSort(" + lo + ".." + hi + ")</code>：只剩 1 個，它一定在正確位置了。", { lo: lo, hi: hi }); return; }
+      var pivot = v[hi], i = lo, cls = {}, tags = {};
+      function zone(j) { var c = {}; for (var q = lo; q < i; q++) c[q] = "tgt"; c[hi] = "key"; if (j !== undefined) c[j] = "cur"; return c; }
+      tags[hi] = "pivot"; cls[hi] = "key";
+      emit([46, 34], "<code>quickSort(" + lo + ".." + hi + ")</code>：有 " + (hi - lo + 1) + " 個。挑最後一個 <b>" + pivot + "</b> 當基準（pivot）。目標：把比 pivot 小的換到左邊（藍色）。", { lo: lo, hi: hi, cls: cls, tags: tags });
+      for (var j = lo; j < hi; j++) {
+        cmp++; var less = v[j] < pivot, tg = {}; tg[hi] = "pivot"; tg[i] = "i"; tg[j] = i === j ? "i,j" : "j";
+        emit([36, 37], "比較 v[" + j + "] = " + v[j] + " 和 pivot " + pivot + ":" + (less ? "比較小，要放到左區。" : "不比 pivot 小，留在右區。"), { lo: lo, hi: hi, cls: zone(j), tags: tg });
+        if (less) {
+          var sw = i !== j; if (sw) { var t = v[i]; v[i] = v[j]; v[j] = t; swp++; } var c2 = zone(); if (sw) { c2[i] = "mv"; c2[j] = "mv"; } i++; tg = {}; tg[hi] = "pivot"; tg[i] = "i";
+          emit([38, 39], sw ? "<code>swap(v[" + (i - 1) + "], v[" + j + "])</code>：把小的換到左區邊界，左區多一個，<code>i</code> 往右。" : "v[" + j + "] 剛好就在左區邊界，不用交換，左區多一個，<code>i</code> 往右。", { lo: lo, hi: hi, cls: c2, tags: tg });
+        }
+      }
+      if (i !== hi) { var t2 = v[i]; v[i] = v[hi]; v[hi] = t2; swp++; }
+      fin[i] = true; var c3 = {}; c3[i] = "new";
+      emit(42, "<code>swap(v[" + i + "], v[" + hi + "])</code>：把 pivot " + pivot + " 換到位置 " + i + "。左邊都比它小，右邊都不比它小，<b>pivot 就定位了，不會再動</b>。", { lo: lo, hi: hi, cls: c3 });
+      qs(lo, i - 1); qs(i + 1, hi);
+    }
+    if (record) emit(46, "快速排序：挑一個基準（pivot），把資料分成「比它小」和「比它大」兩邊，再各自排。", {});
+    qs(0, n - 1);
+    for (i = 0; i < n; i++) fin[i] = true;
+    emit(53, "排序完成！一共比較 <b>" + cmp + "</b> 次，交換 <b>" + swp + "</b> 次。", {});
+    return { frames: fr, result: v, cmp: cmp, swp: swp };
+  }
+  function run(alg, text) {
+    if (!NAMES[alg]) return { error: "請選一種排序法。" };
+    var p = A.sort.parse(text); if (p.error) return p;
+    var r = alg === "merge" ? mergeSorter(p.vals, true) : quickSorter(p.vals, true); r.result = null; return r;
+  }
+  function stats(alg, arr) { var r = alg === "merge" ? mergeSorter(arr, false) : quickSorter(arr, false); return { cmp: r.cmp, swp: r.swp, sorted: r.result }; }
+  A.sortadv = { CODE_ADV: CODE_ADV, NAMES: NAMES, run: run, stats: stats };
+  if (typeof module !== "undefined" && module.exports) module.exports = A;
+})(typeof window !== "undefined" ? window : globalThis);
+
+/* ---- curves ---- */
+(function (G) {
+  "use strict";
+  var A = G.Algo = G.Algo || {};
+  var CURVES = [
+    { k: "c1", name: "O(1)", color: "#87867F", f: function () { return 1; } },
+    { k: "log", name: "O(log n)", color: "#788C5D", f: function (n) { return Math.log2(n); } },
+    { k: "n", name: "O(n)", color: "#3D3D3A", f: function (n) { return n; } },
+    { k: "nlogn", name: "O(n log n)", color: "#D97757", f: function (n) { return n * Math.log2(n); } },
+    { k: "n2", name: "O(n²)", color: "#B04A3F", f: function (n) { return n * n; } },
+    { k: "exp", name: "O(2ⁿ)", color: "#141413", dash: "6 4", f: function (n) { return Math.pow(2, n); } }
+  ];
+  function counts(n) { var o = {}; CURVES.forEach(function (c) { o[c.k] = c.f(n); }); return o; }
+  function fmtNum(x) {
+    if (x < 1e6) return (Math.round(x * 10) / 10).toLocaleString("en-US");
+    var e = Math.floor(Math.log10(x)), m = x / Math.pow(10, e);
+    return (Math.round(m * 100) / 100) + "×10<sup>" + e + "</sup>";
+  }
+  /* 假設每次操作 1 微秒(僅為方便感受大小的示意假設,不是實測) */
+  function fmtTime(us) {
+    var YEAR = 3.156e13;
+    if (us < 1000) return (us < 10 ? Math.round(us * 10) / 10 : Math.round(us)) + " 微秒";
+    if (us < 1e6) return Math.round(us / 1000) + " 毫秒";
+    if (us < 6e7) return Math.round(us / 1e6 * 10) / 10 + " 秒";
+    if (us < 3.6e9) return Math.round(us / 6e7) + " 分鐘";
+    if (us < 8.64e10) return Math.round(us / 3.6e9) + " 小時";
+    if (us < YEAR) return Math.round(us / 8.64e10) + " 天";
+    var y = us / YEAR;
+    if (y > 1.38e10) return "超過宇宙年齡（約 138 億年）";
+    return y < 1e6 ? Math.round(y).toLocaleString("en-US") + " 年" : fmtNum(y) + " 年";
+  }
+  function chart(N) {
+    var W = 520, H = 250, L = 36, R = 12, T = 12, B = 28, pw = W - L - R, ph = H - T - B;
+    N = Math.max(N, 2); var ymax = Math.max(N * 2, 10);
+    var sx = function (n) { return L + (n - 1) / (N - 1) * pw; }, sy = function (y) { return T + ph - Math.min(y, ymax) / ymax * ph; };
+    var s = '<svg viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="六種成長曲線的比較圖，橫軸是 n，縱軸是操作次數">';
+    s += '<rect x="' + L + '" y="' + T + '" width="' + pw + '" height="' + ph + '" fill="#fff" stroke="#D1CFC5"/>';
+    [0, .5, 1].forEach(function (t) { var y = T + ph - t * ph; s += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + y + '" y2="' + y + '" stroke="#F0EEE6"/><text x="' + (L - 4) + '" y="' + (y + 4) + '" text-anchor="end">' + Math.round(t * ymax) + "</text>"; });
+    s += '<text x="' + L + '" y="' + (H - 8) + '">n = 1</text><text x="' + (W - R) + '" y="' + (H - 8) + '" text-anchor="end">n = ' + N + "</text>";
+    CURVES.forEach(function (c) {
+      var d = "", out = false;
+      for (var n = 1; n <= N; n++) {
+        var y = c.f(n); if (c.k === "log" && n === 1) y = 0;
+        if (y > ymax) { d += (d ? "L" : "M") + sx(n).toFixed(1) + "," + sy(ymax).toFixed(1); out = true; break; }
+        d += (d ? "L" : "M") + sx(n).toFixed(1) + "," + sy(y).toFixed(1);
+      }
+      s += '<path d="' + d + '" fill="none" stroke="' + c.color + '" stroke-width="2"' + (c.dash ? ' stroke-dasharray="' + c.dash + '"' : "") + "/>";
+    });
+    return s + '<text x="' + (L + 6) + '" y="' + (T + 12) + '">超出圖表上緣的線會停在頂端</text></svg>';
+  }
+  A.curves = { CURVES: CURVES, counts: counts, fmtNum: fmtNum, fmtTime: fmtTime };
+  A.curvesInit = function (id) {
+    if (typeof document === "undefined") return;
+    var root = document.getElementById(id); if (!root) return;
+    root.classList.add("cv");
+    root.innerHTML = '<div class="cv-top"><label for="' + id + '-n">資料量 n</label><input id="' + id + '-n" type="range" min="1" max="100" value="10"><span class="cv-n" aria-live="polite"></span></div>' +
+      '<div class="cv-main"><div class="cv-chart"></div><div><table class="cv-tbl"><thead><tr><th>成長</th><th>操作次數</th><th>若每次 1 微秒</th></tr></thead><tbody></tbody></table></div></div>' +
+      '<p class="cv-note">「每次 1 微秒」只是方便感受大小的假設，不是實測；真實時間要看電腦與程式。</p>';
+    var rng = root.querySelector("input"), nEl = root.querySelector(".cv-n"), ch = root.querySelector(".cv-chart"), tb = root.querySelector("tbody");
+    function draw() {
+      var n = +rng.value, c = counts(n); nEl.textContent = "n = " + n; ch.innerHTML = chart(n);
+      tb.innerHTML = CURVES.map(function (cv) {
+        var v = cv.k === "log" && n === 1 ? 0 : c[cv.k];
+        return '<tr><td><span class="sw" style="background:' + cv.color + '"></span>' + cv.name + "</td><td>" + fmtNum(v) + "</td><td>" + fmtTime(v) + "</td></tr>";
+      }).join("");
+    }
+    rng.addEventListener("input", draw); draw();
+    root._cv = { set: function (n) { rng.value = n; draw(); } };
+  };
+  if (typeof module !== "undefined" && module.exports) module.exports = A;
+})(typeof window !== "undefined" ? window : globalThis);
+
+</script>
+<script>
+(function(){
+"use strict";
+
+var S = Algo.sort, V = Algo.sortadv;
+function setData(kind) { return function (v, c) { c.set("d", S.make(kind, 8).join(", ")); }; }
+Algo.widget("w-adv", {
+  form: [{ id: "algo", label: "排序法", type: "select", value: "merge", options: [["merge", "合併排序"], ["quick", "快速排序"]] },
+         { id: "d", label: "資料（2–10 個，1–99）", type: "text", value: "38, 27, 43, 3, 9, 82, 10, 15" }],
+  buttons: [{ label: "隨機", run: setData("random") }, { label: "反向", run: setData("reverse") }, { label: "已排序", run: setData("sorted") }],
+  init: function () { return null; },
+  idle: function () { return { vals: [38, 27, 43, 3, 9, 82, 10, 15], cls: [], tags: [], chips: [["比較次數", 0]], msg: "選排序法、設定資料，按「執行」。" }; },
+  make: function (v) { return V.run(v.algo, v.d); },
+  render: Algo.barsHtml, code: V.CODE_ADV, code_cap: "merge / mergeSort / partition / quickSort（亮起來的行 = 目前執行到的地方）"
+});
+(function () {
+  var root = document.getElementById("w-race"); root.classList.add("cv");
+  root.innerHTML = '<div class="cv-top"><label for="w-race-n">資料量 n</label><input id="w-race-n" type="range" min="10" max="2000" step="10" value="500"><span class="cv-n" aria-live="polite"></span></div>' +
+    '<div class="algo-form"><div class="algo-f"><label for="w-race-k">資料排列</label><select id="w-race-k"><option value="random">隨機</option><option value="sorted">已排序</option><option value="reverse">反向</option><option value="nearly">幾乎排好</option></select></div><button type="button" class="ghost" id="w-race-go">重新抽樣</button></div>' +
+    '<table class="cv-tbl"><thead><tr><th>排序法</th><th>比較次數</th></tr></thead><tbody></tbody></table>';
+  var r = root.querySelector("input"), nEl = root.querySelector(".cv-n"), tb = root.querySelector("tbody"), kind = document.getElementById("w-race-k");
+  function draw() {
+    var n = +r.value, a = S.make(kind.value, n); nEl.textContent = "n = " + n.toLocaleString("en-US");
+    var rows = [["氣泡排序", S.stats("bubble", a).cmp], ["選擇排序", S.stats("selection", a).cmp], ["插入排序", S.stats("insertion", a).cmp], ["合併排序", V.stats("merge", a).cmp], ["快速排序（最後一個當 pivot）", V.stats("quick", a).cmp]];
+    var mn = Math.min.apply(null, rows.map(function (x) { return x[1]; }));
+    tb.innerHTML = rows.map(function (x) { return "<tr><td>" + x[0] + '</td><td style="' + (x[1] === mn ? "color:var(--olive);font-weight:700" : "") + '">' + x[1].toLocaleString("en-US") + "</td></tr>"; }).join("");
+  }
+  r.addEventListener("input", draw); kind.addEventListener("change", draw); document.getElementById("w-race-go").addEventListener("click", draw); draw();
+})();
+
+})();
+</script>
+</body>
+</html>

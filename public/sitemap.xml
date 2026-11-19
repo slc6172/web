@@ -21,6 +21,41 @@
   <url><loc>https://www.slc6172.workers.dev/arduino/arduino-start-guide</loc></url>
   <url><loc>https://www.slc6172.workers.dev/arduino/arduino-troubleshoot-guide</loc></url>
   <url><loc>https://www.slc6172.workers.dev/arduino/arduino-ultrasonic-guide</loc></url>
+  <url><loc>https://www.slc6172.workers.dev/clang/clang-array-vector-guide</loc></url>
+  <url><loc>https://www.slc6172.workers.dev/clang/clang-class-guide</loc></url>
+  <url><loc>https://www.slc6172.workers.dev/clang/clang-conditions-guide</loc></url>
+  <url><loc>https://www.slc6172.workers.dev/clang/clang-file-exception-guide</loc></url>
+  <url><loc>https://www.slc6172.workers.dev/clang/clang-first-program-guide</loc></url>
+  <url><loc>https://www.slc6172.workers.dev/clang/clang-functions-guide</loc></url>
+  <url><loc>https://www.slc6172.workers.dev/clang/clang-intro-guide</loc></url>
+  <url><loc>https://www.slc6172.workers.dev/clang/clang-io-guide</loc></url>
+  <url><loc>https://www.slc6172.workers.dev/clang/clang-loops-guide</loc></url>
+  <url><loc>https://www.slc6172.workers.dev/clang/clang-memory-guide</loc></url>
+  <url><loc>https://www.slc6172.workers.dev/clang/clang-oop-guide</loc></url>
+  <url><loc>https://www.slc6172.workers.dev/clang/clang-operators-guide</loc></url>
+  <url><loc>https://www.slc6172.workers.dev/clang/clang-practice1-guide</loc></url>
+  <url><loc>https://www.slc6172.workers.dev/clang/clang-project-guide</loc></url>
+  <url><loc>https://www.slc6172.workers.dev/clang/clang-ref-pointer-guide</loc></url>
+  <url><loc>https://www.slc6172.workers.dev/clang/clang-stl-guide</loc></url>
+  <url><loc>https://www.slc6172.workers.dev/clang/clang-string-guide</loc></url>
+  <url><loc>https://www.slc6172.workers.dev/clang/clang-variables-guide</loc></url>
+  <url><loc>https://www.slc6172.workers.dev/datastruct/datastruct-array-guide</loc></url>
+  <url><loc>https://www.slc6172.workers.dev/datastruct/datastruct-bigo-guide</loc></url>
+  <url><loc>https://www.slc6172.workers.dev/datastruct/datastruct-bst-guide</loc></url>
+  <url><loc>https://www.slc6172.workers.dev/datastruct/datastruct-dijkstra-guide</loc></url>
+  <url><loc>https://www.slc6172.workers.dev/datastruct/datastruct-dp-guide</loc></url>
+  <url><loc>https://www.slc6172.workers.dev/datastruct/datastruct-graph-guide</loc></url>
+  <url><loc>https://www.slc6172.workers.dev/datastruct/datastruct-greedy-guide</loc></url>
+  <url><loc>https://www.slc6172.workers.dev/datastruct/datastruct-hash-guide</loc></url>
+  <url><loc>https://www.slc6172.workers.dev/datastruct/datastruct-heap-guide</loc></url>
+  <url><loc>https://www.slc6172.workers.dev/datastruct/datastruct-linkedlist-guide</loc></url>
+  <url><loc>https://www.slc6172.workers.dev/datastruct/datastruct-prereq-guide</loc></url>
+  <url><loc>https://www.slc6172.workers.dev/datastruct/datastruct-recursion-guide</loc></url>
+  <url><loc>https://www.slc6172.workers.dev/datastruct/datastruct-search-guide</loc></url>
+  <url><loc>https://www.slc6172.workers.dev/datastruct/datastruct-sortadv-guide</loc></url>
+  <url><loc>https://www.slc6172.workers.dev/datastruct/datastruct-sortbasic-guide</loc></url>
+  <url><loc>https://www.slc6172.workers.dev/datastruct/datastruct-stackqueue-guide</loc></url>
+  <url><loc>https://www.slc6172.workers.dev/datastruct/datastruct-tree-guide</loc></url>
   <url><loc>https://www.slc6172.workers.dev/github/github-actions-guide</loc></url>
   <url><loc>https://www.slc6172.workers.dev/github/github-branch-guide</loc></url>
   <url><loc>https://www.slc6172.workers.dev/github/github-gitignore-guide</loc></url>

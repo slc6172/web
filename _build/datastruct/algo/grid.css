@@ -1,0 +1,15 @@
+  /* 格子迷宮繪圖器 */
+  .maze { display:grid; gap:4px; margin:0 0 12px; justify-content:start; }
+  .maze .mz { aspect-ratio:1; display:flex; align-items:center; justify-content:center; border-radius:6px; font:600 13px var(--mono); border:1.5px solid var(--gray-300); background:#fff; color:var(--gray-700); min-width:0; }
+  .maze .mz.wall { background:var(--gray-700); border-color:var(--gray-700); }
+  .maze .mz.fr { background:rgba(217,119,87,.14); border-color:var(--clay); }
+  .maze .mz.seen { background:rgba(120,140,93,.18); border-color:var(--olive); }
+  .maze .mz.cur { background:#FBF1EC; border-color:var(--clay); box-shadow:0 0 0 2px var(--clay); }
+  .maze .mz.mS, .maze .mz.mG { font-weight:700; color:var(--slate); border-color:var(--slate); }
+  .mazelegend { display:flex; flex-wrap:wrap; gap:6px 14px; font:11px var(--mono); color:var(--gray-500); margin:0 0 10px; }
+  .mazelegend i { display:inline-block; width:11px; height:11px; border-radius:3px; border:1.5px solid var(--gray-300); vertical-align:-1px; margin-right:4px; background:#fff; }
+  .mazelegend i.fr { background:rgba(217,119,87,.14); border-color:var(--clay); }
+  .mazelegend i.seen { background:rgba(120,140,93,.18); border-color:var(--olive); }
+  .mazelegend i.cur { border-color:var(--clay); box-shadow:0 0 0 1.5px var(--clay); }
+  .mazelegend i.wall { background:var(--gray-700); border-color:var(--gray-700); }
+  @media (max-width:520px) { .maze { gap:3px; } .maze .mz { font-size:11px; } }

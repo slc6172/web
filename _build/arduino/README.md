@@ -60,7 +60,7 @@ bb.wiring_config(CIRC)     # 步驟文字（放進 PAGE.wiring）
 ```bash
 python3 _build/arduino/tests_bb.py          # 驗證器自我測試：故意做錯的電路必須被抓出來
 python3 _build/arduino/arduino_verify.py a03 # 接線電氣檢查＋程式腳位一致＋編譯＋simavr 模擬 → reports/arduino-verify-report.md
-python3 _build/arduino/verify_arduino.py    # Playwright：1280/390 版面、互動、連結、首頁分頁
+python3 _build/arduino/verify_arduino.py    # Playwright：1280/390 版面、互動、連結、首頁分頁（已套用 stub_analytics）
 python3 _build/verify.py                    # 全站驗證
 ```
 

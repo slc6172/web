@@ -1,0 +1,15 @@
+  /* 點格子看依賴 */
+  .dpwrap { overflow-x:auto; }
+  .dpt { border-collapse:separate; border-spacing:3px; font:600 13px var(--mono); }
+  .dpt th { color:var(--gray-500); font-weight:600; padding:2px 6px; text-align:center; white-space:nowrap; font-size:11px; }
+  .dpt th.rl { text-align:right; }
+  .dpt button { width:36px; height:34px; border:1.5px solid var(--gray-300); border-radius:6px; background:#fff; font:inherit; color:var(--slate); cursor:pointer; padding:0; }
+  .dpt button:hover { border-color:var(--gray-500); }
+  .dpt button.cur { border-color:var(--clay); background:#FBF1EC; box-shadow:0 0 0 1.5px var(--clay); }
+  .dpt button.dep { border-color:var(--olive); background:rgba(120,140,93,.22); }
+  .dpinfo { margin:10px 0 0; padding:12px 14px; border:1px solid var(--gray-300); border-radius:10px; background:#fff; font-size:14px; line-height:1.7; min-height:48px; }
+  /* 二維表:每一列不折行,整張表一起橫向捲動 */
+  .dpkeep { overflow-x:auto; padding-bottom:4px; }
+  .dpkeep .cells { flex-wrap:nowrap; width:max-content; }
+  .dpkeep .cells .cell { flex:none; }
+  .dpkeep .kv, .dpkeep .rowlab { position:sticky; left:0; width:max-content; max-width:100%; }

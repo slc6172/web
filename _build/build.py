@@ -7,7 +7,7 @@
     python3 _build/build.py --all github  # 重建某主題全部頁面(也可寫 arduino / microfilm / all)
     python3 _build/build.py --out /tmp/x m1   # 改寫到別的資料夾(只用來比對,不動 public/)
 
-規格檔放哪個主題,由檔名開頭決定:p* = github、a* = arduino、m* = microfilm。
+規格檔放哪個主題,由檔名開頭決定:p* = github、a* = arduino、m* = microfilm、c* = clang、d* = datastruct。
 新增主題時,在下方 THEMES 加一筆設定即可(見 _build/README.md)。
 """
 import re, json, sys, os, importlib, glob
@@ -58,7 +58,28 @@ THEMES = {
     "microfilm": dict(
         prefix="m", topic="微電影分鏡入門",
         foot="", css=None, js=None, fw=True, uniq_svg=True),   # topic / foot / css 由 microfilm/mh.py 的 defaults() 提供
+    "clang": dict(
+        prefix="c", topic="C++ 入門", foot="",
+        css="clang.css", js="clang.js", fw=True, uniq_svg=False),   # foot 由 clang/ch.py 的 FOOT 提供（每頁 SPEC 都帶 topic / foot）
+    "datastruct": dict(
+        prefix="d", topic="C++ 演算法", foot="",
+        css=None, js=None, fw=True, uniq_svg=False, algo="algo"),   # foot 由 datastruct/dh.py 的 FOOT 提供（每頁 SPEC 都帶）；algo/ 是動畫模組，SPEC 的 modules 列出要內嵌哪些
 }
+
+
+def algo_bundle(theme, T, mods):
+    """datastruct 的動畫模組：core 一定內嵌，其餘只內嵌 SPEC["modules"] 列出的。回傳 (css, js)。"""
+    css, js = "", ""
+    d = os.path.join(HERE, theme, T["algo"])
+    for m in ["core"] + [x for x in mods if x != "core"]:
+        c, j = os.path.join(d, m + ".css"), os.path.join(d, m + ".js")
+        if os.path.exists(c):
+            css += open(c, encoding="utf-8").read()
+        if os.path.exists(j):
+            js += "\n/* ---- %s ---- */\n" % m + open(j, encoding="utf-8").read()
+        elif m != "core":
+            raise SystemExit("找不到模組: " + j)
+    return css, js
 
 
 def uniq_svg(html):
@@ -76,9 +97,10 @@ def build(s, out_root=PUBLIC):
     if d not in THEMES:
         raise SystemExit("SPEC 的 dir=%r 不在 THEMES 裡,請先在 build.py 新增這個主題" % d)
     T = THEMES[d]
-    topic = s.get("topic", T["topic"])
+    topic = s.get("topic", s.get("eyebrow_prefix", T["topic"]))   # eyebrow_prefix：datastruct 規格檔的舊欄位名
     foot = s.get("foot", T["foot"])
-    css = CSS + EXTRA + (_read(HERE, d, T["css"]) if T["css"] else "") + s.get("css", "")
+    a_css, a_js = algo_bundle(d, T, s.get("modules", [])) if T.get("algo") and (s.get("modules") or s.get("algo")) else ("", "")
+    css = CSS + EXTRA + a_css + (_read(HERE, d, T["css"]) if T["css"] else "") + s.get("css", "")
     js = COMMON_JS + ("\n" + _read(HERE, d, T["js"]) if T["js"] else "")
     toc = "\n".join('  <a href="#%s">%d. %s</a>' % (i, n + 1, t) for n, (i, t) in enumerate(s["toc"]))
 
@@ -94,6 +116,10 @@ def build(s, out_root=PUBLIC):
         pager += pg("next", "下一篇", s["next"])
 
     extra_js = (s["js"] + "\n") if s.get("js") else ""   # 頁面專屬 <script>(可省略)
+    if a_js:       # datastruct：動畫模組與頁面腳本（SPEC["script"]，包成 IIFE）接在 common.js 之後
+        extra_js += "<script>\n" + a_js + "\n</script>\n"
+    if s.get("script"):
+        extra_js += "<script>\n(function(){\n\"use strict\";\n" + s["script"] + "\n})();\n</script>\n"
     html = f"""<!doctype html>
 <html lang="zh-Hant">
 <head>
@@ -158,7 +184,7 @@ def find_spec_module(name):
         if os.path.exists(os.path.join(HERE, theme, name + ".py")):
             sys.path.insert(0, os.path.join(HERE, theme))
             return importlib.import_module(name)
-    raise SystemExit("找不到規格檔 %s.py(應放在 _build/github|arduino|microfilm/)" % name)
+    raise SystemExit("找不到規格檔 %s.py(應放在 _build/<主題>/)" % name)
 
 
 def theme_specs(theme):

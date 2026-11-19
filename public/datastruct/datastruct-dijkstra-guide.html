@@ -1,0 +1,1196 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>最短路徑：Dijkstra 演算法</title>
+<meta name="description" content="Dijkstra 從起點出發，每次從優先佇列取出距離最小的點，把它的距離確定，再用它去鬆弛鄰居（d + w &lt; dist[v] 就更新）。">
+<meta name="theme-color" content="#FAF9F5">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='8'%20fill='%23FAF9F5'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='8'%20fill='%23D97757'/%3E%3C/svg%3E">
+<link rel="canonical" href="https://www.slc6172.workers.dev/datastruct/datastruct-dijkstra-guide">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:site_name" content="自學教學站">
+<meta property="og:title" content="最短路徑：Dijkstra 演算法">
+<meta property="og:description" content="Dijkstra 從起點出發，每次從優先佇列取出距離最小的點，把它的距離確定，再用它去鬆弛鄰居（d + w &lt; dist[v] 就更新）。">
+<meta property="og:url" content="https://www.slc6172.workers.dev/datastruct/datastruct-dijkstra-guide">
+<meta name="twitter:card" content="summary">
+<style>
+  :root {
+    --ivory:#FAF9F5; --white:#FFFFFF; --slate:#141413;
+    --clay:#D97757; --clay-d:#B85C3E; --oat:#E3DACC; --olive:#788C5D; --rust:#B04A3F;
+    --gray-100:#F0EEE6; --gray-300:#D1CFC5; --gray-500:#87867F; --gray-700:#3D3D3A;
+    --serif: ui-serif, Georgia, "Times New Roman", "Noto Serif TC", "Songti TC", "PMingLiU", serif;
+    --sans:  system-ui, -apple-system, "Segoe UI", Roboto, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", Helvetica, Arial, sans-serif;
+    --mono:  ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
+    --border: 1.5px solid var(--gray-300);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  [hidden] { display:none !important; }
+  body { margin:0; padding:56px 24px 120px; background:var(--ivory); color:var(--slate);
+         font-family:var(--sans); font-size:15px; line-height:1.65; -webkit-font-smoothing:antialiased; }
+  .page { max-width:1100px; margin:0 auto; }
+  .page > header { margin-bottom:36px; }
+  .layout { display:grid; grid-template-columns:190px minmax(0,1fr); gap:48px; }
+  .layout > * { min-width:0; }
+  main > section { margin-bottom:56px; scroll-margin-top:24px; }
+
+  .eyebrow { font:12px var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--gray-500);
+             display:flex; align-items:center; gap:12px; margin-bottom:18px; }
+  .eyebrow::before { content:""; width:24px; height:1.5px; background:var(--clay); }
+  h1 { font:500 clamp(30px,4.6vw,42px)/1.18 var(--serif); letter-spacing:-.012em; margin:0 0 12px; }
+  h2 { font:500 25px/1.28 var(--serif); letter-spacing:-.01em; margin:0 0 6px; }
+  h3 { font:500 18px/1.35 var(--serif); margin:0 0 6px; }
+  .sub { color:var(--gray-700); max-width:680px; margin:0 0 4px; }
+  hr.rule { border:0; border-top:1px solid var(--gray-300); margin:10px 0 22px; }
+  p { margin:0 0 12px; }
+  code { font:12.5px var(--mono); background:var(--gray-100); padding:1px 5px; border-radius:4px; }
+  .slot { background:rgba(217,119,87,.14); color:var(--clay-d); border-radius:4px; padding:0 3px; }
+  pre .slot { background:rgba(217,119,87,.22); color:#F2B49E; }
+
+  .panel { background:var(--white); border:var(--border); border-radius:12px; padding:20px 22px; }
+  .tldr { border:var(--border); border-left:3px solid var(--clay); border-radius:10px; background:#fff; padding:16px 18px; margin-top:22px; max-width:820px; }
+  .tldr b { font:600 11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--clay-d); margin-right:6px; }
+
+  /* toc */
+  nav.toc { position:sticky; top:32px; align-self:start; font-size:13px; }
+  nav.toc .label { font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--gray-500); margin-bottom:8px; }
+  nav.toc a { display:block; padding:5px 0; color:var(--gray-700); text-decoration:none; }
+  nav.toc a:hover { color:var(--clay); }
+
+  /* buttons */
+  button { font:12px var(--mono); cursor:pointer; border-radius:999px; padding:9px 16px; transition:background .14s ease, transform .08s ease; }
+  button.primary { background:var(--slate); color:var(--ivory); border:1.5px solid var(--slate); }
+  button.primary:hover:not(:disabled) { background:var(--gray-700); }
+  button.primary:disabled { background:var(--gray-300); border-color:var(--gray-300); cursor:not-allowed; }
+  button.primary.copied { background:var(--olive); border-color:var(--olive); }
+  button.ghost { background:transparent; color:var(--gray-700); border:var(--border); }
+  button.ghost:hover { border-color:var(--gray-500); }
+  button:focus-visible, a:focus-visible, summary:focus-visible, input:focus-visible { outline:2px solid var(--clay); outline-offset:2px; }
+
+  /* tables (grid style) */
+  .table-wrap { overflow-x:auto; border:var(--border); border-radius:12px; background:#fff; }
+  .gt { min-width:560px; }
+  .gt .row { display:grid; gap:0; }
+  .gt .cell { padding:11px 14px; border-top:1px solid var(--gray-300); font-size:13.5px; }
+  .gt .row:first-child .cell { border-top:0; }
+  .gt .cell.head { font:11px var(--sans); text-transform:uppercase; letter-spacing:.06em; color:var(--gray-500); background:var(--gray-100); }
+  .gt .cell.term { font:600 12.5px var(--mono); }
+  .gt.g3 .row { grid-template-columns:150px minmax(0,1fr) minmax(0,1fr); }
+  .gt.g2 .row { grid-template-columns:140px minmax(0,1fr); }
+  .gt.g3b .row { grid-template-columns:170px minmax(0,1.2fr) minmax(0,1fr); }
+
+  /* code blocks */
+  .cmd { position:relative; background:var(--slate); border-radius:12px; margin:10px 0 12px; }
+  .cmd pre { margin:0; padding:16px 78px 16px 18px; font:12.5px/1.7 var(--mono); color:var(--ivory); overflow-x:auto; white-space:pre; }
+  .cmd .cm { color:var(--gray-500); }
+  .cmd button { position:absolute; top:9px; right:9px; padding:5px 11px; font-size:11px; color:var(--ivory);
+                background:rgba(250,249,245,.08); border:1px solid rgba(250,249,245,.28); }
+  .cmd button:hover { background:rgba(250,249,245,.18); }
+  .cmd button.copied { background:var(--olive); border-color:var(--olive); color:#fff; }
+  .cmd .cap { font:11px var(--mono); letter-spacing:.06em; color:var(--gray-500); padding:10px 18px 0; text-transform:uppercase; }
+  .cmd .cap + pre { padding-top:6px; }
+
+  /* diagram */
+  .canvas { background:#fff; border:var(--border); border-radius:12px; padding:14px; overflow-x:auto; }
+  .canvas svg { display:block; width:100%; height:auto; min-width:640px; }
+  .legend { list-style:none; margin:16px 0 0; padding:0; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 24px; }
+  .legend li { display:grid; grid-template-columns:26px minmax(0,1fr); gap:8px; font-size:13.5px; color:var(--gray-700); }
+  .legend .n { width:22px; height:22px; border-radius:50%; background:var(--clay); color:#fff; font:600 12px/22px var(--mono); text-align:center; }
+  .legend .n.k { background:var(--slate); }
+  .role { font:600 10.5px var(--mono); padding:1px 7px; border-radius:999px; margin-left:6px; white-space:nowrap; }
+  .role.c { background:rgba(217,119,87,.14); color:var(--clay-d); border:1px solid rgba(217,119,87,.45); }
+  .role.o { background:var(--oat); color:var(--slate); border:1px solid #CFC3AE; }
+
+  /* fill form */
+  .fill { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:12px; align-items:end; }
+  .fill label { display:block; font:11px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--gray-500); margin-bottom:5px; }
+  .fill input { width:100%; font:13px var(--mono); padding:9px 11px; border:var(--border); border-radius:8px; background:var(--gray-100); color:var(--slate); }
+  .fill-foot { display:flex; gap:12px; align-items:center; margin-top:14px; flex-wrap:wrap; }
+  .fill-foot span { font-size:13px; color:var(--gray-500); }
+
+  /* role tabs */
+  .role-tabs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin:18px 0 26px; }
+  .role-tabs button { text-align:left; font-family:var(--sans); font-size:14px; border-radius:12px; padding:16px 18px; background:#fff;
+                      border:var(--border); color:var(--gray-700); display:flex; flex-direction:column; gap:2px; }
+  .role-tabs button .rt { font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--gray-500); }
+  .role-tabs button b { font:500 20px/1.3 var(--serif); color:var(--slate); }
+  .role-tabs button:hover { border-color:var(--gray-500); }
+  .role-tabs button.on { border-color:var(--clay); background:#FBF1EC; }
+  .role-tabs button.on .rt { color:var(--clay-d); }
+
+  .orient { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-bottom:8px; }
+  .orient .panel { padding:14px 18px; font-size:13.5px; }
+  .orient .k { font:600 11px var(--mono); letter-spacing:.08em; text-transform:uppercase; display:block; margin-bottom:4px; }
+  .orient .known .k { color:#4B5C39; } .orient .new .k { color:var(--clay-d); }
+
+  /* steps */
+  .step { display:grid; grid-template-columns:40px minmax(0,1fr); gap:0 16px; padding:26px 0; border-top:1px solid var(--gray-300); }
+  .steps > .step:first-child { border-top:0; }
+  .step > * { min-width:0; }
+  .num { width:34px; height:34px; border-radius:50%; background:var(--oat); display:flex; align-items:center; justify-content:center; font:600 14px var(--mono); margin-top:2px; }
+  .step h3 { font-size:20px; margin:2px 0 6px; }
+  .why { color:var(--gray-700); margin:0 0 12px; }
+  .ops { margin:0 0 12px; padding-left:22px; color:var(--gray-700); }
+  .ops li { margin-bottom:5px; }
+  .see, .warn, .tip { border:var(--border); border-radius:8px; background:#fff; padding:10px 14px; font-size:13.5px; margin:12px 0; color:var(--gray-700); }
+  .see { border-left:3px solid var(--olive); } .warn { border-left:3px solid var(--rust); } .tip { border-left:3px solid var(--clay); }
+  .see b.l, .warn b.l, .tip b.l { font:600 11px var(--mono); letter-spacing:.08em; text-transform:uppercase; margin-right:6px; }
+  .see b.l { color:#4B5C39; } .warn b.l { color:var(--rust); } .tip b.l { color:var(--clay-d); }
+
+  /* PR compare mock */
+  .pr-mock { display:grid; grid-template-columns:minmax(0,1fr) 44px minmax(0,1fr); gap:0; align-items:stretch; margin:12px 0; }
+  .pr-mock .half { background:#fff; border:var(--border); border-radius:10px; padding:12px 14px; }
+  .pr-mock .half .t { font:600 11px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--gray-500); margin-bottom:6px; }
+  .pr-mock .half .r { font:12.5px var(--mono); margin:2px 0; word-break:break-all; }
+  .pr-mock .half .r i { font-style:normal; color:var(--gray-500); margin-right:6px; }
+  .pr-mock .arr { display:flex; align-items:center; justify-content:center; font:22px var(--mono); color:var(--clay); }
+  .pr-mock .half.base { border-color:var(--clay); background:#FBF1EC; }
+  .mock-cap { font-size:13px; color:var(--gray-500); margin:0 0 12px; }
+
+  .gh-tabs { display:flex; gap:0; border-bottom:1.5px solid var(--gray-300); margin:12px 0; overflow-x:auto; }
+  .gh-tabs span { padding:8px 16px; font-size:13.5px; color:var(--gray-500); white-space:nowrap; }
+  .gh-tabs span.on { color:var(--slate); box-shadow:inset 0 -2px 0 var(--clay); font-weight:600; }
+  .gh-tabs span small { font:11px var(--mono); margin-left:6px; color:var(--gray-500); }
+
+  /* diff */
+  .diff { font:12.5px/1.7 var(--mono); background:#fff; border:var(--border); border-radius:8px; overflow-x:auto; margin:12px 0 0; }
+  .diff-row { display:grid; grid-template-columns:44px 18px minmax(max-content,1fr); white-space:pre; padding-right:14px; }
+  .diff-row .ln { color:var(--gray-500); text-align:right; padding-right:10px; user-select:none; }
+  .diff-row.add { background:rgba(120,140,93,.12); } .diff-row.add .mark { color:var(--olive); font-weight:600; }
+  .diff-row.del { background:rgba(176,74,63,.10); } .diff-row.del .mark { color:var(--rust); font-weight:600; }
+  .bubble { background:#fff; border:var(--border); border-left:4px solid var(--olive); border-radius:8px; padding:10px 14px; margin:8px 0 0 44px; font-size:13px; max-width:560px; }
+  .bubble .who { font:600 11px var(--mono); color:var(--gray-500); display:block; margin-bottom:2px; }
+
+  /* lifecycle */
+  .stages { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; margin:18px 0 16px; }
+  .stages button { text-align:left; font-family:var(--sans); border-radius:10px; padding:11px 12px; background:#fff; border:var(--border); color:var(--gray-700); font-size:13px; display:flex; flex-direction:column; gap:6px; }
+  .stages button:hover { border-color:var(--gray-500); }
+  .stages button.on { border-color:var(--clay); background:#FBF1EC; }
+  .stages button .si { font:11px var(--mono); color:var(--gray-500); }
+  .badge { font:600 11px var(--mono); padding:2px 9px; border-radius:999px; align-self:flex-start; }
+  .badge.ok { background:rgba(120,140,93,.18); color:#4B5C39; }
+  .badge.warn { background:rgba(217,119,87,.18); color:var(--clay-d); }
+  .badge.done { background:var(--slate); color:var(--ivory); }
+  .two { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+  .two .panel h3 { display:flex; align-items:center; gap:8px; }
+  .two ul { margin:8px 0 0; padding-left:20px; color:var(--gray-700); }
+  .two li { margin-bottom:6px; }
+  .stage-nav { display:flex; gap:10px; margin-top:16px; }
+
+  /* details */
+  details { border:var(--border); border-radius:10px; background:#fff; margin:12px 0; overflow:hidden; }
+  summary { list-style:none; cursor:pointer; padding:14px 16px; font:17px/1.4 var(--serif); display:flex; align-items:baseline; gap:10px; }
+  summary::-webkit-details-marker { display:none; }
+  summary::before { content:"▸"; color:var(--gray-500); transition:transform .12s; flex:none; }
+  details[open] > summary::before { transform:rotate(90deg); }
+  details > .body { padding:0 18px 16px; border-top:1px solid var(--gray-300); padding-top:14px; }
+  details > .body > :last-child { margin-bottom:0; }
+
+  .habits { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+  .habits ul { margin:8px 0 0; padding-left:20px; color:var(--gray-700); }
+  .habits li { margin-bottom:6px; }
+  .export { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:8px; padding-top:20px; border-top:1px solid var(--gray-300); }
+  .export span { font-size:13px; color:var(--gray-500); }
+
+  /* progress + toc active */
+  .progress { position:fixed; top:0; left:0; right:0; height:3px; z-index:60; }
+  .progress span { display:block; height:100%; width:0; background:var(--clay); }
+  nav.toc a.active { color:var(--clay-d); font-weight:600; }
+
+  /* route switch */
+  .route-switch { display:flex; gap:6px; flex-wrap:wrap; background:var(--gray-100); padding:5px; border-radius:12px; width:max-content; max-width:100%; margin:16px 0; }
+  .route-switch button { border:0; background:transparent; border-radius:9px; color:var(--gray-500); font:13px var(--sans); padding:9px 14px; }
+  .route-switch button[aria-pressed="true"] { background:#fff; color:var(--slate); box-shadow:inset 0 -2px 0 var(--clay); }
+  .route-steps { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; margin:14px 0; }
+  .route-step { border:var(--border); border-radius:10px; background:#fff; padding:10px 12px; }
+  .route-step.new { border-color:var(--clay); background:#FBF1EC; }
+  .route-step i { font:600 11px var(--mono); color:var(--gray-500); font-style:normal; }
+  .route-step b { display:block; font-size:14px; margin:2px 0; }
+  .route-step small { display:block; font-size:12.5px; color:var(--gray-700); line-height:1.5; }
+  .route-note { font-size:13px; color:var(--gray-500); margin:0 0 4px; }
+
+  /* practice */
+  .sim { margin-bottom:16px; }
+  .sim h3 { margin-bottom:4px; }
+  .sim-buttons { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0; }
+  .sim-buttons button, .answer { font:14px var(--sans); border-radius:10px; border:var(--border); background:#fff; color:var(--gray-700); padding:10px 14px; text-align:left; }
+  .sim-buttons button:hover, .answer:hover:not(:disabled) { border-color:var(--gray-500); }
+  .sim-buttons button.selected { border-color:var(--clay); background:#FBF1EC; color:var(--slate); }
+  .sim-result { background:var(--gray-100); border-radius:10px; padding:12px 14px; font-size:14px; min-height:52px; color:var(--gray-700); }
+  .quiz-top { display:flex; justify-content:space-between; gap:10px; align-items:baseline; flex-wrap:wrap; }
+  .quiz-top .count { font:12px var(--mono); color:var(--gray-500); }
+  .question { font:500 18px/1.45 var(--serif); margin:14px 0 12px; }
+  .answers { display:grid; gap:8px; }
+  .answer { display:flex; gap:10px; align-items:flex-start; }
+  .answer .letter { width:22px; height:22px; flex:none; border-radius:6px; background:var(--gray-100); font:600 11px/22px var(--mono); text-align:center; }
+  .answer:disabled { cursor:default; }
+  .answer.correct { border-color:var(--olive); background:rgba(120,140,93,.12); }
+  .answer.wrong { border-color:var(--rust); background:rgba(176,74,63,.10); }
+  .feedback { display:none; margin-top:12px; padding:12px 14px; border-radius:10px; font-size:14px; border:var(--border); border-left-width:4px; background:#fff; }
+  .feedback.show { display:block; } .feedback.good { border-left-color:var(--olive); } .feedback.bad { border-left-color:var(--clay); }
+  .quiz-foot { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:14px; }
+  .quiz-foot span { font-size:13px; color:var(--gray-500); }
+  .checks { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  .check-item { display:flex; gap:10px; align-items:flex-start; padding:11px 13px; border:var(--border); border-radius:10px; background:#fff; font-size:14px; color:var(--gray-700); cursor:pointer; }
+  .check-item input { accent-color:var(--clay); margin-top:5px; flex:none; }
+  .check-item.done { background:rgba(120,140,93,.10); border-color:rgba(120,140,93,.45); }
+  .bar { height:6px; border-radius:999px; background:var(--gray-100); overflow:hidden; margin-top:8px; }
+  .bar span { display:block; height:100%; width:0; background:var(--olive); transition:width .2s; }
+  .check-progress { font-size:13px; color:var(--gray-500); margin-top:12px; }
+  .resources { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  .resource { display:block; padding:12px 14px; border:var(--border); border-radius:10px; background:#fff; color:var(--slate); text-decoration:none; }
+  .resource:hover { border-color:var(--clay); }
+  .resource b { display:block; font-size:14px; } .resource small { font:12px var(--mono); color:var(--gray-500); }
+  .warn ul { margin:6px 0 0; padding-left:20px; }
+  .foot { font-size:13px; color:var(--gray-500); border-top:1px solid var(--gray-300); padding-top:18px; }
+
+  @media (max-width: 920px) {
+    .layout { grid-template-columns:minmax(0,1fr); gap:24px; }
+    nav.toc { position:static; display:flex; flex-wrap:wrap; gap:4px 16px; }
+    nav.toc .label { width:100%; margin-bottom:2px; }
+    .fill { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .stages { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .two, .habits, .orient, .role-tabs, .legend, .checks, .resources { grid-template-columns:minmax(0,1fr); }
+    .route-steps { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  }
+  @media (max-width: 720px) {
+    body { padding:32px 16px 80px; }
+    .step { grid-template-columns:minmax(0,1fr); }
+    .num { margin-bottom:8px; }
+    .pr-mock { grid-template-columns:minmax(0,1fr); }
+    .pr-mock .arr { transform:rotate(90deg); height:32px; }
+  }
+  /* site nav */
+  .crumb { margin:0 0 18px; font:12px var(--mono); }
+  .crumb a { color:var(--gray-500); text-decoration:none; }
+  .crumb a:hover { color:var(--clay); }
+  .pager { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-top:40px; }
+  .pager a { display:block; padding:14px 18px; border:var(--border); border-radius:12px; background:#fff; color:var(--slate); text-decoration:none; }
+  .pager a:hover { border-color:var(--clay); }
+  .pager small { display:block; font:11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--gray-500); }
+  .pager b { font:500 17px/1.4 var(--serif); }
+  .pager .next { text-align:right; grid-column:2; }
+  .pager .prev { grid-column:1; }
+  @media (max-width:720px){ .pager{grid-template-columns:minmax(0,1fr);} .pager .next,.pager .prev{grid-column:1;text-align:left;} }
+  @media (prefers-reduced-motion: reduce) { * { transition:none !important; scroll-behavior:auto !important; } }
+
+  .skip { position:absolute; left:12px; top:-60px; z-index:100; background:var(--slate); color:var(--ivory);
+          padding:10px 16px; border-radius:8px; font-size:14px; text-decoration:none; }
+  .skip:focus { top:12px; outline:2px solid var(--clay); outline-offset:2px; }
+  main:focus { outline:none; }
+
+  .fill.f4 { grid-template-columns:repeat(4,minmax(0,1fr)); }
+  .fill.f3 { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .fill.f2 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  @media (max-width: 920px) { .fill.f4, .fill.f3 { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  @media (max-width: 520px) { .fill.f4, .fill.f3, .fill.f2 { grid-template-columns:minmax(0,1fr); } }
+  .badge.bad { background:rgba(176,74,63,.15); color:var(--rust); }
+  .dec-out { background:var(--gray-100); border-radius:10px; padding:12px 14px; font-size:14px; color:var(--gray-700); margin-top:12px; }
+
+  /* ===== algo widgets (datastruct 主題) ===== */
+  .algo-w { background:var(--white); border:var(--border); border-radius:12px; padding:16px 18px; margin:14px 0; }
+  .algo-form { display:flex; flex-wrap:wrap; gap:10px 14px; align-items:flex-end; margin-bottom:14px; }
+  .algo-f[hidden] { display:none; }
+  .algo-f label { display:block; font:11px var(--mono); letter-spacing:.06em; color:var(--gray-500); margin-bottom:4px; }
+  .algo-form select, .algo-form input, .algo-ctl select { font:13px var(--mono); padding:7px 10px; border:var(--border); border-radius:8px; background:#fff; color:var(--slate); min-width:0; }
+  .algo-form input[type=number] { width:84px; }
+  .algo-form input[type=text] { width:220px; max-width:100%; }
+  .algo-main { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.15fr); gap:16px; align-items:start; }
+  .algo-main.nocode { grid-template-columns:minmax(0,1fr); }
+  .algo-left { min-width:0; border-radius:10px; }
+  .algo-left:focus-visible { outline:2px solid var(--clay); outline-offset:3px; }
+  .algo-stage { min-height:170px; background:var(--gray-100); border-radius:10px; padding:14px; overflow-x:auto; }
+  .algo-msg { margin-top:10px; padding:10px 12px; border-radius:8px; background:#fff; border:1px solid var(--gray-300); font-size:14px; min-height:3.4em; }
+  .algo-msg.err { border-color:var(--rust); color:var(--rust); }
+  .algo-ctl { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:10px; }
+  .algo-ctl button { padding:6px 12px; }
+  .algo-ctl button:disabled { opacity:.45; cursor:not-allowed; }
+  .algo-ctl input[type=range] { flex:1 1 110px; min-width:90px; accent-color:var(--clay); }
+  .algo-step { font:12px var(--mono); color:var(--gray-500); white-space:nowrap; }
+  .algo-code { margin:0; }
+  .algo-code pre { padding-right:18px; font-size:12px; max-height:440px; overflow:auto; position:relative; }
+  @media (max-width:920px) { .algo-main { grid-template-columns:minmax(0,1fr); } }
+
+  /* C++ 程式碼:行號、語法色、逐行高亮 */
+  pre[data-cpp], .algo-code pre { counter-reset:ln; }
+  pre .l { display:block; counter-increment:ln; border-left:3px solid transparent; padding-left:6px; }
+  pre .l::before { content:counter(ln); display:inline-block; width:2em; margin-right:.9em; text-align:right; color:var(--gray-500); user-select:none; }
+  pre .l.on { background:rgba(217,119,87,.24); border-left-color:var(--clay); }
+  pre .xk { color:#F2B49E; } pre .xt { color:#B7C99B; } pre .xs { color:#E3DACC; font-style:italic; }
+  pre .xn { color:#E6C98F; } pre .xp { color:#C9A8D6; } pre .xc { color:var(--gray-500); }
+  .cmd.out pre { color:var(--oat); padding-right:18px; }
+  .cmd.out .cap { color:var(--olive); }
+  @media (prefers-reduced-motion: reduce) { .algo-w * { animation:none !important; transition:none !important; } }
+
+  .gt.g4 .row { grid-template-columns:120px minmax(0,1.2fr) minmax(0,1fr) minmax(0,1.1fr); }
+  .algo-code .cap, .cmd.out .cap { text-transform:none; }
+
+  /* 格子繪圖器(陣列 / vector) */
+  .cells { display:flex; flex-wrap:wrap; gap:8px; align-items:flex-start; }
+  .cells + .cells, .rowlab + .cells { margin-top:6px; }
+  .rowlab { font:11px var(--mono); letter-spacing:.06em; color:var(--gray-500); margin:12px 0 6px; }
+  .rowlab:first-child { margin-top:0; }
+  .cells .cell { width:46px; text-align:center; }
+  .cells .cell .b { height:46px; display:flex; align-items:center; justify-content:center; border:1.5px solid var(--gray-700); border-radius:8px; background:#fff; font:600 15px var(--mono); }
+  .cells .cell .i { display:block; font:11px var(--mono); color:var(--gray-500); margin-top:3px; }
+  .cells .cell .t { display:block; height:12px; font:600 11px var(--mono); color:var(--clay-d); }
+  .cells .cell.cur .b { border-color:var(--clay); background:#FBF1EC; }
+  .cells .cell.mv .b { border-color:var(--clay); background:rgba(217,119,87,.2); }
+  .cells .cell.mvr .b { animation:cellR .45s ease; } .cells .cell.mvl .b { animation:cellL .45s ease; }
+  .cells .cell.new .b { border-color:var(--olive); background:rgba(120,140,93,.18); animation:cellPop .4s ease; }
+  .cells .cell.del .b { border-color:var(--rust); background:rgba(176,74,63,.12); text-decoration:line-through; }
+  .cells .cell.dim .b { opacity:.4; }
+  .cells .cell.ok .b { border-color:var(--olive); background:rgba(120,140,93,.1); }
+  .cells .cell.empty .b { border-style:dashed; border-color:var(--gray-300); background:transparent; color:transparent; }
+  .kv { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+  .kv span { font:12px var(--mono); background:#fff; border:1px solid var(--gray-300); border-radius:999px; padding:3px 11px; color:var(--gray-700); }
+  .kv b { color:var(--slate); font-weight:600; }
+  @keyframes cellR { from { transform:translateX(-54px); } to { transform:none; } }
+  @keyframes cellL { from { transform:translateX(54px); } to { transform:none; } }
+  @keyframes cellPop { from { transform:scale(.6); } to { transform:none; } }
+  @media (max-width:520px) { .cells .cell { width:38px; } .cells .cell .b { height:38px; font-size:13px; } .cells { gap:6px; } }
+  /* 節點圖、鄰接矩陣、鄰接表 */
+  .gv { margin:0 0 10px; overflow-x:auto; } .gv svg { display:block; width:100%; height:auto; }
+  .gv .ge { stroke:var(--gray-500); stroke-width:2; } .gv .ge.cur { stroke:var(--clay); stroke-width:4; } .gv .ge.ok { stroke:var(--olive); stroke-width:4; } .gv .ge.dim { opacity:.35; }
+  .gv .gw { font:600 12px var(--mono); fill:var(--gray-700); paint-order:stroke; stroke:#fff; stroke-width:4px; text-anchor:middle; dominant-baseline:central; }
+  .gv .gn circle { fill:#fff; stroke:var(--gray-700); stroke-width:2; } .gv .gn text { font:600 14px var(--mono); fill:var(--slate); text-anchor:middle; dominant-baseline:central; }
+  .gv .gn.cur circle { stroke:var(--clay); fill:#FBF1EC; stroke-width:3; } .gv .gn.ok circle { stroke:var(--olive); fill:rgba(120,140,93,.2); stroke-width:3; }
+  .gv .gn.new circle { stroke:var(--olive); fill:rgba(120,140,93,.18); } .gv .gn.dim { opacity:.4; }
+  .gv .gs { font:600 11px var(--mono); fill:var(--clay-d); text-anchor:middle; dominant-baseline:central; }
+  .gtri { display:flex; flex-wrap:wrap; gap:16px 28px; align-items:flex-start; }
+  .gtri .gcol { min-width:0; }
+  .gmat { border-collapse:separate; border-spacing:3px; font:600 13px var(--mono); }
+  .gmat th { color:var(--gray-500); font-weight:600; width:28px; height:22px; text-align:center; }
+  .gmat td { width:28px; height:28px; text-align:center; border:1.5px solid var(--gray-300); border-radius:5px; background:#fff; color:var(--gray-500); }
+  .gmat td.on { color:var(--slate); border-color:var(--gray-700); } .gmat td.hl { background:#FBF1EC; border-color:var(--clay); color:var(--slate); }
+  .gadj { font:13px var(--mono); } .gadj .gr { display:flex; flex-wrap:wrap; align-items:center; gap:4px; margin:0 0 5px; min-height:28px; }
+  .gadj .gk { width:26px; font-weight:700; color:var(--slate); } .gadj .gi { border:1.5px solid var(--gray-700); border-radius:5px; padding:2px 8px; background:#fff; }
+  .gadj .gi.hl { border-color:var(--clay); background:#FBF1EC; } .gadj .ga { color:var(--gray-500); } .gadj .ge0 { color:var(--gray-500); }
+  .gcap { font:11px var(--mono); letter-spacing:.06em; color:var(--gray-500); margin:0 0 6px; }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">跳到主要內容</a>
+<div class="progress" aria-hidden="true"><span id="readBar"></span></div>
+<div class="page">
+
+<header>
+  <nav class="crumb" aria-label="站內導覽"><a href="../index.html#datastruct">← 回教學首頁</a></nav>
+  <div class="eyebrow">C++ 演算法 · 第 15 篇 · Dijkstra（進階選讀）</div>
+  <h1>邊有長短：每次確定「目前最近」的那個點</h1>
+  <p class="sub">BFS 數的是步數；邊有權重時要用 Dijkstra。這一篇用動畫看距離表一步步被更新，理解「鬆弛」與優先佇列怎麼配合。</p>
+  <div class="tldr"><b>TL;DR</b> Dijkstra 從起點出發，每次從優先佇列取出<b>距離最小</b>的點，把它的距離<b>確定</b>，再用它去<b>鬆弛</b>鄰居（<code>d + w &lt; dist[v]</code> 就更新）。權重必須<b>非負</b>，時間 <code>O((V + E) log V)</code>。<br><small>先備：第 13 篇堆積與 priority_queue、第 14 篇圖與 BFS。預估 18 分鐘。難度：進階（選讀）。</small></div>
+</header>
+
+<div class="layout">
+<nav class="toc" aria-label="本頁目錄">
+  <div class="label">On this page</div>
+  <a href="#what">1. 直覺與名詞</a>
+  <a href="#play">2. 距離表怎麼更新</a>
+  <a href="#code">3. 完整程式</a>
+  <a href="#cost">4. 複雜度小表</a>
+  <a href="#gotchas">5. 常見錯誤</a>
+  <a href="#practice">6. 動手寫與測驗</a>
+</nav>
+
+<main id="main" tabindex="-1">
+<section id="what">
+  <h2>直覺：邊有「長短」，最少步數不等於最短</h2>
+  <hr class="rule">
+<div class="panel"><h3>三站直達 vs 轉兩次車，哪個比較快？</h3><p>第 14 篇的 BFS 數的是<b>步數</b>：每走一條邊算 1。但真實的路有長短：公里數、分鐘、車資。給每條邊一個數字，叫<b>權重</b>(weight)。這時「最少步數」不一定是「總長最短」：一條邊權重 10 的直達路，可能比兩條權重 3 和 4 的路還長。</p><p style="margin-bottom:0"><b>Dijkstra 演算法</b>（讀作「迪克斯特拉」）找的就是：從一個起點出發，到每個點的<b>總權重最小</b>的路。想法是貪心：每次從「還沒確定的點」裡挑目前距離最小的，把它的最短距離<b>確定</b>下來，再用它去更新鄰居。</p></div>
+<h3 style="margin-top:26px">幾個名詞</h3>
+<div class="table-wrap"><div class="gt g2"><div class="row"><div class="cell head">名詞</div><div class="cell head">白話說明</div></div><div class="row"><div class="cell term">權重（weight）</div><div class="cell">邊上的數字，代表走這條邊的代價（距離、時間、費用）。本篇權重都是<b>正數</b>。</div></div><div class="row"><div class="cell term"><code>dist[v]</code></div><div class="cell">到目前為止，從起點走到 v 找到的最短距離。一開始起點是 0，其他是 ∞（還沒走到）。</div></div><div class="row"><div class="cell term">鬆弛（relax）</div><div class="cell">看一條邊 u→v：如果「走到 u 的距離 + 邊的權重」比目前記的 <code>dist[v]</code> 更短，就更新。就像把繃緊的繩子放鬆一點。</div></div><div class="row"><div class="cell term">確定（finalized）</div><div class="cell">從 pq 取出、距離最小的點，它的 <code>dist</code> 之後不會再變短。</div></div><div class="row"><div class="cell term"><code>prev[v]</code></div><div class="cell">最短路上 v 的前一個點。從終點一路往回找，就能還原整條路。</div></div><div class="row"><div class="cell term">優先佇列</div><div class="cell">第 13 篇的堆積。放 <code>(距離, 點)</code>，每次先拿距離最小的。</div></div></div></div>
+</section>
+
+<section id="play">
+  <h2>動手玩：看距離一步步被更新</h2>
+  <hr class="rule">
+<p class="sub" style="margin-bottom:14px">選一張圖和起點，按「執行」。點上方的數字是目前的 <code>dist</code>（∞ 表示還沒走到）。<b>綠框</b>是已確定的點，<b>橘色</b>是目前處理的點，<b>淺綠</b>是剛被更新的點；綠色的邊是最短路徑樹。</p>
+<ol class="ops"><li>先看「繞路更近」：起點 0 到 1 有一條權重 10 的直達邊，但最後 <code>dist[1]</code> 是多少？走哪條路？</li><li>「經典範例」裡找「過時的舊紀錄」（訊息裡會寫）：為什麼 pq 裡會有同一個點的兩筆？</li><li>看 dist 表的變化：每個點的值是不是只會<b>變小</b>、不會變大？</li><li>按「隨機圖」換幾張圖，試試不同起點。</li></ol>
+<div id="w-dijk" role="group" aria-label="Dijkstra 動畫（圖、距離表、優先佇列）"></div>
+<div class="panel sim" data-simgroup>
+<h3>猜猜看：最短距離是多少？</h3>
+<p style="margin:6px 0 0;color:var(--gray-700)">在「繞路更近」那張圖，起點 0 到點 1 有一條直達的邊，權重 10；另外還有 0→2（權重 3）與 2→1（權重 4）。起點 0 到點 1 的最短距離是？</p>
+<div class="sim-buttons" role="group" aria-label="選擇做法"><button type="button" data-sim="a1">10，直達最近</button><button type="button" data-sim="a2">7，繞過點 2 比較短</button><button type="button" data-sim="a3">3，因為 0→2 只要 3</button></div>
+<div class="sim-result" aria-live="polite">選一個做法，看看對不對。</div>
+</div>
+<h3 style="margin-top:26px">為什麼「每次拿最小的」就是對的？</h3>
+<p>假設 pq 現在給出距離最小的點 <code>u</code>，距離 <code>d</code>。如果還有更短的路到 u，那條路必須先經過某個<b>還沒確定</b>的點；但那些點的距離都 <b>≥ d</b>（因為 d 是最小的），再加上一條<b>非負</b>的邊，只會更長，不可能比 d 短。所以 u 的距離確定了。這個論證<b>依賴權重不能是負的</b>。</p>
+</section>
+
+<section id="code">
+  <h2>完整程式：Dijkstra</h2>
+  <hr class="rule">
+<p class="sub" style="margin-bottom:14px">骨架和 BFS 很像：一個容器放待處理的點，取出一個、看它的鄰居。差別是容器換成<b>優先佇列</b>（最小堆積，所以 <code>greater</code>），而且多了「鬆弛」那一步。<code>dist</code> 是答案，<code>prev</code> 用來還原路徑。</p>
+<div class="cmd"><div class="cap">main.cpp</div><pre data-cpp>#include &lt;functional&gt;
+#include &lt;iostream&gt;
+#include &lt;queue&gt;
+#include &lt;utility&gt;
+#include &lt;vector&gt;
+
+struct Edge {
+    int to;
+    int w;
+};
+
+using Graph = std::vector&lt;std::vector&lt;Edge&gt;&gt;;
+using Item = std::pair&lt;int, int&gt;;
+const int INF = 1000000000;
+
+void dijkstra(const Graph&amp; g, int src, std::vector&lt;int&gt;&amp; dist, std::vector&lt;int&gt;&amp; prev) {
+    dist.assign(g.size(), INF);
+    prev.assign(g.size(), -1);
+    std::priority_queue&lt;Item, std::vector&lt;Item&gt;, std::greater&lt;Item&gt;&gt; pq;
+    dist[src] = 0;
+    pq.push({0, src});
+    while (!pq.empty()) {
+        Item top = pq.top();
+        pq.pop();
+        int d = top.first;
+        int u = top.second;
+        if (d &gt; dist[u]) {
+            continue;
+        }
+        for (const Edge&amp; e : g[u]) {
+            if (d + e.w &lt; dist[e.to]) {
+                dist[e.to] = d + e.w;
+                prev[e.to] = u;
+                pq.push({dist[e.to], e.to});
+            }
+        }
+    }
+}
+
+void addEdge(Graph&amp; g, int a, int b, int w) {
+    g[a].push_back({b, w});
+    g[b].push_back({a, w});
+}
+
+void report(const Graph&amp; g, int src, int target) {
+    std::vector&lt;int&gt; dist;
+    std::vector&lt;int&gt; prev;
+    dijkstra(g, src, dist, prev);
+    std::cout &lt;&lt; "dist:";
+    for (int d : dist) {
+        std::cout &lt;&lt; " " &lt;&lt; d;
+    }
+    std::cout &lt;&lt; "\n";
+    std::vector&lt;int&gt; path;
+    for (int v = target; v != -1; v = prev[v]) {
+        path.push_back(v);
+    }
+    std::cout &lt;&lt; "到 " &lt;&lt; target &lt;&lt; " 的路(" &lt;&lt; dist[target] &lt;&lt; "):";
+    for (int i = static_cast&lt;int&gt;(path.size()) - 1; i &gt;= 0; --i) {
+        std::cout &lt;&lt; " " &lt;&lt; path[i];
+    }
+    std::cout &lt;&lt; "\n";
+}
+
+int main() {
+    Graph a(6);
+    addEdge(a, 0, 1, 7);
+    addEdge(a, 0, 2, 9);
+    addEdge(a, 0, 5, 14);
+    addEdge(a, 1, 2, 10);
+    addEdge(a, 1, 3, 15);
+    addEdge(a, 2, 3, 11);
+    addEdge(a, 2, 5, 2);
+    addEdge(a, 3, 4, 6);
+    addEdge(a, 4, 5, 9);
+    report(a, 0, 4);
+    Graph b(5);
+    addEdge(b, 0, 1, 10);
+    addEdge(b, 0, 2, 3);
+    addEdge(b, 2, 1, 4);
+    addEdge(b, 1, 3, 2);
+    addEdge(b, 2, 3, 8);
+    addEdge(b, 3, 4, 7);
+    report(b, 0, 4);
+}</pre><button type="button" class="copy">Copy</button></div>
+<div class="cmd out"><div class="cap">執行結果（兩張圖：各印 dist 與到點 4 的路）</div><pre>dist: 0 7 9 20 20 11
+到 4 的路(20): 0 2 5 4
+dist: 0 7 3 9 16
+到 4 的路(16): 0 2 1 3 4</pre></div>
+<div class="cmd"><div class="cap">編譯並執行（g++ 或 clang++ 皆可）</div><pre>g++ -std=c++17 -Wall -Wextra -o main main.cpp
+./main</pre><button type="button" class="copy">Copy</button></div>
+<div class="tip"><b class="l">為什麼有 <code>if (d &gt; dist[u]) continue;</code></b>STL 的 <code>priority_queue</code> 不能「修改」裡面已有的值。所以每次鬆弛成功就<b>再放一筆新的</b>，舊的留著。取出時如果發現距離比 <code>dist</code> 記的大，就是過時的紀錄，丟掉。</div>
+</section>
+
+<section id="cost">
+  <h2>複雜度小表</h2>
+  <hr class="rule">
+<p class="sub" style="margin-bottom:14px">V 是點數，E 是邊數。每條邊最多讓 pq 多一筆，pq 的 push / pop 各是 <code>O(log)</code>。</p>
+<div class="table-wrap"><div class="gt g3"><div class="row"><div class="cell head">演算法</div><div class="cell head">時間</div><div class="cell head">適用</div></div><div class="row"><div class="cell term">BFS</div><div class="cell"><code>O(V + E)</code></div><div class="cell">沒有權重（或權重都一樣）</div></div><div class="row"><div class="cell term">Dijkstra(priority_queue)</div><div class="cell"><code>O((V + E) log V)</code></div><div class="cell">權重<b>非負</b></div></div><div class="row"><div class="cell term">Bellman-Ford（本篇不教）</div><div class="cell"><code>O(V × E)</code></div><div class="cell">可以有負權重，比較慢</div></div></div></div>
+</section>
+
+<section id="gotchas">
+  <h2>初學者最常卡住的四個地方</h2>
+  <hr class="rule">
+<details><summary>邊的權重是負的</summary><div class="body"><p>Dijkstra 的「確定了就不會變」靠的是非負權重。有負權重的邊時，之後可能出現更短的路，答案會錯。遇到負權重要改用 Bellman-Ford 之類的演算法。</p></div></details>
+<details><summary>INF 加權重溢位</summary><div class="body"><p>如果寫成 <code>dist[u] + w</code> 而 <code>dist[u]</code> 還是 INF,<code>INF + w</code> 可能超過 <code>int</code> 範圍。本篇只對<b>從 pq 取出、一定走得到</b>的點做加法，所以安全。INF 也不要設成 <code>INT_MAX</code>。</p></div></details>
+<details><summary>pq 用成最大堆積</summary><div class="body"><p><code>priority_queue</code> 預設最大的先出來（第 13 篇）。Dijkstra 要最小的，必須用 <code>greater</code>。寫錯時程式能跑，但答案是錯的。</p></div></details>
+<details><summary>無向圖的邊只加一次</summary><div class="body"><p>無向圖的邊要兩個方向都放進鄰接表（<code>addEdge</code> 做了兩次 <code>push_back</code>）。只加一次，有些點會「走不回來」。</p></div></details>
+</section>
+
+<section id="practice">
+  <h2>動手演練：確認你真的懂了</h2>
+  <hr class="rule">
+<h3 style="margin-top:30px">動手寫（兩題）</h3><div class="panel"><h3>第 1 題：還原最短路徑</h3><p>給 <code>prev</code>，回傳從起點到 target 的路徑。輸出應該是 <code>0 2 3 4</code>。</p><div class="cmd"><div class="cap">main.cpp</div><pre data-cpp>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+// prev[v] 是「走到 v 之前的那個點」,起點的 prev 是 -1。
+// 請回傳從起點到 target 的路徑(由起點到 target 的順序)。
+std::vector&lt;int&gt; buildPath(const std::vector&lt;int&gt;&amp; prev, int target) {
+    (void)prev;
+    (void)target;
+    return {};
+}
+
+int main() {
+    std::vector&lt;int&gt; prev = {-1, 0, 0, 2, 3};   // 路:0 -&gt; 2 -&gt; 3 -&gt; 4
+    for (int v : buildPath(prev, 4)) {
+        std::cout &lt;&lt; v &lt;&lt; " ";
+    }
+    std::cout &lt;&lt; "\n";   // 預期輸出 0 2 3 4
+}</pre><button type="button" class="copy">Copy</button></div><details><summary>參考答案</summary><div class="body"><p>從 target 沿著 <code>prev</code> 一路往回找，直到 <code>-1</code>（起點的 prev），這樣得到的是反過來的路徑，最後 <code>reverse</code>。</p><div class="cmd"><div class="cap">完整答案</div><pre data-cpp>#include &lt;algorithm&gt;
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+std::vector&lt;int&gt; buildPath(const std::vector&lt;int&gt;&amp; prev, int target) {
+    std::vector&lt;int&gt; path;
+    for (int v = target; v != -1; v = prev[v]) {
+        path.push_back(v);
+    }
+    std::reverse(path.begin(), path.end());
+    return path;
+}
+
+int main() {
+    std::vector&lt;int&gt; prev = {-1, 0, 0, 2, 3};
+    for (int v : buildPath(prev, 4)) {
+        std::cout &lt;&lt; v &lt;&lt; " ";
+    }
+    std::cout &lt;&lt; "\n";
+}</pre><button type="button" class="copy">Copy</button></div><div class="cmd out"><div class="cap">執行結果</div><pre>0 2 3 4 </pre></div></div></details></div><div class="panel" style="margin-top:14px"><h3>第 2 題：寫出「鬆弛」</h3><p>實作 <code>relax</code>。輸出應該是 <code>1 7 0 9 0 9</code>。注意最後一次 7 + 2 = 9 和原本一樣長，<b>不算更短</b>，不更新。</p><div class="cmd"><div class="cap">main.cpp</div><pre data-cpp>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+const int INF = 1000000000;
+
+// 鬆弛(relax):如果「走到 u 的距離 du + 這條邊的權重 w」比目前記的 dist[v] 更短,
+// 就更新 dist[v] 並回傳 true;否則什麼都不改、回傳 false。
+bool relax(std::vector&lt;int&gt;&amp; dist, int du, int v, int w) {
+    (void)dist;
+    (void)du;
+    (void)v;
+    (void)w;
+    return false;
+}
+
+int main() {
+    std::vector&lt;int&gt; dist = {0, INF, 9};
+    std::cout &lt;&lt; relax(dist, 0, 1, 7) &lt;&lt; " " &lt;&lt; dist[1] &lt;&lt; " " &lt;&lt; relax(dist, 7, 2, 5) &lt;&lt; " " &lt;&lt; dist[2] &lt;&lt; " " &lt;&lt; relax(dist, 7, 2, 2) &lt;&lt; " " &lt;&lt; dist[2] &lt;&lt; "\n";   // 預期輸出 1 7 0 9 0 9(最後一次 7+2 = 9,和原本一樣長,不算更短)
+}</pre><button type="button" class="copy">Copy</button></div><details><summary>參考答案</summary><div class="body"><p>只有「嚴格小於」才更新。用 <code>&lt;=</code> 的話，相等時也會更新並重複放進 pq，答案沒錯但做了白工。</p><div class="cmd"><div class="cap">完整答案</div><pre data-cpp>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+const int INF = 1000000000;
+
+bool relax(std::vector&lt;int&gt;&amp; dist, int du, int v, int w) {
+    if (du + w &lt; dist[v]) {
+        dist[v] = du + w;
+        return true;
+    }
+    return false;
+}
+
+int main() {
+    std::vector&lt;int&gt; dist = {0, INF, 9};
+    std::cout &lt;&lt; relax(dist, 0, 1, 7) &lt;&lt; " " &lt;&lt; dist[1] &lt;&lt; " " &lt;&lt; relax(dist, 7, 2, 5) &lt;&lt; " " &lt;&lt; dist[2] &lt;&lt; " " &lt;&lt; relax(dist, 7, 2, 2) &lt;&lt; " " &lt;&lt; dist[2] &lt;&lt; "\n";
+}</pre><button type="button" class="copy">Copy</button></div><div class="cmd out"><div class="cap">執行結果</div><pre>1 7 0 9 0 9</pre></div></div></details></div>
+<div class="panel" id="quiz">
+    <div class="quiz-top"><h3 style="margin:0">快速測驗</h3><span class="count" id="quizCount">1 / 1</span></div>
+    <div class="question" id="quizQ"></div>
+    <div class="answers" id="quizAns"></div>
+    <div class="feedback" id="quizFb" aria-live="polite"></div>
+    <div class="quiz-foot"><span id="quizScore">答對 0 題</span><button type="button" class="primary" id="quizNext" disabled>下一題 →</button></div>
+  </div>
+<h3 style="margin-top:30px">學完之後，對照這張清單</h3>
+<div class="panel">
+<div class="checks" id="checks"><label class="check-item"><input type="checkbox"><span>我知道有權重時「最少步數」不等於「總長最短」。</span></label><label class="check-item"><input type="checkbox"><span>我能說出 <code>dist</code>、<code>prev</code>、鬆弛、確定各是什麼意思。</span></label><label class="check-item"><input type="checkbox"><span>我能口述流程：取出 pq 裡距離最小的點、確定它、用它鬆弛每個鄰居。</span></label><label class="check-item"><input type="checkbox"><span>我知道 Dijkstra 的權重必須非負，以及 pq 要用最小堆積（<code>greater</code>）。</span></label><label class="check-item"><input type="checkbox"><span>我知道複雜度是 <code>O((V + E) log V)</code>。</span></label></div>
+<div class="check-progress" id="checkProgress">已完成 0 / 5 項</div>
+<div class="bar"><span id="checkBar"></span></div>
+</div>
+<h3 style="margin-top:30px">cppreference 參考頁面</h3>
+<div class="resources"><a class="resource" href="https://en.cppreference.com/cpp/container/priority_queue" target="_blank" rel="noopener"><b>std::priority_queue</b><small>cppreference · std::priority_queue</small></a><a class="resource" href="https://en.cppreference.com/cpp/utility/functional/greater" target="_blank" rel="noopener"><b>std::greater</b><small>cppreference · std::greater</small></a></div>
+</section>
+</main>
+</div>
+
+<p class="foot" style="margin-top:28px">範例以 g++ 13、<code>-std=c++17 -Wall -Wextra</code> 實際編譯執行驗證（零警告）；動畫為教學示意，資料量固定很小。cppreference 連結已逐條開啟確認。查證日期：2026-11-18。</p>
+
+<nav class="pager" aria-label="上一篇與下一篇">
+  <a class="prev" href="datastruct-graph-guide.html"><small>上一篇</small><b>圖的表示與 BFS/DFS</b></a>
+  <a class="next" href="datastruct-dp-guide.html"><small>下一篇</small><b>動態規劃</b></a>
+</nav>
+</div>
+
+<script>window.PAGE = {"sim": {"a1": "<b>不是。</b>直達的邊權重是 10，但 0→2→1 只要 3 + 4 = 7。邊少不代表總長短，這正是 BFS 在有權重的圖上不夠用的原因。", "a2": "<b>正確！</b>0→2 是 3、2→1 是 4，合起來 7，比直達的 10 短。動畫最後 <code>dist[1]</code> 就是 7,<code>prev[1]</code> 是 2。", "a3": "<b>不是。</b>3 是到點 <b>2</b> 的距離。到點 1 還要再走 2→1（權重 4），所以是 7。"}, "quiz": [{"q": "邊有權重時，為什麼不能直接用 BFS 找總長最短的路？", "a": ["BFS 一定比較慢", "BFS 找的是步數最少，不是總權重最小", "BFS 不能用在圖上"], "c": 1, "why": "BFS 把每條邊都當 1，不管權重。"}, {"q": "Dijkstra 每次從優先佇列取出什麼？", "a": ["最先放進去的點", "編號最小的點", "距離最小的點"], "c": 2, "why": "pq 是最小堆積，取出目前距離最小的。"}, {"q": "「鬆弛」(relax)是指？", "a": ["發現經過 u 走到 v 比目前記的更短，就更新 dist[v]", "把邊刪掉", "把整個 pq 清空"], "c": 0, "why": "d + w < dist[v] 時更新。"}, {"q": "Dijkstra 不能正確處理哪種圖？", "a": ["有環的圖", "無向圖", "有負權重邊的圖"], "c": 2, "why": "「確定了就不會變」依賴權重非負。"}, {"q": "用 priority_queue 實作的 Dijkstra，時間複雜度是？", "a": ["O(V + E)", "O((V + E) log V)", "O(V³)"], "c": 1, "why": "每條邊最多讓 pq 多一筆，push / pop 是 O(log)。"}]};</script>
+<script>
+(function () {
+  "use strict";
+  var CFG = window.PAGE || {};
+  function $(id){ return document.getElementById(id); }
+  function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+  window.PAGE_UTIL = { copyText: function(t, b){ copyText(t, b); }, esc: esc };
+  function copyText(text, btn){
+    var orig = btn.textContent;
+    function flash(){
+      btn.textContent = "Copied ✓"; btn.classList.add("copied");
+      setTimeout(function(){ btn.textContent = orig; btn.classList.remove("copied"); }, 1200);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(flash, flash);
+    } else {
+      var ta = document.createElement("textarea"); ta.value = text;
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); } catch(e){}
+      document.body.removeChild(ta); flash();
+    }
+  }
+
+  /* ---------- fill-in template values ---------- */
+  var DEF = CFG.fill || {};
+  var vals = {};
+  var RE = /\{([A-Za-z0-9_]+)\}/g;
+  function val(k){ return vals[k] || DEF[k]; }
+  function resolvePlain(t){ return t.replace(RE, function(m, k){ return (k in DEF) ? val(k) : m; }); }
+  function resolveHtml(t){
+    var out = "", last = 0, m;
+    RE.lastIndex = 0;
+    while ((m = RE.exec(t))){
+      if (!(m[1] in DEF)) continue;
+      out += esc(t.slice(last, m.index)) + '<span class="slot">' + esc(val(m[1])) + "</span>";
+      last = RE.lastIndex;
+    }
+    return out + esc(t.slice(last));
+  }
+  function lineHtml(line, cpp){
+    if (cpp){
+      var j = line.indexOf("//");
+      if (j > -1) return resolveHtml(line.slice(0, j)) + '<span class="cm">' + resolveHtml(line.slice(j)) + "</span>";
+      return resolveHtml(line);
+    }
+    if (line.trim().indexOf("# ") === 0) return '<span class="cm">' + resolveHtml(line) + "</span>";
+    var i = line.indexOf("  # ");
+    if (i > -1) return resolveHtml(line.slice(0, i)) + '<span class="cm">' + resolveHtml(line.slice(i)) + "</span>";
+    return resolveHtml(line);
+  }
+  var tplEls = Array.prototype.slice.call(document.querySelectorAll("[data-tpl]"));
+  tplEls.forEach(function(el){ el._tpl = el.textContent; });
+  function renderTpl(){
+    tplEls.forEach(function(el){
+      if (el.tagName === "PRE") el.innerHTML = el._tpl.split("\n").map(function(l){ return lineHtml(l, el.hasAttribute("data-cpp")); }).join("\n");
+      else el.innerHTML = resolveHtml(el._tpl);
+    });
+  }
+  var inputs = Array.prototype.slice.call(document.querySelectorAll(".fill input"));
+  inputs.forEach(function(inp){
+    inp.placeholder = DEF[inp.dataset.k] || "";
+    inp.addEventListener("input", function(){
+      var v = inp.value;
+      if (!inp.dataset.ns){ v = v.replace(/\s+/g, "-"); if (v !== inp.value) inp.value = v; }
+      vals[inp.dataset.k] = v;
+      renderTpl();
+    });
+  });
+  var rb = $("resetBtn");
+  if (rb) rb.addEventListener("click", function(){
+    inputs.forEach(function(inp){ inp.value = ""; vals[inp.dataset.k] = ""; });
+    renderTpl();
+  });
+  document.querySelectorAll(".cmd .copy").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var pre = btn.parentNode.querySelector("pre");
+      copyText(pre._tpl !== undefined ? resolvePlain(pre._tpl) : pre.textContent, btn);
+    });
+  });
+
+  /* ---------- reading progress + toc spy ---------- */
+  var readBar = $("readBar");
+  function updateBar(){
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    readBar.style.width = (max > 0 ? Math.min(100, window.scrollY / max * 100) : 0) + "%";
+  }
+  window.addEventListener("scroll", updateBar, { passive: true });
+  window.addEventListener("resize", updateBar);
+  updateBar();
+  var tocLinks = Array.prototype.slice.call(document.querySelectorAll("nav.toc a"));
+  if ("IntersectionObserver" in window){
+    var spy = new IntersectionObserver(function(es){
+      es.forEach(function(en){
+        if (en.isIntersecting) tocLinks.forEach(function(a){ a.classList.toggle("active", a.getAttribute("href") === "#" + en.target.id); });
+      });
+    }, { rootMargin: "-15% 0px -70% 0px" });
+    tocLinks.forEach(function(a){ var sec = document.querySelector(a.getAttribute("href")); if (sec) spy.observe(sec); });
+  }
+
+  /* ---------- scenario simulators ---------- */
+  var SIM = CFG.sim || {};
+  document.querySelectorAll("[data-simgroup]").forEach(function(group){
+    var btns = Array.prototype.slice.call(group.querySelectorAll("[data-sim]"));
+    var out = group.querySelector(".sim-result");
+    btns.forEach(function(btn){
+      btn.addEventListener("click", function(){
+        btns.forEach(function(b){ b.classList.toggle("selected", b === btn); });
+        out.innerHTML = SIM[btn.dataset.sim] || "";
+      });
+    });
+  });
+
+  /* ---------- quiz ---------- */
+  var QUIZ = CFG.quiz || [];
+  if (QUIZ.length && $("quiz")){
+    var qi = 0, qScore = 0, qDone = false;
+    var qCount = $("quizCount"), qQ = $("quizQ"), qAns = $("quizAns"), qFb = $("quizFb"), qNext = $("quizNext"), qScoreEl = $("quizScore");
+    var renderQuiz = function(){
+      var item = QUIZ[qi]; qDone = false;
+      qCount.textContent = (qi + 1) + " / " + QUIZ.length;
+      qQ.innerHTML = item.q;
+      qAns.innerHTML = "";
+      qFb.className = "feedback"; qFb.textContent = "";
+      qNext.disabled = true;
+      qNext.textContent = qi === QUIZ.length - 1 ? "重新測驗 ↻" : "下一題 →";
+      item.a.forEach(function(text, i){
+        var b = document.createElement("button");
+        b.type = "button"; b.className = "answer";
+        b.innerHTML = '<span class="letter">' + String.fromCharCode(65 + i) + "</span><span>" + esc(text) + "</span>";
+        b.addEventListener("click", function(){ pick(i); });
+        qAns.appendChild(b);
+      });
+    };
+    var pick = function(i){
+      if (qDone) return; qDone = true;
+      var item = QUIZ[qi], good = i === item.c;
+      Array.prototype.forEach.call(qAns.querySelectorAll("button"), function(b, n){
+        b.disabled = true;
+        if (n === item.c) b.classList.add("correct");
+        if (n === i && !good) b.classList.add("wrong");
+      });
+      if (good) qScore++;
+      qFb.className = "feedback show " + (good ? "good" : "bad");
+      qFb.innerHTML = "<b>" + (good ? "答對了！" : "再記一下這個觀念。") + "</b> " + esc(item.why);
+      qScoreEl.textContent = "答對 " + qScore + " / " + (qi + 1) + " 題";
+      qNext.disabled = false;
+    };
+    qNext.addEventListener("click", function(){
+      if (qi === QUIZ.length - 1){ qi = 0; qScore = 0; } else { qi++; }
+      renderQuiz();
+      qScoreEl.textContent = "答對 " + qScore + " 題";
+    });
+    renderQuiz();
+  }
+
+  /* ---------- checklist ---------- */
+  var checks = Array.prototype.slice.call(document.querySelectorAll("#checks input"));
+  function updateChecks(){
+    var n = checks.filter(function(c){ return c.checked; }).length;
+    $("checkProgress").textContent = "已完成 " + n + " / " + checks.length + " 項";
+    $("checkBar").style.width = (n / checks.length * 100) + "%";
+    checks.forEach(function(c){ c.closest(".check-item").classList.toggle("done", c.checked); });
+  }
+  checks.forEach(function(c){ c.addEventListener("change", updateChecks); });
+
+  /* ---------- role tabs (dual-view pages) ---------- */
+  var roleBtns = Array.prototype.slice.call(document.querySelectorAll("[data-role]"));
+  var rolePanels = Array.prototype.slice.call(document.querySelectorAll("[data-panel]"));
+  function setRole(r, focus){
+    roleBtns.forEach(function(b){
+      var on = b.dataset.role === r;
+      b.classList.toggle("on", on);
+      b.setAttribute("aria-selected", on ? "true" : "false");
+      b.tabIndex = on ? 0 : -1;
+      if (on && focus) b.focus();
+    });
+    rolePanels.forEach(function(p){ p.hidden = p.dataset.panel !== r; });
+  }
+  roleBtns.forEach(function(b){
+    b.addEventListener("click", function(){ setRole(b.dataset.role); });
+    b.addEventListener("keydown", function(e){
+      if (e.key === "ArrowLeft" || e.key === "ArrowRight"){
+        e.preventDefault(); setRole(b.dataset.role === "c" ? "o" : "c", true);
+      }
+    });
+  });
+  if (roleBtns.length) setRole("c");
+
+  /* ---------- stage stepper (two columns) ---------- */
+  var STAGES = CFG.stages || [];
+  if (STAGES.length && $("stages")){
+    var stage = 0;
+    var stagesEl = $("stages");
+    var renderStages = function(){
+      stagesEl.innerHTML = STAGES.map(function(s, i){
+        return '<button type="button" data-i="' + i + '" class="' + (i === stage ? "on" : "") + '" aria-pressed="' + (i === stage) + '">' +
+          '<span class="si">階段 ' + (i + 1) + "</span><span>" + s.label + '</span><span class="badge ' + s.tone + '">' + s.badge + "</span></button>";
+      }).join("");
+      var s = STAGES[stage];
+      $("c-h").textContent = s.c.h; $("o-h").textContent = s.o.h;
+      $("c-list").innerHTML = s.c.items.map(function(t){ return "<li>" + t + "</li>"; }).join("");
+      $("o-list").innerHTML = s.o.items.map(function(t){ return "<li>" + t + "</li>"; }).join("");
+      $("prevStage").disabled = stage === 0;
+      $("nextStage").disabled = stage === STAGES.length - 1;
+    };
+    stagesEl.addEventListener("click", function(e){
+      var b = e.target.closest("button[data-i]"); if (!b) return;
+      stage = +b.dataset.i; renderStages();
+    });
+    $("prevStage").addEventListener("click", function(){ if (stage > 0){ stage--; renderStages(); } });
+    $("nextStage").addEventListener("click", function(){ if (stage < STAGES.length - 1){ stage++; renderStages(); } });
+    renderStages();
+  }
+
+  /* ---------- decision picker ---------- */
+  var DECIDE = CFG.decide || [];
+  if (DECIDE.length && $("decideBtns")){
+    var decBtns = $("decideBtns"), decOut = $("decideOut");
+    decBtns.innerHTML = DECIDE.map(function(d, i){
+      return '<button type="button" data-d="' + i + '">' + d.label + "</button>";
+    }).join("");
+    decBtns.addEventListener("click", function(e){
+      var b = e.target.closest("button[data-d]"); if (!b) return;
+      var d = DECIDE[+b.dataset.d];
+      Array.prototype.forEach.call(decBtns.querySelectorAll("button"), function(x){ x.classList.toggle("selected", x === b); });
+      var tone = d.risk === "高" ? "bad" : (d.risk === "中" ? "warn" : "ok");
+      decOut.innerHTML = '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px"><b>建議做法</b><span class="badge ' + tone + '">風險：' + d.risk + "</span></div>" +
+        '<div class="cmd" style="margin:8px 0"><pre></pre><button type="button" class="copy">Copy</button></div><div>' + d.why + "</div>";
+      decOut.querySelector("pre").textContent = d.cmd;
+      decOut.querySelector(".copy").addEventListener("click", function(ev){ copyText(d.cmd, ev.currentTarget); });
+    });
+  }
+
+  renderTpl();
+  if (checks.length) updateChecks();
+})();
+
+</script>
+<script>
+
+/* ---- core ---- */
+(function (G) {
+  "use strict";
+  var A = G.Algo = G.Algo || {};
+  function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+  A.esc = esc;
+
+  /* ---------- 極簡 C++ 語法上色(每行一個 <span class="l">,換行字元保留在 span 內,複製時不會掉) ---------- */
+  var KW = /^(?:auto|break|case|const|constexpr|continue|default|delete|do|else|enum|false|for|if|namespace|new|nullptr|operator|private|public|return|sizeof|static|static_cast|struct|switch|template|this|true|typedef|using|while|class|void|int|long|short|unsigned|signed|char|bool|float|double)$/;
+  var TY = /^(?:vector|string|size_t|cout|cin|cerr|endl|array|list|stack|queue|deque|map|set|unordered_map|unordered_set|priority_queue|pair|sort|swap|min|max|begin|end|int64_t)$/;
+  var RE = /(\/\/[^\n]*)|("(?:\\.|[^"\\\n])*")|('(?:\\.|[^'\\\n])+')|(^[ \t]*#[^\n]*)|(\b\d+(?:\.\d+)?\b)|(\b[A-Za-z_]\w*\b)/g;
+  function hlInline(line){
+    var out = "", last = 0, m; RE.lastIndex = 0;
+    while ((m = RE.exec(line))){
+      out += esc(line.slice(last, m.index));
+      var t = m[0], c = null;
+      if (m[1]) c = "c"; else if (m[2] || m[3]) c = "s"; else if (m[4]) c = "p"; else if (m[5]) c = "n";
+      else if (KW.test(t)) c = "k"; else if (TY.test(t)) c = "t";
+      out += c ? '<span class="x' + c + '">' + esc(t) + "</span>" : esc(t);
+      last = RE.lastIndex;
+    }
+    return out + esc(line.slice(last));
+  }
+  A.hlCpp = function (code) {
+    return code.replace(/\n$/, "").split("\n").map(function (ln) {
+      return '<span class="l">' + hlInline(ln) + "\n</span>";
+    }).join("");
+  };
+  A.highlightAll = function () {
+    if (typeof document === "undefined") return;
+    Array.prototype.forEach.call(document.querySelectorAll("pre[data-cpp]"), function (pre) {
+      pre.innerHTML = A.hlCpp(pre.textContent);
+    });
+  };
+
+  /* ---------- 通用播放器 widget ----------
+     o = { form:[{id,label,type:'select'|'number'|'text',options,value,min,max,showIf}], runLabel,
+           init():base, idle(base):frame, make(vals, base):{frames,result}|{error},
+           render(frame):html, code:string|null, code_cap:string }
+     frame = { msg, line:number|[number], ...(由 render 決定其餘欄位) }                                 */
+  var SPEEDS = { slow: 1400, mid: 800, fast: 350 };
+  A.widget = function (id, o) {
+    if (typeof document === "undefined") return null;
+    var root = document.getElementById(id); if (!root) return null;
+    root.classList.add("algo-w");
+    var form = (o.form || []).map(function (f) {
+      var inner;
+      if (f.type === "select") inner = '<select id="' + id + "-" + f.id + '">' + f.options.map(function (op) {
+        return '<option value="' + esc(op[0]) + '"' + (op[0] === f.value ? " selected" : "") + ">" + esc(op[1]) + "</option>"; }).join("") + "</select>";
+      else inner = '<input id="' + id + "-" + f.id + '" type="' + (f.type || "text") + '" value="' + esc(f.value === undefined ? "" : f.value) + '"' +
+        (f.min !== undefined ? ' min="' + f.min + '"' : "") + (f.max !== undefined ? ' max="' + f.max + '"' : "") + ' autocomplete="off">';
+      return '<div class="algo-f" data-f="' + f.id + '"><label for="' + id + "-" + f.id + '">' + esc(f.label) + "</label>" + inner + "</div>";
+    }).join("");
+    var extra = (o.buttons || []).map(function (b, i) { return '<button type="button" class="ghost" data-x="' + i + '">' + esc(b.label) + "</button>"; }).join("");
+    root.innerHTML =
+      '<div class="algo-form">' + form + '<button type="button" class="primary" data-a="run">' + esc(o.runLabel || "執行") + "</button>" + extra +
+      '<button type="button" class="ghost" data-a="reset">Reset</button></div>' +
+      '<div class="algo-main' + (o.code ? "" : " nocode") + '">' +
+      '<div class="algo-left" tabindex="0" aria-label="動畫區：按左右方向鍵逐步，空白鍵播放或暫停">' +
+        '<div class="algo-stage"></div><div class="algo-msg" aria-live="polite"></div>' +
+        '<div class="algo-ctl"><button type="button" class="ghost" data-a="first" title="回到第一步">⏮</button>' +
+        '<button type="button" class="ghost" data-a="prev">← 上一步</button>' +
+        '<button type="button" class="primary" data-a="next">下一步 →</button>' +
+        '<button type="button" class="ghost" data-a="play">▶ 播放</button>' +
+        '<select data-a="speed" aria-label="播放速度"><option value="slow">慢</option><option value="mid" selected>中</option><option value="fast">快</option></select>' +
+        '<input type="range" data-a="seek" min="0" max="0" value="0" aria-label="步驟"><span class="algo-step"></span></div></div>' +
+      (o.code ? '<div class="cmd algo-code"><div class="cap">' + esc(o.code_cap || "程式碼（目前執行的那一行會亮起來）") + "</div><pre>" + A.hlCpp(o.code) + "</pre></div>" : "") +
+      "</div>";
+    var $ = function (s) { return root.querySelector(s); };
+    var stage = $(".algo-stage"), msg = $(".algo-msg"), step = $(".algo-step"), seek = $('[data-a="seek"]'),
+        btnPrev = $('[data-a="prev"]'), btnNext = $('[data-a="next"]'), btnPlay = $('[data-a="play"]'), btnFirst = $('[data-a="first"]');
+    var lines = o.code ? Array.prototype.slice.call(root.querySelectorAll(".algo-code .l")) : [];
+    var base = o.init(), frames = [o.idle(base)], idx = 0, timer = null;
+
+    function vals() {
+      var v = {}; (o.form || []).forEach(function (f) {
+        var el = document.getElementById(id + "-" + f.id); v[f.id] = f.type === "number" ? (el.value === "" ? NaN : +el.value) : el.value; });
+      return v;
+    }
+    function showIf() {
+      var v = vals();
+      (o.form || []).forEach(function (f) {
+        if (!f.showIf) return;
+        var ok = Object.keys(f.showIf).every(function (k) { return [].concat(f.showIf[k]).map(String).indexOf(String(v[k])) !== -1; });
+        $('[data-f="' + f.id + '"]').hidden = !ok;
+      });
+    }
+    function stop() { if (timer) { clearInterval(timer); timer = null; } btnPlay.textContent = "▶ 播放"; }
+    function show() {
+      var f = frames[idx];
+      stage.innerHTML = o.render(f);
+      msg.className = "algo-msg"; msg.innerHTML = f.msg || "";
+      var on = f.line === undefined ? [] : [].concat(f.line);
+      lines.forEach(function (l, i) { l.classList.toggle("on", on.indexOf(i + 1) !== -1); });
+      if (on.length && lines[on[0] - 1]) { var el = lines[on[0] - 1], pre = el.parentNode;
+        if (el.offsetTop < pre.scrollTop || el.offsetTop + el.offsetHeight > pre.scrollTop + pre.clientHeight) pre.scrollTop = Math.max(0, el.offsetTop - pre.clientHeight / 3); }
+      var last = frames.length - 1;
+      seek.max = last; seek.value = idx; seek.disabled = last === 0;
+      step.textContent = last === 0 ? "尚未執行" : "步驟 " + (idx + 1) + " / " + frames.length;
+      btnPrev.disabled = idx === 0; btnFirst.disabled = idx === 0;
+      btnNext.disabled = idx >= last; btnPlay.disabled = last === 0;
+    }
+    function go(i) { idx = Math.max(0, Math.min(frames.length - 1, i)); show(); }
+    function play() {
+      if (timer) { stop(); return; }
+      if (idx >= frames.length - 1) go(0);
+      btnPlay.textContent = "⏸ 暫停";
+      timer = setInterval(function () { if (idx >= frames.length - 1) { stop(); return; } go(idx + 1); if (idx >= frames.length - 1) stop(); },
+        SPEEDS[$('[data-a="speed"]').value] || 800);
+    }
+    function run(v) {
+      stop();
+      var r = o.make(v, base);
+      if (r.error) { msg.className = "algo-msg err"; msg.textContent = r.error; return false; }
+      frames = r.frames; base = r.result; go(0); return true;
+    }
+    function reset() { stop(); base = o.init(); frames = [o.idle(base)]; idx = 0; show(); }
+
+    root.addEventListener("click", function (e) {
+      var b = e.target.closest("button[data-a],button[data-x]"); if (!b || !root.contains(b)) return;
+      if (b.dataset.x !== undefined) { var bx = o.buttons[+b.dataset.x]; if (bx.run) { bx.run(vals(), { base: base, setBase: function (b) { stop(); base = b; frames = [o.idle(base)]; idx = 0; show(); }, set: function (k, val) { document.getElementById(id + "-" + k).value = val; showIf(); }, run: function () { run(vals()); } }); } return; }
+      var a = b.dataset.a;
+      if (a === "run") run(vals()); else if (a === "reset") reset();
+      else if (a === "next") { stop(); go(idx + 1); } else if (a === "prev") { stop(); go(idx - 1); }
+      else if (a === "first") { stop(); go(0); } else if (a === "play") play();
+    });
+    seek.addEventListener("input", function () { stop(); go(+seek.value); });
+    root.addEventListener("change", function (e) { if (e.target.closest(".algo-form")) showIf(); });
+    $(".algo-left").addEventListener("keydown", function (e) {
+      if (e.key === "ArrowRight") { e.preventDefault(); stop(); go(idx + 1); }
+      else if (e.key === "ArrowLeft") { e.preventDefault(); stop(); go(idx - 1); }
+      else if (e.key === " ") { e.preventDefault(); play(); }
+    });
+    showIf(); show();
+    var api = { run: run, reset: reset, go: go, frames: function () { return frames; }, base: function () { return base; } };
+    root._algo = api; return api;
+  };
+  if (typeof document !== "undefined") A.highlightAll();
+})(typeof window !== "undefined" ? window : globalThis);
+
+/* ---- cells ---- */
+(function (G) {
+  "use strict";
+  var A = G.Algo = G.Algo || {};
+  var esc = A.esc || function (s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); };
+  function row(cells, empty) {
+    var h = '<div class="cells">';
+    (cells || []).forEach(function (c, i) {
+      h += '<div class="cell ' + (c.cls || "") + '"><span class="t">' + esc(c.t || "") + '</span><div class="b">' +
+        (c.v === null || c.v === undefined ? "" : esc(c.v)) + '</div><span class="i">' + i + "</span></div>";
+    });
+    var n = (cells || []).length;
+    for (var e = 0; e < (empty || 0); e++) h += '<div class="cell empty"><span class="t"></span><div class="b">0</div><span class="i">' + (n + e) + "</span></div>";
+    return h + "</div>";
+  }
+  /* frame = { cells:[{v,cls,t}], empty:n, chips:[[label,value]] }  或  { rows:[{label,cells,empty}], chips } */
+  A.cellsHtml = function (f) {
+    var h = "";
+    if (f.rows) f.rows.forEach(function (r) { h += (r.label ? '<div class="rowlab">' + esc(r.label) + "</div>" : "") + row(r.cells, r.empty); });
+    else h = row(f.cells, f.empty);
+    if (f.chips && f.chips.length) h += '<div class="kv">' + f.chips.map(function (c) { return "<span>" + esc(c[0]) + " <b>" + esc(c[1]) + "</b></span>"; }).join("") + "</div>";
+    return h;
+  };
+})(typeof window !== "undefined" ? window : globalThis);
+
+/* ---- graph ---- */
+(function (G) {
+  "use strict";
+  var A = G.Algo = G.Algo || {};
+  var esc = A.esc || function (s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); };
+  /* g = { W, H, nodes:[{x,y,t,cls,sub}], edges:[{a,b,w,cls}] } */
+  A.graphHtml = function (g) {
+    var s = '<div class="gv"><svg viewBox="0 0 ' + g.W + " " + g.H + '" style="max-width:' + g.W + 'px" role="img" aria-label="節點圖">';
+    g.edges.forEach(function (e) {
+      var a = g.nodes[e.a], b = g.nodes[e.b];
+      s += '<line class="ge ' + (e.cls || "") + '" x1="' + a.x + '" y1="' + a.y + '" x2="' + b.x + '" y2="' + b.y + '"/>';
+    });
+    g.edges.forEach(function (e) {
+      if (e.w === undefined || e.w === null) return;
+      var a = g.nodes[e.a], b = g.nodes[e.b];
+      s += '<text class="gw" x="' + ((a.x + b.x) / 2) + '" y="' + ((a.y + b.y) / 2) + '">' + esc(e.w) + "</text>";
+    });
+    g.nodes.forEach(function (n) {
+      s += '<g class="gn ' + (n.cls || "") + '"><circle cx="' + n.x + '" cy="' + n.y + '" r="17"/><text x="' + n.x + '" y="' + n.y + '">' + esc(n.t) + "</text>";
+      if (n.sub !== undefined && n.sub !== null) s += '<text class="gs" x="' + n.x + '" y="' + (n.y - 28) + '">' + esc(n.sub) + "</text>";
+      s += "</g>";
+    });
+    return s + "</svg></div>";
+  };
+  /* f = { n, m:[[0/1]], hl:[[r,c]] } */
+  A.matrixHtml = function (f) {
+    var h = '<div class="gcap">鄰接矩陣（列 → 行）</div><table class="gmat"><tr><th></th>';
+    for (var j = 0; j < f.n; j++) h += "<th>" + j + "</th>";
+    h += "</tr>";
+    for (var i = 0; i < f.n; i++) {
+      h += "<tr><th>" + i + "</th>";
+      for (var k = 0; k < f.n; k++) {
+        var hl = (f.hl || []).some(function (p) { return p[0] === i && p[1] === k; });
+        h += '<td class="' + (f.m[i][k] ? "on " : "") + (hl ? "hl" : "") + '">' + f.m[i][k] + "</td>";
+      }
+      h += "</tr>";
+    }
+    return h + "</table>";
+  };
+  /* f = { n, adj:[[...]], hl:[[node, idx]] } */
+  A.adjHtml = function (f) {
+    var h = '<div class="gcap">鄰接表</div><div class="gadj">';
+    for (var i = 0; i < f.n; i++) {
+      h += '<div class="gr"><span class="gk">' + i + "</span>";
+      if (!f.adj[i].length) h += '<span class="ge0">（空）</span>';
+      f.adj[i].forEach(function (v, k) {
+        var hl = (f.hl || []).some(function (p) { return p[0] === i && p[1] === k; });
+        h += (k ? '<span class="ga">→</span>' : "") + '<span class="gi' + (hl ? " hl" : "") + '">' + v + "</span>";
+      });
+      h += "</div>";
+    }
+    return h + "</div>";
+  };
+})(typeof window !== "undefined" ? window : globalThis);
+
+/* ---- alg_dijk ---- */
+(function (G) {
+  "use strict";
+  var A = G.Algo = G.Algo || {};
+  var CODE_DIJK = "struct Edge {\n    int to;\n    int w;\n};\n\nusing Graph = std::vector<std::vector<Edge>>;\nusing Item = std::pair<int, int>;\nconst int INF = 1000000000;\n\nvoid dijkstra(const Graph& g, int src, std::vector<int>& dist, std::vector<int>& prev) {\n    dist.assign(g.size(), INF);\n    prev.assign(g.size(), -1);\n    std::priority_queue<Item, std::vector<Item>, std::greater<Item>> pq;\n    dist[src] = 0;\n    pq.push({0, src});\n    while (!pq.empty()) {\n        Item top = pq.top();\n        pq.pop();\n        int d = top.first;\n        int u = top.second;\n        if (d > dist[u]) {\n            continue;\n        }\n        for (const Edge& e : g[u]) {\n            if (d + e.w < dist[e.to]) {\n                dist[e.to] = d + e.w;\n                prev[e.to] = u;\n                pq.push({dist[e.to], e.to});\n            }\n        }\n    }\n}";
+  var INF = 1000000000;
+  var PRESETS = {
+    classic: { n: 6, pos: [[40, 112], [108, 50], [108, 172], [214, 50], [276, 112], [214, 172]],
+      edges: [[0, 1, 7], [0, 2, 9], [0, 5, 14], [1, 2, 10], [1, 3, 15], [2, 3, 11], [2, 5, 2], [3, 4, 6], [4, 5, 9]] },
+    detour: { n: 5, pos: [[36, 112], [128, 52], [128, 172], [218, 112], [290, 112]],
+      edges: [[0, 1, 10], [0, 2, 3], [2, 1, 4], [1, 3, 2], [2, 3, 8], [3, 4, 7]] }
+  };
+  function randomGraph(rnd) {
+    rnd = rnd || Math.random;
+    var n = 6, pos = PRESETS.classic.pos, edges = [], have = {};
+    function add(a, b) { var k = Math.min(a, b) + "-" + Math.max(a, b); if (a === b || have[k]) return false; have[k] = 1; edges.push([a, b, 1 + Math.floor(rnd() * 9)]); return true; }
+    for (var i = 1; i < n; i++) add(i, Math.floor(rnd() * i));
+    for (var t = 0, extra = 2 + Math.floor(rnd() * 3); t < 40 && extra > 0; t++) if (add(Math.floor(rnd() * n), Math.floor(rnd() * n))) extra--;
+    return { n: n, pos: pos, edges: edges };
+  }
+  function adjOf(P) { var g = []; for (var i = 0; i < P.n; i++) g.push([]); P.edges.forEach(function (e) { g[e[0]].push({ to: e[1], w: e[2] }); g[e[1]].push({ to: e[0], w: e[2] }); }); return g; }
+  var inf = function (d) { return d >= INF ? "∞" : d; };
+  function run(P, src) {
+    if (!(Number.isInteger(src) && src >= 0 && src < P.n)) return { error: "起點請輸入 0 到 " + (P.n - 1) + " 的整數。" };
+    var g = adjOf(P), n = P.n, dist = new Array(n).fill(INF), prev = new Array(n).fill(-1), done = {}, pq = [], fr = [], st = { upd: 0, pops: 0 };
+    function snap(line, msg, o) {
+      o = o || {};
+      var nodes = P.pos.map(function (p, i) { return { x: p[0], y: p[1], t: String(i), sub: dist[i] >= INF ? "∞" : dist[i], cls: o.cur === i ? "cur" : o.upd === i ? "new" : done[i] ? "ok" : "" }; });
+      var edges = P.edges.map(function (e, j) { var onTree = prev[e[1]] === e[0] || prev[e[0]] === e[1]; return { a: e[0], b: e[1], w: e[2], cls: o.edge === j ? "cur" : onTree ? "ok" : "" }; });
+      var sorted = pq.slice().sort(function (a, b) { return a[0] - b[0] || a[1] - b[1]; });
+      fr.push({ g: { W: 320, H: 214, nodes: nodes, edges: edges },
+        dist: dist.map(function (d, i) { return { v: inf(d), cls: o.upd === i ? "new" : o.cur === i ? "cur" : done[i] ? "ok" : "" }; }),
+        prev: prev.map(function (p, i) { return { v: p < 0 ? "-" : p, cls: o.upd === i ? "new" : "" }; }),
+        pq: sorted.map(function (x, i) { return { v: x[0] + "," + x[1], cls: i === 0 ? "new" : "" }; }),
+        chips: [["已確定", Object.keys(done).length + "/" + n], ["pq 大小", pq.length], ["更新次數", st.upd]], line: line, msg: msg });
+    }
+    dist[src] = 0; pq.push([0, src]);
+    snap([11, 15], "<code>dist</code> 全部設成 ∞（還沒走到），起點 <b>" + src + "</b> 設成 0，把 <code>(0, " + src + ")</code> 放進優先佇列。pq 每次會先給出「距離最小」的那一筆。", { cur: src });
+    while (pq.length) {
+      var bi = 0; for (var i = 1; i < pq.length; i++) if (pq[i][0] < pq[bi][0] || (pq[i][0] === pq[bi][0] && pq[i][1] < pq[bi][1])) bi = i;
+      var top = pq.splice(bi, 1)[0], d = top[0], u = top[1]; st.pops++;
+      if (d > dist[u]) {
+        snap([21, 23], "取出 <code>(" + d + ", " + u + ")</code>：但 <code>dist[" + u + "]</code> 已經是 " + dist[u] + " 了，這是<b>過時的舊紀錄</b>（後來找到更短的路），直接丟掉。", { cur: u });
+        continue;
+      }
+      done[u] = true;
+      snap([17, 18], "取出 <code>(" + d + ", " + u + ")</code>:pq 裡距離最小的。點 <b>" + u + "</b> 的最短距離就是 <b>" + d + "</b>，<b>確定了</b>（之後不會再變短）。", { cur: u });
+      g[u].forEach(function (e) {
+        var j = -1; P.edges.forEach(function (x, k) { if ((x[0] === u && x[1] === e.to) || (x[1] === u && x[0] === e.to)) j = k; });
+        if (d + e.w < dist[e.to]) {
+          var old = dist[e.to]; dist[e.to] = d + e.w; prev[e.to] = u; pq.push([dist[e.to], e.to]); st.upd++;
+          snap([24, 28], "看邊 " + u + "→" + e.to + "(權重 " + e.w + "):<code>" + d + " + " + e.w + " = " + (d + e.w) + "</code> 比 <code>dist[" + e.to + "]</code> = " + inf(old) + " <b>更短</b>，更新（<b>鬆弛</b>成功），記下從 " + u + " 來，並放進 pq。", { cur: u, edge: j, upd: e.to });
+        } else {
+          snap([24, 25], "看邊 " + u + "→" + e.to + "(權重 " + e.w + "):<code>" + d + " + " + e.w + " = " + (d + e.w) + "</code>，沒有比 <code>dist[" + e.to + "]</code> = " + inf(dist[e.to]) + " 更短，不更新。", { cur: u, edge: j });
+        }
+      });
+    }
+    snap(undefined, "pq 空了，結束。<b>綠色的邊</b>是每個點「最短路上最後走的那一條」(<code>prev</code>)，合起來就是最短路徑樹。點上方的數字是起點到它的最短距離。", {});
+    return { frames: fr, dist: dist, prev: prev, pops: st.pops };
+  }
+  function idle() {
+    var P = PRESETS.classic;
+    return { g: { W: 320, H: 214, nodes: P.pos.map(function (p, i) { return { x: p[0], y: p[1], t: String(i), sub: "?" }; }), edges: P.edges.map(function (e) { return { a: e[0], b: e[1], w: e[2] }; }) },
+      dist: [], prev: [], pq: [], chips: [], msg: "選一張圖和起點，按「執行」。邊上的數字是權重（路有多長）。" };
+  }
+  A.dijk = { CODE_DIJK: CODE_DIJK, INF: INF, PRESETS: PRESETS, randomGraph: randomGraph, run: run, idle: idle };
+  if (typeof module !== "undefined" && module.exports) module.exports = A;
+})(typeof window !== "undefined" ? window : globalThis);
+
+</script>
+<script>
+(function(){
+"use strict";
+
+var D = Algo.dijk;
+function render(f) {
+  var h = Algo.graphHtml(f.g);
+  if (!f.dist.length) return h;
+  return h + Algo.cellsHtml({ rows: [
+    { label: "dist[i]（∞ = 還沒走到）", cells: f.dist, empty: 0 },
+    { label: "prev[i]（最短路上，i 的前一個點）", cells: f.prev, empty: 0 },
+    { label: "優先佇列 pq:（距離，點），最小的在左邊", cells: f.pq, empty: 0 }], chips: f.chips });
+}
+function preset(name) { return function (v, c) { c.set("graph", name); c.run(); }; }
+Algo.widget("w-dijk", {
+  form: [{ id: "graph", label: "圖", type: "select", value: "classic", options: [["classic", "經典範例（6 點）"], ["detour", "繞路更近（5 點）"], ["random", "隨機圖（6 點）"]] },
+         { id: "src", label: "起點（0 開始）", type: "number", value: 0, min: 0, max: 5 }],
+  buttons: [{ label: "經典範例", run: preset("classic") }, { label: "繞路更近", run: preset("detour") }, { label: "隨機圖", run: preset("random") }],
+  init: function () { return null; },
+  idle: D.idle,
+  make: function (v) { return D.run(v.graph === "random" ? D.randomGraph() : D.PRESETS[v.graph], v.src); },
+  render: render, code: D.CODE_DIJK, code_cap: "dijkstra（亮起來的行 = 目前執行到的地方）"
+});
+
+})();
+</script>
+</body>
+</html>

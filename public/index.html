@@ -3,16 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>教學首頁 · Learning Hub：GitHub、Arduino 與微電影分鏡教學</title>
-<meta name="description" content="繁體中文的單頁自學教學站：GitHub、Arduino、微電影分鏡。每篇都有演練、測驗與檢查表，可離線開啟。">
+<title>教學首頁 · Learning Hub：GitHub、Arduino、微電影分鏡與 C++ 教學</title>
+<meta name="description" content="繁體中文的單頁自學教學站：GitHub、Arduino、微電影分鏡、C++。每篇都有演練、測驗與檢查表，可離線開啟。">
 <meta name="theme-color" content="#FAF9F5">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='8'%20fill='%23FAF9F5'/%3E%3Ccircle%20cx='16'%20cy='16'%20r='8'%20fill='%23D97757'/%3E%3C/svg%3E">
 <link rel="canonical" href="https://www.slc6172.workers.dev/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="zh_TW">
 <meta property="og:site_name" content="自學教學站">
-<meta property="og:title" content="教學首頁 · Learning Hub：GitHub、Arduino 與微電影分鏡教學">
-<meta property="og:description" content="繁體中文的單頁自學教學站：GitHub、Arduino、微電影分鏡。每篇都有演練、測驗與檢查表，可離線開啟。">
+<meta property="og:title" content="教學首頁 · Learning Hub：GitHub、Arduino、微電影分鏡與 C++ 教學">
+<meta property="og:description" content="繁體中文的單頁自學教學站：GitHub、Arduino、微電影分鏡、C++。每篇都有演練、測驗與檢查表，可離線開啟。">
 <meta property="og:url" content="https://www.slc6172.workers.dev/">
 <meta name="twitter:card" content="summary">
 <style>
@@ -399,6 +399,134 @@
       { t:"手拍畫面一直晃", n:11, a:"hh" },
       { t:"想讓觀眾感受到角色心裡想什麼", n:6, a:"rea" },
       { t:"想把劇本畫成分鏡表", n:15, a:"ed" }
+    ]},
+    { id:"clang", label:"C++",
+      hero:{ h1:"C++ 新手教學站：從第一行程式到完整小專案",
+        sub:"十八篇獨立的單頁教學，完全沒寫過程式也能跟著打。每一步都有可複製的程式碼、實際執行的輸出和可以動手改的練習，從印出一行字開始，慢慢學到物件導向，最後完成一支會存檔的成績管理程式。",
+        tldr:"照順序讀是一條路線（準備 → 基本語法 → 資料組織 → 物件導向 → 進階與專題），前 8 篇就能做出自己的小遊戲；遇到具體問題就用下方「我只想解決某個問題」。每篇都附練習題、測驗與檢查表。" },
+      pathTitle:"學習路徑",
+      pathNote:"標示「進階選讀」的篇章（檔案與動態記憶體）不影響主線，學完物件導向後再讀。",
+      foot:"範例程式皆以 g++ 13、-std=c++17 實測。外部網站連結已於 2026-11-18 抽查（非逐條驗證），安裝步驟未逐一對照官方文件。製作日期：2026-11-12。",
+      stages:[
+      { name:"一、準備", pages:[
+        { n:1, title:"認識 C++ 與環境", href:"clang/clang-intro-guide.html", status:"done", level:"入門", mins:20, elective:false,
+          summary:"搞懂「寫、編譯、執行」三步，選好環境，讓第一支程式真的跑起來。" },
+        { n:2, title:"第一支程式", href:"clang/clang-first-program-guide.html", status:"done", level:"入門", mins:20, elective:false,
+          summary:"逐行看懂 main、cout、分號與大括號，並學會讀編譯錯誤訊息。" }
+      ]},
+      { name:"二、基本語法", pages:[
+        { n:3, title:"變數與資料型態", href:"clang/clang-variables-guide.html", status:"done", level:"入門", mins:25, elective:false,
+          summary:"int、double、char、bool、const、auto，以及型態大小與溢位。" },
+        { n:4, title:"輸入輸出", href:"clang/clang-io-guide.html", status:"done", level:"入門", mins:25, elective:false,
+          summary:"用 cin 與 cout 和使用者互動，並避開輸入的常見陷阱。" },
+        { n:5, title:"運算子與運算式", href:"clang/clang-operators-guide.html", status:"done", level:"入門", mins:25, elective:false,
+          summary:"算術、比較、邏輯、整數除法與取餘、運算優先序。" },
+        { n:6, title:"條件判斷", href:"clang/clang-conditions-guide.html", status:"done", level:"入門", mins:25, elective:false,
+          summary:"if、else、switch 與巢狀條件，看懂程式如何選路。" },
+        { n:7, title:"迴圈", href:"clang/clang-loops-guide.html", status:"done", level:"入門", mins:30, elective:false,
+          summary:"for、while、do-while、break、continue 與巢狀迴圈。" },
+        { n:8, title:"綜合演練一：乘法表與猜數字", href:"clang/clang-practice1-guide.html", status:"done", level:"基礎", mins:30, elective:false,
+          summary:"只用前七篇的語法，做出九九乘法表與猜數字遊戲。" }
+      ]},
+      { name:"三、資料組織", pages:[
+        { n:9, title:"陣列與 vector", href:"clang/clang-array-vector-guide.html", status:"done", level:"基礎", mins:30, elective:false,
+          summary:"索引從 0 開始、越界的危險，以及日常首選的 vector。" },
+        { n:10, title:"字串", href:"clang/clang-string-guide.html", status:"done", level:"基礎", mins:25, elective:false,
+          summary:"用 std::string 處理文字：長度、串接、搜尋與擷取。" },
+        { n:11, title:"函式", href:"clang/clang-functions-guide.html", status:"done", level:"基礎", mins:30, elective:false,
+          summary:"參數、回傳值、傳值、多載，並預告遞迴。" },
+        { n:12, title:"參考與指標", href:"clang/clang-ref-pointer-guide.html", status:"done", level:"基礎", mins:35, elective:false,
+          summary:"用記憶體格子與箭頭理解位址、指標、參考與傳參考。" },
+        { n:13, title:"STL:map、set、sort", href:"clang/clang-stl-guide.html", status:"done", level:"基礎", mins:30, elective:false,
+          summary:"用 map、set 與 sort 取代自己寫查找和排序。" }
+      ]},
+      { name:"四、物件導向", pages:[
+        { n:14, title:"struct 與 class", href:"clang/clang-class-guide.html", status:"done", level:"進階", mins:30, elective:false,
+          summary:"把資料與操作綁在一起：成員、建構子與存取權限。" },
+        { n:15, title:"封裝、繼承、多型", href:"clang/clang-oop-guide.html", status:"done", level:"進階", mins:35, elective:false,
+          summary:"繼承共用程式，用 virtual 讓同一個呼叫有不同行為。" }
+      ]},
+      { name:"五、進階與專題", pages:[
+        { n:16, title:"檔案 I/O 與例外處理", href:"clang/clang-file-exception-guide.html", status:"done", level:"進階", mins:30, elective:true,
+          summary:"用 fstream 讀寫檔案，並用 try/catch 處理錯誤。" },
+        { n:17, title:"動態記憶體與智慧指標", href:"clang/clang-memory-guide.html", status:"done", level:"進階", mins:30, elective:true,
+          summary:"new / delete、記憶體洩漏，以及 unique_ptr。" },
+        { n:18, title:"除錯與成績管理小專案", href:"clang/clang-project-guide.html", status:"done", level:"進階", mins:45, elective:false,
+          summary:"常見錯誤速查，並完成一支會存檔的成績管理程式。" }
+      ]}
+    ],
+    quick:[
+      { t:"編譯時出現 error，看不懂", n:2, a:"errors" },
+      { t:"輸出的數字不對（整數除法、溢位）", n:5, a:"stuck" },
+      { t:"輸入被跳過或卡住", n:4, a:"traps" },
+      { t:"無窮迴圈停不下來", n:7, a:"pitfall" },
+      { t:"程式當掉或陣列越界", n:9, a:"oob" },
+      { t:"函式裡改了值，外面沒變", n:12, a:"steps" },
+      { t:"new 之後要不要 delete", n:17, a:"steps" },
+      { t:"想做一個完整的小專案", n:18, a:"project" }
+    ]},
+    { id:"datastruct", label:"C++ 演算法",
+      hero:{ h1:"C++ 演算法與資料結構：從陣列到動態規劃",
+        sub:"十七篇獨立的單頁教學，寫給剛學完 C++17、還沒學過演算法的人。每頁都有可以一步一步操作的動畫，旁邊同步顯示對應的程式碼，範例全部實際編譯執行過。",
+        tldr:"照順序讀是一條路線（基礎 → 線性結構 → 排序 → 進階結構 → 圖與策略）；第 1–8 篇是主線，最後三篇是進階選讀。遇到具體問題就用「我只想解決某個問題」直接進對應篇章。" },
+      pathTitle:"學習路徑：五個階段，由簡單到複雜",
+      pathNote:"標示「進階選讀」的篇章等你把前面的基礎讀熟再看，不影響主線。",
+      foot:"範例以 g++ 13、-std=c++17 實際編譯執行驗證；動畫為教學示意，資料量固定很小。cppreference 連結已逐條開啟確認。查證日期：2026-11-18。",
+      stages:[
+      { name:"一、基礎", pages:[
+        { n:1, title:"先備速查：指標、參照與 struct", href:"datastruct/datastruct-prereq-guide.html", status:"done", level:"入門", mins:10, elective:false,
+          summary:"學鏈結串列之前，先搞懂變數、位址、參照與指標。可略過。" },
+        { n:2, title:"複雜度與 Big‑O", href:"datastruct/datastruct-bigo-guide.html", status:"done", level:"入門", mins:10, elective:false,
+          summary:"用操作次數而不是秒數，比較程式隨資料變大會慢多少。" },
+        { n:3, title:"陣列與 vector", href:"datastruct/datastruct-array-guide.html", status:"done", level:"入門", mins:12, elective:false,
+          summary:"連續記憶體、插入刪除為什麼貴，以及 vector 如何擴容。" },
+        { n:4, title:"鏈結串列", href:"datastruct/datastruct-linkedlist-guide.html", status:"done", level:"基礎", mins:15, elective:false,
+          summary:"節點與指標，插入刪除不用搬資料，以及它和陣列的取捨。" }
+      ]},
+      { name:"二、線性結構與基本技巧", pages:[
+        { n:5, title:"堆疊與佇列", href:"datastruct/datastruct-stackqueue-guide.html", status:"done", level:"基礎", mins:12, elective:false,
+          summary:"後進先出與先進先出，並用堆疊做括號配對。" },
+        { n:6, title:"搜尋：線性與二分", href:"datastruct/datastruct-search-guide.html", status:"done", level:"基礎", mins:12, elective:false,
+          summary:"從頭找到尾，和每次砍一半的差別。" },
+        { n:7, title:"遞迴", href:"datastruct/datastruct-recursion-guide.html", status:"done", level:"基礎", mins:15, elective:false,
+          summary:"基底條件、呼叫堆疊與呼叫樹，看懂階乘與費氏數列。" }
+      ]},
+      { name:"三、排序", pages:[
+        { n:8, title:"基礎排序：氣泡、選擇、插入", href:"datastruct/datastruct-sortbasic-guide.html", status:"done", level:"基礎", mins:15, elective:false,
+          summary:"三種直覺的排序法，看長條圖一步步變整齊。" },
+        { n:9, title:"進階排序：合併、快速與 std::sort", href:"datastruct/datastruct-sortadv-guide.html", status:"done", level:"進階", mins:18, elective:false,
+          summary:"分治法如何把排序從 n² 降到 n log n。" }
+      ]},
+      { name:"四、進階結構", pages:[
+        { n:10, title:"雜湊表", href:"datastruct/datastruct-hash-guide.html", status:"done", level:"進階", mins:15, elective:false,
+          summary:"雜湊函數、碰撞與 unordered_map，幾乎一步找到資料。" },
+        { n:11, title:"二元樹與走訪", href:"datastruct/datastruct-tree-guide.html", status:"done", level:"進階", mins:15, elective:false,
+          summary:"前序、中序、後序與層序，用不同順序走過同一棵樹。" },
+        { n:12, title:"二元搜尋樹", href:"datastruct/datastruct-bst-guide.html", status:"done", level:"進階", mins:18, elective:false,
+          summary:"插入、搜尋、刪除，以及為什麼會退化成一條鏈。" },
+        { n:13, title:"堆積與優先佇列", href:"datastruct/datastruct-heap-guide.html", status:"done", level:"進階", mins:18, elective:false,
+          summary:"用陣列存完全二元樹，上浮下沉與 priority_queue。" }
+      ]},
+      { name:"五、圖與策略", pages:[
+        { n:14, title:"圖的表示與 BFS/DFS", href:"datastruct/datastruct-graph-guide.html", status:"done", level:"進階", mins:20, elective:false,
+          summary:"鄰接矩陣與鄰接表，用迷宮看廣度與深度優先的差別。" },
+        { n:15, title:"最短路徑：Dijkstra", href:"datastruct/datastruct-dijkstra-guide.html", status:"done", level:"進階", mins:18, elective:true,
+          summary:"逐步更新距離表，找出到每個點的最短距離。" },
+        { n:16, title:"動態規劃入門", href:"datastruct/datastruct-dp-guide.html", status:"done", level:"進階", mins:20, elective:true,
+          summary:"把重複的子問題記下來，逐格填表求解。" },
+        { n:17, title:"貪婪、回溯與練習路線", href:"datastruct/datastruct-greedy-guide.html", status:"done", level:"進階", mins:15, elective:true,
+          summary:"找零、N 皇后，以及學完之後怎麼刷題。" }
+      ]}
+    ],
+    quick:[
+      { t:"我的程式很慢，想知道為什麼", n:2, a:"what" },
+      { t:"看不懂指標與 ->", n:1, a:"node" },
+      { t:"想在一堆資料裡很快找到某個值", n:6, a:"what" },
+      { t:"搞不懂遞迴到底怎麼跑", n:7, a:"play" },
+      { t:"要排序，不知道選哪種", n:9, a:"race" },
+      { t:"vector、map、set 該選哪個", n:17, a:"stl" },
+      { t:"想走迷宮或找最短路徑", n:14, a:"maze" },
+      { t:"不知道怎麼開始刷題", n:17, a:"route" }
     ]}
   ];
 
@@ -589,6 +717,5 @@
   renderAll();
 })();
 </script>
-<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "58e4acd2175f4c6b8cdf01e7ea717443"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>

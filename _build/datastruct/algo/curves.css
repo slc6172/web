@@ -1,0 +1,18 @@
+
+  /* 成長曲線圖 */
+  .cv { background:var(--white); border:var(--border); border-radius:12px; padding:16px 18px; margin:14px 0; }
+  .cv-top { display:flex; flex-wrap:wrap; align-items:center; gap:10px 16px; margin-bottom:12px; }
+  .cv-top label { font:12px var(--mono); letter-spacing:.06em; color:var(--gray-500); text-transform:uppercase; }
+  .cv-top input[type=range] { flex:1 1 200px; min-width:140px; accent-color:var(--clay); }
+  .cv-n { font:600 22px var(--serif); min-width:3.2em; }
+  .cv-main { display:grid; grid-template-columns:minmax(0,1.2fr) minmax(0,1fr); gap:16px; align-items:start; }
+  @media (max-width:920px) { .cv-main { grid-template-columns:minmax(0,1fr); } }
+  .cv-chart { background:var(--gray-100); border-radius:10px; padding:8px; overflow-x:auto; }
+  .cv-chart svg { display:block; width:100%; height:auto; min-width:300px; }
+  .cv-chart text { font:11px var(--mono); fill:var(--gray-700); }
+  .cv-tbl { width:100%; border-collapse:collapse; font-size:13px; }
+  .cv-tbl th { font:11px var(--sans); text-transform:uppercase; letter-spacing:.06em; color:var(--gray-500); text-align:left; padding:6px 8px; background:var(--gray-100); }
+  .cv-tbl td { padding:7px 8px; border-top:1px solid var(--gray-300); font-family:var(--mono); vertical-align:top; }
+  .cv-tbl td:first-child { white-space:nowrap; }
+  .cv-tbl .sw { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px; }
+  .cv-note { font-size:12.5px; color:var(--gray-500); margin:10px 0 0; }

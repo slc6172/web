@@ -1,0 +1,4 @@
+bubble (random)  : 1999000
+merge  (random)  : 19413
+quick  (random)  : 24235
+quick  (sorted)  : 1999000
