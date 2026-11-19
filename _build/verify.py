@@ -2,7 +2,7 @@
 用法(在 repo 根目錄):  python3 _build/verify.py
 需要:pip install playwright && playwright install chromium;或設定 CHROME_PATH 指向 Chrome。
 檢查:1280 / 390 寬無橫向溢出、無 JS 錯誤;首頁每個分頁籤的卡片數、篩選、進度、快速入口;
-      每頁「← 回教學首頁」回到對的分頁籤;測驗、檢查表、各頁互動(有才測)、相對連結與 #錨點。
+      每頁「← 回教學首頁」回到對的分頁籤;每個主題的上一篇／下一篇接成完整一條鏈且順序同首頁;測驗、檢查表、各頁互動(有才測)、相對連結與 #錨點。
 各主題另有更深入的專用驗證:arduino/verify_arduino.py、microfilm/check.py。"""
 import sys, os, re, glob, tempfile
 from playwright.sync_api import sync_playwright
@@ -114,6 +114,40 @@ with sync_playwright() as p:
     b.close()
 
 # ---------- 站台層靜態檢查(不需瀏覽器):head 中繼資料、skip link、sitemap、quick 錨點 ----------
+def check_chain(cid, hrefs):
+    """上一篇／下一篇必須把該主題接成一條完整的鏈,且順序與首頁卡片的篇號(n)一致。
+    抓得到的錯誤:整排缺 next(曾發生在 clang)、指向「製作中」的虛線卡片、互指不一致、鏈上漏頁、順序與首頁不同。"""
+    files = sorted(os.path.basename(f) for f in glob.glob(os.path.join(PUB, cid, "*.html")))
+    prev, nxt = {}, {}
+    for f in files:
+        h = open(os.path.join(PUB, cid, f), encoding="utf-8").read()
+        m = re.search(r'<nav class="pager"[^>]*>(.*?)</nav>', h, re.S)
+        body = m.group(1) if m else ""
+        if re.search(r'class="(?:prev|next) off"', body):
+            errs.append((cid + "/" + f, "pager 還有「製作中」的虛線卡片", ""))
+        for kind, dst in (("prev", prev), ("next", nxt)):
+            mm = re.search(r'<a class="%s" href="([^"#]+)"' % kind, body)
+            if mm:
+                dst[f] = mm.group(1)
+                if mm.group(1) not in files:
+                    errs.append((cid + "/" + f, kind + " 指向不存在的頁面", mm.group(1)))
+    heads = [f for f in files if f not in prev]
+    tails = [f for f in files if f not in nxt]
+    if len(files) > 1 and (len(heads) != 1 or len(tails) != 1):
+        errs.append((cid, "上一篇／下一篇沒接成一條鏈(沒有 prev 的頁面 %s、沒有 next 的頁面 %s;應各只有一頁)" % (heads, tails), ""))
+    for a, b in nxt.items():
+        if prev.get(b) != a:
+            errs.append((cid + "/" + a, "next 指向 %s,但它的 prev 是 %s" % (b, prev.get(b)), ""))
+    chain, cur, seen = [], (heads[0] if len(heads) == 1 else None), set()
+    while cur and cur not in seen:
+        chain.append(cur); seen.add(cur); cur = nxt.get(cur)
+    if len(chain) != len(files):
+        errs.append((cid, "從第一頁沿 next 走只到 %d 頁,主題共 %d 頁" % (len(chain), len(files)), ""))
+    want = [os.path.basename(hrefs[n]) for n in sorted(hrefs)]
+    if want and chain and want != chain:
+        errs.append((cid, "上下篇順序與首頁卡片的篇號順序不同", ""))
+
+
 def static_checks():
     sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "shared"))
     import seo
@@ -175,6 +209,7 @@ def static_checks():
         seg = idx[idx.find('id:"%s", label' % cid):]
         nxt = re.search(r'\n    \{ id:"', seg[5:]); seg = seg[:nxt.start() + 5] if nxt else seg
         hrefs = dict((int(n), hf) for n, hf in re.findall(r'n:(\d+), title:"[^"]*", href:"([^"]+)"', seg))
+        check_chain(cid, hrefs)
         qm = re.search(r"quick:\[(.*?)\n\s*\]", seg, re.S)
         for n, a in re.findall(r'n:(\d+)(?:, a:"([^"]*)")? \}', qm.group(1) if qm else ""):
             if not a:

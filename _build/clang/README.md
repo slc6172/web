@@ -17,7 +17,7 @@
 
 | 檔案 | 用途 |
 |---|---|
-| `c01.py` … `c18.py` | 各頁規格（`from ch import *`，用 `spec(...)` 建立，`nav(n)` 決定上下篇） |
+| `c01.py` … `c18.py` | 各頁規格（`from ch import *`，用 `spec(...)` 建立，`nav(n)` 只依 `ch.py` 的 `ORDER` 決定上下篇，不看檔案是否存在） |
 | `ch.py` | 組頁輔助：`code(id, prev=)`、`term`、`errterm`、`run`、`exercise`、`flow`、`chk`、`links`、`stepper` 等；程式碼與輸出一律來自 `examples/`，頁面不手抄 |
 | `clang.css`、`clang.js` | 主題專用樣式與互動引擎（登記在 `build.py` 的 `THEMES["clang"]`）：`flow`、`stepper`（變數盒子／呼叫堆疊／記憶體格子加箭頭）、`calc`（overflow、format、eval、loop）、`ladder`、`memory`、`beforeafter`、`diagram`。依賴 `shared/common.js` 提供的 `window.PAGE_UTIL` |
 | `examples/pNN/` | 範例 `.cpp`；命名：`*.err.cpp` 預期編譯失敗（擷取第一個錯誤）、`*.crash.cpp` 預期執行時中止、`*.exitN.cpp` 預期結束碼 N、`*.norun.cpp` 只編譯不執行；`<名稱>.in` 提供 stdin；行尾 `//@ 說明` 變成可點選的逐行說明 |
@@ -30,7 +30,7 @@
 
 ```bash
 python3 _build/build.py --all clang           # 重組全部 C++ 頁面
-python3 _build/build.py c07                   # 只重組第 7 篇（上下篇連結要靠重組相鄰頁更新）
+python3 _build/build.py c07                   # 只重組第 7 篇（上下篇連結只依 `ORDER`，單頁重組也完整；改了 `ORDER` 的標題或順序就要 `--all`）
 python3 _build/clang/run_examples.py [pNN]    # 重跑範例並更新 results.json
 python3 _build/clang/check_eval.py            # 另有 check_format.py、check_loop.py
 CHROME_PATH=<chrome> python3 _build/clang/verify_clang.py

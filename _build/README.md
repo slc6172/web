@@ -76,7 +76,7 @@ python3 _build/arduino/arduino_verify.py a03 # Arduino 電路與程式驗證（�
 | `toc` | 左欄目錄，`[(id, 標題), …]`，8 項以內 |
 | `body` | 主體 HTML |
 | `config` | 寫進 `window.PAGE`：`fill`、`sim`、`quiz`，可選 `stages`、`decide` 等 |
-| `prev` `next` | `(檔名, 標題)` 或 `None`；檔案還不存在時會顯示「製作中」的虛線卡片 |
+| `prev` `next` | `(檔名, 標題)` 或 `None`；檔案還不存在時 `build.py` 會自動顯示「製作中」的虛線卡片。**只能依主題的篇章順序決定（寫死或查一份 `ORDER` 清單），不可用「檔案是否存在」「目錄裡有什麼」之類的執行環境條件來決定有沒有 `next`**（規格檔的 `HERE` 是 `_build/<主題>/`，路徑寫錯會讓整個主題的 `next` 悄悄消失，clang 就發生過）。第一頁 `prev=None`、最後一頁 `next=None`，其餘都要有。`verify.py` 的 `check_chain` 會檢查 |
 | `topic` `foot` | 頁首 eyebrow 前綴、頁尾文字；省略時用 `build.py` 裡該主題的預設值 |
 | `kit` | 舊版 build 的遺跡（clang 的規格檔還帶著）；統一版 `build.py` 忽略它，主題專用樣式與腳本改由 `THEMES` 的 `css`／`js` 載入，新規格檔不要寫 |
 | `desc` | 選填。`<meta name="description">` 與 `og:description`；省略時由 `tldr` 純文字取約 90 字（含全形化）。每頁不得與其他頁重複 |
@@ -126,7 +126,7 @@ python3 _build/arduino/arduino_verify.py a03 # Arduino 電路與程式驗證（�
 
 **站台層（由 `shared/seo.py` 統一輸出，規格檔不要手寫）**：每頁 `<head>` 有 description、canonical、`og:*`、`twitter:card`、內嵌 SVG favicon（data URI，零外部資源）、`theme-color`；`<body>` 第一個元素是 skip link（`.skip` → `#main`），`<main id="main" tabindex="-1">`。站台網址 `SITE_URL` 只在 `seo.py` 設定一處（目前 `https://www.slc6172.workers.dev`，必須與 `wrangler.jsonc` 的 `name` 加帳號子網域一致，`verify.py` 會檢查名稱部分）；留空時略過 canonical、`og:url` 與 sitemap。Workers Static Assets 預設會把 `/x.html` 轉成 `/x`（`wrangler.jsonc` 沒有設定 `html_handling`，已實測），所以 `CLEAN_URLS = True`：canonical、`og:url` 與 sitemap 都用沒有 `.html` 的網址，站內相對連結仍寫 `.html`（兩種都能開）。目前不放 og:image（維持零外部資源）。手寫頁（首頁、`github-pr-guide.html`）由 `site_files.py` 就地套用。
 
-**固定元件與導覽**：頁首 `crumb`（← 回教學首頁，連到 `../index.html#<主題>`）→ eyebrow → h1（標題就是結論）→ `.sub` → `.tldr`；左欄 `nav.toc`；每頁必備複製按鈕、閱讀進度條、TOC 高亮、`details` 常見卡關、測驗（3–6 題）、檢查表；頁尾 `.foot` → `.pager`（上一篇／下一篇，第一頁沒有上一篇、最後一頁沒有下一篇）。**所有共用 CSS 都是從 `public/github/github-pr-guide.html` 的 `<style>` 讀來的**（`build.py` 啟動時讀取），要改共用樣式就改那一頁，再重組各頁；後來補的小型樣式放在 `build.py` 的 `EXTRA`。
+**固定元件與導覽**：頁首 `crumb`（← 回教學首頁，連到 `../index.html#<主題>`）→ eyebrow → h1（標題就是結論）→ `.sub` → `.tldr`；左欄 `nav.toc`；每頁必備複製按鈕、閱讀進度條、TOC 高亮、`details` 常見卡關、測驗（3–6 題）、檢查表；頁尾 `.foot` → `.pager`（上一篇／下一篇，第一頁沒有上一篇、最後一頁沒有下一篇；全主題必須接成一條完整的鏈，順序與首頁卡片的 `n` 一致，由 `verify.py` 的 `check_chain` 把關）。**所有共用 CSS 都是從 `public/github/github-pr-guide.html` 的 `<style>` 讀來的**（`build.py` 啟動時讀取），要改共用樣式就改那一頁，再重組各頁；後來補的小型樣式放在 `build.py` 的 `EXTRA`。
 
 **標點**：全站一律全形標點（，。；：（）！？）。五個主題在 `build.py` 的 `THEMES` 都設 `fw=True`，組頁時自動呼叫 `shared/fw.py` 轉換：只轉頁面文字、aria-label 與含中文的 JS 字串，不動 CSS、`<pre>`、`<code>`、程式碼與 SVG；中文後面的 `, : ; ? !`、包著中文的 `( )`、以及「英文／數字／`)` 後面接中文」的 `, : ;` 都會轉。首頁用 `update_index.py` 維護（會自動套用）。寫規格檔時直接寫全形也可以。補充規則（`fw.py`）：標籤（`</code>`、`</b>`…）後面緊接的 `, : ; ? !`、任何非中文字元後面接中文的 `, : ; ? !`、JS 字串（含 `\n` 跳脫）與 SVG 的 `<title>`／`<text>` 都會轉。**例外（刻意保留）**：只含英文的括號，例如 `(Windows)`、`R1(220Ω)`；程式碼（`<pre>`、`<code>`）內部；範例文字故意寫的半形。`site_files.py` 會對全站再套一次，所以手寫頁也會一致。**跨 JS 字串拆開的括號**（一個字串放 `(`、下一個放 `)`）轉不到，請在原始碼直接寫全形。
 
@@ -146,6 +146,7 @@ python3 _build/arduino/arduino_verify.py a03 # Arduino 電路與程式驗證（�
 5. 跑 `build.py`、`verify.py`；`verify.py` 會自動涵蓋 `public/` 底下的新資料夾，並檢查卡片數與檔案數相符、回首頁連結落在正確的標籤頁。
 6. 更新根目錄 `README.md` 的主題表與本文件的資料夾地圖。
 7. 首頁新分類的每個 `quick` 項目都要有 `a` 錨點；跑 `python3 _build/site_files.py` 更新 sitemap。
+8. 每頁 SPEC 的 `prev`／`next` 依篇章順序給（見第 4 節），再用 `build.py --all <主題>` 重組整個主題；`verify.py` 會檢查前後頁鏈完整。
 
 ## 9. 每次改動後的驗證清單
 
@@ -154,6 +155,7 @@ python3 _build/arduino/arduino_verify.py a03 # Arduino 電路與程式驗證（�
 - 搜尋 `http://`、`https://`：只應出現在官方文件連結、SVG `xmlns`、`<head>` 的 canonical／`og:url`，以及選用的 Analytics beacon。`verify.py` 會檢查外部資源白名單：除了 canonical 與該 beacon，任何外部 `<script>`／`<link>`／`<img>`／`<iframe>` 來源都算錯誤。
 - **寫 Playwright 驗證腳本時**，每個 `new_context()` 後都要呼叫 `shared/pwutil.py` 的 `stub_analytics(ctx)`：驗證用 `file://` 開頁（origin 為 null），beacon 的請求會被 CORS 擋下並產生 console error，導致 workflow 失敗；stub 會把 `cloudflareinsights.com` 與其子網域的請求用空回應攔下，不影響頁面本身。`verify.py`、`arduino/verify_arduino.py`、`microfilm/check.py`、`datastruct/verify_ds.py`、`clang/verify_clang.py`、`clang/check_eval.py`、`clang/check_format.py`、`clang/check_loop.py` 都已套用。
 - 子頁沒有 `localStorage`（第 6 節的例外除外）。
+- **前後頁鏈**：`verify.py` 的 `check_chain` 會逐主題檢查——每頁的 `prev`／`next` 指向存在的頁面、沒有「製作中」虛線卡片、`A.next=B` 則 `B.prev=A`、只有一頁沒有 `prev`（第一頁）與一頁沒有 `next`（最後一頁）、從第一頁沿 `next` 走得到全部頁面、順序與首頁卡片篇號一致。新增主題或改篇章順序後務必重組**整個主題**（`build.py --all <主題>`），不要只組單頁。
 - `verify.py` 的站台層與部署檢查（`wrangler.jsonc` 的 `name` 要與 `SITE_URL` 一致、部署相關檔案要存在）：每頁 meta／canonical／og／favicon／theme-color／skip link／`main#main`、title 與 description 不重複、`sitemap.xml` 與 `public/` 頁面相符、`quick` 每個錨點都存在。
 - **外部連結要實際開啟**（WebFetch 或瀏覽器；shell 通常連不到外網，不能當證據）：結果寫進 `_build/<主題>/reports/link-check.md`（日期、方法、每條狀態）；被轉址的改成最終網址；只拿到頁面外殼的算「無法驗證」，不能寫成已驗證。介面名稱、指令、規格、額度逐項對照官方文件，查證日期在這些做完之後才更新。
 - 用瀏覽器實際點過：複製按鈕、測驗、檢查表、模擬與該頁特有的互動；窄螢幕也看一次。
@@ -191,12 +193,12 @@ python3 _build/merge_theme.py NEW.zip --verify --zip /tmp/learning-hub-github-up
 4. 製作檔若自己推算路徑（`dirname(HERE)` 之類），要改成往上兩層；專用驗證腳本跑一次確認可用。新主題的**所有 Playwright 腳本**都要在每個 `new_context()`（或 `b.new_page()` 改成 `new_context()` + `new_page()`）後呼叫 `shared/pwutil.py` 的 `stub_analytics(ctx)`，其外部網址白名單也要放行 Analytics beacon（見第 9 節）。專用驗證腳本是在來源專案寫的，常有與統一流程不同步的地方（全形標點讓預期字串變全形、站台層新增 canonical／og:url、首頁連結帶 `#<主題>`），失敗時先判斷是腳本過時還是頁面壞了。
 5. 根目錄 `README.md`：主題表的說明欄、查證日期、設計原則裡與新主題有關的句子；若新主題有 `localStorage` 等例外，也要寫進本文件第 6 節。
 6. 首頁 `foot` 與各頁頁尾的查證文字是否適用新主題。
-7. **站台層品質關卡**：①外部連結逐條實際開啟並寫 `_build/<主題>/reports/link-check.md`，事實逐項對照官方文件，之後才更新查證日期；②每頁有 `desc`（或可由 `tldr` 衍生）、title 與 description 不與他頁重複，跑 `site_files.py` 更新 sitemap；③首頁新分類每個 `quick` 項都有 `a` 錨點；④根目錄 `README.md` 與本文件同步。`SITE_URL` 空白時要問人，不要編造。
+7. **站台層品質關卡**：①外部連結逐條實際開啟並寫 `_build/<主題>/reports/link-check.md`，事實逐項對照官方文件，之後才更新查證日期；②每頁有 `desc`（或可由 `tldr` 衍生）、title 與 description 不與他頁重複，跑 `site_files.py` 更新 sitemap；③首頁新分類每個 `quick` 項都有 `a` 錨點；④整個主題的上一篇／下一篇接成一條完整的鏈（第一頁沒有上一篇、最後一頁沒有下一篇，其餘都要有，順序與首頁篇號一致；來源專案若用「檔案存在才顯示」之類的條件產生 `next`，要改成只依篇章順序）；⑤根目錄 `README.md` 與本文件同步。`SITE_URL` 空白時要問人，不要編造。
 
 **第三步：驗證與打包**：`python3 _build/verify.py`（全站）→ 主題專用驗證 → 確認沒有殘留的過程文件與暫存檔 → 用 `--zip` 打包（不含 `_incoming`、`__pycache__`、編譯產物）。
 
 **交給新對話的提示詞**：完整版在專案外的 `merge-theme-prompt.md`（同時上傳目前的 learning-hub zip 與新專案 zip）；精簡版如下，兩者要同步。
 
 > 我有一份現行的教學站專案（learning-hub，已含 github 等主題）和另一份新專案 `NEW.zip`（含 github 主題當風格參考，外加一個新主題）。請把新主題整併進現行專案。
-> 先讀 `README.md`、`_build/README.md`（特別是第 11 節；`merge_theme.py` 遇到來源首頁 hero 欄位格式不同而中斷時，照該節的「已知限制」處理，不要改工具），確認 `_build/shared/seo.py` 與 `_build/site_files.py` 存在（缺就先停下來告訴我）。然後依序：①先跑 `merge_theme.py --dry-run` 並把結果與風險告訴我；②我確認後再正式整併；③完成第 11 節「第二步」的每一項（含第 7 項站台層品質關卡）；④跑 `site_files.py`、全站驗證與主題專用驗證（新主題的 Playwright 腳本要套用 `stub_analytics`，見第 9 節）；⑤用 `--zip` 打包上傳用 zip，確認裡面沒有 HANDOFF、DESIGN、進度檔、截圖或暫存檔，且**保留**根目錄的 `.github/`、`wrangler.jsonc`、`.gitignore`、`LICENSE`。
+> 先讀 `README.md`、`_build/README.md`（特別是第 11 節；`merge_theme.py` 遇到來源首頁 hero 欄位格式不同而中斷時，照該節的「已知限制」處理，不要改工具），確認 `_build/shared/seo.py` 與 `_build/site_files.py` 存在（缺就先停下來告訴我）。然後依序：①先跑 `merge_theme.py --dry-run` 並把結果與風險告訴我；②我確認後再正式整併；③完成第 11 節「第二步」的每一項（含第 7 項站台層品質關卡，其中包含前後頁鏈完整）；④跑 `site_files.py`、全站驗證與主題專用驗證（新主題的 Playwright 腳本要套用 `stub_analytics`，見第 9 節）；⑤用 `--zip` 打包上傳用 zip，確認裡面沒有 HANDOFF、DESIGN、進度檔、截圖或暫存檔，且**保留**根目錄的 `.github/`、`wrangler.jsonc`、`.gitignore`、`LICENSE`。
 > 原則：只動新主題與首頁、文件，不改既有主題的頁面內容（`<head>`、skip link、sitemap 這類站台層輸出除外）；全站全形標點；每一頁維持與 github 相同的風格與元件；沒實際開啟過的連結不要宣稱已驗證；不要碰 `.github/workflows/`、`wrangler.jsonc`、`.gitignore`。遇到文件沒涵蓋的決定，動手前先問我。

@@ -123,7 +123,9 @@ def links(items, title="延伸閱讀(外部連結)"):
     a = "".join('<a class="resource" href="%s" target="_blank" rel="noopener"><b>%s</b><small>%s</small></a>' % i for i in items)
     return '<h3 style="margin-top:30px">%s</h3>\n<div class="resources">%s</div>' % (title, a)
 
-# ---------- 全站篇章順序(上一篇/下一篇自動依「檔案是否已存在」決定)----------
+# ---------- 全站篇章順序(上一篇/下一篇只依這份清單決定,不看檔案是否存在)----------
+# 為什麼不檢查檔案：規格檔的 HERE 是 _build/clang，路徑一寫錯就會讓每頁都以為「下一篇不存在」而整排消失(實際發生過)。
+# 尚未做出來的頁面，由 build.py 的 pg() 自動顯示「製作中」虛線卡片；全站是否接成一條完整的鏈，由 verify.py 檢查。
 ORDER = [
  ("clang-intro-guide.html", "認識 C++ 與環境"), ("clang-first-program-guide.html", "第一支程式"),
  ("clang-variables-guide.html", "變數與資料型態"), ("clang-io-guide.html", "輸入輸出"),
@@ -136,8 +138,7 @@ ORDER = [
  ("clang-memory-guide.html", "動態記憶體與智慧指標"), ("clang-project-guide.html", "除錯與成績管理小專案"),
 ]
 def nav(n):
-    """n 為篇號(1 起算)。回傳 dict(prev=..., next=...),下一篇檔案還沒做出來就省略。"""
-    out = {"prev": ORDER[n - 2] if n > 1 else None, "next": None}
-    if n < len(ORDER) and os.path.exists(os.path.join(HERE, "..", "public", "clang", ORDER[n][0])):
-        out["next"] = ORDER[n]
-    return out
+    """n 為篇號(1 起算)。回傳 dict(prev=..., next=...):第一篇沒有 prev、最後一篇沒有 next,其餘一律給。"""
+    assert 1 <= n <= len(ORDER), "nav(%d) 超出 ORDER 範圍" % n
+    return {"prev": ORDER[n - 2] if n > 1 else None,
+            "next": ORDER[n] if n < len(ORDER) else None}

@@ -186,6 +186,19 @@ def main():
         for ref_href in re.findall(r'<a class="(?:prev|next)" href="([^"#]+)"', h):
             if ref_href not in names:
                 warn("%s 的上一篇／下一篇指向不存在的 %s" % (os.path.basename(f), ref_href))
+    # 前後頁鏈：第一頁沒有 prev、最後一頁沒有 next，其餘都要有（來源若用「檔案存在才顯示」產生 next，常整排缺漏）
+    _pv, _nx = {}, {}
+    for f in files:
+        h = read(f)
+        for kind, dst in (("prev", _pv), ("next", _nx)):
+            mm = re.search(r'<a class="%s" href="([^"#]+)"' % kind, h)
+            if mm:
+                dst[os.path.basename(f)] = mm.group(1)
+    if len(files) > 1:
+        _no_prev = [n for n in names if n not in _pv]
+        _no_next = [n for n in names if n not in _nx]
+        if len(_no_prev) != 1 or len(_no_next) != 1:
+            warn("上一篇／下一篇沒接成一條鏈：沒有上一篇的頁面 %s、沒有下一篇的頁面 %s（應各只有一頁）；請改規格檔，只依篇章順序決定 prev／next" % (_no_prev, _no_next))
     if bad_tokens:
         warn("設計 tokens 與 github 樣板不同的頁面 %d 個，例如 %s：%s（風格可能不一致）" % (len(bad_tokens), bad_tokens[0][0], bad_tokens[0][1]))
     else:
